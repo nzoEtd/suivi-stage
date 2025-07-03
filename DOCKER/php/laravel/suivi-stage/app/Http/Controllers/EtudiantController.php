@@ -7,6 +7,7 @@ use App\Models\RechercheStage;
 use App\Models\FicheDescriptive;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class EtudiantController extends Controller
 {
@@ -226,6 +227,121 @@ class EtudiantController extends Controller
                 'message' => 'Une erreur s\'est produite',
                 'erreurs' => $e->getMessage()
             ],500);
+        }
+    }
+
+    /**
+     * Créer un nouveau token pour l'étudiant, avec une date d'expiration
+     * Code HTTP retourné :
+     *      - Code 200 : si le token a été créé avec succès
+     *      - Code 404 : si l'étudiant n'a pas été trouvé
+     *      - Code 500 : s'il y a une erreur
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \Exception
+     */
+    public function createToken($id){
+        try {
+            $unEtudiant = Etudiant::findOrFail($id);
+            $token = Str::random(128);                          // Génère une chaîne aléatoire de 128 caractères
+            $expirationDate = now('Europe/Paris')->addHours(2); // Prise en compte du fuseau horaire
+
+            $unEtudiant->token = $token;
+            $unEtudiant->dateExpirationToken = $expirationDate;
+            $unEtudiant->save();
+
+            return response()->json([
+                'message' => 'Token créé avec succès'
+            ], 200);
+        }
+        catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+            return response()->json([
+                'message' => 'Aucun étudiant trouvé'
+            ], 404);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'message' => 'Une erreur s\'est produite',
+                'erreurs' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Récupère le token et la date d'expiration d'un étudiant
+     * Code HTTP retourné :
+     *      - Code 200 : si l'étudiant a été trouvé et qu'il a un token
+     *      - Code 404 : si l'étudiant n'a pas été trouvé ou s'il n'a pas de token
+     *      - Code 500 : s'il y a une erreur
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \Exception
+     */
+    public function getToken($id){
+        try {
+            $unEtudiant = Etudiant::findOrFail($id);
+            
+            // Vérifie si l'étudiant a un token
+            if (empty($unEtudiant->token) || empty($unEtudiant->dateExpirationToken)) {
+                return response()->json([
+                    'message' => 'Aucun token trouvé pour cet étudiant'
+                ], 404);
+            }
+
+            return response()->json([
+                'token' => $unEtudiant->token,
+                'dateExpiration' => $unEtudiant->dateExpirationToken
+            ], 200);
+        }
+        catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+            return response()->json([
+                'message' => 'Aucun étudiant trouvé'
+            ], 404);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'message' => 'Une erreur s\'est produite',
+                'erreurs' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Supprime le token et la date d'expiration d'un étudiant
+     * Code HTTP retourné :
+     *      - Code 200 : si le token a été supprimé avec succès
+     *      - Code 404 : si l'étudiant n'a pas été trouvé
+     *      - Code 500 : s'il y a une erreur
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \Exception
+     */
+    public function deleteToken($id){
+        try {
+            $unEtudiant = Etudiant::findOrFail($id);
+            
+            // Supprime le token et la date d'expiration
+            $unEtudiant->token = null;
+            $unEtudiant->dateExpirationToken = null;
+            $unEtudiant->save();
+
+            return response()->json([
+                'message' => 'Token supprimé avec succès'
+            ], 200);
+        }
+        catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+            return response()->json([
+                'message' => 'Aucun étudiant trouvé'
+            ], 404);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'message' => 'Une erreur s\'est produite',
+                'erreurs' => $e->getMessage()
+            ], 500);
         }
     }
 }

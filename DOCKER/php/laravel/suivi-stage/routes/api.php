@@ -83,6 +83,9 @@ Route::get('/etudiants/{id}/fiches-descriptives', [EtudiantController::class, 'i
 Route::get('/etudiants', [EtudiantController::class, 'index'])->name('etudiants.index');
 Route::get('/etudiants/{id}', [EtudiantController::class, 'show'])->name('etudiants.show');
 Route::get('/etudiants/{id}/parcours', [EtudiantController::class, 'indexParcours'])->name('etudiants.indexParcours');
+Route::put('/etudiants/createToken/{id}', [EtudiantController::class, 'createToken'])->name('etudiants.createToken');
+Route::get('/etudiants/getToken/{id}', [EtudiantController::class, 'getToken'])->name('etudiants.getToken');
+Route::delete('/etudiants/deleteToken/{id}', [EtudiantController::class, 'deleteToken'])->name('etudiants.deleteToken');
 
 // Route pour le Controller Parcours
 Route::get('/parcours', [ParcoursController::class, 'index'])->name('parcours.index');
@@ -106,6 +109,9 @@ Route::post('/personnel/create', [PersonnelController::class, 'store'])->name('p
 Route::get('/personnel/{id}', [PersonnelController::class, 'show'])->name('personnel.show');
 Route::put('/personnel/update/{id}', [PersonnelController::class, 'update'])->name('personnel.update');
 Route::delete('/personnel/delete/{id}', [PersonnelController::class, 'destroy'])->name('personnel.destroy');
+Route::put('/personnel/createToken/{id}', [PersonnelController::class, 'createToken'])->name('personnel.createToken');
+Route::get('/personnel/getToken/{id}', [PersonnelController::class, 'getToken'])->name('personnel.getToken');
+Route::delete('/personnel/deleteToken/{id}', [PersonnelController::class, 'deleteToken'])->name('personnel.deleteToken');
 
 // Route pour le Controller AffectationEtudiant
 Route::get('/affectation', [AffectationEnseignantController::class, 'index'])->name('affectation.index');

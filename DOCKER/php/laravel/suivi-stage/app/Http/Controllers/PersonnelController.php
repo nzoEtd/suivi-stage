@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Personnel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PersonnelController extends Controller
 {
@@ -228,6 +229,123 @@ class PersonnelController extends Controller
                 'message' => 'Une erreur s\'est produite :',
                 'exception' => $e->getMessage()
             ],500);
+        }
+    }
+
+    
+    /**
+     * Créer un nouveau token pour le membre du personnel, avec une date d'expiration
+     * Code HTTP retourné :
+     *      - Code 200 : si le token a été créé avec succès
+     *      - Code 404 : si le membre du personnel n'a pas été trouvé
+     *      - Code 500 : s'il y a une erreur
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \Exception
+     */
+    public function createToken($id){
+        try {
+            $unPersonnel = Personnel::findOrFail($id);
+            $token = Str::random(128);                          // Génère une chaîne aléatoire de 128 caractères
+            $expirationDate = now('Europe/Paris')->addHours(2); // Prise en compte du fuseau horaire
+
+            // Met à jour l'étudiant avec le token et la date d'expiration
+            $unPersonnel->token = $token;
+            $unPersonnel->dateExpirationToken = $expirationDate;
+            $unPersonnel->save();
+
+            return response()->json([
+                'message' => 'Token créé avec succès'
+            ], 200);
+        }
+        catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+            return response()->json([
+                'message' => 'Aucun membre du personnel trouvé'
+            ], 404);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'message' => 'Une erreur s\'est produite',
+                'erreurs' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Récupère le token et la date d'expiration d'un étudiant
+     * Code HTTP retourné :
+     *      - Code 200 : si l'étudiant a été trouvé et qu'il a un token
+     *      - Code 404 : si l'étudiant n'a pas été trouvé ou s'il n'a pas de token
+     *      - Code 500 : s'il y a une erreur
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \Exception
+     */
+    public function getToken($id){
+        try {
+            $unPersonnel = Personnel::findOrFail($id);
+            
+            // Vérifie si l'étudiant a un token
+            if (empty($unPersonnel->token) || empty($unPersonnel->dateExpirationToken)) {
+                return response()->json([
+                    'message' => 'Aucun token trouvé pour ce membre du personnel'
+                ], 404);
+            }
+
+            return response()->json([
+                'token' => $unPersonnel->token,
+                'dateExpiration' => $unPersonnel->dateExpirationToken
+            ], 200);
+        }
+        catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+            return response()->json([
+                'message' => 'Aucun membre du personnel trouvé'
+            ], 404);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'message' => 'Une erreur s\'est produite',
+                'erreurs' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Supprime le token et la date d'expiration d'un étudiant
+     * Code HTTP retourné :
+     *      - Code 200 : si le token a été supprimé avec succès
+     *      - Code 404 : si l'étudiant n'a pas été trouvé
+     *      - Code 500 : s'il y a une erreur
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \Exception
+     */
+    public function deleteToken($id){
+        try {
+            $unPersonnel = Personnel::findOrFail($id);
+            
+            // Supprime le token et la date d'expiration
+            $unPersonnel->token = null;
+            $unPersonnel->dateExpirationToken = null;
+            $unPersonnel->save();
+
+            return response()->json([
+                'message' => 'Token supprimé avec succès'
+            ], 200);
+        }
+        catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+            return response()->json([
+                'message' => 'Aucun membre du personnel trouvé'
+            ], 404);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'message' => 'Une erreur s\'est produite',
+                'erreurs' => $e->getMessage()
+            ], 500);
         }
     }
 }
