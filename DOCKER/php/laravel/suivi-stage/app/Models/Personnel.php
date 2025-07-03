@@ -22,7 +22,9 @@ class Personnel extends Model
         'adresseMail',
         'longitudeAdresse',
         'latitudeAdresse',
-        'coptaEtudiant'
+        'coptaEtudiant',
+        'token',
+        'dateExpirationToken',
     ];
     // Définit l'attribut de la clé primaire
     protected $primaryKey = 'idPersonnel';

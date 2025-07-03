@@ -20,6 +20,8 @@ class Etudiant extends Model
         'codePostal',
         'telephone',
         'adresseMail',
+        'token',
+        'dateExpirationToken',
     ];
 
     // Définit l'attribut de la clé primaire
