@@ -319,6 +319,182 @@ class EtudiantControllerTest extends TestCase
                  ->assertJson(['message' => 'Une erreur s\'est produite :']);
     }
 
+    /**
+     * La méthode createToken doit retourner une confirmation 200 et un message de succès
+     * 
+     * @return void
+     */
+    public function test_createToken_methode_doit_retourner_200_et_le_message_de_succes()
+    {
+        $etudiantFirst = Etudiant::first();
+        $response = $this->put('/api/etudiants/createToken/'.$etudiantFirst->idUPPA);
+
+        $response->assertStatus(200)
+                 ->assertJson(['message' => 'Token créé avec succès']);
+    }
+
+    /**
+     * La méthode createToken doit retourner une erreur 404 si l'étudiant n'a pas été trouvé
+     * 
+     * @return void
+     */
+    public function test_createToken_methode_doit_retourner_une_erreur_404_si_l_etudiant_n_a_pas_ete_trouvee()
+    {
+        $idEtudiant = PHP_INT_MAX;
+
+        $response = $this->put('/api/etudiants/createToken/'.$idEtudiant);
+
+        $response->assertStatus(404)
+                 ->assertJson(['message' => 'Aucun étudiant trouvé']);
+    }
+
+    /**
+     * La méthode createToken doit retourner une erreur 500 en cas d'exception
+     * 
+     * @return void
+     */
+    public function test_createToken_methode_doit_retourner_une_erreur_500_en_cas_d_exception()
+    {
+        // Mock du modèle Etudiant pour déclencher une exception
+        $this->mock(\App\Http\Controllers\EtudiantController::class, function ($mock) {
+            $mock->shouldReceive('createToken')->once()->andThrow(new \Exception('Erreur simulée'));
+        });
+
+        $etudiantFirst = Etudiant::first();
+
+        $response = $this->put('/api/etudiants/createToken/'.$etudiantFirst->idUPPA);
+
+        $response->assertStatus(500)
+                 ->assertJson(['message' => 'Une erreur s\'est produite']);
+    }
+
+    /**
+     * La méthode getToken doit retourner une confirmation 200, le token de l'étudiant et la date d'expiration
+     * 
+     * @return void
+     */
+    public function test_getToken_methode_doit_retourner_200_et_le_token_de_l_etudiant_()
+    {
+        $etudiantFirst = Etudiant::first();
+        $etudiantFirst->token = 'test_token';
+        $etudiantFirst->dateExpirationToken = today()->addDays(7);
+        $etudiantFirst->save();
+
+        $response = $this->get('/api/etudiants/getToken/'.$etudiantFirst->idUPPA);
+
+        $response->assertStatus(200)
+                 ->assertJson([
+                     'token' =>  $etudiantFirst->token,
+                     'dateExpiration' => $etudiantFirst->dateExpirationToken->toDateTimeString()
+                 ]);
+    }
+
+    /**
+     * La méthode getToken doit retourner une erreur 404 si l'étudiant n'a pas été trouvé
+     * 
+     * @return void
+     */
+    public function test_getToken_methode_doit_retourner_une_erreur_404_si_l_etudiant_n_a_pas_ete_trouvee()
+    {
+        $idEtudiant = PHP_INT_MAX;
+
+        $response = $this->get('/api/etudiants/getToken/'.$idEtudiant);
+
+        $response->assertStatus(404)
+                 ->assertJson(['message' => 'Aucun étudiant trouvé']);
+    }
+
+    /**
+     * La méthode getToken doit retourner une erreur 404 si aucun token n'est associé à l'étudiant
+     * 
+     * @return void
+     */
+    public function test_getToken_methode_doit_retourner_une_erreur_404_si_l_etudiant_n_a_pas_de_token()
+    {
+        $etudiantFirst = Etudiant::first();
+        $etudiantFirst->token = null;
+        $etudiantFirst->dateExpirationToken = null;
+        $etudiantFirst->save();
+
+        $response = $this->get('/api/etudiants/getToken/'.$etudiantFirst->idUPPA);
+
+        $response->assertStatus(404)
+                 ->assertJson(['message' => 'Aucun token trouvé pour cet étudiant']);
+    }
+
+    /**
+     * La méthode getToken doit retourner une erreur 500 en cas d'exception
+     * 
+     * @return void
+     */
+    public function test_getToken_methode_doit_retourner_une_erreur_500_en_cas_d_exception()
+    {
+        // Mock du modèle Etudiant pour déclencher une exception
+        $this->mock(\App\Http\Controllers\EtudiantController::class, function ($mock) {
+            $mock->shouldReceive('getToken')->once()->andThrow(new \Exception('Erreur simulée'));
+        });
+
+        $etudiantFirst = Etudiant::first();
+
+        $response = $this->get('/api/etudiants/getToken/'.$etudiantFirst->idUPPA);
+
+        $response->assertStatus(500)
+                 ->assertJson(['message' => 'Une erreur s\'est produite']);
+    }
+
+    /**
+     * La méthode deleteToken doit retourner une confirmation 200 et un message de succès
+     * 
+     * @return void
+     */
+    public function test_deleteToken_methode_doit_retourner_200_et_le_message_de_succes()
+    {
+        $etudiantFirst = Etudiant::first();
+        $etudiantFirst->token = 'test_token';
+        $etudiantFirst->dateExpirationToken = today()->addDays(7);
+        $etudiantFirst->save();
+
+        $response = $this->delete('/api/etudiants/deleteToken/'.$etudiantFirst->idUPPA);
+
+        $response->assertStatus(200)
+                 ->assertJson(['message' => 'Token supprimé avec succès']);
+    }
+
+    /**
+     * La méthode deleteToken doit retourner une erreur 404 si l'étudiant n'a pas été trouvé
+     * 
+     * @return void
+     */
+    public function test_deleteToken_methode_doit_retourner_une_erreur_404_si_l_etudiant_n_a_pas_ete_trouvee()
+    {
+        $idEtudiant = PHP_INT_MAX;
+
+        $response = $this->delete('/api/etudiants/deleteToken/'.$idEtudiant);
+
+        $response->assertStatus(404)
+                 ->assertJson(['message' => 'Aucun étudiant trouvé']);
+    }
+
+    /**
+     * La méthode deleteToken doit retourner une erreur 500 en cas d'exception
+     * 
+     * @return void
+     */
+    public function test_deleteToken_methode_doit_retourner_une_erreur_500_en_cas_d_exception()
+    {
+        // Mock du modèle Etudiant pour déclencher une exception
+        $this->mock(\App\Http\Controllers\EtudiantController::class, function ($mock) {
+            $mock->shouldReceive('deleteToken')->once()->andThrow(new \Exception('Erreur simulée'));
+        });
+
+        $etudiantFirst = Etudiant::first();
+
+        $response = $this->delete('/api/etudiants/deleteToken/'.$etudiantFirst->idUPPA);
+
+        $response->assertStatus(500)
+                 ->assertJson(['message' => 'Une erreur s\'est produite']);
+    }
+
     public function tearDown(): void
     {
         parent::tearDown();

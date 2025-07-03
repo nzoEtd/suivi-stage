@@ -380,6 +380,182 @@ class PersonnelControllerTest extends TestCase
                  ->assertJson(['message' => 'Une erreur s\'est produite']);
     }
 
+    /**
+     * La méthode createToken doit retourner une confirmation 200 et un message de succès
+     * 
+     * @return void
+     */
+    public function test_createToken_methode_doit_retourner_200_et_le_message_de_succes()
+    {
+        $personnelFirst = Personnel::first();
+        $response = $this->put('/api/personnel/createToken/'.$personnelFirst->idPersonnel);
+
+        $response->assertStatus(200)
+                 ->assertJson(['message' => 'Token créé avec succès']);
+    }
+
+    /**
+     * La méthode createToken doit retourner une erreur 404 si le membre du personnel n'a pas été trouvé
+     * 
+     * @return void
+     */
+    public function test_createToken_methode_doit_retourner_une_erreur_404_si_le_membre_du_personnel_n_a_pas_ete_trouvee()
+    {
+        $idPersonnel = PHP_INT_MAX;
+
+        $response = $this->put('/api/personnel/createToken/'.$idPersonnel);
+
+        $response->assertStatus(404)
+                 ->assertJson(['message' => 'Aucun membre du personnel trouvé']);
+    }
+
+    /**
+     * La méthode createToken doit retourner une erreur 500 en cas d'exception
+     * 
+     * @return void
+     */
+    public function test_createToken_methode_doit_retourner_une_erreur_500_en_cas_d_exception()
+    {
+        // Mock du modèle Personnel pour déclencher une exception
+        $this->mock(\App\Http\Controllers\PersonnelController::class, function ($mock) {
+            $mock->shouldReceive('createToken')->once()->andThrow(new \Exception('Erreur simulée'));
+        });
+
+        $personnelFirst = Personnel::first();
+
+        $response = $this->put('/api/personnel/createToken/'.$personnelFirst->idPersonnel);
+
+        $response->assertStatus(500)
+                 ->assertJson(['message' => 'Une erreur s\'est produite']);
+    }
+
+    /**
+     * La méthode getToken doit retourner une confirmation 200, le token de l'étudiant et la date d'expiration
+     * 
+     * @return void
+     */
+    public function test_getToken_methode_doit_retourner_200_et_le_token_du_membre_du_personnel()
+    {
+        $personnelFirst = Personnel::first();
+        $personnelFirst->token = 'test_token';
+        $personnelFirst->dateExpirationToken = today()->addDays(7);
+        $personnelFirst->save();
+
+        $response = $this->get('/api/personnel/getToken/'.$personnelFirst->idPersonnel);
+
+        $response->assertStatus(200)
+                 ->assertJson([
+                     'token' => $personnelFirst->token,
+                     'dateExpiration' => $personnelFirst->dateExpirationToken->toDateTimeString()
+                 ]);
+    }
+
+    /**
+     * La méthode getToken doit retourner une erreur 404 si l'étudiant n'a pas été trouvé
+     * 
+     * @return void
+     */
+    public function test_getToken_methode_doit_retourner_une_erreur_404_si_le_membre_du_personnel_n_a_pas_ete_trouvee()
+    {
+        $idPersonnel = PHP_INT_MAX;
+
+        $response = $this->get('/api/personnel/getToken/'.$idPersonnel);
+
+        $response->assertStatus(404)
+                 ->assertJson(['message' => 'Aucun membre du personnel trouvé']);
+    }
+
+    /**
+     * La méthode getToken doit retourner une erreur 404 si aucun token n'est associé à l'étudiant
+     * 
+     * @return void
+     */
+    public function test_getToken_methode_doit_retourner_une_erreur_404_si_le_membre_du_personnel_n_a_pas_de_token()
+    {
+        $personnelFirst = Personnel::first();
+        $personnelFirst->token = null;
+        $personnelFirst->dateExpirationToken = null;
+        $personnelFirst->save();
+
+        $response = $this->get('/api/personnel/getToken/'.$personnelFirst->idPersonnel);
+
+        $response->assertStatus(404)
+                 ->assertJson(['message' => 'Aucun token trouvé pour ce membre du personnel']);
+    }
+
+    /**
+     * La méthode getToken doit retourner une erreur 500 en cas d'exception
+     * 
+     * @return void
+     */
+    public function test_getToken_methode_doit_retourner_une_erreur_500_en_cas_d_exception()
+    {
+        // Mock du modèle Personnel pour déclencher une exception
+        $this->mock(\App\Http\Controllers\PersonnelController::class, function ($mock) {
+            $mock->shouldReceive('getToken')->once()->andThrow(new \Exception('Erreur simulée'));
+        });
+
+        $personnelFirst = Personnel::first();
+
+        $response = $this->get('/api/personnel/getToken/'.$personnelFirst->idPersonnel);
+
+        $response->assertStatus(500)
+                 ->assertJson(['message' => 'Une erreur s\'est produite']);
+    }
+
+    /**
+     * La méthode deleteToken doit retourner une confirmation 200 et un message de succès
+     * 
+     * @return void
+     */
+    public function test_deleteToken_methode_doit_retourner_200_et_le_message_de_succes()
+    {
+        $personnelFirst = Personnel::first();
+        $personnelFirst->token = 'test_token';
+        $personnelFirst->dateExpirationToken = today()->addDays(7);
+        $personnelFirst->save();
+
+        $response = $this->delete('/api/personnel/deleteToken/'.$personnelFirst->idPersonnel);
+
+        $response->assertStatus(200)
+                 ->assertJson(['message' => 'Token supprimé avec succès']);
+    }
+
+    /**
+     * La méthode deleteToken doit retourner une erreur 404 si l'étudiant n'a pas été trouvé
+     * 
+     * @return void
+     */
+    public function test_deleteToken_methode_doit_retourner_une_erreur_404_si_le_membre_du_personnel_n_a_pas_ete_trouvee()
+    {
+        $idPersonnel = PHP_INT_MAX;
+
+        $response = $this->delete('/api/personnel/deleteToken/'.$idPersonnel);
+
+        $response->assertStatus(404)
+                 ->assertJson(['message' => 'Aucun membre du personnel trouvé']);
+    }
+
+    /**
+     * La méthode deleteToken doit retourner une erreur 500 en cas d'exception
+     * 
+     * @return void
+     */
+    public function test_deleteToken_methode_doit_retourner_une_erreur_500_en_cas_d_exception()
+    {
+        // Mock du modèle Etudiant pour déclencher une exception
+        $this->mock(\App\Http\Controllers\PersonnelController::class, function ($mock) {
+            $mock->shouldReceive('deleteToken')->once()->andThrow(new \Exception('Erreur simulée'));
+        });
+
+        $personnelFirst = Personnel::first();
+
+        $response = $this->delete('/api/personnel/deleteToken/'.$personnelFirst->idPersonnel);
+
+        $response->assertStatus(500)
+                 ->assertJson(['message' => 'Une erreur s\'est produite']);
+    }
+
     public function tearDown(): void
     {
         parent::tearDown();
