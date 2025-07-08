@@ -8,6 +8,8 @@ use App\Models\Personnel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cookie;
+use App\Http\Controllers\EtudiantController;
+use App\Http\Controllers\PersonnelController;
 
 class CasAuthMiddleware
 {
@@ -57,6 +59,42 @@ class CasAuthMiddleware
         
         $userId = $userType === "Etudiant" ? $user->idUPPA : $user->idPersonnel;
 
+        // Génération du token pour l'utilisateur authentifié
+        $userToken = null;
+        try {
+            if ($userType === "Etudiant") {
+                $etudiantController = new EtudiantController();
+                $tokenResponse = $etudiantController->createToken($userId);
+            } else {
+                $personnelController = new PersonnelController();
+                $tokenResponse = $personnelController->createToken($userId);
+            }
+            
+            // Vérification que le token a été créé avec succès
+            if ($tokenResponse->getStatusCode() !== 200) {
+                \Log::error('Erreur lors de la création du token pour l\'utilisateur', [
+                    'userId' => $userId,
+                    'userType' => $userType,
+                    'statusCode' => $tokenResponse->getStatusCode()
+                ]);
+            } else {
+                \Log::info('Token créé avec succès pour l\'utilisateur', [
+                    'userId' => $userId,
+                    'userType' => $userType
+                ]);
+                
+                // Récupération du token généré depuis la base de données
+                $userToken = $user->fresh()->token;
+                $userTokenExpiration = $user->fresh()->dateExpirationToken;
+            }
+        } catch (\Exception $e) {
+            \Log::error('Exception lors de la création du token', [
+                'userId' => $userId,
+                'userType' => $userType,
+                'error' => $e->getMessage()
+            ]);
+        }
+
         \Log::info('User login :', ['user' => $userLogin]);
         \Log::info('User ID :', ['userId' => $userId]);
         \Log::info('User Type :', ['userType' => $userType]);
@@ -92,6 +130,18 @@ class CasAuthMiddleware
             'Lax'
         );
 
+        $response->cookie(
+            'user_token',
+            $userToken,
+            $cookieLifetime,
+            '/',
+            $domain,
+            $secureCookie,
+            true,
+            false,
+            'Lax'
+        );
+
         return $response;
     }
 
@@ -109,7 +159,8 @@ class CasAuthMiddleware
             return response()
                 ->json(['success' => true])
                 ->withCookie(Cookie::forget('user_id', '/', $domain))
-                ->withCookie(Cookie::forget('user_type', '/', $domain));
+                ->withCookie(Cookie::forget('user_type', '/', $domain))
+                ->withCookie(Cookie::forget('user_token', '/', $domain));
             
         } catch (\Exception $e) {
             \Log::error('Erreur lors de la suppression des cookies : ' . $e->getMessage());
