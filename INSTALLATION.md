@@ -5,6 +5,8 @@
   - [Prérequis](#prérequis)
   - [Démarrage rapide](#démarrage-rapide)
   - [Informations importantes](#informations-importantes)
+  - [Mise en place de l'environnement d'éxécution d'Angular](#mise-en-place-de-l-environnement-d'éxécution-d-angular)
+  - [Mise en place de l'environnement d'éxécution de Laravel](#mise-en-place-de-l-environnement-d-éxécution-de-laravel)
 - [Sauvegarde du projet](#sauvegarde-du-projet)
 
 ---
@@ -60,10 +62,55 @@ git switch nomBranche
 
 C'est bon, vous pouvez développer ! 
 
-### <ins>Mise en place de l'environnement d'execution d'Angular</ins> : 
+### <ins>Mise en place de l'environnement d'éxécution d'Angular</ins> : 
 
 > [!CAUTION]
 > Section en cours de construction
+
+### <ins>Mise en place de l'environnement d'éxécution de Laravel</ins> :
+Tout d'abord, vous devez configurer dans le fichier .env (qui se situe dans le dossier laravel) pour pouvoir créer la connexion à votre base de données.
+
+>[!WARNING]
+>Les valeurs pour le nom de la base de données, de l'utilisateur et du mot de passe sont donnée à valeur d'exemple
+
+```bash
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=nom_bdd
+DB_USERNAME=username
+DB_PASSWORD=password
+```
+
+Ensuite, lancez le docker-compose et placez vous DANS le container de Laravel afin de pouvoir y exécuter des commandes.
+Vous pouvez le faire directement depuis Docker Desktop, ou par ligne de commande avec "docker exec"
+
+Une fois connecté au container, placez vous dans le dossier "suivi-stage"
+```bash
+cd suivi-stage
+```
+
+Ensuite, installez les dépendances pour le projet Laravel
+>[!WARNING]
+>Vérifiez bien que les dépendances "apereo/phpcas" et "maatwebsite/excel" sont installées : ces dépendances sont utilisées respectivement pour la connexion via le portail CAS de l'UPPA et pour la génération de fichier Excel sur l'affectation d'un enseignant à un étudiant 
+```bash
+composer install
+```
+
+Après cela, il faudra créer les tables de la base de données et les données qui vont avec.
+>[!TIP]
+>Les données sont modifiables dans les fichiers Seeder
+```bash
+php artisan migrate:fresh --seed
+```
+
+Et enfin, pour permettre aux appels API de fonctionner, il faut éxécuter la commande suivante :
+```bash
+chown www:data www:data -R *
+```
+
+Votre environnement de backend est prêt !
+
 ---
 ## Sauvegarde du projet
 
