@@ -5,8 +5,8 @@
   - [Prérequis](#prérequis)
   - [Démarrage rapide](#démarrage-rapide)
   - [Informations importantes](#informations-importantes)
-  - [Mise en place de l'environnement d'éxécution d'Angular](#mise-en-place-de-l-environnement-d'éxécution-d-angular)
-  - [Mise en place de l'environnement d'éxécution de Laravel](#mise-en-place-de-l-environnement-d-éxécution-de-laravel)
+  - [Mise en place de l'environnement d'éxécution d'Angular](#mise-en-place-de-l-environnement-d-execution-d-angular)
+  - [Mise en place de l'environnement d'éxécution de Laravel](#mise-en-place-de-l-environnement-d-execution-de-laravel)
 - [Sauvegarde du projet](#sauvegarde-du-projet)
 
 ---
