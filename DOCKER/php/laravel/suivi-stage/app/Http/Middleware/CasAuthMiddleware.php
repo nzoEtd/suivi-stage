@@ -39,6 +39,7 @@ class CasAuthMiddleware
 
         if (!\phpCAS::isAuthenticated()) {
             \phpCAS::forceAuthentication();
+            return;
         }
 
         $userLogin = \phpCAS::getUser();

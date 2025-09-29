@@ -82,6 +82,15 @@ DB_USERNAME=username
 DB_PASSWORD=password
 ```
 
+Voud devez également lui fournir les informations relatives au cas pour l'authentification :
+
+```bash
+UPPA_CAS_HOSTNAME=
+UPPA_CAS_PORT=
+UPPA_CAS_URI=/cas
+UPPA_CAS_BASENAME=http://localhost:8000/api
+```
+
 Ensuite, lancez le docker-compose et placez vous DANS le container de Laravel afin de pouvoir y exécuter des commandes.
 Vous pouvez le faire directement depuis Docker Desktop, ou par ligne de commande avec "docker exec"
 
@@ -106,7 +115,7 @@ php artisan migrate:fresh --seed
 
 Et enfin, pour permettre aux appels API de fonctionner, il faut éxécuter la commande suivante :
 ```bash
-chown www:data www:data -R *
+chown -R www-data:www-data *
 ```
 
 Votre environnement de backend est prêt !
