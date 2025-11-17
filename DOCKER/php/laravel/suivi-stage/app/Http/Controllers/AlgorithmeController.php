@@ -15,11 +15,10 @@ class AlgorithmeController extends Controller
      */
     public function run($idUPPA, $idFicheDescriptive)
     {
-        $scriptPath = env('ALGO_AFFECTATION_URL');
+         $scriptPath = base_path(env('ALGO_AFFECTATION_URL'));
         
         $command = "php " . escapeshellarg($scriptPath) . " " . escapeshellarg($idUPPA) . " " . escapeshellarg($idFicheDescriptive);
         $output = shell_exec($command);
-
         return $output;
     }
 }
