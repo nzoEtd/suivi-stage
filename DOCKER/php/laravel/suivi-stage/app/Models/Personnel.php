@@ -58,4 +58,10 @@ class Personnel extends Model
     {
         return $this->belongsToMany(Role::class);
     }
+
+    // Relation 1-N avec Soutenance
+    public function soutenances()
+{
+    return $this->hasMany(Soutenance::class);
+}
 }

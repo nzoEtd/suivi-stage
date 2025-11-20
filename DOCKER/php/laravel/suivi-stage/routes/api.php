@@ -19,6 +19,9 @@ use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\AffectationEnseignantController;
 use App\Http\Middleware\DispatchDataDescriptiveSheet;
 use App\Http\Controllers\AlgorithmeController;
+use App\Http\Controllers\PlanningController;
+use App\Http\Controllers\SalleController;
+use App\Http\Controllers\SoutenanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -114,3 +117,13 @@ Route::post('/affectation/create', [AffectationEnseignantController::class, 'sto
 Route::get('/affectation/{idUPPA}-{idAnneeUniversitaire}', [AffectationEnseignantController::class, 'show'])->name('affectation.show');
 Route::put('/affectation/update/{idPersonnel}-{idUPPA}-{idAnneeUniversitaire}', [AffectationEnseignantController::class, 'update'])->name('affectation.update');
 Route::delete('/affectation/delete/{idPersonnel}-{idUPPA}-{idAnneeUniversitaire}', [AffectationEnseignantController::class, 'destroy'])->name('affectation.destroy');
+
+
+// Route pour le Controller Salles
+Route::resource('salle', SalleController::class);
+
+// Route pour le Controller Planning
+Route::resource('planning', PlanningController::class);
+
+// Route pour le Controller Soutenance
+Route::resource('soutenance', SoutenanceController::class);
