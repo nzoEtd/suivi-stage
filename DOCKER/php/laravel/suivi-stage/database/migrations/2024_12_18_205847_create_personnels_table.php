@@ -31,6 +31,7 @@ class CreatePersonnelsTable extends Migration
             $table->string('longitudeAdresse', 20)->nullable();
             $table->string('latitudeAdresse', 20)->nullable();
             $table->unsignedTinyInteger('coptaEtudiant');
+            $table->boolean('estTechnique')->default(true);
         });
     }
 
