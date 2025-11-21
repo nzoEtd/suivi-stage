@@ -32,7 +32,7 @@ class PersonnelController extends Controller
             'adresseMail',
             'longitudeAdresse',
             'latitudeAdresse',
-            'coptaEtudiant',
+            'quotaEtudiant',
             'estTechnique'
         ];
         $fields = array_intersect($fields, $allowedFields);
@@ -70,7 +70,7 @@ class PersonnelController extends Controller
                 'adresseMail'       => 'bail|required|string|email|max:50',
                 'longitudeAdresse'  => 'nullable|string|max:20',
                 'latitudeAdresse'   => 'nullable|string|max:20',
-                'coptaEtudiant'     => 'required|integer',
+                'quotaEtudiant'     => 'required|integer',
                 'estTechnique' => 'bail|nullable|boolean',
 
             ]);
@@ -87,7 +87,7 @@ class PersonnelController extends Controller
                 'adresseMail'       => $donneesValidees['adresseMail'],
                 'longitudeAdresse'  => $donneesValidees['longitudeAdresse'],
                 'latitudeAdresse'   => $donneesValidees['latitudeAdresse'],
-                'coptaEtudiant'     => $donneesValidees['coptaEtudiant'],
+                'quotaEtudiant'     => $donneesValidees['quotaEtudiant'],
                 'estTechnique'     => $donneesValidees['estTechnique'],
 
                 
@@ -166,7 +166,7 @@ class PersonnelController extends Controller
                 'adresseMail'       => 'bail|required|string|email|max:50',
                 'longitudeAdresse'  => 'nullable|string|max:20',
                 'latitudeAdresse'   => 'nullable|string|max:20',
-                'coptaEtudiant'     => 'required|integer',
+                'quotaEtudiant'     => 'required|integer',
                 'estTechnique' => 'bail|nullable|boolean',
 
             ]);

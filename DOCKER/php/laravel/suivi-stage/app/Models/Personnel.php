@@ -22,7 +22,7 @@ class Personnel extends Model
         'adresseMail',
         'longitudeAdresse',
         'latitudeAdresse',
-        'coptaEtudiant',
+        'quotaEtudiant',
         "estTechnique"
     ];
     // Définit l'attribut de la clé primaire
