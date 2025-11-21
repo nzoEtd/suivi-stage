@@ -10,6 +10,8 @@ import { AddFactsheetComponent } from './components/add-factsheet/add-factsheet.
 import { SheetDetailsComponent } from './components/factsheets-details/factsheets-details.component';
 import { UpdateFactsheetComponent } from './components/update-factsheet/update-factsheet.component';
 import { StudentFactsheetsManagerComponent } from './components/student-factsheets-manager/student-factsheets-manager.component';
+import { ScheduleComponent } from './components/schedule/schedule.component';
+import { AddScheduleComponent } from './components/add-schedule/add-schedule.component';
 
 export const routes: Routes = [
   { 
@@ -74,6 +76,16 @@ export const routes: Routes = [
   {
     path: 'factsheets/add-factsheet',
     component: AddFactsheetComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'schedule',
+    component: ScheduleComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'schedule/add-schedule',
+    component: AddScheduleComponent,
     canActivate: [authGuard]
   },
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' }

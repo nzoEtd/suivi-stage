@@ -1,0 +1,10 @@
+<div class="schedule">
+    <div class="content">
+      @if (!currentUser || !allDataLoaded) {
+        <app-loading/>
+      }
+        <div [hidden]="!allDataLoaded">
+            <p>add-schedule works!</p>
+        </div>
+    </div>
+</div>
