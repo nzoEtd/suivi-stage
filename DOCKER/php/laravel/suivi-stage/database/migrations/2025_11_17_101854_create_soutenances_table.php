@@ -33,8 +33,8 @@ class CreateSoutenancesTable extends Migration
             $table->string('idUPPA');
             $table->foreign('idUPPA')->references('idUPPA')->on('etudiants');
 
-            $table->unsignedInteger('idPersonnel');
-            $table->foreign('idPersonnel')->references('idPersonnel')->on('personnels');
+            $table->unsignedInteger('idLecteur');
+            $table->foreign('idLecteur')->references('idPersonnel')->on('personnels');
 
         });
     }

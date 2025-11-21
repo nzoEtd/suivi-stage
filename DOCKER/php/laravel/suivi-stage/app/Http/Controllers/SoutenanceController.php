@@ -57,7 +57,7 @@ class SoutenanceController extends Controller
                 'nomSalle' => 'required|integer',
                 'idPlanning' => 'required|integer',
                 'idUPPA' => 'required|integer',
-                'idPersonnel' => 'required|integer',
+                'idLecteur' => 'required|integer',
             ]);
 
             $soutenance = Soutenance::create($donneesValidees);
@@ -137,7 +137,7 @@ class SoutenanceController extends Controller
                 'nomSalle' => 'required|integer',
                 'idPlanning' => 'required|integer',
                 'idUPPA' => 'required|integer',
-                'idPersonnel' => 'required|integer',
+                'idLecteur' => 'required|integer',
             ]);
 
             $soutenance = Soutenance::findOrFail($idSoutenance);

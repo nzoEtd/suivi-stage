@@ -22,7 +22,7 @@ class SoutenanceSeeder extends Seeder
                 'nomSalle' => 126, 
                 'idPlanning' => 1,
                 'idUPPA' => '611107',
-                'idPersonnel' => 1,
+                'idLecteur' => 1,
             ],
             [
                 'date' => '2025-01-11',
@@ -31,7 +31,7 @@ class SoutenanceSeeder extends Seeder
                 'nomSalle' => 126,
                 'idPlanning' => 1,
                 'idUPPA' => '610580',
-                'idPersonnel' => 1,
+                'idLecteur' => 1,
             ],
             [
                 'date' => '2025-01-11',
@@ -40,7 +40,7 @@ class SoutenanceSeeder extends Seeder
                 'nomSalle' => 124, 
                 'idPlanning' => 1,
                 'idUPPA' => '641387',
-                'idPersonnel' => 2,
+                'idLecteur' => 2,
             ],
             
         ]);

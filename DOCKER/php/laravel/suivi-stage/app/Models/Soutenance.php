@@ -16,7 +16,7 @@ class Soutenance extends Model
         'nomSalle',
         'idPlanning',
         'idUPPA',
-        'idPersonnel'
+        'idLecteur'
     ];
     // Définit l'attribut de la clé primaire
     protected $primaryKey = 'idSoutenance';
