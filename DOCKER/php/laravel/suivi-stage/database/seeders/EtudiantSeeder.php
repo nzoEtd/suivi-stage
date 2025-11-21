@@ -25,6 +25,26 @@ class EtudiantSeeder extends Seeder
                 'idEntreprise' => 1,
                 'idTuteur' => 1
             ],
+[
+                'idUPPA' => '610123',
+                'login' => 'lcrussiere',
+                'nom' => 'CRUSSIERE',
+                'prenom' => 'Lucas',
+                'adresseMail' => 'lcrussiere@iutbayonne.univ-pau.fr',
+                'idDepartement' => 1,
+                'idEntreprise' => 7,
+                'idTuteur' => 7
+            ],
+            [
+                'idUPPA' => '610124',
+                'login' => 'elavergne001',
+                'nom' => 'LAVERGNE',
+                'prenom' => 'Elsa',
+                'adresseMail' => 'elavergne@iutbayonne.univ-pau.fr',
+                'idDepartement' => 1,
+                'idEntreprise' => 2,
+                'idTuteur' => 2
+            ],
             [
                 'idUPPA' => '610001',
                 'login' => 'nconguisti',
@@ -54,6 +74,25 @@ class EtudiantSeeder extends Seeder
                 'idDepartement' => 1,
                 'idEntreprise' => 4,
                 'idTuteur' => 4
+            ],[
+                'idUPPA' => '610459',
+                'login' => 'gvernis',
+                'nom' => 'VERNIS',
+                'prenom' => 'Gabriel',
+                'adresseMail' => 'gvernis@iutbayonne.univ-pau.fr',
+                'idDepartement' => 1,
+                'idEntreprise' => 5,
+                'idTuteur' => 5
+            ],
+            [
+                'idUPPA' => '613453',
+                'login' => 'jloridant',
+                'nom' => 'LORIDANT',
+                'prenom' => 'Julien',
+                'adresseMail' => 'jloridant@iutbayonne.univ-pau.fr',
+                'idDepartement' => 1,
+                'idEntreprise' => 6,
+                'idTuteur' => 6
             ],
             [
                 'idUPPA' => '610580',

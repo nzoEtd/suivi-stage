@@ -23,7 +23,7 @@ class CreateRolesTable extends Migration
             $table->boolean('voirRechercheStageEtudiant');
             $table->boolean('voirFicheDescriptiveEtudiant');
             $table->boolean('extraireAttributionEnseignant');
-            $table->boolean('modifierCoptaEtudiantEnseignant');
+            $table->boolean('modifierquotaEtudiantEnseignant');
             $table->boolean('modifierParametresDepartement');
         });
     }

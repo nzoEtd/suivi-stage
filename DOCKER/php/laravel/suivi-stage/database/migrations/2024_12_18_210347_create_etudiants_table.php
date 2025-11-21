@@ -27,6 +27,8 @@ class CreateEtudiantsTable extends Migration
             $table->string('codePostal', 5)->nullable();
             $table->string('telephone', 12)->nullable();
             $table->string('adresseMail', 100);
+            $table->boolean('tierTemps')->default(false);
+
 
             // Clé étrangère
             $table->unsignedTinyInteger('idDepartement');

@@ -5,9 +5,8 @@ use Closure;
 use Illuminate\Http\Request;
 use App\Models\Etudiant;
 use App\Models\Personnel;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Log;
 
 class CasAuthMiddleware
 {
@@ -43,13 +42,14 @@ class CasAuthMiddleware
         }
 
         $userLogin = \phpCAS::getUser();
-                    
-        $user = Etudiant::where('login', $userLogin)->first();
-        $userType = "Etudiant";
+        
+        $user = Personnel::where('login', $userLogin)->first();
+        $userType = "Personnel";
+        
 
         if (!$user) {
-            $user = Personnel::where('login', $userLogin)->first();
-            $userType = "Personnel";
+            $user = Etudiant::where('login', $userLogin)->first();
+            $userType = "Etudiant";
         }
 
         if (!$user) {
@@ -58,9 +58,9 @@ class CasAuthMiddleware
         
         $userId = $userType === "Etudiant" ? $user->idUPPA : $user->idPersonnel;
 
-        \Log::info('User login :', ['user' => $userLogin]);
-        \Log::info('User ID :', ['userId' => $userId]);
-        \Log::info('User Type :', ['userType' => $userType]);
+        Log::info('User login :', ['user' => $userLogin]);
+        Log::info('User ID :', ['userId' => $userId]);
+        Log::info('User Type :', ['userType' => $userType]);
 
         $secureCookie = app()->environment('production');
         $domain = parse_url(env('ANGULAR_URL'), PHP_URL_HOST);
@@ -113,7 +113,7 @@ class CasAuthMiddleware
                 ->withCookie(Cookie::forget('user_type', '/', $domain));
             
         } catch (\Exception $e) {
-            \Log::error('Erreur lors de la suppression des cookies : ' . $e->getMessage());
+            Log::error('Erreur lors de la suppression des cookies : ' . $e->getMessage());
             return response()->json(['error' => 'Erreur lors de la déconnexion'], 500);
         }
     }
@@ -127,8 +127,8 @@ class CasAuthMiddleware
     public function handleCasLogout()
     {
         try {
-            \Log::info('Suppression des cookies --> SUCCESS');
-            \Log::info('Envoi de la demande de déconnexion au CAS');
+            Log::info('Suppression des cookies --> SUCCESS');
+            Log::info('Envoi de la demande de déconnexion au CAS');
 
             \phpCAS::client(
                 CAS_VERSION_2_0,
@@ -144,7 +144,7 @@ class CasAuthMiddleware
 
             \phpCAS::logout();
         } catch (\Exception $e) {
-            \Log::error('Erreur lors de la déconnexion CAS : ' . $e->getMessage());
+            Log::error('Erreur lors de la déconnexion CAS : ' . $e->getMessage());
             return redirect()->away(env('ANGULAR_URL'));
         }
     }

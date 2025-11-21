@@ -18,15 +18,15 @@ class FonctionsAlgorithme
             personnels.codePostal,
             personnels.longitudeAdresse,
             personnels.latitudeAdresse,
-            personnels.coptaEtudiant,
+            personnels.quotaEtudiant,
             COUNT(etudiants.idUPPA) AS totalEtudiants
         FROM personnels
         JOIN table_personnel_etudiant_anneeuniv ON personnels.idPersonnel = table_personnel_etudiant_anneeuniv.idPersonnel
         JOIN etudiants ON table_personnel_etudiant_anneeuniv.idUPPA = etudiants.idUPPA
         WHERE personnels.roles = :role
         GROUP BY personnels.idPersonnel
-        HAVING personnels.coptaEtudiant > COUNT(etudiants.idUPPA) AND (personnels.coptaEtudiant - totalEtudiants) > 0
-        ORDER BY personnels.coptaEtudiant DESC";
+        HAVING personnels.quotaEtudiant > COUNT(etudiants.idUPPA) AND (personnels.quotaEtudiant - totalEtudiants) > 0
+        ORDER BY personnels.quotaEtudiant DESC";
 
         $stmt = $db->prepare($query);
         $stmt->execute(['role' => 'Enseignant']);

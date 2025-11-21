@@ -13,7 +13,7 @@ CREATE TABLE Personnel(
    adresseMail VARCHAR(50) ,
    longGPS VARCHAR(50),
    latGPS VARCHAR(50),
-   coptaEtudiant TINYINT,
+   quotaEtudiant TINYINT,
    PRIMARY KEY(idPersonnel)
 );
 

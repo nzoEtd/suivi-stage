@@ -34,6 +34,10 @@ class DatabaseSeeder extends Seeder
         EtudiantAnneeformAnneeunivSeeder::class,
         EtudiantParcoursAnneeunivSeeder::class,
         PersonnelRoleDepartementSeeder::class,
+        SalleSeeder::class,
+        PlanningSeeder::class,
+        PlanningSalleSeeder::class,
+        SoutenanceSeeder::class
        ]);
     }
 }

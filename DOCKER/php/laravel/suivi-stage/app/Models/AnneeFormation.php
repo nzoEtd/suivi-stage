@@ -29,4 +29,10 @@ class AnneeFormation extends Model
     {
         return $this->belongsToMany(AnneeUniversitaire::class);
     }
+
+    //Relation 1-N avec Planning
+        public function plannings()
+    {
+        return $this->hasMany(Planning::class);
+    }
 }

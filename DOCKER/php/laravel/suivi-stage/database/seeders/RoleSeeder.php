@@ -20,7 +20,7 @@ class RoleSeeder extends Seeder
                 'voirRechercheStageEtudiant' => 0,
                 'voirFicheDescriptiveEtudiant' => 0,
                 'extraireAttributionEnseignant' => 0,
-                'modifierCoptaEtudiantEnseignant' => 1,
+                'modifierquotaEtudiantEnseignant' => 1,
                 'modifierParametresDepartement' => 1
             ],
             [
@@ -28,7 +28,7 @@ class RoleSeeder extends Seeder
                 'voirRechercheStageEtudiant' => 1,
                 'voirFicheDescriptiveEtudiant' => 1,
                 'extraireAttributionEnseignant' => 1,
-                'modifierCoptaEtudiantEnseignant' => 0,
+                'modifierquotaEtudiantEnseignant' => 0,
                 'modifierParametresDepartement' => 0
             ],
             [
@@ -36,7 +36,7 @@ class RoleSeeder extends Seeder
                 'voirRechercheStageEtudiant' => 0,
                 'voirFicheDescriptiveEtudiant' => 0,
                 'extraireAttributionEnseignant' => 1,
-                'modifierCoptaEtudiantEnseignant' => 0,
+                'modifierquotaEtudiantEnseignant' => 0,
                 'modifierParametresDepartement' => 0
             ]
             ]);
