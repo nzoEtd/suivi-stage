@@ -27,9 +27,9 @@ INSERT INTO AnneeUniversitaire (libelle) VALUES ('2024-2025');
 INSERT INTO AnneeUniversitaire (libelle) VALUES ('2025-2026');
 INSERT INTO AnneeUniversitaire (libelle) VALUES ('2026-2027');
 
-INSERT INTO Personnel (roles, nom, prenom, adresse, ville, codePostal, telephone, adresseMail, coptaEtudiant) VALUES ('Enseignant','CARPENTIER','Yann','2 allée du Parc Montaury','Anglet','64600','0601020304','yann.carpentier@iutbayonne.univ-pau.fr',16);
-INSERT INTO Personnel (roles, nom, prenom, adresse, ville, codePostal, telephone, adresseMail, coptaEtudiant) VALUES ('Enseignant','VALLES-PARLANGEAU','Nathalie','2 Rue Henri Garcia','Boucau','64340','0609080706','nathalie.valles-parlangeau@iutbayonne.univ-pau.fr',16);
-INSERT INTO Personnel (roles, nom, prenom, adresse, ville, codePostal, telephone, adresseMail, coptaEtudiant) VALUES ('Enseignant','ROOSE','Philippe','2 impasse d Aguilera','Biarritz','64200','0601010101','philippe.roose@iutbayonne.univ-pau.fr',8);
+INSERT INTO Personnel (roles, nom, prenom, adresse, ville, codePostal, telephone, adresseMail, quotaEtudiant) VALUES ('Enseignant','CARPENTIER','Yann','2 allée du Parc Montaury','Anglet','64600','0601020304','yann.carpentier@iutbayonne.univ-pau.fr',16);
+INSERT INTO Personnel (roles, nom, prenom, adresse, ville, codePostal, telephone, adresseMail, quotaEtudiant) VALUES ('Enseignant','VALLES-PARLANGEAU','Nathalie','2 Rue Henri Garcia','Boucau','64340','0609080706','nathalie.valles-parlangeau@iutbayonne.univ-pau.fr',16);
+INSERT INTO Personnel (roles, nom, prenom, adresse, ville, codePostal, telephone, adresseMail, quotaEtudiant) VALUES ('Enseignant','ROOSE','Philippe','2 impasse d Aguilera','Biarritz','64200','0601010101','philippe.roose@iutbayonne.univ-pau.fr',8);
 INSERT INTO Personnel (roles, nom, prenom, adresse, ville, codePostal, telephone, adresseMail) VALUES ('Gestionnaire','KERSTEN','Amaia','34 rue Port Neuf','Bayonne','64100','0609090909','amaia.kersten@iutbayonne.univ-pau.fr');
 
 INSERT INTO Entreprise (numSIRET, raisonSociale, typeEtablissement, adresseEntreprise, villeEntreprise, codePostalEntreprise, paysEntreprise, telephoneEntreprise, codeAPE_NAF) VALUES ('21640260200017','Commune d Hendaye','SAS','Place de la République','Hendaye','64700','France','0559482323','84.11Z');

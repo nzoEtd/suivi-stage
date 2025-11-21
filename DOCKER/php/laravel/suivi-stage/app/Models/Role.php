@@ -15,7 +15,7 @@ class Role extends Model
         'voirRechercheStageEtudiant',
         'voirFicheDescriptiveEtudiant',
         'extraireAttributionEnseignant',
-        'modifierCoptaEtudiantEnseignant',
+        'modifierquotaEtudiantEnseignant',
         'modifierParametresDepartement'
     ];
     // Définit l'attribut de la clé primaire

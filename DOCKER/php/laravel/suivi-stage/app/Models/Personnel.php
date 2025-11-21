@@ -22,7 +22,8 @@ class Personnel extends Model
         'adresseMail',
         'longitudeAdresse',
         'latitudeAdresse',
-        'coptaEtudiant'
+        'quotaEtudiant',
+        "estTechnique"
     ];
     // Définit l'attribut de la clé primaire
     protected $primaryKey = 'idPersonnel';
@@ -58,4 +59,10 @@ class Personnel extends Model
     {
         return $this->belongsToMany(Role::class);
     }
+
+    // Relation 1-N avec Soutenance
+    public function soutenances()
+{
+    return $this->hasMany(Soutenance::class);
+}
 }
