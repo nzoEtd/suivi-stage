@@ -24,10 +24,11 @@
             <div class="empty-schedule" *ngIf="selectedOption === 'Sélectionner un planning existant'">
                 <button (click)="goToAdd()"class="btn-generate-schedule">Générer un planning</button>
             </div>
-            <div *ngIf="selectedOption !== 'Sélectionner un planning existant'" class="schedule-content">
-                <div class="planning">
-
-                </div>
+            <div *ngIf="selectedOption !== 'Sélectionner un planning existant'" class="schedule-content">              
+                @if (allDataLoaded) {
+                    <app-schedule-board
+                    [jourActuel]="selectedJour"></app-schedule-board>
+                }                
                 <div class="scroll-day">
                     <div *ngFor="let jour of jours">
                         @if(selectedJour === jour){

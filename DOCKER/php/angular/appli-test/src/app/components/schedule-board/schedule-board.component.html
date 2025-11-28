@@ -1,0 +1,40 @@
+<div class="planning">
+    <div class="header-planning">
+        <div class="hours-header"></div>
+        @for(salle of sallesDispo; track salle){
+            <span class="salle-header">Salle {{salle}}</span>
+        }
+    </div>
+    <div *ngFor="let block of blocks"
+       class="time-row"
+       [style.height.%]="block.heightPercent">
+
+        <div class="hours">
+            <div *ngFor="let h of getHours(block.startMin, block.endMin)">
+                {{ h }}h
+            </div>
+
+            <!-- pause compressée uniquement si ce bloc le nécessite -->
+            <div *ngIf="block.type === 'morning'" 
+                class="pause" 
+                [style.height.px]="PAUSE_HEIGHT"></div>
+        </div>
+
+        <div class="body-planning">
+        @for(salle of sallesDispo; track salle){
+            <div class="salle-cell">
+            @if(salle === salleSoutenance && dateDebut === jourActuel){
+                <app-slot
+                    [dateDebut]="dateDebut"
+                    [dateFin]="dateFin"
+                    [etudiant]="etudiant"
+                    [referent]="referent"
+                    [lecteur]="lecteur"
+                    [entreprise]="entreprise">
+                </app-slot>
+            }
+            </div>
+        }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,67 @@
+.planning {
+    height: 70vh;
+    width: 100%;
+    display: flex;
+    flex: 1 1 auto;
+}
+
+.header-planning {
+    background-color: #D9D9D9;
+    height: 10%;
+    width: fit-content;
+    display: flex;
+    justify-content: space-around;
+    /* display: grid;
+    grid-template-columns: 50px repeat(auto-fill, minmax(120px, 1fr)); */
+    align-items: center;
+}
+
+.hours-header {
+  width: 50px;
+}
+
+.salle-header{
+    text-align: center;
+    min-width: 27vh;
+}
+
+.time-row {
+  display: grid;
+  grid-template-columns: 50px repeat(auto-fill, minmax(120px, 1fr));
+}
+
+.body-planning {
+    height: 10%;
+    background-color: #F7F7F7;
+    width: 100%;
+    /* display: grid;*/
+    align-items: center; 
+}
+
+.time-block {
+    display: flex;
+    position: relative;
+  }
+  
+  .hours {
+    width: 50px;
+  }
+  
+  .hours div {
+    border-right: 1px solid #ddd;
+    height: calc(100% / 5);
+  }
+  
+  .pause {
+    background: #f5f5f5;
+    border-top: 2px solid #ddd;
+    border-bottom: 2px solid #ddd;
+  }
+
+  .salle-cell {
+    border-left: 1px solid #eee;
+    position: relative;
+    background: #F7F7F7;
+  }
+
+ 

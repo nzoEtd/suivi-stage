@@ -12,6 +12,7 @@ import { UpdateFactsheetComponent } from './components/update-factsheet/update-f
 import { StudentFactsheetsManagerComponent } from './components/student-factsheets-manager/student-factsheets-manager.component';
 import { ScheduleComponent } from './components/schedule/schedule.component';
 import { AddScheduleComponent } from './components/add-schedule/add-schedule.component';
+import { UpdateScheduleComponent } from './components/update-schedule/update-schedule.component';
 
 export const routes: Routes = [
   { 
@@ -86,6 +87,11 @@ export const routes: Routes = [
   {
     path: 'schedule/add-schedule',
     component: AddScheduleComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'schedule/update-schedule',
+    component: UpdateScheduleComponent,
     canActivate: [authGuard]
   },
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' }

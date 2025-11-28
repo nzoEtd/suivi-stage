@@ -5,11 +5,12 @@ import { InitService } from '../../services/init.service';
 import { LoadingComponent } from '../loading/loading.component';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ScheduleBoardComponent } from '../schedule-board/schedule-board.component';
 
 @Component({
   selector: 'app-schedule',
   standalone: true,
-  imports: [CommonModule, LoadingComponent, FormsModule],
+  imports: [CommonModule, LoadingComponent, FormsModule, ScheduleBoardComponent],
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.css']
 })
