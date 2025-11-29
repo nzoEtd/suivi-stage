@@ -27,7 +27,10 @@
             <div *ngIf="selectedOption !== 'Sélectionner un planning existant'" class="schedule-content">              
                 @if (allDataLoaded) {
                     <app-schedule-board
-                    [jourActuel]="selectedJour"></app-schedule-board>
+                    [jourActuel]="selectedJour"
+                    [slots]="slots"
+                    [sallesDispo]="sallesDispo"
+                    [timeBlocks]="timeBlocks"></app-schedule-board>
                 }                
                 <div class="scroll-day">
                     <div *ngFor="let jour of jours">

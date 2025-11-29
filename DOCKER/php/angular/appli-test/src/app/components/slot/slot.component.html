@@ -1,7 +1,10 @@
-<div class="slot">
-    <p><b>{{dateDebut.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h') }}-{{dateFin.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h') }}</b></p>
-    <p>Elève : {{etudiant}}</p>
-    <p>Référent : {{referent}}</p>
-    <p>Entreprise : {{entreprise}}</p>
-    <p>Lecteur : {{lecteur}}</p>
+<div class="slot"
+    [style.top.%]="slot.topPercent"
+    [style.height.%]="slot.heightPercent">
+
+    <b>{{ slot.dateDebut | date:'HH:mm' }} - {{ slot.dateFin | date:'HH:mm' }}</b>
+    <p>Elève : {{slot.etudiant}}</p>
+    <p>Référent : {{slot.referent}}</p>
+    <p>Entreprise : {{slot.entreprise}}</p>
+    <p>Lecteur : {{slot.lecteur}}</p>
 </div>

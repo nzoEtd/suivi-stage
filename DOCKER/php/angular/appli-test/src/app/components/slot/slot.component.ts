@@ -10,10 +10,15 @@ import { Timestamp } from 'rxjs';
   styleUrls: ['./slot.component.css']
 })
 export class SlotComponent {
-    @Input() dateDebut!: Date;
-    @Input() dateFin!: Date;
-    @Input() etudiant!: String;
-    @Input() referent!: String;
-    @Input() lecteur!: String;
-    @Input() entreprise!: String;
+  @Input() slot!: {
+    topPercent: number;
+    heightPercent: number;
+    dateDebut: Date;
+    dateFin: Date;
+    etudiant: string;
+    referent: string;
+    lecteur: string;
+    entreprise: string;
+    salle: number;
+  };
 }

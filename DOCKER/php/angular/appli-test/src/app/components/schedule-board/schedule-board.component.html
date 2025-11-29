@@ -10,7 +10,9 @@
        [style.height.%]="block.heightPercent">
 
         <div class="hours">
-            <div *ngFor="let h of getHours(block.startMin, block.endMin)">
+            <div *ngFor="let h of getHours(block.startMin, block.endMin); let i = index; let last = last"
+            class="hour-item"
+            [style.height.%]="100 / getHours(block.startMin, block.endMin).length">
                 {{ h }}h
             </div>
 
@@ -23,16 +25,13 @@
         <div class="body-planning">
         @for(salle of sallesDispo; track salle){
             <div class="salle-cell">
-            @if(salle === salleSoutenance && dateDebut === jourActuel){
-                <app-slot
-                    [dateDebut]="dateDebut"
-                    [dateFin]="dateFin"
-                    [etudiant]="etudiant"
-                    [referent]="referent"
-                    [lecteur]="lecteur"
-                    [entreprise]="entreprise">
-                </app-slot>
-            }
+                @for(slot of slotsInBlock(block, slots); track slot){
+                    @if(slot.salle === salle && slot.dateDebut === jourActuel){
+                        <app-slot 
+                            [slot]="slot">
+                        </app-slot>
+                    }
+                }
             </div>
         }
         </div>
