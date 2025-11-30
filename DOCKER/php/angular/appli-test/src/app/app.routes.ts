@@ -90,7 +90,7 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
-    path: 'schedule/update-schedule',
+    path: 'schedule/update-schedule/:id',
     component: UpdateScheduleComponent,
     canActivate: [authGuard]
   },

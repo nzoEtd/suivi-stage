@@ -1,5 +1,5 @@
 .slot {
-    position: absolute;
+    /* position: absolute; */
     left: 2px;
     right: 2px;
     background: #CFE9FF;
@@ -7,4 +7,7 @@
     border-radius: 8px;
     padding: 4px;
     font-size: 12px;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
 }
