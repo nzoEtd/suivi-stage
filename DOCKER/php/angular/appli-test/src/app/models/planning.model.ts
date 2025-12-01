@@ -16,7 +16,7 @@ export class Planning {
   constructor(
     id: number = 0,
     nom: string = '',
-    idAnneeFormation: number = 0,
+    idAnneeFormation: number|null = null,
     dateDebut: Date = new Date(),
     dateFin: Date = new Date(),
     heureDebutMatin: string = '',

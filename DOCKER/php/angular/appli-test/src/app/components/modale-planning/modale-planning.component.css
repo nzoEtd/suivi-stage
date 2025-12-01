@@ -36,6 +36,10 @@
   top: 20px;
   right: 20px;
   cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #666;
 }
 
 .form {
@@ -44,7 +48,7 @@
   gap: 15px;
 }
 
-/* Chaque couple label + champ */
+/* Input wrapper */
 .input-wrapper {
   display: flex;
   align-items: center;
@@ -63,7 +67,6 @@
 .input-wrapper select {
   flex: 1;
   min-width: 0;
-  max-width: 100%;
   padding: 8px 12px;
   border: 1px solid #60A5FA;
   border-radius: 8px;
@@ -72,7 +75,7 @@
   box-sizing: border-box;
 }
 
-/* Pour les couples Début / Fin sur une même ligne */
+/* Line wrapper pour dates et heures */
 .line-wrapper {
   display: flex;
   gap: 20px;
@@ -85,42 +88,122 @@
   min-width: 0;
 }
 
-
-.line-wrapper .input-wrapper label {
-  width: auto;
-}
-
+/* Section titles */
 .time-section {
   text-align: center;
   font-size: 1.1rem;
   font-weight: 600;
+  margin-top: 5px;
+}
+
+/* Multi-select pour les salles */
+.multi-select {
+  position: relative;
+  flex: 1;
+}
+
+.select-box {
+  border: 1px solid #60A5FA;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  box-sizing: border-box;
+  font-size: 0.95rem;
+}
+
+.select-box .arrow {
+  font-size: 12px;
+  margin-left: 8px;
+  color: #666;
+}
+
+.options {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #60A5FA;
+  background: white;
+  z-index: 1001;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  cursor: pointer;
+  gap: 8px;
+  transition: background-color 0.15s;
+  min-height: 32px;
+  box-sizing: border-box;
+}
+
+.option-text {
+  flex: 1;
+  font-size: 0.88rem;
+  color: #333;
+  line-height: 1.2;
+}
+
+.option:hover {
+  background-color: #F0F9FF;
+}
+
+.option input[type="checkbox"] {
+  margin: 0;
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+
+
+.select-box .arrow {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: 8px;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid #666;
+  transition: transform 0.2s ease;
 }
 
 /* Boutons */
 .modal-buttons {
   display: flex;
-  justify-content:center;
+  justify-content: center;
   gap: 10px;
   margin-top: 15px;
+}
+
+.cancel-button,
+.generate-button {
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: opacity 0.2s;
 }
 
 .cancel-button {
   background: #A2A2A2;
   color: #fff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.2s;
 }
 
 .generate-button {
   background: #0A63A4;
   color: #fff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.2s;
 }
 

@@ -11,17 +11,18 @@ import { SalleService } from "../../services/salle.service";
 
 @Component({
   selector: "app-modale-planning",
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: "./modale-planning.component.html",
-  styleUrls: ['./modale-planning.component.css'],
+  styleUrls: ["./modale-planning.component.css"],
 })
-
 export class ModalePlanningComponent implements OnInit {
   newPlanning: Planning = new Planning();
   isSubmitting: boolean = false;
   promos: TrainingYear[] = [];
   salles: Salle[] = [];
   selectedSalles: Salle[] = [];
+  dropdownOpen: boolean = false; 
 
   @Output() cancel = new EventEmitter<void>();
 
@@ -32,26 +33,40 @@ export class ModalePlanningComponent implements OnInit {
     private readonly salleService: SalleService
   ) {}
 
-  /**
-   * Initializes component data, setting default values and fetching companies
-   */
   ngOnInit() {
-    //Récupération des promos
+    // Récupération des promos
     this.trainingYearService
       .getTrainingYears(["libelle"])
       .subscribe((promos) => {
         this.promos = promos;
       });
 
-    //Récupération des salles
-    this.salleService.getSalles(["nomSalle"]).subscribe((salles) => {
-      for (const salle of salles) {
-        if (salle.estDispo) {
-          this.salles.push(salle);
-        }
-      }
+    // Récupération des salles
+    this.salleService.getSalles().subscribe((salles) => {
+      this.salles = salles.filter((s) => s.estDisponible);
+      this.selectedSalles = salles.filter((s) => s.estDisponible);
+
     });
   }
+
+  toggleDropdown() {
+    this.dropdownOpen = !this.dropdownOpen;
+  }
+
+  onSalleToggle(event: Event, salle: Salle) {
+    const checkbox = event.target as HTMLInputElement;
+    if (checkbox.checked) {
+      this.selectedSalles.push(salle);
+    } else {
+      this.selectedSalles = this.selectedSalles.filter((s) => s !== salle);
+    }
+  }
+
+  get selectedSallesText(): string {
+  return this.selectedSalles.length > 0
+    ? this.selectedSalles.map(s => s.nomSalle).join(', ')
+    : '-- Sélectionner --';
+}
 
   /**
    * Handles form submission by adding new internship search
@@ -65,7 +80,7 @@ export class ModalePlanningComponent implements OnInit {
 
         for (const salle of this.salles) {
           if (!this.selectedSalles.includes(salle)) {
-            salle.estDispo = false;
+            salle.estDisponible = false;
             this.salleService.updateSalle(salle);
           }
         }

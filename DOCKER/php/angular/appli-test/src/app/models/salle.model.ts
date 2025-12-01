@@ -1,12 +1,12 @@
 export class Salle {
     nomSalle: number;
-    estDispo: boolean | null;
+    estDisponible: boolean | null;
   
     constructor(
       nomSalle: number,
-      estDispo: boolean
+      estDisponible: boolean
     ) {
       this.nomSalle = nomSalle;
-      this.estDispo = estDispo;
+      this.estDisponible = estDisponible;
     }
 }

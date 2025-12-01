@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { Salle } from '../models/salle.model';
-import { catchError, Observable, of, tap } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { environment } from "../../environments/environment";
+import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
+import { Salle } from "../models/salle.model";
+import { catchError, Observable, of, tap } from "rxjs";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class SalleService {
   apiUrl = environment.apiUrl;
@@ -13,41 +13,43 @@ export class SalleService {
   constructor(private http: HttpClient) {}
 
   //Sélection de toutes les salles
-  getSalles(fields?: string[]): Observable<Salle[]> {
-    let params = new HttpParams();
-
-    if (fields && fields.length > 0) {
-    params = params.set('fields', fields.join(','));
-    }
-
-    return this.http.get<Salle[]>(`${this.apiUrl}/api/salle`, {params}).pipe(
-    tap(response => this.log(response)),
-    catchError(error => this.handleError(error, null))
+  getSalles(): Observable<Salle[]> {
+    return this.http.get<Salle[]>(`${this.apiUrl}/api/salle`).pipe(
+      tap((response) => this.log(response)),
+      catchError((error) => this.handleError(error, null))
     );
   }
 
   //Retourne oui ou non selon si la salle est disponible
   getDisponibiliteSalle(nomSalle: number): Observable<Salle | undefined> {
     let params = new HttpParams();
-    
-    params = params.set('fields', nomSalle);
 
-    return this.http.get<Salle>(`${this.apiUrl}/api/salle/${nomSalle}`, {params}).pipe(
-      tap(response => this.log(response)),
-      catchError(error => this.handleError(error, undefined))
-    );
+    params = params.set("fields", nomSalle);
+
+    return this.http
+      .get<Salle>(`${this.apiUrl}/api/salle/${nomSalle}`, { params })
+      .pipe(
+        tap((response) => this.log(response)),
+        catchError((error) => this.handleError(error, undefined))
+      );
   }
 
   //Mise à jour d'une salle
   updateSalle(salle: Salle): Observable<null> {
     const httpOptions = {
-      headers: new HttpHeaders({'Content-type': 'application/json'})
+      headers: new HttpHeaders({ "Content-type": "application/json" }),
     };
 
-    return this.http.put(`${this.apiUrl}/api/salle/update/${salle.nomSalle}`, salle, httpOptions).pipe(
-      tap(response => this.log(response)),
-      catchError(error => this.handleError(error, null))
-    );
+    return this.http
+      .put(
+        `${this.apiUrl}/api/salle/update/${salle.nomSalle}`,
+        salle,
+        httpOptions
+      )
+      .pipe(
+        tap((response) => this.log(response)),
+        catchError((error) => this.handleError(error, null))
+      );
   }
 
   //Log la réponse de l'API
@@ -59,5 +61,5 @@ export class SalleService {
   private handleError(error: Error, errorValue: any) {
     console.error(error);
     return of(errorValue);
-  } 
+  }
 }
