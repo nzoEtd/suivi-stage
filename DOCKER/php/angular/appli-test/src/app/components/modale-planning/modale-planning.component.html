@@ -1,6 +1,3 @@
-<div class="loading-overlay">
-    <app-loading />
-</div>
 <div class="modal-overlay">
     <div class="modal">
         <h3 class="modal-title">Générer un planning</h3>
@@ -13,7 +10,7 @@
                 <label for="promo">Promo étudiants* : </label>
                 <select name="select_promo" id="select_promo" [(ngModel)]="newPlanning.idAnneeFormation">
                     <option [ngValue]="null">-- Sélectionner --</option>
-                    <option *ngFor="let promo of promos" [ngValue]="promo.id">
+                    <option *ngFor="let promo of promos" [ngValue]="promo.idAnneeFormation">
                         {{ promo.libelle }}
                     </option>
                 </select>
@@ -56,7 +53,7 @@
             </div>
             <div class="form-group"> <!--Salles disponibles-->
                 <label for="salles_dispo">Salles disponibles* : </label>
-                <select name="select_salles" id="select_salles" [(ngModel)]="selectedSalleNames" multi>
+                <select name="select_salles" id="select_salles" [(ngModel)]="selectedSalles" multi>
                     <option [ngValue]="null">-- Sélectionner --</option>
                     <option *ngFor="let salle of salles" [ngValue]="salle.nomSalle" selected>
                         {{ salle.nomSalle }}
@@ -74,7 +71,7 @@
                 <button type="button" (click)="onCancel()" class="cancel-button">
                     Annuler
                 </button>
-                <button type="submit" (click)="onConfirm()" class="delete-button">
+                <button type="submit" class="delete-button">
                     Générer
                 </button>
             </div>
