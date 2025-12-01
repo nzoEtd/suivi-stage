@@ -1,0 +1,126 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(128, 128, 128, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.modal {
+  background: #EFF6FF;
+  border-radius: 12px;
+  padding: 25px 30px;
+  width: 500px; 
+  max-width: 90%; 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  position: relative;
+  box-sizing: border-box;
+}
+
+.modal-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Chaque couple label + champ */
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.input-wrapper label {
+  width: auto; 
+  font-weight: normal;
+  text-align: left;
+  flex-shrink: 0;
+}
+
+.input-wrapper input,
+.input-wrapper select {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #60A5FA;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: white;
+  box-sizing: border-box;
+}
+
+/* Pour les couples Début / Fin sur une même ligne */
+.line-wrapper {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.line-wrapper .input-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+
+.line-wrapper .input-wrapper label {
+  width: auto;
+}
+
+.time-section {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Boutons */
+.modal-buttons {
+  display: flex;
+  justify-content:center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.cancel-button {
+  background: #A2A2A2;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.generate-button {
+  background: #0A63A4;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+

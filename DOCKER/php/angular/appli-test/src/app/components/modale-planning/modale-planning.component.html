@@ -1,80 +1,115 @@
 <div class="modal-overlay">
-    <div class="modal">
-        <h3 class="modal-title">Générer un planning</h3>
-        <form (ngSubmit)="onSubmit()" #planningForm="ngForm" class="form" [class.disabled-form]="isSubmitting">
-            <div class="input-wrapper"> <!--Nom du planning-->
-                <label for="nom">Nom du planning* : </label>
-                <input type="text">
-            </div>
-            <div> <!--Promo étudiants-->
-                <label for="promo">Promo étudiants* : </label>
-                <select name="select_promo" id="select_promo" [(ngModel)]="newPlanning.idAnneeFormation">
-                    <option [ngValue]="null">-- Sélectionner --</option>
-                    <option *ngFor="let promo of promos" [ngValue]="promo.idAnneeFormation">
-                        {{ promo.libelle }}
-                    </option>
-                </select>
-            </div>
-            <div class="form-group"> <!--Dates de début et fin des soutenances-->
-                <div class="input-wrapper">
-                    <label for="debut_soutenances">Début* : </label>
-                    <input type="date">
-                </div>
-                <div class="input-wrapper">
-                    <label for="fin_soutenances">Fin* : </label>
-                    <input type="date">
-                </div>
-            </div>
-            <div class="form-group"> <!--Heures de début et de fin de la matinée-->
-                <h2>Matinée</h2>
-                <div class="form-group">
-                    <div class="input-wrapper">
-                        <label for="heure_debut_matin">Heure de début* : </label>
-                        <input type="time">
-                    </div>
-                    <div class="input-wrapper">
-                        <label for="heure_fin_matin">Heure de fin* : </label>
-                        <input type="time">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group"> <!--Heures de début et de fin de l'après-midi-->
-                <h2>Après-midi</h2>
-                <div class="form-group">
-                    <div class="input-wrapper">
-                        <label for="heure_debut_aprem">Heure de début* : </label>
-                        <input type="time">
-                    </div>
-                    <div class="input-wrapper">
-                        <label for="heure_fin_aprem">Heure de fin* : </label>
-                        <input type="time">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group"> <!--Salles disponibles-->
-                <label for="salles_dispo">Salles disponibles* : </label>
-                <select name="select_salles" id="select_salles" [(ngModel)]="selectedSalles" multi>
-                    <option [ngValue]="null">-- Sélectionner --</option>
-                    <option *ngFor="let salle of salles" [ngValue]="salle.nomSalle" selected>
-                        {{ salle.nomSalle }}
-                    </option>
-                </select>
-            </div>
-            <div class="input-wrapper"> <!--Durée d'une soutenance-->
-                <label for="duree_soutenance">Durée d'une soutenance* : </label>
-                <div>
-                    <input type="number">
-                    <p> minutes</p>
-                </div>
-            </div>
-            <div class="modal-buttons"> <!--Boutons-->
-                <button type="button" (click)="onCancel()" class="cancel-button">
-                    Annuler
-                </button>
-                <button type="submit" class="delete-button">
-                    Générer
-                </button>
-            </div>
-        </form>
-    </div>
+  <div class="modal">
+    <button type="button" class="close-button" (click)="onCancel()">✕</button>
+
+    <h3 class="modal-title">Générer un planning</h3>
+    <form
+      (ngSubmit)="onSubmit()"
+      #planningForm="ngForm"
+      class="form"
+      [class.disabled-form]="isSubmitting"
+    >
+      <!-- Nom du planning -->
+      <div class="input-wrapper">
+        <label for="nom">Nom du planning* :</label>
+        <input type="text" id="nom" />
+      </div>
+
+      <!-- Promo étudiants -->
+      <div class="input-wrapper">
+        <label for="promo">Promo étudiants* :</label>
+        <select id="promo" [(ngModel)]="newPlanning.idAnneeFormation">
+          <option [ngValue]="null">-- Sélectionner --</option>
+          <option
+            *ngFor="let promo of promos"
+            [ngValue]="promo.idAnneeFormation"
+          >
+            {{ promo.libelle }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Dates Début/Fin -->
+      <div class="line-wrapper">
+        <div class="input-wrapper">
+          <label for="debut_soutenances">Début* :</label>
+          <input type="date" id="debut_soutenances" />
+        </div>
+        <div class="input-wrapper">
+          <label for="fin_soutenances">Fin* :</label>
+          <input type="date" id="fin_soutenances" />
+        </div>
+      </div>
+
+      <!-- Titre Matinée -->
+      <div class="time-section">Matin</div>
+      <div class="line-wrapper">
+        <div class="input-wrapper">
+          <label for="heure_debut_matin">Heure début* :</label>
+          <input
+            type="time"
+            id="heure_debut_matin"
+            name="heure_debut_matin"
+            [(ngModel)]="newPlanning.heureDebutMatin"
+          />
+        </div>
+        <div class="input-wrapper">
+          <label for="heure_fin_matin">Heure fin* :</label>
+          <input
+            type="time"
+            id="heure_fin_matin"
+            name="heure_fin_matin"
+            [(ngModel)]="newPlanning.heureFinMatin"
+          />
+        </div>
+      </div>
+
+      <!-- Titre Après-midi -->
+      <div class="time-section">Après-midi</div>
+      <div class="line-wrapper">
+        <div class="input-wrapper">
+          <label for="heure_debut_aprem">Heure début* :</label>
+          <input
+            type="time"
+            id="heure_debut_aprem"
+            name="heure_debut_aprem"
+            [(ngModel)]="newPlanning.heureDebutAprem"
+          />
+        </div>
+        <div class="input-wrapper">
+          <label for="heure_fin_aprem">Heure fin* :</label>
+          <input
+            type="time"
+            id="heure_fin_aprem"
+            name="heure_fin_aprem"
+            [(ngModel)]="newPlanning.heureFinAprem"
+          />
+        </div>
+      </div>
+
+      <!-- Salles disponibles -->
+      <div class="input-wrapper">
+        <label for="salles_dispo">Salles disponibles* :</label>
+        <select id="salles_dispo" multiple [(ngModel)]="selectedSalles">
+          <option *ngFor="let salle of salles" [ngValue]="salle.nomSalle">
+            {{ salle.nomSalle }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Durée soutenance -->
+      <div class="input-wrapper">
+        <label for="duree_soutenance">Durée* :</label>
+        <input type="number" id="duree_soutenance" /> minutes
+      </div>
+
+      <!-- Boutons -->
+      <div class="modal-buttons">
+        <button type="button" (click)="onCancel()" class="cancel-button">
+          Annuler
+        </button>
+        <button type="submit" class="generate-button">Générer</button>
+      </div>
+    </form>
+  </div>
 </div>
