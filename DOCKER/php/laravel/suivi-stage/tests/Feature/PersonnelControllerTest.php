@@ -67,7 +67,7 @@ class PersonnelControllerTest extends TestCase
             'adresseMail'       => 'jdupont@univ-pau.fr',
             'longitudeAdresse'  => null,
             'latitudeAdresse'   => null,
-            'coptaEtudiant'     => 8,
+            'quotaEtudiant'     => 8,
         ];
 
         $response = $this->post('/api/personnel/create', $donnees);
@@ -95,7 +95,7 @@ class PersonnelControllerTest extends TestCase
             'adresseMail'       => 'jdupont@univ-pau.fr',
             'longitudeAdresse'  => null,
             'latitudeAdresse'   => null,
-            'coptaEtudiant'     => 8,
+            'quotaEtudiant'     => 8,
         ];
 
         $response = $this->post('/api/personnel/create', $donnees);
@@ -128,7 +128,7 @@ class PersonnelControllerTest extends TestCase
             'adresseMail'       => 'jdupont@univ-pau.fr',
             'longitudeAdresse'  => null,
             'latitudeAdresse'   => null,
-            'coptaEtudiant'     => 8,
+            'quotaEtudiant'     => 8,
         ];
 
         $response = $this->post('/api/personnel/create', $donnees);
@@ -218,7 +218,7 @@ class PersonnelControllerTest extends TestCase
             'adresseMail'       => 'jdupont@univ-pau.fr',
             'longitudeAdresse'  => null,
             'latitudeAdresse'   => null,
-            'coptaEtudiant'     => 8,
+            'quotaEtudiant'     => 8,
         ];
 
         $personnel = Personnel::first();
@@ -248,7 +248,7 @@ class PersonnelControllerTest extends TestCase
             'adresseMail'       => 'jdupont@univ-pau.fr',
             'longitudeAdresse'  => null,
             'latitudeAdresse'   => null,
-            'coptaEtudiant'     => 8,
+            'quotaEtudiant'     => 8,
         ];
 
         $personnel = Personnel::first();
@@ -278,7 +278,7 @@ class PersonnelControllerTest extends TestCase
             'adresseMail'       => 'jdupont@univ-pau.fr',
             'longitudeAdresse'  => null,
             'latitudeAdresse'   => null,
-            'coptaEtudiant'     => 8,
+            'quotaEtudiant'     => 8,
         ];
 
         $idPersonnel = PHP_INT_MAX;
@@ -313,7 +313,7 @@ class PersonnelControllerTest extends TestCase
             'adresseMail'       => 'jdupont@univ-pau.fr',
             'longitudeAdresse'  => null,
             'latitudeAdresse'   => null,
-            'coptaEtudiant'     => 8,
+            'quotaEtudiant'     => 8,
         ];
 
         $personnel = Personnel::first();

@@ -20,6 +20,7 @@ class Etudiant extends Model
         'codePostal',
         'telephone',
         'adresseMail',
+        'tierTemps'
     ];
 
     // Définit l'attribut de la clé primaire
@@ -100,5 +101,11 @@ class Etudiant extends Model
     public function anneeUniversitaires()
     {
         return $this->belongsToMany(AnneeUniversitaire::class);
+    }
+
+    // Relation 1-N avec Soutenance
+    public function soutenances()
+    {
+        return $this->hasMany(Soutenance::class);
     }
 }

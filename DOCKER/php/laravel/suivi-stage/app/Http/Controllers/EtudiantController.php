@@ -23,7 +23,7 @@ class EtudiantController extends Controller
         $allowedFields = ['idUPPA','nom','prenom',
                           'adresse','ville','codePostal',
                           'telephone','adresseMail','idDepartement',
-                          'idEntreprise','idTuteur'];
+                          'idEntreprise','idTuteur','tierTemps'];
         $fields = array_intersect($fields, $allowedFields);
 
         $etudiants = Etudiant::select(empty($fields) ? '*' : $fields)->get();
