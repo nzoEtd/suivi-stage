@@ -25,7 +25,7 @@
         <div class="body-planning">
         @for(salle of sallesDispo; track salle){
             <div class="salle-cell">
-                @for(slot of slotsInBlock(block, slots); track slot){
+                @for(slot of slotsInBlock(block); track slot){
                     @if(slot.salle === salle && isSameDay(slot.dateDebut, jourActuel)){
                         <app-slot 
                             [slot]="slot">

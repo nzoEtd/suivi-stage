@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { InitService } from '../../services/init.service';
@@ -6,6 +6,13 @@ import { LoadingComponent } from '../loading/loading.component';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ScheduleBoardComponent } from '../schedule-board/schedule-board.component';
+import { Observable, forkJoin } from 'rxjs';
+import { Planning } from '../../models/planning.model';
+import { Salle } from '../../models/salle.model';
+import { Soutenance } from '../../models/soutenance.model';
+import { SalleService } from '../../services/salle.service';
+import { PlanningService } from '../../services/planning.service';
+import { SoutenanceService } from '../../services/soutenance.service';
 
 @Component({
   selector: 'app-schedule',
@@ -14,7 +21,11 @@ import { ScheduleBoardComponent } from '../schedule-board/schedule-board.compone
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.css']
 })
-export class ScheduleComponent implements OnInit {
+export class ScheduleComponent implements AfterViewInit {
+  planning$!: Observable<Planning[]>;
+  salle$!: Observable<Salle[]>;
+  soutenance$!: Observable<Soutenance[]>;
+
   currentUser?: any;
   currentUserRole?: string;
   allDataLoaded: boolean = false;
@@ -23,7 +34,7 @@ export class ScheduleComponent implements OnInit {
   jours: Date[] = [new Date(2026, 5, 22), new Date(2026, 5, 23)];
 
   selectedJour: Date = this.jours[0];  
-  sallesDispo: number[] = [124, 125, 126, 127, 129, 131, 110];
+  sallesDispo: number[] = [];
   slots: SlotItem[] = [];
   timeBlocks: TimeBlockConfig[] = [];
 
@@ -31,10 +42,16 @@ export class ScheduleComponent implements OnInit {
     private readonly authService: AuthService,
     private readonly cdRef: ChangeDetectorRef,
     private readonly initService: InitService,
-    private router: Router
+    private router: Router,
+    private readonly planningService: PlanningService,
+    private readonly salleService: SalleService,
+    private readonly soutenanceService: SoutenanceService
   ) {}
 
-  async ngOnInit() {
+  async ngAfterViewInit() {
+    this.soutenance$ = this.soutenanceService.getSoutenances();
+    this.planning$ = this.planningService.getPlannings();
+    this.salle$ = this.salleService.getSalles();
     this.slots.push({
       topPercent:0,
       heightPercent:0,
@@ -53,6 +70,8 @@ export class ScheduleComponent implements OnInit {
     ];
     
     this.timeBlocks.push(...newTimeBlocks);
+
+    this.salle$.subscribe(salles => console.log(salles));
     
     this.authService.getAuthenticatedUser().subscribe(currentUser => {
       this.currentUser = currentUser;
@@ -67,8 +86,15 @@ export class ScheduleComponent implements OnInit {
       this.initService.setInitialized();
     });
     
-    this.cdRef.detectChanges();
-    this.allDataLoaded = true;
+    
+    forkJoin({
+      salles: this.salle$
+    }).subscribe(result => {
+        this.sallesDispo = (result.salles.filter(s => s.estDisponible).map(s => s.nomSalle)); 
+        
+        this.allDataLoaded = true;
+        this.cdRef.detectChanges(); 
+    });
   }
 
   updateJour(jour: Date){

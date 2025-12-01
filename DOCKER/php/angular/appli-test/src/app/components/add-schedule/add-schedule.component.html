@@ -1,10 +1,37 @@
 <div class="schedule">
-    <div class="content">
-      @if (!currentUser || !allDataLoaded) {
-        <app-loading/>
-      }
-        <div [hidden]="!allDataLoaded">
-            <p>add-schedule works!</p>
-        </div>
+  <div class="content">
+    @if (!currentUser || !allDataLoaded) {
+    <app-loading />
+    }
+    <div [hidden]="!allDataLoaded">
+      <ul>
+        <li *ngFor="let p of (planning$ | async)">
+          {{p.idPlanning}}<br>
+          {{p.nom}}<br>
+          {{p.idAnneeFormation}}<br>
+          {{p.dateDebut}}<br>
+          {{p.dateFin}}<br>
+          {{p.heureDebutMatin}}<br>
+          {{p.heureFinMatin}}<br>
+          {{p.heureDebutAprem}}<br>
+          {{p.heureFinAprem}}<br>
+          {{p.dureeSoutenance}}<br>
+        </li><br>
+        <li *ngFor="let s of (salle$ | async)">
+          {{s.nomSalle}}<br>
+          {{s.estDisponible}}<br>
+        </li><br>
+        <li *ngFor="let so of (soutenance$ | async)">
+          {{so.idSoutenance}}<br>
+          {{so.date}}<br>
+          {{so.nomSalle}}<br>
+          {{so.heureDebut}}<br>
+          {{so.heureFin}}<br>
+          {{so.idUPPA}}<br>
+          {{so.idLecteur}}<br>
+          {{so.idPlanning}}<br>
+        </li>
+      </ul>
     </div>
+  </div>
 </div>

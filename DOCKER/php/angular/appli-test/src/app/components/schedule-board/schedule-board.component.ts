@@ -19,6 +19,8 @@ export class ScheduleBoardComponent implements OnInit {
   blocks: TimeBlock[] = [];
   PAUSE_HEIGHT = 10;
 
+  private slotsCache = new Map<TimeBlock, SlotItem[]>();
+
   async ngOnInit() {
     const converted = this.timeBlocks.map((b: TimeBlockConfig) => {
       const startMin = this.toMinutes(b.start);
@@ -43,6 +45,10 @@ export class ScheduleBoardComponent implements OnInit {
       ...b,
       heightPercent: b.duration / totalMinutes * 100
     }));
+
+    this.blocks.forEach(block => {
+      this.slotsCache.set(block, this.calculateSlotsInBlock(block, this.slots));
+    });
   }
 
   toMinutes(str: string): number {
@@ -69,7 +75,7 @@ export class ScheduleBoardComponent implements OnInit {
            d1.getDate() === d2.getDate();
   }
 
-  slotsInBlock(block: TimeBlock, slots: SlotItem[]): SlotItem[] {
+  calculateSlotsInBlock(block: TimeBlock, slots: SlotItem[]): SlotItem[] {
     return slots
       .map(slot => {
         const startMin = slot.dateDebut.getHours() * 60 + slot.dateDebut.getMinutes();
@@ -81,7 +87,7 @@ export class ScheduleBoardComponent implements OnInit {
           endMin
         };
       })
-      .filter(slot => slot.startMin >= block.startMin && slot.startMin < block.endMin)
+      .filter(slot => {return (slot as any).startMin >= block.startMin && (slot as any).startMin < block.endMin})
       .map(slot => {
         const top = slot.startMin - block.startMin;
         const height = slot.endMin - slot.startMin;
@@ -92,6 +98,10 @@ export class ScheduleBoardComponent implements OnInit {
           heightPercent: (height / block.duration) * 100
         };
       });
+  }
+
+  slotsInBlock(block: TimeBlock): SlotItem[] {
+    return this.slotsCache.get(block) || [];
   }
 }
 
