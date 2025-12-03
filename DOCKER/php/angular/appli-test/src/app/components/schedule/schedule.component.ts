@@ -6,13 +6,16 @@ import { LoadingComponent } from '../loading/loading.component';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ScheduleBoardComponent } from '../schedule-board/schedule-board.component';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, firstValueFrom, forkJoin } from 'rxjs';
 import { Planning } from '../../models/planning.model';
 import { Salle } from '../../models/salle.model';
 import { Soutenance } from '../../models/soutenance.model';
 import { SalleService } from '../../services/salle.service';
 import { PlanningService } from '../../services/planning.service';
 import { SoutenanceService } from '../../services/soutenance.service';
+import { StudentService } from '../../services/student.service';
+import { StaffService } from '../../services/staff.service';
+import { CompanyService } from '../../services/company.service';
 
 @Component({
   selector: 'app-schedule',
@@ -29,11 +32,16 @@ export class ScheduleComponent implements AfterViewInit {
   currentUser?: any;
   currentUserRole?: string;
   allDataLoaded: boolean = false;
-  optionSchedule: string[] = ["Sélectionner un planning existant", "nom du planning"];
-  selectedOption: string = this.optionSchedule[1];
-  jours: Date[] = [new Date(2026, 5, 22), new Date(2026, 5, 23)];
 
-  selectedJour: Date = this.jours[0];  
+  allPlannings: Planning[] = [];
+  allSoutenances: Soutenance[] = [];
+  
+  selectedPlanning?: Planning;
+  optionSchedule: string[] = ["Sélectionner un planning existant"];
+  selectedOption: string = this.optionSchedule[0];
+  jours: Date[] = [];
+
+  selectedJour?: Date;  
   sallesDispo: number[] = [];
   slots: SlotItem[] = [];
   timeBlocks: TimeBlockConfig[] = [];
@@ -45,33 +53,41 @@ export class ScheduleComponent implements AfterViewInit {
     private router: Router,
     private readonly planningService: PlanningService,
     private readonly salleService: SalleService,
-    private readonly soutenanceService: SoutenanceService
+    private readonly soutenanceService: SoutenanceService,
+    private readonly studentService: StudentService,
+    private readonly staffService: StaffService,
+    private readonly companyService: CompanyService
   ) {}
 
   async ngAfterViewInit() {
     this.soutenance$ = this.soutenanceService.getSoutenances();
     this.planning$ = this.planningService.getPlannings();
     this.salle$ = this.salleService.getSalles();
-    this.slots.push({
-      topPercent:0,
-      heightPercent:0,
-      dateDebut: new Date(2026, 5, 22, 8),
-      dateFin: new Date(2026, 5, 22, 9),
-      etudiant: "Elève 1",
-      referent: "Y. Carpentier",
-      lecteur: "S. Voisin",
-      entreprise: "Superinfo",
-      salle: 124
-    });
-    this.jours.push(new Date(2026, 5, 24), new Date(2026, 5, 25), new Date(2026, 5, 26));
-    const newTimeBlocks: TimeBlockConfig[] = [
-      { start: "08:00", end: "12:00", type: "morning" },
-      { start: "14:00", end: "17:00", type: "afternoon" }
-    ];
     
-    this.timeBlocks.push(...newTimeBlocks);
+    forkJoin({
+      salles: this.salle$,
+      planning: this.planning$,
+      soutenance: this.soutenance$
+    }).subscribe(result => {
+        this.allPlannings = result.planning;
+        this.allSoutenances = result.soutenance;
 
-    this.salle$.subscribe(salles => console.log(salles));
+        this.sallesDispo = (result.salles.filter(s => s.estDisponible).map(s => s.nomSalle));
+
+        const planningNames = result.planning
+          .map(p => p.nom)
+          .filter((nom): nom is string => nom !== null);
+        
+        this.optionSchedule.push(...planningNames);
+        
+        console.log("jours de soutenance : " + this.jours);
+        console.log("optionSchedule : " + this.optionSchedule);
+        console.log("selectedOption : " + this.selectedOption);
+        console.log("sallesDispo : " + this.sallesDispo);
+        console.log("timeBlocks : " + this.timeBlocks);
+        this.allDataLoaded = true;
+        this.cdRef.detectChanges(); 
+    });
     
     this.authService.getAuthenticatedUser().subscribe(currentUser => {
       this.currentUser = currentUser;
@@ -84,16 +100,6 @@ export class ScheduleComponent implements AfterViewInit {
       }
 
       this.initService.setInitialized();
-    });
-    
-    
-    forkJoin({
-      salles: this.salle$
-    }).subscribe(result => {
-        this.sallesDispo = (result.salles.filter(s => s.estDisponible).map(s => s.nomSalle)); 
-        
-        this.allDataLoaded = true;
-        this.cdRef.detectChanges(); 
     });
   }
 
@@ -112,6 +118,158 @@ export class ScheduleComponent implements AfterViewInit {
   goToUpdate() {
     this.router.navigate(['/schedule/update-schedule']);
   }
+
+  onPlanningChange(planningName: string) {
+    // Trouver le planning sélectionné
+    this.selectedPlanning = this.allPlannings.find(p => p.nom === planningName);
+    
+    if (this.selectedPlanning && this.selectedPlanning.dateDebut && this.selectedPlanning.dateFin 
+      && this.selectedPlanning.heureDebutMatin && this.selectedPlanning.heureFinMatin
+      && this.selectedPlanning.heureDebutAprem && this.selectedPlanning.heureFinAprem) {
+      // Générer les dates pour ce planning uniquement
+      this.jours = this.getDatesBetween(
+        this.selectedPlanning.dateDebut, 
+        this.selectedPlanning.dateFin
+      );
+      
+      // Sélectionner le premier jour par défaut
+      this.selectedJour = this.jours[0];
+    
+      //mettre en place les timeBlocks
+      this.timeBlocks = [];
+      const newTimeBlocks: TimeBlockConfig[] = [
+        { start: this.selectedPlanning.heureDebutMatin, end: this.selectedPlanning.heureFinMatin, type: "morning" },
+        { start: this.selectedPlanning.heureDebutAprem, end: this.selectedPlanning.heureFinAprem, type: "afternoon" }
+      ];
+      
+      this.timeBlocks.push(...newTimeBlocks);
+      
+      // Charger les soutenances pour ce planning
+      this.loadSoutenancesForPlanning(this.selectedPlanning);
+    } else {
+      this.jours = [];
+      this.selectedJour = undefined;
+      this.slots = [];
+    }
+  }
+  
+  private getDatesBetween(start: Date, end: Date): Date[] {
+    const dates: Date[] = [];
+    const currentDate = new Date(start);
+    const endDate = new Date(end);
+  
+    while (currentDate <= endDate) {
+      const day = currentDate.getDay();
+      if (day !== 0 && day !== 6) {      
+        dates.push(new Date(currentDate));
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+  
+    return dates;
+  }
+  
+  private async loadSoutenancesForPlanning(planning: Planning) {
+    try {
+      console.log('Chargement des soutenances pour le planning:', planning.nom);
+      console.log('ID du planning:', planning.idPlanning);
+      const filteredSoutenances = this.allSoutenances.filter(s => 
+        {return s.idPlanning === planning.idPlanning}
+      );
+      
+      this.slots = await this.convertSoutenancesToSlots(filteredSoutenances);
+      console.log("soutenance : " + this.slots)
+      this.cdRef.detectChanges();
+    } catch (error) {
+      console.error('Erreur lors du chargement des soutenances:', error);
+      this.slots = [];
+    }
+  }
+  
+  private async convertSoutenancesToSlots(soutenances: Soutenance[]): Promise<SlotItem[]> {
+    const validSoutenances = soutenances.filter(s => 
+      s.date !== null && 
+      s.heureDebut !== null && 
+      s.heureFin !== null &&
+      s.idLecteur !== null &&
+      s.idUPPA != null &&
+      s.nomSalle !== null
+    );
+    return await Promise.all(
+      validSoutenances.map(async (s) => ({
+        topPercent: 0,
+        heightPercent: 0,
+        dateDebut: this.getDateHeure(s.date!, s.heureDebut!),
+        dateFin: this.getDateHeure(s.date!, s.heureFin!),
+        etudiant: await this.getStudentName(s.idUPPA!),
+        referent: await this.getReferentFromStudent(s.idUPPA!),
+        lecteur: await this.getLecteurName(s.idLecteur!),
+        entreprise: await this.getEntrepriseFromStudent(s.idUPPA!),
+        salle: s.nomSalle!
+      }))
+    );
+  }
+
+  private getDateHeure(date: Date, heure: string): Date{
+    const [heures, minutes] = heure.split(':').map(Number);
+  
+    const dateFinale = new Date(date);
+    dateFinale.setHours(heures, minutes, 0, 0);
+
+    return dateFinale;
+  }
+
+  private async getStudentName(idStudent: string): Promise<string> {
+    try {
+      const student = await firstValueFrom(this.studentService.getStudentById(idStudent));
+      return student ? `${student.nom} ${student.prenom}` : "Étudiant inconnu";
+    } catch (error) {
+      console.error('Erreur lors de la récupération de l\'étudiant:', error);
+      return "Étudiant inconnu";
+    }
+  }
+
+  private async getReferentFromStudent(idStudent: string): Promise<string> {
+    try {
+      const student = await firstValueFrom(this.studentService.getStudentById(idStudent));
+      
+      if (student?.idTuteur) {
+        const referent = await firstValueFrom(this.staffService.getStaffById(student.idTuteur));
+        return referent ? `${referent.nom} ${referent.prenom}` : "Référent inconnu";
+      }
+      
+      return "Pas de référent";
+    } catch (error) {
+      console.error('Erreur lors de la récupération du référent:', error);
+      return "Référent inconnu";
+    }
+  }
+
+  private async getEntrepriseFromStudent(idStudent: string): Promise<string> {
+    try {
+      const student = await firstValueFrom(this.studentService.getStudentById(idStudent));
+      
+      if (student?.idEntreprise) {
+        const company = await firstValueFrom(this.companyService.getCompanyById(student.idEntreprise));
+        return company?.raisonSociale ?? "Entreprise inconnue";
+      }
+      
+      return "Pas d'entreprise";
+    } catch (error) {
+      console.error('Erreur lors de la récupération de l\'entreprise:', error);
+      return "Entreprise inconnue";
+    }
+  }
+
+  private async getLecteurName(idLecteur: number): Promise<string> {
+  try {
+    const lecteur = await firstValueFrom(this.staffService.getStaffById(idLecteur));
+    return lecteur ? `${lecteur.nom} ${lecteur.prenom}` : "Lecteur inconnu";
+  } catch (error) {
+    console.error('Erreur lors de la récupération du lecteur:', error);
+    return "Lecteur inconnu";
+  }
+}
 }
 
 interface TimeBlockConfig{

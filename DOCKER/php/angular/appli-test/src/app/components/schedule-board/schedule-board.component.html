@@ -5,35 +5,38 @@
             <span class="salle-header">Salle {{salle}}</span>
         }
     </div>
-    <div *ngFor="let block of blocks"
-       class="time-row"
-       [style.height.%]="block.heightPercent">
 
-        <div class="hours">
-            <div *ngFor="let h of getHours(block.startMin, block.endMin); let i = index; let last = last"
-            class="hour-item"
-            [style.height.%]="100 / getHours(block.startMin, block.endMin).length">
-                {{ h }}h
+    <div class="planning-scroll">
+        <div *ngFor="let block of blocks"
+        class="time-row"
+        [style.min-height.px]="block.heightPercent * 4">
+
+            <div class="hours">
+                <div *ngFor="let h of getHours(block.startMin, block.endMin); let i = index; let last = last"
+                class="hour-item"
+                [style.height.%]="100 / getHours(block.startMin, block.endMin).length">
+                    {{ h }}h
+                </div>
+
+                <!-- pause compressée uniquement si ce bloc le nécessite -->
+                <div *ngIf="block.type === 'morning'" 
+                    class="pause-between-blocks" 
+                    [style.height.px]="PAUSE_HEIGHT"></div>
             </div>
 
-            <!-- pause compressée uniquement si ce bloc le nécessite -->
-            <div *ngIf="block.type === 'morning'" 
-                class="pause" 
-                [style.height.px]="PAUSE_HEIGHT"></div>
-        </div>
-
-        <div class="body-planning">
-        @for(salle of sallesDispo; track salle){
-            <div class="salle-cell">
-                @for(slot of slotsInBlock(block); track slot){
-                    @if(slot.salle === salle && isSameDay(slot.dateDebut, jourActuel)){
-                        <app-slot 
-                            [slot]="slot">
-                        </app-slot>
+            <div class="body-planning">
+            @for(salle of sallesDispo; track salle){
+                <div class="salle-cell">
+                    @for(slot of slotsInBlock(block); track slot){
+                        @if(slot.salle === salle && isSameDay(slot.dateDebut, jourActuel)){
+                            <app-slot 
+                                [slot]="slot">
+                            </app-slot>
+                        }
                     }
-                }
+                </div>
+            }
             </div>
-        }
         </div>
     </div>
 </div>

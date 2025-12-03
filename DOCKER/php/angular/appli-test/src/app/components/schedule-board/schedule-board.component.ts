@@ -26,7 +26,7 @@ export class ScheduleBoardComponent implements OnInit {
       const startMin = this.toMinutes(b.start);
       const endMin = this.toMinutes(b.end);
       const duration = endMin - startMin;
-      console.log(startMin + " - " + endMin + " - " + duration)
+      // console.log(startMin + " - " + endMin + " - " + duration)
 
       return {
         ...b,

@@ -5,11 +5,11 @@
       }
         <div [hidden]="!allDataLoaded" class="header-schedule-content">
             <div>
-                <select id="select-schedule" class="select-schedule" [(ngModel)]="selectedOption">
-                    @for (option of optionSchedule; track option){
-                        <option value="{{option}}">{{option}}</option>
-                    }            
-                </select>
+                <select [(ngModel)]="selectedOption" (ngModelChange)="onPlanningChange($event)" class="select-schedule">
+                    <option *ngFor="let option of optionSchedule" [value]="option">
+                      {{ option }}
+                    </option>
+                  </select>
                 &nbsp;
                 <button (click)="goToAdd()"class="btn-generate-schedule" *ngIf="selectedOption !== 'Sélectionner un planning existant'">+</button>
             </div>
@@ -26,7 +26,7 @@
             </div>
             <div *ngIf="selectedOption !== 'Sélectionner un planning existant'" class="schedule-content">
                 <app-schedule-board
-                *ngIf="allDataLoaded"
+                *ngIf="allDataLoaded && selectedPlanning && selectedJour"
                 [jourActuel]="selectedJour"
                 [slots]="slots"
                 [sallesDispo]="sallesDispo"

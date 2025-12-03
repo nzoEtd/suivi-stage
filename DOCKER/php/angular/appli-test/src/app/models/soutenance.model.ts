@@ -1,20 +1,20 @@
 export class Soutenance {
     idSoutenance: number;
     date: Date | null;
-    nomSalle: string | null;
+    nomSalle: number | null;
     heureDebut: string | null;
     heureFin: string | null;
-    idUPPA: number | null;
+    idUPPA: string | null;
     idLecteur: number | null;
     idPlanning: number | null;
   
     constructor(
       idSoutenance: number = 0,
       date: Date = new Date(),
-      nomSalle: string = '',
+      nomSalle: number = 0,
       heureDebut: string = '',
       heureFin: string = '',
-      idUPPA: number = 0,
+      idUPPA: string = '',
       idLecteur: number = 0,
       idPlanning: number = 0,
     ) {

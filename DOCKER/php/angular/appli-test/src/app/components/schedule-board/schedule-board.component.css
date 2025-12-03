@@ -4,16 +4,17 @@
   max-width: 1350px;
   display: flex;
   flex-direction: column;
-  overflow-x: auto;
+  overflow: hidden;
 }
 
 .header-planning {
   background-color: #D9D9D9;
-  height: 10%;
+  height: 50px;
   min-width: max-content;
   display: flex;
   justify-content: space-around;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .hours-header {
@@ -25,16 +26,22 @@
   min-width: 200px;
 }
 
+.planning-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: auto;
+  display: flex;
+  flex-direction: column;
+}
+
 .time-row {
   display: flex; 
   flex-direction: row; 
-  flex: 1;
-  min-height: 0; /* important pour scroll vertical à l'intérieur du planning */
   width: max-content;
-  /* display: grid;
-    grid-template-columns: 35px repeat(auto-fill, minmax(200px, 1fr));
-    width: fit-content; 
-    min-width: 100%; */
+}
+
+.time-row:last-child {
+  margin-bottom: 0; 
 }
 
 .hours {
@@ -42,14 +49,19 @@
   border-right: 1px solid #ddd;
 }
 
+.hour-item {
+  flex: 1; 
+  min-height: 80px; 
+  display: flex;
+  align-items: flex-start;
+  padding: 4px 2px;
+}
+
 .body-planning {
-  background-color: #cf5d5d; /*#F7F7F7*/
+  background-color: #F7F7F7; 
   width: 100%;
-  /* min-width: max-content;
-  align-items: center; */
   display: flex;
   flex:1;
-    flex-direction: column;
 }
 
 .time-block {
@@ -66,14 +78,21 @@
 }
 
 .salle-cell {
-  /* position: relative;
-  width: 100%; */
   background: #f5f5f5;
     position: relative;
-    /* pas de height */
-    display: flex;          /* permet d’étendre verticalement le slot */
+    display: flex; 
     align-items: flex-start;
+    flex: 0 0 200px;
     flex-direction: column;
     min-height: 100%; 
     padding: 2px;
+    border-left: 1px solid #e0e0e0;
+}
+
+.salle-cell:first-child {
+  border-left: none;
+}
+
+.salle-cell:last-child {
+  border-right: none;
 }
