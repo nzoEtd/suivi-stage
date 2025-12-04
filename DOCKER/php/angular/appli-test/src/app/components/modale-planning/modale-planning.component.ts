@@ -98,7 +98,7 @@ export class ModalePlanningComponent implements OnInit {
    */
   isFormValid(): boolean {
     return !!(
-      this.newPlanning.id &&
+      this.newPlanning.idPlanning &&
       this.newPlanning.nom!.trim() &&
       this.newPlanning.dateDebut! &&
       this.newPlanning.dateFin! &&

@@ -16,11 +16,12 @@ import { SoutenanceService } from '../../services/soutenance.service';
 import { StudentService } from '../../services/student.service';
 import { StaffService } from '../../services/staff.service';
 import { CompanyService } from '../../services/company.service';
+import { ModalePlanningComponent } from '../modale-planning/modale-planning.component';
 
 @Component({
   selector: 'app-schedule',
   standalone: true,
-  imports: [CommonModule, LoadingComponent, FormsModule, ScheduleBoardComponent],
+  imports: [CommonModule, LoadingComponent, FormsModule, ScheduleBoardComponent, ModalePlanningComponent],
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.css']
 })
@@ -32,6 +33,7 @@ export class ScheduleComponent implements AfterViewInit {
   currentUser?: any;
   currentUserRole?: string;
   allDataLoaded: boolean = false;
+  isModalOpen: boolean = false;
 
   allPlannings: Planning[] = [];
   allSoutenances: Soutenance[] = [];
@@ -112,7 +114,7 @@ export class ScheduleComponent implements AfterViewInit {
   }
 
   goToAdd() {
-    this.router.navigate(['/schedule/add-schedule']);
+    this.isModalOpen = true;
   }
 
   goToUpdate() {
