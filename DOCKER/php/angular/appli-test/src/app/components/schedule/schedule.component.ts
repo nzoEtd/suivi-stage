@@ -81,12 +81,6 @@ export class ScheduleComponent implements AfterViewInit {
           .filter((nom): nom is string => nom !== null);
         
         this.optionSchedule.push(...planningNames);
-        
-        console.log("jours de soutenance : " + this.jours);
-        console.log("optionSchedule : " + this.optionSchedule);
-        console.log("selectedOption : " + this.selectedOption);
-        console.log("sallesDispo : " + this.sallesDispo);
-        console.log("timeBlocks : " + this.timeBlocks);
         this.allDataLoaded = true;
         this.cdRef.detectChanges(); 
     });
@@ -118,10 +112,11 @@ export class ScheduleComponent implements AfterViewInit {
   }
 
   goToUpdate() {
-    this.router.navigate(['/schedule/update-schedule']);
+    this.router.navigate(['/schedule/update-schedule/'+this.selectedPlanning?.idPlanning]);
   }
 
-  onPlanningChange(planningName: string) {
+  async onPlanningChange(planningName: string) {
+    this.allDataLoaded = false;
     // Trouver le planning sélectionné
     this.selectedPlanning = this.allPlannings.find(p => p.nom === planningName);
     
@@ -147,11 +142,13 @@ export class ScheduleComponent implements AfterViewInit {
       this.timeBlocks.push(...newTimeBlocks);
       
       // Charger les soutenances pour ce planning
-      this.loadSoutenancesForPlanning(this.selectedPlanning);
+      await this.loadSoutenancesForPlanning(this.selectedPlanning);
+      this.allDataLoaded = true;
     } else {
       this.jours = [];
       this.selectedJour = undefined;
       this.slots = [];
+      this.allDataLoaded = true;
     }
   }
   
@@ -174,13 +171,12 @@ export class ScheduleComponent implements AfterViewInit {
   private async loadSoutenancesForPlanning(planning: Planning) {
     try {
       console.log('Chargement des soutenances pour le planning:', planning.nom);
-      console.log('ID du planning:', planning.idPlanning);
       const filteredSoutenances = this.allSoutenances.filter(s => 
         {return s.idPlanning === planning.idPlanning}
       );
       
       this.slots = await this.convertSoutenancesToSlots(filteredSoutenances);
-      console.log("soutenance : " + this.slots)
+      console.log("soutenances : ", this.slots)
       this.cdRef.detectChanges();
     } catch (error) {
       console.error('Erreur lors du chargement des soutenances:', error);
@@ -237,7 +233,9 @@ export class ScheduleComponent implements AfterViewInit {
       
       if (student?.idTuteur) {
         const referent = await firstValueFrom(this.staffService.getStaffById(student.idTuteur));
-        return referent ? `${referent.nom} ${referent.prenom}` : "Référent inconnu";
+        if(referent){
+          return referent ? `${referent.prenom![0]}. ${referent.nom}` : "Référent inconnu";
+        }
       }
       
       return "Pas de référent";
@@ -266,7 +264,7 @@ export class ScheduleComponent implements AfterViewInit {
   private async getLecteurName(idLecteur: number): Promise<string> {
   try {
     const lecteur = await firstValueFrom(this.staffService.getStaffById(idLecteur));
-    return lecteur ? `${lecteur.nom} ${lecteur.prenom}` : "Lecteur inconnu";
+    return lecteur ? `${lecteur.prenom![0]}. ${lecteur.nom}` : "Lecteur inconnu";
   } catch (error) {
     console.error('Erreur lors de la récupération du lecteur:', error);
     return "Lecteur inconnu";

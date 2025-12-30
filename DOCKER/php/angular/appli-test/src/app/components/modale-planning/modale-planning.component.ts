@@ -84,6 +84,7 @@ export class ModalePlanningComponent implements OnInit {
             this.salleService.updateSalle(salle);
           }
         }
+        // this.router.navigate(['/schedule/update-schedule/'+this.newPlanning.idPlanning]);
       } catch (error) {
         console.error("Erreur lors de l'ajout du planning :", error);
       } finally {
