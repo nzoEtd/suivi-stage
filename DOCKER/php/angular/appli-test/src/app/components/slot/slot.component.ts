@@ -11,6 +11,7 @@ import { Timestamp } from 'rxjs';
 })
 export class SlotComponent {
   @Input() slot!: {
+    id: number;
     topPercent: number;
     heightPercent: number;
     dateDebut: Date;
@@ -21,4 +22,5 @@ export class SlotComponent {
     entreprise: string;
     salle: number;
   };
+  @Input() openModal!: Function;
 }

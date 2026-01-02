@@ -191,10 +191,12 @@ export class ScheduleComponent implements AfterViewInit {
       s.heureFin !== null &&
       s.idLecteur !== null &&
       s.idUPPA != null &&
-      s.nomSalle !== null
+      s.nomSalle !== null &&
+      s.idSoutenance
     );
     return await Promise.all(
       validSoutenances.map(async (s) => ({
+        id: s.idSoutenance,
         topPercent: 0,
         heightPercent: 0,
         dateDebut: this.getDateHeure(s.date!, s.heureDebut!),
@@ -279,6 +281,7 @@ interface TimeBlockConfig{
 }
 
 interface SlotItem {
+    id: number;
     topPercent: number;
     heightPercent: number;
     dateDebut: Date;

@@ -1,10 +1,6 @@
 .planning {
-  /* height: 70vh; */
-  /* width: 100%; */
-  /* max-width: 1350px; */
   display: flex;
   flex-direction: column;
-  /* overflow: hidden; */
 }
 
 .header-planning {
@@ -74,6 +70,7 @@
     position: relative;
     display: flex; 
     align-items: flex-start;
+    justify-content: center;
     flex: 0 0 200px;
     flex-direction: column;
     min-height: 100%; 

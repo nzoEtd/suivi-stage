@@ -29,7 +29,8 @@
                 @for(slot of slotsInBlock(block); track slot){
                     @if(slot.salle === salle && isSameDay(slot.dateDebut, jourActuel)){
                         <app-slot 
-                            [slot]="slot">
+                            [slot]="slot"
+                            [openModal]="openModal">
                         </app-slot>
                     }
                 }
@@ -41,3 +42,7 @@
             [style.height.px]="PAUSE_HEIGHT"></div>
     </div>
 </div>
+
+<app-modale-soutenance
+*ngIf="isModalOpen"
+(cancel)="isModalOpen = false"/>

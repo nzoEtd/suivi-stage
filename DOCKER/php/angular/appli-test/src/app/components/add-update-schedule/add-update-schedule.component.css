@@ -1,0 +1,113 @@
+.schedule {
+    margin: 0 auto;
+    /* padding: 32px; */
+    max-width: 1600px;
+    display: flex;
+}
+
+.warning {
+    color: red;
+    font-size: x-large;
+}
+
+.content {
+    /* width: 100%; */
+    max-height: 100vh;
+}
+
+/* .planning {
+    background-color: #F7F7F7;
+    height: 70vh;
+    flex: 1 1 auto;
+} */
+
+.planning-scroll {
+    /* flex: 1; */
+    overflow-y: auto;
+    overflow-x: auto;
+    display: flex;
+    flex-direction: column;
+    max-height: 70vh;
+}
+
+.scroll-day{
+    background-color: #DEEDFF;
+    align-self: center;
+    padding-top: 50px;
+    padding-bottom: 35px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    flex: 0 1 80px;
+    /* flex: 1; */
+}
+
+.jour{
+    display: block;
+    justify-self: center;
+    padding: 5px;
+    margin-bottom: 15px;
+    border-radius: 25px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.selectedJour {
+    display: block;
+    justify-self: center;
+    padding: 5px;
+    margin-bottom: 15px;
+    border-radius: 25px;
+    background-color: #9FC8E9;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    justify-self: center;
+}
+
+.header-schedule-content {
+    display: flex;
+    justify-content: space-between;
+}
+
+.schedule-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; 
+    gap: 15px;
+    flex-wrap: nowrap;
+    margin-right: -32px;
+}
+
+.slot-box {
+    border: 2px dashed #0A63A4;
+    border-radius: 15px;
+    min-width: 200px;
+    margin-right: 1%;
+    margin-left: -20px;
+}
+
+.footer {
+    display: flex;
+    justify-content: center;
+    gap: 10%;
+}
+
+.btn {
+    padding: 7px;
+    padding-left: 40px;
+    padding-right: 40px;
+    border-radius: 30px;
+}
+
+.primary {
+    background-color: #0A63A4;
+    color: white;
+}
+
+.secondary {
+    background-color: #A2A2A2;
+    color: white;
+}

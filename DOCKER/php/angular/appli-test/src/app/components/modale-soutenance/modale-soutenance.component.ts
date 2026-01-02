@@ -96,8 +96,8 @@ export class ModaleSoutenanceComponent implements OnInit {
      */
     isFormValid(): boolean {
         return !!(
-            this.newSoutenance.id &&
-            this.newSoutenance.nomSalle!.trim() &&
+            this.newSoutenance.idSoutenance &&
+            this.newSoutenance.nomSalle! &&
             this.newSoutenance.date! &&
             this.newSoutenance.heureDebut! &&
             this.newSoutenance.heureFin!

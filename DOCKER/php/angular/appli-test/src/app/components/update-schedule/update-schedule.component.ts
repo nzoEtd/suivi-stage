@@ -1,16 +1,37 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { InitService } from '../../services/init.service';
-// import { LoadingComponent } from '../loading/loading.component';
+import { LoadingComponent } from '../loading/loading.component';
+import { AddUpdateScheduleComponent } from '../add-update-schedule/add-update-schedule.component';
+import { ActivatedRoute } from '@angular/router';
+import { Planning } from '../../models/planning.model';
+import { Observable, forkJoin } from 'rxjs';
+import { PlanningService } from '../../services/planning.service';
+import { Salle } from '../../models/salle.model';
+import { Soutenance } from '../../models/soutenance.model';
+import { SalleService } from '../../services/salle.service';
+import { SoutenanceService } from '../../services/soutenance.service';
 
 @Component({
   selector: 'app-update-schedule',
-  imports: [CommonModule/*, LoadingComponent*/],
+  imports: [CommonModule, LoadingComponent, AddUpdateScheduleComponent],
   templateUrl: './update-schedule.component.html',
   styleUrls: ['./update-schedule.component.css']
 })
-export class UpdateScheduleComponent {
+export class UpdateScheduleComponent implements AfterViewInit {
+  planning$?: Observable<Planning | undefined>;
+  salle$!: Observable<Salle[]>;
+  soutenance$!: Observable<Soutenance[]>;
+
+  allSoutenances: Soutenance[] = [];
+  planning!: Planning;
+  id!: number;
+  jours: Date[] = [];
+  sallesDispo: number[] = [];
+  slots: SlotItem[] = [];
+  timeBlocks: TimeBlockConfig[] = [];
+
   currentUser?: any;
   currentUserRole?: string;
   allDataLoaded: boolean = false;
@@ -18,10 +39,37 @@ export class UpdateScheduleComponent {
   constructor(
     private readonly authService: AuthService,
     private readonly cdRef: ChangeDetectorRef,
-    private readonly initService: InitService
+    private readonly initService: InitService,
+    private readonly planningService: PlanningService,
+    private readonly salleService: SalleService,
+    private readonly soutenanceService: SoutenanceService,
+    private route: ActivatedRoute
   ) {}
-  async ngOnInit() {
-    
+  async ngAfterViewInit() {
+    this.id = Number(this.route.snapshot.paramMap.get('id'));
+    this.planning$ = this.planningService.getPlanningById(this.id);
+    this.soutenance$ = this.soutenanceService.getSoutenances();
+    this.salle$ = this.salleService.getSalles();
+    forkJoin({
+      salles: this.salle$,
+      planning: this.planning$,
+      soutenance: this.soutenance$
+    }).subscribe(result => {
+        this.planning = result.planning!;
+        console.log("le planning",this.planning)
+        this.jours = this.getDatesBetween(
+          this.planning.dateDebut!, 
+          this.planning.dateFin!
+        );
+        console.log("les jours",this.jours)
+        this.allSoutenances = (result.soutenance.filter(s => s.idPlanning == this.planning.idPlanning));
+        console.log("les soutenances",this.allSoutenances)
+
+        this.sallesDispo = (result.salles.filter(s => s.estDisponible).map(s => s.nomSalle));
+        
+        this.allDataLoaded = true;
+        this.cdRef.detectChanges(); 
+    });
     this.authService.getAuthenticatedUser().subscribe(currentUser => {
       this.currentUser = currentUser;
       
@@ -34,8 +82,39 @@ export class UpdateScheduleComponent {
 
       this.initService.setInitialized();
     });
-    
-    this.cdRef.detectChanges();
-    this.allDataLoaded = true;
   }
+  
+  private getDatesBetween(start: Date, end: Date): Date[] {
+    const dates: Date[] = [];
+    const currentDate = new Date(start);
+    const endDate = new Date(end);
+  
+    while (currentDate <= endDate) {
+      const day = currentDate.getDay();
+      if (day !== 0 && day !== 6) {      
+        dates.push(new Date(currentDate));
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+  
+    return dates;
+  }
+}
+
+interface TimeBlockConfig{
+  start: string;  // "08:00"
+  end: string;    // "12:00"
+  type: string;
+}
+
+interface SlotItem {
+    topPercent: number;
+    heightPercent: number;
+    dateDebut: Date;
+    dateFin: Date;
+    etudiant: string;
+    referent: string;
+    lecteur: string;
+    entreprise: string;
+    salle: number;
 }

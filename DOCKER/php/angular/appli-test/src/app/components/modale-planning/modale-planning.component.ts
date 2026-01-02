@@ -72,25 +72,25 @@ export class ModalePlanningComponent implements OnInit {
    * Handles form submission by adding new internship search
    */
   async onSubmit() {
-    if (this.isFormValid()) {
-      try {
-        this.isSubmitting = true;
+    // if (this.isFormValid()) {
+    //   try {
+    //     this.isSubmitting = true;
 
-        this.planningService.addPlanning(this.newPlanning);
+    //     this.planningService.addPlanning(this.newPlanning);
 
-        for (const salle of this.salles) {
-          if (!this.selectedSalles.includes(salle)) {
-            salle.estDisponible = false;
-            this.salleService.updateSalle(salle);
-          }
-        }
-        // this.router.navigate(['/schedule/update-schedule/'+this.newPlanning.idPlanning]);
-      } catch (error) {
-        console.error("Erreur lors de l'ajout du planning :", error);
-      } finally {
-        this.isSubmitting = false;
-      }
-    }
+    //     for (const salle of this.salles) {
+    //       if (!this.selectedSalles.includes(salle)) {
+    //         salle.estDisponible = false;
+    //         this.salleService.updateSalle(salle);
+    //       }
+    //     }
+        this.router.navigate(['/schedule/add-schedule']);
+    //   } catch (error) {
+    //     console.error("Erreur lors de l'ajout du planning :", error);
+    //   } finally {
+    //     this.isSubmitting = false;
+    //   }
+    // }
   }
 
   /**

@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, Input } from '@angular/core';
 import { SlotComponent } from '../slot/slot.component';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { ModaleSoutenanceComponent } from '../modale-soutenance/modale-soutenance.component';
 
 @Component({
   selector: 'app-schedule-board',
-  imports: [CommonModule, SlotComponent, MatGridListModule],
+  imports: [CommonModule, SlotComponent, MatGridListModule, ModaleSoutenanceComponent],
   standalone: true,
   templateUrl: './schedule-board.component.html',
   styleUrls: ['./schedule-board.component.css']
@@ -15,9 +16,11 @@ export class ScheduleBoardComponent implements OnInit {
   @Input() slots!: SlotItem[];
   @Input() sallesDispo!: number[];
   @Input() timeBlocks!: TimeBlockConfig[];
-
+  @Input() openModal: Function = () => null;
+ 
   blocks: TimeBlock[] = [];
   PAUSE_HEIGHT = 10;
+  isModalOpen: boolean = false;
 
   private slotsCache = new Map<TimeBlock, SlotItem[]>();
 
@@ -122,6 +125,7 @@ interface TimeBlock {
 }
 
 interface SlotItem {
+  id: number;
   topPercent: number;
   heightPercent: number;
   dateDebut: Date;

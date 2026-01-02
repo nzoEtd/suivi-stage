@@ -10,10 +10,11 @@ import { Soutenance } from '../../models/soutenance.model';
 import { SalleService } from '../../services/salle.service';
 import { PlanningService } from '../../services/planning.service';
 import { SoutenanceService } from '../../services/soutenance.service';
+import { AddUpdateScheduleComponent } from '../add-update-schedule/add-update-schedule.component';
 
 @Component({
   selector: 'app-add-schedule',
-  imports: [CommonModule, LoadingComponent],
+  imports: [CommonModule, LoadingComponent, AddUpdateScheduleComponent],
   templateUrl: './add-schedule.component.html',
   styleUrls: ['./add-schedule.component.css']
 })

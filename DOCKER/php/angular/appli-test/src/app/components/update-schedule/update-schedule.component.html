@@ -1,1 +1,15 @@
-<p>update-schedule works!</p>
+<div class="schedule">
+    <div class="content">
+      @if (!currentUser || !allDataLoaded) {
+      <app-loading />
+      }
+      @else{
+        <app-add-update-schedule
+            [isEditMode]="true"
+            [planning]="planning"
+            [soutenances]="allSoutenances"
+            [salles]="sallesDispo"
+            [jours]="jours"></app-add-update-schedule>
+      }
+    </div>
+  </div>
