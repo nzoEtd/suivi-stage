@@ -106,6 +106,12 @@ Ensuite, installez les dépendances pour le projet Laravel
 composer install
 ```
 
+Par la suite, dans le même dossier, générez une clé artisan
+>[!NOTE] La clé s'ajoutera en tant que valeur de la variable APP_KEY dans le fichier .env
+```bash
+php artisan key:generate
+```
+
 Après cela, il faudra créer les tables de la base de données et les données qui vont avec.
 >[!TIP]
 >Les données sont modifiables dans les fichiers Seeder
