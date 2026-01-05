@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SlotComponent } from '../slot/slot.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { ModaleSoutenanceComponent } from '../modale-soutenance/modale-soutenance.component';
@@ -17,7 +17,9 @@ export class ScheduleBoardComponent implements OnInit {
   @Input() sallesDispo!: number[];
   @Input() timeBlocks!: TimeBlockConfig[];
   @Input() openModal: Function = () => null;
- 
+
+  @Output() editSlot = new EventEmitter<any>();
+
   blocks: TimeBlock[] = [];
   PAUSE_HEIGHT = 10;
   isModalOpen: boolean = false;
@@ -105,6 +107,10 @@ export class ScheduleBoardComponent implements OnInit {
 
   slotsInBlock(block: TimeBlock): SlotItem[] {
     return this.slotsCache.get(block) || [];
+  }
+
+  onEditSlot(slot: any) {
+    this.editSlot.emit(slot);
   }
 }
 

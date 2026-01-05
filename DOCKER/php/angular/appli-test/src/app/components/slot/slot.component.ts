@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Timestamp } from 'rxjs';
 
@@ -22,5 +22,10 @@ export class SlotComponent {
     entreprise: string;
     salle: number;
   };
-  @Input() openModal!: Function;
+  
+  @Output() editSlot = new EventEmitter<any>();
+
+  onSlotClick() {
+    this.editSlot.emit(this.slot);
+  }
 }

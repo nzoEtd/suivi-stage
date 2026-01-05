@@ -1,5 +1,6 @@
 .schedule {
     margin: 0 auto;
-    padding: 32px;
+    padding-top: 32px;
+    padding-bottom: 10px;
     max-width: 1600px;
 }

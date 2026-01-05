@@ -13,4 +13,9 @@
     /* box-sizing: border-box; */
     margin-top: 3%;
     margin-left: 2%;
+    cursor: pointer;
+}
+
+.slot:hover {
+    background: #B8DEFF;
 }

@@ -30,19 +30,15 @@
                     @if(slot.salle === salle && isSameDay(slot.dateDebut, jourActuel)){
                         <app-slot 
                             [slot]="slot"
-                            [openModal]="openModal">
+                            (editSlot)="onEditSlot($event)">
                         </app-slot>
                     }
                 }
             </div>
         }
         </div>
-    <div *ngIf="block.type === 'morning' && !last" 
+        <div *ngIf="block.type === 'morning' && !last" 
             class="pause-between-blocks" 
             [style.height.px]="PAUSE_HEIGHT"></div>
     </div>
 </div>
-
-<app-modale-soutenance
-*ngIf="isModalOpen"
-(cancel)="isModalOpen = false"/>

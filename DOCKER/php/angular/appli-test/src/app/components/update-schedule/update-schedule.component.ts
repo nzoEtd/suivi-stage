@@ -12,10 +12,11 @@ import { Salle } from '../../models/salle.model';
 import { Soutenance } from '../../models/soutenance.model';
 import { SalleService } from '../../services/salle.service';
 import { SoutenanceService } from '../../services/soutenance.service';
+import { ModaleSoutenanceComponent } from '../modale-soutenance/modale-soutenance.component';
 
 @Component({
   selector: 'app-update-schedule',
-  imports: [CommonModule, LoadingComponent, AddUpdateScheduleComponent],
+  imports: [CommonModule, LoadingComponent, AddUpdateScheduleComponent,ModaleSoutenanceComponent],
   templateUrl: './update-schedule.component.html',
   styleUrls: ['./update-schedule.component.css']
 })
@@ -35,6 +36,9 @@ export class UpdateScheduleComponent implements AfterViewInit {
   currentUser?: any;
   currentUserRole?: string;
   allDataLoaded: boolean = false;
+
+  isEditModalOpen: boolean = false;
+  selectedSoutenance?: any;
 
   constructor(
     private readonly authService: AuthService,
@@ -98,6 +102,18 @@ export class UpdateScheduleComponent implements AfterViewInit {
     }
   
     return dates;
+  }
+
+  openEditModal(slot: any) {
+    this.selectedSoutenance = slot;
+    console.log("le slot sélectionné : ",slot)
+    this.isEditModalOpen = true;
+  }
+
+  onSoutenanceSaved(updatedSoutenance: any) {
+    // Logique de sauvegarde
+    this.isEditModalOpen = false;
+    // Recharger les données si nécessaire
   }
 }
 

@@ -1,33 +1,36 @@
-.schedule {
-    margin: 0 auto;
-    /* padding: 32px; */
-    max-width: 1600px;
+.add-update-schedule{
     display: flex;
+    margin: 0 auto;
+    gap: 15px;
+    padding-left: 4px;
 }
 
-.warning {
-    color: red;
-    font-size: x-large;
+.slot-box {
+    border: 2px dashed #0A63A4;
+    border-radius: 15px;
+    width: 200px; 
+    flex-shrink: 0; 
+    margin-left: 4px;
+}
+
+.schedule {
+    flex: 1;
+    min-width: 0; 
+    overflow: hidden; 
 }
 
 .content {
-    /* width: 100%; */
+    width: 100%; 
     max-height: 100vh;
 }
 
-/* .planning {
-    background-color: #F7F7F7;
-    height: 70vh;
-    flex: 1 1 auto;
-} */
-
 .planning-scroll {
-    /* flex: 1; */
     overflow-y: auto;
     overflow-x: auto;
     display: flex;
     flex-direction: column;
     max-height: 70vh;
+    width: 100%;
 }
 
 .scroll-day{
@@ -37,8 +40,8 @@
     padding-bottom: 35px;
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
-    flex: 0 1 80px;
-    /* flex: 1; */
+    width: 80px; 
+    flex-shrink: 0; 
 }
 
 .jour{
@@ -70,6 +73,7 @@
 .header-schedule-content {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 15px;
 }
 
 .schedule-content {
@@ -78,21 +82,14 @@
     justify-content: space-between; 
     gap: 15px;
     flex-wrap: nowrap;
-    margin-right: -32px;
-}
-
-.slot-box {
-    border: 2px dashed #0A63A4;
-    border-radius: 15px;
-    min-width: 200px;
-    margin-right: 1%;
-    margin-left: -20px;
+    overflow: hidden; 
 }
 
 .footer {
     display: flex;
     justify-content: center;
     gap: 10%;
+    margin-top: 20px;
 }
 
 .btn {
@@ -100,14 +97,17 @@
     padding-left: 40px;
     padding-right: 40px;
     border-radius: 30px;
+    cursor: pointer;
 }
 
 .primary {
     background-color: #0A63A4;
     color: white;
+    border: 1px solid #0A63A4;
 }
 
 .secondary {
     background-color: #A2A2A2;
     color: white;
+    border: 1px solid #A2A2A2;
 }

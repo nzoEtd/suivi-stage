@@ -13,7 +13,7 @@ import { firstValueFrom, forkJoin, tap } from 'rxjs';
   selector: 'app-modale-soutenance',
   imports: [CommonModule, FormsModule],
   templateUrl: './modale-soutenance.html',
-  styleUrl: './modale-soutenance.css',
+  styleUrls: ['./modale-soutenance.component.css']
 })
 export class ModaleSoutenanceComponent implements OnInit {
   newSoutenance: Soutenance = new Soutenance(); //Contient le jour, heure début, heure fin, enseignant lecteur
