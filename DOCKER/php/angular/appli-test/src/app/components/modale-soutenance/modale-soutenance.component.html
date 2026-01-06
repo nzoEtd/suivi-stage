@@ -1,51 +1,25 @@
-<div class="loading-overlay">
-    <app-loading />
+<div *ngIf="!dataLoaded">
+  <app-loading/>
 </div>
-<dialog id="modale_soutenance" open>
-    <h1>Soutenance [heure_debut heure_fin] S[salle]</h1> <!--Affichage temporaire en attendant que le code soit fait-->
-    <form method="post" id="form_modale_soutenance">
-        <!--Non modifiables-->
-        <p>Etudiant : <span>[nom_etudiant]</span></p>
-        <p>Enseignant référent : <span>[nom_enseignant]</span></p>
-        <p>Entreprise : <span>[nom_entreprise]</span></p>
-        <p>Tuteur d'entreprise : <span>[nom_tuteur]</span></p>
-        <div> <!--Enseignant lecteur-->
-            <label for="salles_dispo">Enseignant lecteur* : </label>
-            <select name="select_lecteur" id="select_lecteur">
-                <!--Options placeholder en attendant que le code soit fait-->
-                <option value="prof1">[opt 1]</option>
-                <option value="prof2">[opt 2]</option>
-                <option value="prof3">[opt 3]</option>
-            </select>
-        </div>
-        <div> <!--Heures de début et de fin-->
-            <div>
-                <label for="heure_debut">Heure de début* : </label>
-                <input type="time"> <!--value=[heure_debut]-->
+<div *ngIf="dataLoaded" class="modal-overlay">
+    <div class="modal">
+        <h1 class="modal-title">
+            Soutenance {{ soutenanceData.heureDebut.split(':')[0] }}h-{{ soutenanceData.heureFin.split(':')[0] }}h S{{ soutenanceData.nomSalle }}
+        </h1>
+        <div class="form">
+            <p>Etudiant : {{ etudiant.nom }} {{ etudiant.prenom }}</p>
+            <p>Enseignant référent : {{ enseignantReferent.nom }} {{ enseignantReferent.prenom }}</p>
+            <p>Entreprise : {{ entreprise.raisonSociale }}</p>
+            <p>Tuteur d'entreprise : {{ tuteurEntreprise.nom }} {{ tuteurEntreprise.prenom }}</p>
+            <p>Enseignant lecteur : {{ enseignantLecteur.nom }} {{ enseignantLecteur.prenom }}</p>
+            <div class="line-wrapper">
+                <p>Heure début : {{ soutenanceData.heureDebut.split(':')[0] }}h{{ soutenanceData.heureDebut.split(':')[1]  }}</p>
+                <p>Heure fin : {{ soutenanceData.heureFin.split(':')[0] }}h{{ soutenanceData.heureFin.split(':')[1] }}</p>
             </div>
-            <div>
-                <label for="heure_fin">Heure de fin* : </label>
-                <input type="time"> <!--value=[heure_fin]-->
+            <div class="line-wrapper">
+                <p>Jour : {{ formatDate(soutenanceData.date) }}</p>
+                <p>Salle : {{ soutenanceData.nomSalle }}</p>
             </div>
         </div>
-        <div> <!--Jour et salle-->
-            <div>
-                <label for="jour">Jour* : </label>
-                <input type="date">
-            </div>
-            <div>
-                <label for="salle">Salle* : </label>
-                <select name="select_salle" id="select_salle">
-                    <!--Options placeholder en attendant que le code soit fait-->
-                    <option value="salle1">[opt 1]</option>
-                    <option value="salle2">[opt 2]</option>
-                    <option value="salle3">[opt 3]</option>
-                </select>
-            </div>
-        </div>
-        <div class="modal-buttons"> <!--Boutons-->
-            <button>Annuler</button>
-            <button type="submit">Valider</button>
-        </div>
-    </form>
-</dialog>
+    </div>
+</div>

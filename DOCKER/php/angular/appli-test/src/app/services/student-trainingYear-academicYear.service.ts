@@ -9,68 +9,6 @@ import { Observable, catchError, tap, of } from 'rxjs';
 })
 export class StudentTrainingYearAcademicYearService {
     apiUrl = environment.apiUrl;
-    private readonly mockStudentTdAcademicYear: Student_TrainingYear_AcademicYear[] = [
-        {
-            idUPPA: '610000',
-            idTrainingYear: 2,
-            idAcademicYear: 1
-        },
-        {
-            idUPPA: '610001',
-            idTrainingYear: 2,
-            idAcademicYear: 1
-        },
-        {
-            idUPPA: '610459',
-            idTrainingYear: 2,
-            idAcademicYear: 1
-        },
-        {
-            idUPPA: '610123',
-            idTrainingYear: 2,
-            idAcademicYear: 1
-        },
-        {
-            idUPPA: '611082',
-            idTrainingYear: 2,
-            idAcademicYear: 1
-        },
-        {
-            idUPPA: '613453',
-            idTrainingYear: 2,
-            idAcademicYear: 1
-        },
-        {
-            idUPPA: '610000',
-            idTrainingYear: 3,
-            idAcademicYear: 2
-        },
-        {
-            idUPPA: '610001',
-            idTrainingYear: 3,
-            idAcademicYear: 2
-        },
-        {
-            idUPPA: '610459',
-            idTrainingYear: 3,
-            idAcademicYear: 2
-        },
-        {
-            idUPPA: '610123',
-            idTrainingYear: 3,
-            idAcademicYear: 2
-        },
-        {
-            idUPPA: '611082',
-            idTrainingYear: 3,
-            idAcademicYear: 2
-        },
-        {
-            idUPPA: '613453',
-            idTrainingYear: 3,
-            idAcademicYear: 2
-        }
-    ];
 
     constructor(private http: HttpClient) {}
 
@@ -80,14 +18,23 @@ export class StudentTrainingYearAcademicYearService {
         if (fields && fields.length > 0) {
         params = params.set('fields', fields.join(','));
         }
-
-        /*
         return this.http.get<Student_TrainingYear_AcademicYear[]>(`${this.apiUrl}/api/`, {params}).pipe(
             tap(response => this.log(response)),
             catchError(error => this.handleError(error, null))
         );
-        */
-        return of(this.mockStudentTdAcademicYear);
+    }
+
+    getAffectationByUppaAndTraining(studentId: string, trainingId: number, fields?: string[]): Observable<Student_TrainingYear_AcademicYear | null> {
+        let params = new HttpParams();
+
+        if (fields && fields.length > 0) {
+            params = params.set('fields', fields.join(','));
+        }
+
+        return this.http.get<Student_TrainingYear_AcademicYear[]>(`${this.apiUrl}/api/`, {params}).pipe(
+            tap(response => this.log(response)),
+            catchError(error => this.handleError(error, null))
+        );
     }
 
     //Log la réponse de l'API
