@@ -40,6 +40,10 @@ export class PlanningService {
     );
   }
 
+  runAlgorithm(startMorningTime: number, endMorningTime: number, startAfternoonTime: number, endAfternoonTime: number, normalPresentationLength: number, accommodatedPresentationLength: number, inBetweenBreakLength: number, maxTeachersWeeklyWorkedTime: number): Observable<string> {
+    return this.http.get<string>(`${this.apiUrl}/api/run-algo-planning/${startMorningTime}-${endMorningTime}-${startAfternoonTime}-${endAfternoonTime}-${normalPresentationLength}-${accommodatedPresentationLength}-${inBetweenBreakLength}-${maxTeachersWeeklyWorkedTime}`);
+  }
+
   //Ajout d'un planning
   addPlanning(planning: Planning): Observable<Planning> {
     const httpOptions = {

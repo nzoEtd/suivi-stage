@@ -254,10 +254,10 @@ export class ScheduleComponent implements AfterViewInit {
         heightPercent: 0,
         dateDebut: this.getDateHeure(s.date!, s.heureDebut!),
         dateFin: this.getDateHeure(s.date!, s.heureFin!),
-       etudiant: student ? `${student.nom} ${student.prenom}` : "Étudiant inconnu",
-      referent: referent ? `${referent.prenom![0]}. ${referent.nom}` : "Pas de référent",
-      lecteur: lecteur ? `${lecteur.prenom![0]}. ${lecteur.nom}` : "Lecteur inconnu",
-      entreprise: company ? company.raisonSociale! : "Pas d'entreprise",
+        etudiant: student ? `${student.nom} ${student.prenom}` : "Étudiant inconnu",
+        referent: referent ? `${referent.prenom![0]}. ${referent.nom}` : "Pas de référent",
+        lecteur: lecteur ? `${lecteur.prenom![0]}. ${lecteur.nom}` : "Lecteur inconnu",
+        entreprise: company ? company.raisonSociale! : "Pas d'entreprise",
         salle: s.nomSalle!,
       } ;
   });

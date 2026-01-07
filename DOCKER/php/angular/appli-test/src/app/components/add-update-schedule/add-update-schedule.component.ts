@@ -4,11 +4,15 @@ import { Planning } from '../../models/planning.model';
 import { ScheduleBoardComponent } from '../schedule-board/schedule-board.component';
 import { Soutenance } from '../../models/soutenance.model';
 import { Salle } from '../../models/salle.model';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, forkJoin } from 'rxjs';
 import { LoadingComponent } from '../loading/loading.component';
 import { StudentService } from '../../services/student.service';
 import { StaffService } from '../../services/staff.service';
 import { CompanyService } from '../../services/company.service';
+import { Router } from '@angular/router';
+import { Student } from '../../models/student.model';
+import { Staff } from '../../models/staff.model';
+import { Company } from '../../models/company.model';
 
 @Component({
   selector: 'app-add-update-schedule',
@@ -23,6 +27,10 @@ export class AddUpdateScheduleComponent implements AfterViewInit {
   @Input() salles: number[] = [];
   @Input() jours: Date[] = [];
 
+  allStudents: Student[] = [];
+  allStaff: Staff[] = [];
+  allCompanies: Company[] = [];
+
   selectedJour?: Date;
   slots: SlotItem[] = [];
   timeBlocks: TimeBlockConfig[] = [];
@@ -33,6 +41,7 @@ export class AddUpdateScheduleComponent implements AfterViewInit {
     private readonly cdRef: ChangeDetectorRef,
     private readonly studentService: StudentService,
     private readonly staffService: StaffService,
+    private router: Router,
     private readonly companyService: CompanyService
   ) {}
 
@@ -40,6 +49,20 @@ export class AddUpdateScheduleComponent implements AfterViewInit {
     console.log("planning : ",this.planning)
     console.log("jours : ",this.jours)
     this.timeBlocks = [];
+    const students$ = this.studentService.getStudents();
+    const staff$ = this.staffService.getStaffs();
+    const companies$ = this.companyService.getCompanies();
+
+    forkJoin({
+      students: students$,
+      staff: staff$,
+      companies: companies$,
+    }).subscribe((result) => {
+      this.allStudents = result.students;
+      this.allStaff = result.staff;
+      this.allCompanies =result.companies;
+    });
+
     if (this.planning && this.planning.dateDebut && this.planning.dateFin 
       && this.planning.heureDebutMatin && this.planning.heureFinMatin
       && this.planning.heureDebutAprem && this.planning.heureFinAprem
@@ -55,6 +78,7 @@ export class AddUpdateScheduleComponent implements AfterViewInit {
       // Charger les soutenances pour ce planning
       await this.loadSoutenancesForPlanning(this.planning);
       this.allDataLoaded = true;
+      this.cdRef.detectChanges();
     } else {
       this.selectedJour = undefined;
       this.slots = [];
@@ -82,29 +106,45 @@ export class AddUpdateScheduleComponent implements AfterViewInit {
     }
   }
   
-  private async convertSoutenancesToSlots(soutenances: Soutenance[]): Promise<SlotItem[]> {
-    const validSoutenances = soutenances.filter(s => 
-      s.date !== null && 
-      s.heureDebut !== null && 
-      s.heureFin !== null &&
-      s.idLecteur !== null &&
-      s.idUPPA != null &&
-      s.nomSalle !== null
+  private async convertSoutenancesToSlots(
+    soutenances: Soutenance[]
+  ): Promise<SlotItem[]> {
+    console.log("soutenances ?",soutenances)
+    const validSoutenances = soutenances.filter(
+      (s) =>
+        s.date !== null &&
+        s.heureDebut !== null &&
+        s.heureFin !== null &&
+        s.idLecteur !== null &&
+        s.idUPPA != null &&
+        s.nomSalle !== null &&
+        s.idSoutenance
     );
-    return await Promise.all(
-      validSoutenances.map(async (s) => ({
-        id: s.idSoutenance,
-        topPercent: 0,
-        heightPercent: 0,
-        dateDebut: this.getDateHeure(s.date!, s.heureDebut!),
-        dateFin: this.getDateHeure(s.date!, s.heureFin!),
-        etudiant: await this.getStudentName(s.idUPPA!),
-        referent: await this.getReferentFromStudent(s.idUPPA!),
-        lecteur: await this.getLecteurName(s.idLecteur!),
-        entreprise: await this.getEntrepriseFromStudent(s.idUPPA!),
-        salle: s.nomSalle!
-      }))
-    );
+     return validSoutenances.map(s => {
+      const student = this.allStudents.find(st => st.idUPPA === s.idUPPA);
+      const referent = student?.idTuteur 
+        ? this.allStaff.find(f => f.idPersonnel === student.idTuteur)
+        : null;
+
+      const lecteur = this.allStaff.find(f => f.idPersonnel === s.idLecteur);
+
+      const company = student?.idEntreprise 
+        ? this.allCompanies.find(c => c.idEntreprise === student.idEntreprise)
+        : null;
+
+      return {
+          id: s.idSoutenance,
+          topPercent: 0,
+          heightPercent: 0,
+          dateDebut: this.getDateHeure(s.date!, s.heureDebut!),
+          dateFin: this.getDateHeure(s.date!, s.heureFin!),
+          etudiant: student ? `${student.nom} ${student.prenom}` : "Étudiant inconnu",
+          referent: referent ? `${referent.prenom![0]}. ${referent.nom}` : "Pas de référent",
+          lecteur: lecteur ? `${lecteur.prenom![0]}. ${lecteur.nom}` : "Lecteur inconnu",
+          entreprise: company ? company.raisonSociale! : "Pas d'entreprise",
+          salle: s.nomSalle!,
+        } ;
+    });
   }
 
   private getDateHeure(date: Date, heure: string): Date{
@@ -116,62 +156,12 @@ export class AddUpdateScheduleComponent implements AfterViewInit {
     return dateFinale;
   }
 
-  private async getStudentName(idStudent: string): Promise<string> {
-    try {
-      const student = await firstValueFrom(this.studentService.getStudentById(idStudent));
-      return student ? `${student.nom} ${student.prenom}` : "Étudiant inconnu";
-    } catch (error) {
-      console.error('Erreur lors de la récupération de l\'étudiant:', error);
-      return "Étudiant inconnu";
-    }
-  }
-
-  private async getReferentFromStudent(idStudent: string): Promise<string> {
-    try {
-      const student = await firstValueFrom(this.studentService.getStudentById(idStudent));
-      
-      if (student?.idTuteur) {
-        const referent = await firstValueFrom(this.staffService.getStaffById(student.idTuteur));
-        if(referent){
-          return referent ? `${referent.prenom![0]}. ${referent.nom}` : "Référent inconnu";
-        }
-      }
-      
-      return "Pas de référent";
-    } catch (error) {
-      console.error('Erreur lors de la récupération du référent:', error);
-      return "Référent inconnu";
-    }
-  }
-
-  private async getEntrepriseFromStudent(idStudent: string): Promise<string> {
-    try {
-      const student = await firstValueFrom(this.studentService.getStudentById(idStudent));
-      
-      if (student?.idEntreprise) {
-        const company = await firstValueFrom(this.companyService.getCompanyById(student.idEntreprise));
-        return company?.raisonSociale ?? "Entreprise inconnue";
-      }
-      
-      return "Pas d'entreprise";
-    } catch (error) {
-      console.error('Erreur lors de la récupération de l\'entreprise:', error);
-      return "Entreprise inconnue";
-    }
-  }
-
-  private async getLecteurName(idLecteur: number): Promise<string> {
-    try {
-      const lecteur = await firstValueFrom(this.staffService.getStaffById(idLecteur));
-      return lecteur ? `${lecteur.prenom![0]}. ${lecteur.nom}` : "Lecteur inconnu";
-    } catch (error) {
-      console.error('Erreur lors de la récupération du lecteur:', error);
-      return "Lecteur inconnu";
-    }
-  }
-
   openModal(): void {
     this.isModalOpen=true;
+  }
+
+  exit() {
+    this.router.navigate(['/schedule']);
   }
 }
 

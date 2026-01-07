@@ -13,6 +13,12 @@ import { Soutenance } from '../../models/soutenance.model';
 import { SalleService } from '../../services/salle.service';
 import { SoutenanceService } from '../../services/soutenance.service';
 import { ModaleSoutenanceComponent } from '../modale-soutenance/modale-soutenance.component';
+import { StudentService } from '../../services/student.service';
+import { StaffService } from '../../services/staff.service';
+import { CompanyService } from '../../services/company.service';
+import { Student } from '../../models/student.model';
+import { Staff } from '../../models/staff.model';
+import { Company } from '../../models/company.model';
 
 @Component({
   selector: 'app-update-schedule',
@@ -26,6 +32,9 @@ export class UpdateScheduleComponent implements AfterViewInit {
   soutenance$!: Observable<Soutenance[]>;
 
   allSoutenances: Soutenance[] = [];
+  allStudents: Student[] = [];
+  allStaff: Staff[] = [];
+  allCompanies: Company[] = [];
   planning!: Planning;
   id!: number;
   jours: Date[] = [];
@@ -47,6 +56,9 @@ export class UpdateScheduleComponent implements AfterViewInit {
     private readonly planningService: PlanningService,
     private readonly salleService: SalleService,
     private readonly soutenanceService: SoutenanceService,
+    private readonly studentService: StudentService,
+    private readonly staffService: StaffService,
+    private readonly companyService: CompanyService,
     private route: ActivatedRoute
   ) {}
   async ngAfterViewInit() {
@@ -54,10 +66,16 @@ export class UpdateScheduleComponent implements AfterViewInit {
     this.planning$ = this.planningService.getPlanningById(this.id);
     this.soutenance$ = this.soutenanceService.getSoutenances();
     this.salle$ = this.salleService.getSalles();
+    const students$ = this.studentService.getStudents();
+    const staff$ = this.staffService.getStaffs();
+    const companies$ = this.companyService.getCompanies();
     forkJoin({
       salles: this.salle$,
       planning: this.planning$,
-      soutenance: this.soutenance$
+      soutenance: this.soutenance$,
+      students: students$,
+      staff: staff$,
+      companies: companies$,
     }).subscribe(result => {
         this.planning = result.planning!;
         console.log("le planning",this.planning)
