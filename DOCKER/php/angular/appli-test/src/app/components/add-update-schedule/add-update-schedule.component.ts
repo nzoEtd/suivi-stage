@@ -23,45 +23,25 @@ import { Company } from '../../models/company.model';
 export class AddUpdateScheduleComponent implements AfterViewInit {
   @Input() isEditMode!: Boolean;
   @Input() planning: Planning | undefined;
-  @Input() soutenances: Soutenance[] = [];
+  @Input() soutenances: SlotItem[] = [];
   @Input() salles: number[] = [];
   @Input() jours: Date[] = [];
 
-  allStudents: Student[] = [];
-  allStaff: Staff[] = [];
-  allCompanies: Company[] = [];
-
   selectedJour?: Date;
-  slots: SlotItem[] = [];
   timeBlocks: TimeBlockConfig[] = [];
   allDataLoaded: boolean = false;
   isModalOpen: boolean = false;
   
   constructor(
     private readonly cdRef: ChangeDetectorRef,
-    private readonly studentService: StudentService,
-    private readonly staffService: StaffService,
-    private router: Router,
-    private readonly companyService: CompanyService
+    private router: Router
   ) {}
 
   async ngAfterViewInit() {
     console.log("planning : ",this.planning)
     console.log("jours : ",this.jours)
+    console.log("soutenances finales : ",this.soutenances)
     this.timeBlocks = [];
-    const students$ = this.studentService.getStudents();
-    const staff$ = this.staffService.getStaffs();
-    const companies$ = this.companyService.getCompanies();
-
-    forkJoin({
-      students: students$,
-      staff: staff$,
-      companies: companies$,
-    }).subscribe((result) => {
-      this.allStudents = result.students;
-      this.allStaff = result.staff;
-      this.allCompanies =result.companies;
-    });
 
     if (this.planning && this.planning.dateDebut && this.planning.dateFin 
       && this.planning.heureDebutMatin && this.planning.heureFinMatin
@@ -75,85 +55,16 @@ export class AddUpdateScheduleComponent implements AfterViewInit {
       
       this.timeBlocks.push(...newTimeBlocks);
       
-      // Charger les soutenances pour ce planning
-      await this.loadSoutenancesForPlanning(this.planning);
       this.allDataLoaded = true;
       this.cdRef.detectChanges();
     } else {
       this.selectedJour = undefined;
-      this.slots = [];
       this.allDataLoaded = true;
     }
   }
 
   updateJour(jour: Date){
     this.selectedJour = jour;
-  }
-  
-  private async loadSoutenancesForPlanning(planning: Planning) {
-    try {
-      console.log('Chargement des soutenances pour le planning:', planning.nom);
-      const filteredSoutenances = this.soutenances.filter(s => 
-        {return s.idPlanning === planning.idPlanning}
-      );
-      
-      this.slots = await this.convertSoutenancesToSlots(filteredSoutenances);
-      console.log("soutenances : ", this.slots)
-      this.cdRef.detectChanges();
-    } catch (error) {
-      console.error('Erreur lors du chargement des soutenances:', error);
-      this.slots = [];
-    }
-  }
-  
-  private async convertSoutenancesToSlots(
-    soutenances: Soutenance[]
-  ): Promise<SlotItem[]> {
-    console.log("soutenances ?",soutenances)
-    const validSoutenances = soutenances.filter(
-      (s) =>
-        s.date !== null &&
-        s.heureDebut !== null &&
-        s.heureFin !== null &&
-        s.idLecteur !== null &&
-        s.idUPPA != null &&
-        s.nomSalle !== null &&
-        s.idSoutenance
-    );
-     return validSoutenances.map(s => {
-      const student = this.allStudents.find(st => st.idUPPA === s.idUPPA);
-      const referent = student?.idTuteur 
-        ? this.allStaff.find(f => f.idPersonnel === student.idTuteur)
-        : null;
-
-      const lecteur = this.allStaff.find(f => f.idPersonnel === s.idLecteur);
-
-      const company = student?.idEntreprise 
-        ? this.allCompanies.find(c => c.idEntreprise === student.idEntreprise)
-        : null;
-
-      return {
-          id: s.idSoutenance,
-          topPercent: 0,
-          heightPercent: 0,
-          dateDebut: this.getDateHeure(s.date!, s.heureDebut!),
-          dateFin: this.getDateHeure(s.date!, s.heureFin!),
-          etudiant: student ? `${student.nom} ${student.prenom}` : "Étudiant inconnu",
-          referent: referent ? `${referent.prenom![0]}. ${referent.nom}` : "Pas de référent",
-          lecteur: lecteur ? `${lecteur.prenom![0]}. ${lecteur.nom}` : "Lecteur inconnu",
-          entreprise: company ? company.raisonSociale! : "Pas d'entreprise",
-          salle: s.nomSalle!,
-        } ;
-    });
-  }
-
-  private getDateHeure(date: Date, heure: string): Date{
-    const [heures, minutes] = heure.split(':').map(Number);
-  
-    const dateFinale = new Date(date);
-    dateFinale.setHours(heures, minutes, 0, 0);
-
-    return dateFinale;
   }
 
   openModal(): void {
