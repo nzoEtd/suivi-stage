@@ -6,7 +6,7 @@ import { LoadingComponent } from "../loading/loading.component";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import { ScheduleBoardComponent } from "../schedule-board/schedule-board.component";
-import { Observable, firstValueFrom, forkJoin } from "rxjs";
+import { Observable, forkJoin } from "rxjs";
 import { Planning } from "../../models/planning.model";
 import { Salle } from "../../models/salle.model";
 import { Soutenance } from "../../models/soutenance.model";
@@ -20,6 +20,8 @@ import { ModalePlanningComponent } from "../modale-planning/modale-planning.comp
 import { Student } from "../../models/student.model";
 import { Staff } from "../../models/staff.model";
 import { Company } from "../../models/company.model";
+import { SlotItem } from "../../models/slotItem.model";
+import { TimeBlockConfig } from "../../models/timeBlock.model";
 
 @Component({
   selector: "app-schedule",
@@ -273,23 +275,4 @@ export class ScheduleComponent implements AfterViewInit {
   }
 
 
-}
-
-interface TimeBlockConfig {
-  start: string; // "08:00"
-  end: string; // "12:00"
-  type: string;
-}
-
-interface SlotItem {
-  id: number;
-  topPercent: number;
-  heightPercent: number;
-  dateDebut: Date;
-  dateFin: Date;
-  etudiant: string;
-  referent: string;
-  lecteur: string;
-  entreprise: string;
-  salle: number;
 }

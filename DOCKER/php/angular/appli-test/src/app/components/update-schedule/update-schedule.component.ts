@@ -12,17 +12,18 @@ import { Salle } from '../../models/salle.model';
 import { Soutenance } from '../../models/soutenance.model';
 import { SalleService } from '../../services/salle.service';
 import { SoutenanceService } from '../../services/soutenance.service';
-// import { ModaleSoutenanceComponent } from '../modale-soutenance/modale-soutenance.component';
 import { StudentService } from '../../services/student.service';
 import { StaffService } from '../../services/staff.service';
 import { CompanyService } from '../../services/company.service';
 import { Student } from '../../models/student.model';
 import { Staff } from '../../models/staff.model';
 import { Company } from '../../models/company.model';
+import { SlotItem } from '../../models/slotItem.model';
+import { TimeBlockConfig } from '../../models/timeBlock.model';
 
 @Component({
   selector: 'app-update-schedule',
-  imports: [CommonModule, LoadingComponent, AddUpdateScheduleComponent/*,ModaleSoutenanceComponent*/],
+  imports: [CommonModule, LoadingComponent, AddUpdateScheduleComponent],
   templateUrl: './update-schedule.component.html',
   styleUrls: ['./update-schedule.component.css']
 })
@@ -190,23 +191,4 @@ export class UpdateScheduleComponent implements AfterViewInit {
   //   this.isEditModalOpen = false;
   //   // Recharger les données si nécessaire
   // }
-}
-
-interface TimeBlockConfig{
-  start: string;  // "08:00"
-  end: string;    // "12:00"
-  type: string;
-}
-
-interface SlotItem {
-    id: number
-    topPercent: number;
-    heightPercent: number;
-    dateDebut: Date;
-    dateFin: Date;
-    etudiant: string;
-    referent: string;
-    lecteur: string;
-    entreprise: string;
-    salle: number;
 }

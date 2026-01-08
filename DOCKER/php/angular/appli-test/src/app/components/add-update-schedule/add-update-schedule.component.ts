@@ -1,9 +1,11 @@
-import { Component, OnInit, Input, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Planning } from '../../models/planning.model';
 import { ScheduleBoardComponent } from '../schedule-board/schedule-board.component';
 import { LoadingComponent } from '../loading/loading.component';
 import { Router } from '@angular/router';
+import { SlotItem } from '../../models/slotItem.model';
+import { TimeBlockConfig } from '../../models/timeBlock.model';
 import { ModaleSoutenanceComponent } from '../modale-soutenance/modale-soutenance.component';
 
 @Component({
@@ -79,23 +81,4 @@ export class AddUpdateScheduleComponent implements AfterViewInit {
   onSoutenanceSaved(updatedSoutenance: any) {
     this.isModalOpen = false;
   }
-}
-
-interface TimeBlockConfig{
-  start: string;  // "08:00"
-  end: string;    // "12:00"
-  type: string;
-}
-
-interface SlotItem {
-    id: number;
-    topPercent: number;
-    heightPercent: number;
-    dateDebut: Date;
-    dateFin: Date;
-    etudiant: string;
-    referent: string;
-    lecteur: string;
-    entreprise: string;
-    salle: number;
 }

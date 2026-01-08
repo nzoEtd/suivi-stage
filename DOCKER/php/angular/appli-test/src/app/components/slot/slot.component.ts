@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SlotItem } from '../../models/slotItem.model';
 
 @Component({
   selector: 'app-slot',
@@ -17,17 +18,4 @@ export class SlotComponent {
     console.log("slot cliqué", this.slot)
     this.editSlot.emit(this.slot);
   }
-}
-
-interface SlotItem {
-  id: number;
-  topPercent: number;
-  heightPercent: number;
-  dateDebut: Date;
-  dateFin: Date;
-  etudiant: string;
-  referent: string;
-  lecteur: string;
-  entreprise: string;
-  salle: number;
 }

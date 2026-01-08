@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SlotComponent } from '../slot/slot.component';
 import { MatGridListModule } from '@angular/material/grid-list';
-// import { ModaleSoutenanceComponent } from '../modale-soutenance/modale-soutenance.component';
+import { SlotItem } from '../../models/slotItem.model';
+import { TimeBlock, TimeBlockConfig } from '../../models/timeBlock.model';
 
 @Component({
   selector: 'app-schedule-board',
-  imports: [CommonModule, SlotComponent, MatGridListModule/*, ModaleSoutenanceComponent*/],
+  imports: [CommonModule, SlotComponent, MatGridListModule],
   standalone: true,
   templateUrl: './schedule-board.component.html',
   styleUrls: ['./schedule-board.component.css']
@@ -114,31 +115,3 @@ export class ScheduleBoardComponent implements OnInit {
   }
 }
 
-interface TimeBlockConfig {
-  start: string;  // "08:00"
-  end: string;    // "12:00"
-  type: string;
-}
-
-interface TimeBlock {
-  start: string;  // "08:00"
-  end: string;    // "12:00"
-  type: string;
-  startMin: number;
-  endMin: number;
-  duration: number;
-  heightPercent: number;
-}
-
-interface SlotItem {
-  id: number;
-  topPercent: number;
-  heightPercent: number;
-  dateDebut: Date;
-  dateFin: Date;
-  etudiant: string;
-  referent: string;
-  lecteur: string;
-  entreprise: string;
-  salle: number;
-}
