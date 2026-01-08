@@ -20,6 +20,7 @@ import { Staff } from '../../models/staff.model';
 import { Company } from '../../models/company.model';
 import { SlotItem } from '../../models/slotItem.model';
 import { TimeBlockConfig } from '../../models/timeBlock.model';
+import { convertSoutenancesToSlots, getDatesBetween } from '../../utils/fonctions';
 
 @Component({
   selector: 'app-update-schedule',
@@ -81,7 +82,7 @@ export class UpdateScheduleComponent implements AfterViewInit {
     }).subscribe(async result => {
         this.planning = result.planning!;
         console.log("le planning",this.planning)
-        this.jours = this.getDatesBetween(
+        this.jours = getDatesBetween(
           this.planning.dateDebut!, 
           this.planning.dateFin!
         );
@@ -94,7 +95,7 @@ export class UpdateScheduleComponent implements AfterViewInit {
         this.allStaff = result.staff;
         this.allCompanies =result.companies;
         console.log("les soutenances avant slot",this.allSoutenances)
-        this.slots = await this.convertSoutenancesToSlots(this.allSoutenances);
+        this.slots = await convertSoutenancesToSlots(this.allSoutenances, this.allStudents, this.allStaff, this.allCompanies);
         console.log("les slots",this.slots)
         
         this.allDataLoaded = true;
@@ -113,82 +114,4 @@ export class UpdateScheduleComponent implements AfterViewInit {
       this.initService.setInitialized();
     });
   }
-  
-  private getDatesBetween(start: Date, end: Date): Date[] {
-    const dates: Date[] = [];
-    const currentDate = new Date(start);
-    const endDate = new Date(end);
-  
-    while (currentDate <= endDate) {
-      const day = currentDate.getDay();
-      if (day !== 0 && day !== 6) {      
-        dates.push(new Date(currentDate));
-      }
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-  
-    return dates;
-  }
-  
-  private async convertSoutenancesToSlots(
-    soutenances: Soutenance[]
-  ): Promise<SlotItem[]> {
-    console.log("soutenances ?",soutenances)
-    const validSoutenances = soutenances.filter(
-      (s) =>
-        s.date !== null &&
-        s.heureDebut !== null &&
-        s.heureFin !== null &&
-        s.idLecteur !== null &&
-        s.idUPPA != null &&
-        s.nomSalle !== null &&
-        s.idSoutenance
-    );
-     return validSoutenances.map(s => {
-      const student = this.allStudents.find(st => st.idUPPA === s.idUPPA);
-      const referent = student?.idTuteur 
-        ? this.allStaff.find(f => f.idPersonnel === student.idTuteur)
-        : null;
-
-      const lecteur = this.allStaff.find(f => f.idPersonnel === s.idLecteur);
-
-      const company = student?.idEntreprise 
-        ? this.allCompanies.find(c => c.idEntreprise === student.idEntreprise)
-        : null;
-
-      return {
-          id: s.idSoutenance,
-          topPercent: 0,
-          heightPercent: 0,
-          dateDebut: this.getDateHeure(s.date!, s.heureDebut!),
-          dateFin: this.getDateHeure(s.date!, s.heureFin!),
-          etudiant: student ? `${student.nom} ${student.prenom}` : "Étudiant inconnu",
-          referent: referent ? `${referent.prenom![0]}. ${referent.nom}` : "Pas de référent",
-          lecteur: lecteur ? `${lecteur.prenom![0]}. ${lecteur.nom}` : "Lecteur inconnu",
-          entreprise: company ? company.raisonSociale! : "Pas d'entreprise",
-          salle: s.nomSalle!,
-        } ;
-    });
-  }
-
-  private getDateHeure(date: Date, heure: string): Date{
-    const [heures, minutes] = heure.split(':').map(Number);
-  
-    const dateFinale = new Date(date);
-    dateFinale.setHours(heures, minutes, 0, 0);
-
-    return dateFinale;
-  }
-
-  // openEditModal(slot: any) {
-  //   this.selectedSoutenance = slot;
-  //   console.log("le slot sélectionné : ",slot)
-  //   this.isEditModalOpen = true;
-  // }
-
-  // onSoutenanceSaved(updatedSoutenance: any) {
-  //   // Logique de sauvegarde
-  //   this.isEditModalOpen = false;
-  //   // Recharger les données si nécessaire
-  // }
 }

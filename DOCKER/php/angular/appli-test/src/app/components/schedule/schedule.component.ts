@@ -22,6 +22,7 @@ import { Staff } from "../../models/staff.model";
 import { Company } from "../../models/company.model";
 import { SlotItem } from "../../models/slotItem.model";
 import { TimeBlockConfig } from "../../models/timeBlock.model";
+import { getDatesBetween, loadSoutenancesForPlanning } from "../../utils/fonctions";
 
 @Component({
   selector: "app-schedule",
@@ -157,7 +158,7 @@ export class ScheduleComponent implements AfterViewInit {
       this.selectedPlanning.heureFinAprem
     ) {
       // Générer les dates pour ce planning uniquement
-      this.jours = this.getDatesBetween(
+      this.jours = getDatesBetween(
         this.selectedPlanning.dateDebut,
         this.selectedPlanning.dateFin
       );
@@ -183,7 +184,8 @@ export class ScheduleComponent implements AfterViewInit {
       this.timeBlocks.push(...newTimeBlocks);
 
       // Charger les soutenances pour ce planning
-      await this.loadSoutenancesForPlanning(this.selectedPlanning);
+      this.slots = await loadSoutenancesForPlanning(this.selectedPlanning, this.allSoutenances, this.slots, this.allStudents, this.allStaff, this.allCompanies, this.cdRef);
+      console.log("les slots ?", this.slots)
       this.allDataLoaded = true;
     } else {
       this.jours = [];
@@ -192,87 +194,4 @@ export class ScheduleComponent implements AfterViewInit {
       this.allDataLoaded = true;
     }
   }
-
-  private getDatesBetween(start: Date, end: Date): Date[] {
-    const dates: Date[] = [];
-    const currentDate = new Date(start);
-    const endDate = new Date(end);
-
-    while (currentDate <= endDate) {
-      const day = currentDate.getDay();
-      if (day !== 0 && day !== 6) {
-        dates.push(new Date(currentDate));
-      }
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    return dates;
-  }
-
-  private async loadSoutenancesForPlanning(planning: Planning) {
-    try {
-      console.log("Chargement des soutenances pour le planning:", planning.nom);
-      const filteredSoutenances = this.allSoutenances.filter((s) => {
-        return s.idPlanning === planning.idPlanning;
-      });
-
-      this.slots = await this.convertSoutenancesToSlots(filteredSoutenances);
-      console.log("soutenances : ", this.slots);
-      this.cdRef.detectChanges();
-    } catch (error) {
-      console.error("Erreur lors du chargement des soutenances:", error);
-      this.slots = [];
-    }
-  }
-
-  private async convertSoutenancesToSlots(
-    soutenances: Soutenance[]
-  ): Promise<SlotItem[]> {
-    const validSoutenances = soutenances.filter(
-      (s) =>
-        s.date !== null &&
-        s.heureDebut !== null &&
-        s.heureFin !== null &&
-        s.idLecteur !== null &&
-        s.idUPPA != null &&
-        s.nomSalle !== null &&
-        s.idSoutenance
-    );
-     return validSoutenances.map(s => {
-    const student = this.allStudents.find(st => st.idUPPA === s.idUPPA);
-    const referent = student?.idTuteur 
-      ? this.allStaff.find(f => f.idPersonnel === student.idTuteur)
-      : null;
-
-    const lecteur = this.allStaff.find(f => f.idPersonnel === s.idLecteur);
-
-    const company = student?.idEntreprise 
-      ? this.allCompanies.find(c => c.idEntreprise === student.idEntreprise)
-      : null;
-
-    return {
-        id: s.idSoutenance,
-        topPercent: 0,
-        heightPercent: 0,
-        dateDebut: this.getDateHeure(s.date!, s.heureDebut!),
-        dateFin: this.getDateHeure(s.date!, s.heureFin!),
-        etudiant: student ? `${student.nom} ${student.prenom}` : "Étudiant inconnu",
-        referent: referent ? `${referent.prenom![0]}. ${referent.nom}` : "Pas de référent",
-        lecteur: lecteur ? `${lecteur.prenom![0]}. ${lecteur.nom}` : "Lecteur inconnu",
-        entreprise: company ? company.raisonSociale! : "Pas d'entreprise",
-        salle: s.nomSalle!,
-      } ;
-  });
-}
-
-  private getDateHeure(date: Date, heure: string): Date {
-    const [heures, minutes] = heure.split(":").map(Number);
-
-    const dateFinale = new Date(date);
-    dateFinale.setHours(heures, minutes, 0, 0);
-
-    return dateFinale;
-  }
-
-
 }
