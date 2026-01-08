@@ -22,7 +22,7 @@ import { Staff } from "../../models/staff.model";
 import { Company } from "../../models/company.model";
 import { SlotItem } from "../../models/slotItem.model";
 import { TimeBlockConfig } from "../../models/timeBlock.model";
-import { getDatesBetween, loadSoutenancesForPlanning } from "../../utils/fonctions";
+import { getDatesBetween, isSameDay, loadSoutenancesForPlanning } from "../../utils/fonctions";
 
 @Component({
   selector: "app-schedule",
@@ -61,6 +61,7 @@ export class ScheduleComponent implements AfterViewInit {
 
   selectedJour?: Date;
   sallesDispo: number[] = [];
+  sallesAffiches:number[] = [];
   slots: SlotItem[] = [];
   timeBlocks: TimeBlockConfig[] = [];
 
@@ -127,6 +128,21 @@ export class ScheduleComponent implements AfterViewInit {
 
   updateJour(jour: Date) {
     this.selectedJour = jour;
+    //Recherche de toutes les salles réellement utilisées
+    this.sallesAffiches = this.getAllSallesUsed(this.sallesDispo, this.selectedJour);
+  }
+
+  getAllSallesUsed(sallesDispo: number[], jour:Date): number[] {
+    const salles: number[] = [];
+    this.slots.forEach(slot => {
+      sallesDispo.forEach(salle => {
+        if(salle === slot.salle && !salles.includes(salle) && isSameDay(slot.dateDebut, jour)){
+          salles.push(salle);
+        }
+      });
+    });
+
+    return salles;
   }
 
   export() {}

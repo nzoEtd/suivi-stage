@@ -21,13 +21,13 @@ export class ScheduleBoardComponent implements OnInit {
   @Output() editSlot = new EventEmitter<SlotItem>();
 
   blocks: TimeBlock[] = [];
-  PAUSE_HEIGHT = 10;
+  PAUSE_HEIGHT = 20;
   isModalOpen: boolean = false;
 
   private slotsCache = new Map<TimeBlock, SlotItem[]>();
 
   async ngOnInit() {
-    const converted = this.timeBlocks.map((b: TimeBlockConfig) => {
+      const converted = this.timeBlocks.map((b: TimeBlockConfig) => {
       const startMin = this.toMinutes(b.start);
       const endMin = this.toMinutes(b.end);
       const duration = endMin - startMin;
@@ -72,6 +72,11 @@ export class ScheduleBoardComponent implements OnInit {
     }
 
     return hours;
+  }
+
+  getQuarterHourMarks(block: TimeBlock): number {
+    // Nombre de quarts d'heure dans le bloc (duration en minutes / 15)
+    return Math.floor(block.duration / 15);
   }
 
   isSameDay(d1: Date, d2: Date): boolean {
