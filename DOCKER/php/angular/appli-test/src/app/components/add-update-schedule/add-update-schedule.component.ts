@@ -2,17 +2,8 @@ import { Component, OnInit, Input, AfterViewInit, ChangeDetectorRef } from '@ang
 import { CommonModule } from '@angular/common';
 import { Planning } from '../../models/planning.model';
 import { ScheduleBoardComponent } from '../schedule-board/schedule-board.component';
-import { Soutenance } from '../../models/soutenance.model';
-import { Salle } from '../../models/salle.model';
-import { firstValueFrom, forkJoin } from 'rxjs';
 import { LoadingComponent } from '../loading/loading.component';
-import { StudentService } from '../../services/student.service';
-import { StaffService } from '../../services/staff.service';
-import { CompanyService } from '../../services/company.service';
 import { Router } from '@angular/router';
-import { Student } from '../../models/student.model';
-import { Staff } from '../../models/staff.model';
-import { Company } from '../../models/company.model';
 import { ModaleSoutenanceComponent } from '../modale-soutenance/modale-soutenance.component';
 
 @Component({
@@ -79,16 +70,14 @@ export class AddUpdateScheduleComponent implements AfterViewInit {
   }
 
   openEditModal(slot: SlotItem) {
-    this.selectedSoutenance = slot;
-    this.idSoutenance = this.selectedSoutenance.id;
     console.log("le slot sélectionné : ",slot)
+    this.selectedSoutenance = slot;
+    this.idSoutenance = this.selectedSoutenance!.id;
     this.isModalOpen = true;
   }
 
   onSoutenanceSaved(updatedSoutenance: any) {
-    // Logique de sauvegarde
     this.isModalOpen = false;
-    // Recharger les données si nécessaire
   }
 }
 

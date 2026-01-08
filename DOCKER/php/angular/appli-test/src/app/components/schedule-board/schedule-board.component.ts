@@ -16,9 +16,8 @@ export class ScheduleBoardComponent implements OnInit {
   @Input() slots!: SlotItem[];
   @Input() sallesDispo!: number[];
   @Input() timeBlocks!: TimeBlockConfig[];
-  @Input() openModal: Function = () => null;
 
-  @Output() editSlot = new EventEmitter<any>();
+  @Output() editSlot = new EventEmitter<SlotItem>();
 
   blocks: TimeBlock[] = [];
   PAUSE_HEIGHT = 10;
@@ -110,7 +109,7 @@ export class ScheduleBoardComponent implements OnInit {
   }
 
   onEditSlot(slot: SlotItem) {
-    console.log("slot cliqué, dans schedule board")
+    console.log("slot cliqué, dans schedule board", slot)
     this.editSlot.emit(slot);
   }
 }

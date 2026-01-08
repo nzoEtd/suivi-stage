@@ -31,7 +31,7 @@
                                 [slots]="soutenances"
                                 [sallesDispo]="salles"
                                 [timeBlocks]="timeBlocks"
-                                [openModal]="openEditModal"></app-schedule-board>
+                                (editSlot)="openEditModal($event)"></app-schedule-board>
                             </div>
                             <div class="scroll-day">
                                 <div *ngFor="let jour of jours">
@@ -63,7 +63,7 @@
 
 <app-modale-soutenance
   *ngIf="isModalOpen"
-  (cancel)="isModalOpen = false"
-  idSoutenance="idSoutenance"/>
+  (cancel)="isModalOpen = false"/>
+  <!-- idSoutenance="idSoutenance" -->
   <!-- (save)="onSoutenanceSaved($event)" -->
   <!-- [soutenance]="selectedSoutenance" -->
