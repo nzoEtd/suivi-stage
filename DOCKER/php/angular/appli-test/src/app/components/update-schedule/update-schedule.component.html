@@ -9,14 +9,14 @@
             [planning]="planning"
             [soutenances]="slots"
             [salles]="sallesDispo"
-            [jours]="jours"
-            (editSlot)="openEditModal($event)"></app-add-update-schedule>
+            [jours]="jours"></app-add-update-schedule>
+            <!-- (editSlot)="openEditModal($event)" -->
       }
     </div>
   </div>
 
-  <app-modale-soutenance
+  <!-- <app-modale-soutenance
     *ngIf="isEditModalOpen"
-    (cancel)="isEditModalOpen = false"/>
+    (cancel)="isEditModalOpen = false"/> -->
     <!-- [soutenance]="selectedSoutenance"
     (save)="onSoutenanceSaved($event)" -->

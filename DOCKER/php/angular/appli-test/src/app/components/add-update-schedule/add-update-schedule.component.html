@@ -31,7 +31,7 @@
                                 [slots]="soutenances"
                                 [sallesDispo]="salles"
                                 [timeBlocks]="timeBlocks"
-                                [openModal]="openModal"></app-schedule-board>
+                                [openModal]="openEditModal"></app-schedule-board>
                             </div>
                             <div class="scroll-day">
                                 <div *ngFor="let jour of jours">
@@ -53,9 +53,17 @@
                         @else {
                             <button class="btn primary"><b>Ajouter</b></button>
                         }
+                        <button (click)="openEditModal(soutenances[0])">modale</button>
                     </div>
                 </div>
             }
         }
     </div>
 </div>
+
+<app-modale-soutenance
+  *ngIf="isModalOpen"
+  (cancel)="isModalOpen = false"
+  idSoutenance="idSoutenance"/>
+  <!-- (save)="onSoutenanceSaved($event)" -->
+  <!-- [soutenance]="selectedSoutenance" -->

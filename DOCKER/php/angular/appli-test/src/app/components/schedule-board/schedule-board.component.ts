@@ -2,11 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SlotComponent } from '../slot/slot.component';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { ModaleSoutenanceComponent } from '../modale-soutenance/modale-soutenance.component';
+// import { ModaleSoutenanceComponent } from '../modale-soutenance/modale-soutenance.component';
 
 @Component({
   selector: 'app-schedule-board',
-  imports: [CommonModule, SlotComponent, MatGridListModule, ModaleSoutenanceComponent],
+  imports: [CommonModule, SlotComponent, MatGridListModule/*, ModaleSoutenanceComponent*/],
   standalone: true,
   templateUrl: './schedule-board.component.html',
   styleUrls: ['./schedule-board.component.css']
@@ -109,7 +109,8 @@ export class ScheduleBoardComponent implements OnInit {
     return this.slotsCache.get(block) || [];
   }
 
-  onEditSlot(slot: any) {
+  onEditSlot(slot: SlotItem) {
+    console.log("slot cliqué, dans schedule board")
     this.editSlot.emit(slot);
   }
 }

@@ -13,10 +13,11 @@ import { Router } from '@angular/router';
 import { Student } from '../../models/student.model';
 import { Staff } from '../../models/staff.model';
 import { Company } from '../../models/company.model';
+import { ModaleSoutenanceComponent } from '../modale-soutenance/modale-soutenance.component';
 
 @Component({
   selector: 'app-add-update-schedule',
-  imports: [ScheduleBoardComponent, CommonModule, LoadingComponent],
+  imports: [ScheduleBoardComponent, CommonModule, LoadingComponent, ModaleSoutenanceComponent],
   templateUrl: './add-update-schedule.component.html',
   styleUrls: ['./add-update-schedule.component.css']
 })
@@ -31,6 +32,8 @@ export class AddUpdateScheduleComponent implements AfterViewInit {
   timeBlocks: TimeBlockConfig[] = [];
   allDataLoaded: boolean = false;
   isModalOpen: boolean = false;
+  selectedSoutenance?: SlotItem;
+  idSoutenance?: number;
   
   constructor(
     private readonly cdRef: ChangeDetectorRef,
@@ -73,6 +76,19 @@ export class AddUpdateScheduleComponent implements AfterViewInit {
 
   exit() {
     this.router.navigate(['/schedule']);
+  }
+
+  openEditModal(slot: SlotItem) {
+    this.selectedSoutenance = slot;
+    this.idSoutenance = this.selectedSoutenance.id;
+    console.log("le slot sélectionné : ",slot)
+    this.isModalOpen = true;
+  }
+
+  onSoutenanceSaved(updatedSoutenance: any) {
+    // Logique de sauvegarde
+    this.isModalOpen = false;
+    // Recharger les données si nécessaire
   }
 }
 

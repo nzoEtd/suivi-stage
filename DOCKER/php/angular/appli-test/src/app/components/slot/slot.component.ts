@@ -26,6 +26,7 @@ export class SlotComponent {
   @Output() editSlot = new EventEmitter<any>();
 
   onSlotClick() {
+    console.log("slot cliqué")
     this.editSlot.emit(this.slot);
   }
 }
