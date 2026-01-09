@@ -21,6 +21,8 @@ import { Company } from '../../models/company.model';
 import { SlotItem } from '../../models/slotItem.model';
 import { TimeBlockConfig } from '../../models/timeBlock.model';
 import { convertSoutenancesToSlots, getDatesBetween } from '../../utils/fonctions';
+import { CompanyTutor } from '../../models/company-tutor.model';
+import { CompanyTutorService } from '../../services/company-tutor.service';
 
 @Component({
   selector: 'app-update-schedule',
@@ -37,6 +39,7 @@ export class UpdateScheduleComponent implements AfterViewInit {
   allStudents: Student[] = [];
   allStaff: Staff[] = [];
   allCompanies: Company[] = [];
+  allTutors: CompanyTutor[] = [];
   planning!: Planning;
   id!: number;
   jours: Date[] = [];
@@ -61,6 +64,7 @@ export class UpdateScheduleComponent implements AfterViewInit {
     private readonly studentService: StudentService,
     private readonly staffService: StaffService,
     private readonly companyService: CompanyService,
+    private readonly tutorService: CompanyTutorService,
     private route: ActivatedRoute
   ) {}
 
@@ -72,6 +76,7 @@ export class UpdateScheduleComponent implements AfterViewInit {
     const students$ = this.studentService.getStudents();
     const staff$ = this.staffService.getStaffs();
     const companies$ = this.companyService.getCompanies();
+    const tutors$ = this.tutorService.getCompanyTutors();
     forkJoin({
       salles: this.salle$,
       planning: this.planning$,
@@ -79,8 +84,10 @@ export class UpdateScheduleComponent implements AfterViewInit {
       students: students$,
       staff: staff$,
       companies: companies$,
+      tutors: tutors$
     }).subscribe(async result => {
         this.planning = result.planning!;
+        this.allTutors = result.tutors;
         console.log("le planning",this.planning)
         this.jours = getDatesBetween(
           this.planning.dateDebut!, 
@@ -95,7 +102,7 @@ export class UpdateScheduleComponent implements AfterViewInit {
         this.allStaff = result.staff;
         this.allCompanies =result.companies;
         console.log("les soutenances avant slot",this.allSoutenances)
-        this.slots = await convertSoutenancesToSlots(this.allSoutenances, this.allStudents, this.allStaff, this.allCompanies);
+        this.slots = await convertSoutenancesToSlots(this.allSoutenances, this.allStudents, this.allStaff, this.allCompanies,this.allTutors);
         console.log("les slots",this.slots)
         
         this.allDataLoaded = true;

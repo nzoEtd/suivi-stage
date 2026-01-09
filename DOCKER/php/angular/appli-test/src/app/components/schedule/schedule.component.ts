@@ -22,7 +22,9 @@ import { Staff } from "../../models/staff.model";
 import { Company } from "../../models/company.model";
 import { SlotItem } from "../../models/slotItem.model";
 import { TimeBlockConfig } from "../../models/timeBlock.model";
-import { getDatesBetween, isSameDay, loadSoutenancesForPlanning } from "../../utils/fonctions";
+import { getAllSallesUsed, getDatesBetween, isSameDay, loadSoutenancesForPlanning } from "../../utils/fonctions";
+import { CompanyTutorService } from "../../services/company-tutor.service";
+import { CompanyTutor } from "../../models/company-tutor.model";
 
 @Component({
   selector: "app-schedule",
@@ -53,6 +55,7 @@ export class ScheduleComponent implements AfterViewInit {
   allStudents: Student[] = [];
   allStaff: Staff[] = [];
   allCompanies: Company[] = [];
+  allTutors: CompanyTutor[] = [];
 
   selectedPlanning?: Planning;
   optionSchedule: string[] = ["Sélectionner un planning existant"];
@@ -75,7 +78,8 @@ export class ScheduleComponent implements AfterViewInit {
     private readonly soutenanceService: SoutenanceService,
     private readonly studentService: StudentService,
     private readonly staffService: StaffService,
-    private readonly companyService: CompanyService
+    private readonly companyService: CompanyService,
+    private readonly tutorService: CompanyTutorService
   ) {}
 
   async ngAfterViewInit() {
@@ -85,6 +89,7 @@ export class ScheduleComponent implements AfterViewInit {
     const students$ = this.studentService.getStudents();
     const staff$ = this.staffService.getStaffs();
     const companies$ = this.companyService.getCompanies();
+    const tutors$ = this.tutorService.getCompanyTutors();
 
     forkJoin({
       salles: this.salle$,
@@ -93,12 +98,14 @@ export class ScheduleComponent implements AfterViewInit {
       students: students$,
       staff: staff$,
       companies: companies$,
+      tutors: tutors$
     }).subscribe((result) => {
       this.allPlannings = result.planning;
       this.allSoutenances = result.soutenance;
       this.allStudents = result.students;
       this.allStaff = result.staff;
-      this.allCompanies =result.companies;
+      this.allCompanies = result.companies;
+      this.allTutors = result.tutors;
 
       this.sallesDispo = result.salles
         .filter((s) => s.estDisponible)
@@ -129,20 +136,7 @@ export class ScheduleComponent implements AfterViewInit {
   updateJour(jour: Date) {
     this.selectedJour = jour;
     //Recherche de toutes les salles réellement utilisées
-    this.sallesAffiches = this.getAllSallesUsed(this.sallesDispo, this.selectedJour);
-  }
-
-  getAllSallesUsed(sallesDispo: number[], jour:Date): number[] {
-    const salles: number[] = [];
-    this.slots.forEach(slot => {
-      sallesDispo.forEach(salle => {
-        if(salle === slot.salle && !salles.includes(salle) && isSameDay(slot.dateDebut, jour)){
-          salles.push(salle);
-        }
-      });
-    });
-
-    return salles;
+    this.sallesAffiches = getAllSallesUsed(this.sallesDispo, this.selectedJour, this.slots);
   }
 
   export() {}
@@ -200,8 +194,10 @@ export class ScheduleComponent implements AfterViewInit {
       this.timeBlocks.push(...newTimeBlocks);
 
       // Charger les soutenances pour ce planning
-      this.slots = await loadSoutenancesForPlanning(this.selectedPlanning, this.allSoutenances, this.slots, this.allStudents, this.allStaff, this.allCompanies, this.cdRef);
+      this.slots = await loadSoutenancesForPlanning(this.selectedPlanning, this.allSoutenances, this.slots, this.allStudents, this.allStaff, this.allCompanies, this.allTutors, this.cdRef);
       console.log("les slots ?", this.slots)
+      //Recherche de toutes les salles réellement utilisées
+      this.sallesAffiches = getAllSallesUsed(this.sallesDispo, this.selectedJour, this.slots);
       this.allDataLoaded = true;
     } else {
       this.jours = [];

@@ -9,5 +9,6 @@ export interface SlotItem {
     referent: string;
     lecteur: string;
     entreprise: string;
+    tuteur: string;
     salle: number;
 }
