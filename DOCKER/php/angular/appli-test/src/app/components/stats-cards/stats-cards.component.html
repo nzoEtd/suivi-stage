@@ -1,61 +1,61 @@
 <!-- Vue étudiant - Journal de recherche - Affichage des cartes de statistiques -->
 @if (currentPageUrl === '/dashboard' && currentUserRole === 'STUDENT') {
-    <div class="stats-grid">
-        <div class="stats-card primary">
-          <h3>Recherches de stage refusés</h3>
-          <p>{{ countSearchesByStudentIdAndStatut(currentUserId, 'Refusé') }}</p>
-        </div>
-        
-        <div class="stats-card secondary">
-          <h3>Contacts en attente</h3>
-          <p>{{ countSearchesByStudentIdAndStatut(currentUserId, 'En cours') }}</p>
-        </div>
-        
-        <div class="stats-card tertiary">
-          <h3>Recherches de stage totales</h3>
-          <p>{{ countSearchesByStudentId(currentUserId) }}</p>
-        </div>
-      </div>
+  <div class="stats-grid">
+    <div class="stats-card primary">
+      <h3>Recherches de stage refusés</h3>
+      <p>{{ countSearchesByStudentIdAndStatut(currentUserId, 'Refusé') }}</p>
+    </div>
+    
+    <div class="stats-card secondary">
+      <h3>Contacts en attente</h3>
+      <p>{{ countSearchesByStudentIdAndStatut(currentUserId, 'En cours') }}</p>
+    </div>
+    
+    <div class="stats-card tertiary">
+      <h3>Recherches de stage totales</h3>
+      <p>{{ countSearchesByStudentId(currentUserId) }}</p>
+    </div>
+  </div>
 }
 
 <!-- Vue étudiant - Liste des fiches descriptives - Affichage des cartes de statistiques -->
 @if (currentPageUrl === '/factsheets' && currentUserRole === 'STUDENT') {
   <div class="stats-grid">
-      <div class="stats-card primary">
-        <h3>Nombre de fiche descriptive refusée</h3>
-        <p>{{ countSheetByStudentIdAndStatut(currentUserId, 'Refusée') }}</p>
-      </div>
-      
-      <div class="stats-card secondary">
-        <h3>Nombre de fiche descriptive en attente du responsable des stages</h3>
-        <p>{{ countSheetByStudentIdAndStatut(currentUserId, 'En cours') }}</p>
-      </div>
-      
-      <div class="stats-card tertiary">
-        <h3>Nombre de fiche descriptive validée</h3>
-        <p>{{ countSheetByStudentIdAndStatut(currentUserId, 'Validee') }}</p>
-      </div>
+    <div class="stats-card primary">
+      <h3>Nombre de fiche descriptive refusée</h3>
+      <p>{{ countSheetByStudentIdAndStatut(currentUserId, 'Refusée') }}</p>
     </div>
+    
+    <div class="stats-card secondary">
+      <h3>Nombre de fiche descriptive en attente du responsable des stages</h3>
+      <p>{{ countSheetByStudentIdAndStatut(currentUserId, 'En cours') }}</p>
+    </div>
+    
+    <div class="stats-card tertiary">
+      <h3>Nombre de fiche descriptive validée</h3>
+      <p>{{ countSheetByStudentIdAndStatut(currentUserId, 'Validee') }}</p>
+    </div>
+  </div>
 }
 
 <!-- Vue responsable des stages - Journal de recherche - Affichage des cartes de statistiques pour la liste des étudiants -->
 @if (currentPageUrl === '/dashboard' && currentUserRole === 'INTERNSHIP_MANAGER') {
-    <div class="stats-grid">
-        <div class="stats-card primary">
-          <h3>Nombre d'étudiants sans recherche</h3>
-          <p>{{ countStudentWithoutSearch() }}</p>
-        </div>
-        
-        <div class="stats-card secondary">
-          <h3>Nombre d'étudiants</h3>
-          <p>{{ countStudents() }}</p>
-        </div>
-        
-        <div class="stats-card tertiary">
-          <h3>Nombre d'étudiants avec au moins une recherche de stage validé</h3>
-          <p>{{ countStudentsWithValidedSearch() }}</p>
-        </div>
-      </div>
+  <div class="stats-grid">
+    <div class="stats-card primary">
+      <h3>Nombre d'étudiants sans recherche</h3>
+      <p>{{ countStudentWithoutSearch() }}</p>
+    </div>
+    
+    <div class="stats-card secondary">
+      <h3>Nombre d'étudiants</h3>
+      <p>{{ countStudents() }}</p>
+    </div>
+    
+    <div class="stats-card tertiary">
+      <h3>Nombre d'étudiants avec au moins une recherche de stage validé</h3>
+      <p>{{ countStudentsWithValidedSearch() }}</p>
+    </div>
+  </div>
 }
 
 <!-- Vue responsable des stages - Journal de recherche - Affichage des cartes de statistiques pour le journal d'un étudiant -->
