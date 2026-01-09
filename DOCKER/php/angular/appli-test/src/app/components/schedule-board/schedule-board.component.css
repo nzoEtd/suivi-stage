@@ -1,12 +1,14 @@
 .planning {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .header-planning {
   background-color: #D9D9D9;
   height: 50px;
   min-width: max-content;
+  width: 100%;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -45,6 +47,10 @@
   padding: 4px 2px;
 }
 
+.hour-item:last-child {
+  height: 10%;
+}
+
 .body-planning {
   background-color: #F7F7F7; 
   width: 100%;
@@ -64,6 +70,7 @@
   position: relative;
   top: -14%;
   z-index: 100;
+  width: 100%;
 }
 
 .salle-cell {
@@ -79,7 +86,8 @@
     display: flex; 
     align-items: flex-start;
     justify-content: center;
-    flex: 0 0 200px;
+    flex: 1 1 auto;
+    min-width: 200px;
     flex-direction: column;
     min-height: 100%; 
     padding: 2px;
@@ -114,6 +122,7 @@
 }
 
 .quarter-mark:nth-child(4n) {
-  background-color: #a0a0a0; 
+  background-color: #880b0b; 
   border-top: 1px solid #a0a0a0;
+  z-index:2;
 }

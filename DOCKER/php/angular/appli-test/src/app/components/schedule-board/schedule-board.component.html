@@ -35,7 +35,7 @@
                         }
                     </div>
 
-                    @if(slot.salle === salle && isSameDay(slot.dateDebut, jourActuel)){
+                    @if(slot.salle === salle && checkSameDay(slot.dateDebut, jourActuel)){
                         <app-slot 
                             [slot]="slot"
                             (editSlot)="onEditSlot($event)">
@@ -43,9 +43,6 @@
                     }
                 }
             </div>
-            @if(block.type === 'morning'){
-                <div class="pause" [style.height.px]="PAUSE_HEIGHT"></div>
-            }
         }
         </div>
     </div>

@@ -4,6 +4,7 @@ import { SlotComponent } from '../slot/slot.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { SlotItem } from '../../models/slotItem.model';
 import { TimeBlock, TimeBlockConfig } from '../../models/timeBlock.model';
+import { isSameDay } from '../../utils/timeManagement';
 
 @Component({
   selector: 'app-schedule-board',
@@ -106,6 +107,10 @@ export class ScheduleBoardComponent implements OnInit {
 
   slotsInBlock(block: TimeBlock): SlotItem[] {
     return this.slotsCache.get(block) || [];
+  }
+
+  checkSameDay(date1: Date, date2: Date): boolean{
+    return isSameDay(date1, date2);
   }
 
   onEditSlot(slot: SlotItem) {
