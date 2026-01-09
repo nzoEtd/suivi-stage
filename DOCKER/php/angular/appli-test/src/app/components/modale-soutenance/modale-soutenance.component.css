@@ -24,6 +24,11 @@
   box-sizing: border-box;
 }
 
+.modal-topbar {
+  display: flex;
+  justify-content: space-between;
+}
+
 .modal-title {
   font-size: 1.8rem;
   font-weight: 600;
@@ -46,6 +51,10 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+}
+
+span {
+  font-weight: 700;
 }
 
 /* Input wrapper */
@@ -186,7 +195,7 @@
 }
 
 .cancel-button,
-.alidate-button {
+.validate-button {
   border: none;
   padding: 10px 20px;
   border-radius: 6px;
@@ -200,7 +209,7 @@
   color: #fff;
 }
 
-.alidate-button {
+.validate-button {
   background: #0A63A4;
   color: #fff;
 }

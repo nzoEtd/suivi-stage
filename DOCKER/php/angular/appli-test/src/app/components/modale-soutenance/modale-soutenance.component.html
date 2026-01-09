@@ -1,24 +1,27 @@
-<div *ngIf="!dataLoaded">
-  <app-loading/>
-</div>
-<div *ngIf="dataLoaded" class="modal-overlay">
+<div class="modal-overlay">
     <div class="modal">
-        <h1 class="modal-title">
-            Soutenance {{ soutenanceData.heureDebut.split(':')[0] }}h-{{ soutenanceData.heureFin.split(':')[0] }}h S{{ soutenanceData.nomSalle }}
-        </h1>
+        <div class="modal-topbar">
+            <button type="button" (click)="onCancel()" class="close-button">
+                x
+            </button>
+            <h1 class="modal-title">
+                Soutenance {{ formatDate(soutenance.dateDebut, false, true) }}-{{ formatDate(soutenance.dateFin, false, true) }} S{{ soutenance.salle }}
+            </h1>
+        </div>
+
         <div class="form">
-            <p>Etudiant : {{ etudiant.nom }} {{ etudiant.prenom }}</p>
-            <p>Enseignant référent : {{ enseignantReferent.nom }} {{ enseignantReferent.prenom }}</p>
-            <p>Entreprise : {{ entreprise.raisonSociale }}</p>
-            <p>Tuteur d'entreprise : {{ tuteurEntreprise.nom }} {{ tuteurEntreprise.prenom }}</p>
-            <p>Enseignant lecteur : {{ enseignantLecteur.nom }} {{ enseignantLecteur.prenom }}</p>
+            <p><span>Etudiant :</span> {{ soutenance.etudiant }}</p>
+            <p><span>Enseignant référent :</span> {{ soutenance.referent }}</p>
+            <p><span>Entreprise :</span> {{ soutenance.entreprise }}</p>
+            <p><span>Tuteur d'entreprise :</span> {{ soutenance.tuteur }}</p>
+            <p><span>Enseignant lecteur :</span> {{ soutenance.lecteur }}</p>
             <div class="line-wrapper">
-                <p>Heure début : {{ soutenanceData.heureDebut.split(':')[0] }}h{{ soutenanceData.heureDebut.split(':')[1]  }}</p>
-                <p>Heure fin : {{ soutenanceData.heureFin.split(':')[0] }}h{{ soutenanceData.heureFin.split(':')[1] }}</p>
+                <p><span>Heure début :</span> {{ formatDate(soutenance.dateDebut, false, true)  }}</p>
+                <p><span>Heure fin :</span> {{ formatDate(soutenance.dateFin, false, true) }}</p>
             </div>
             <div class="line-wrapper">
-                <p>Jour : {{ formatDate(soutenanceData.date) }}</p>
-                <p>Salle : {{ soutenanceData.nomSalle }}</p>
+                <p><span>Jour :</span> {{ formatDate(soutenance.dateDebut, true, false) }}</p>
+                <p><span>Salle :</span> {{ soutenance.salle }}</p>
             </div>
         </div>
     </div>
