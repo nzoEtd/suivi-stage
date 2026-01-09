@@ -22,7 +22,8 @@ import { Staff } from "../../models/staff.model";
 import { Company } from "../../models/company.model";
 import { SlotItem } from "../../models/slotItem.model";
 import { TimeBlockConfig } from "../../models/timeBlock.model";
-import { getAllSallesUsed, getDatesBetween, isSameDay, loadSoutenancesForPlanning } from "../../utils/fonctions";
+import { getAllSallesUsed, loadSoutenancesForPlanning } from "../../utils/fonctions";
+import { getDatesBetween, isSameDay } from "../../utils/timeManagement";
 import { CompanyTutorService } from "../../services/company-tutor.service";
 import { CompanyTutor } from "../../models/company-tutor.model";
 
