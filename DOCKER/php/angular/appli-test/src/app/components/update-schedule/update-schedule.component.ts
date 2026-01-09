@@ -20,7 +20,8 @@ import { Staff } from '../../models/staff.model';
 import { Company } from '../../models/company.model';
 import { SlotItem } from '../../models/slotItem.model';
 import { TimeBlockConfig } from '../../models/timeBlock.model';
-import { convertSoutenancesToSlots, getDatesBetween } from '../../utils/fonctions';
+import { convertSoutenancesToSlots } from '../../utils/fonctions';
+import { getDatesBetween } from '../../utils/timeManagement';
 
 @Component({
   selector: 'app-update-schedule',

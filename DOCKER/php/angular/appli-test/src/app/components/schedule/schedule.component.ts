@@ -22,7 +22,8 @@ import { Staff } from "../../models/staff.model";
 import { Company } from "../../models/company.model";
 import { SlotItem } from "../../models/slotItem.model";
 import { TimeBlockConfig } from "../../models/timeBlock.model";
-import { getDatesBetween, isSameDay, loadSoutenancesForPlanning } from "../../utils/fonctions";
+import { loadSoutenancesForPlanning } from "../../utils/fonctions";
+import { getDatesBetween, isSameDay } from "../../utils/timeManagement";
 
 @Component({
   selector: "app-schedule",
