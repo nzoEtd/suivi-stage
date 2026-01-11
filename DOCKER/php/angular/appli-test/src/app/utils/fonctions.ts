@@ -7,15 +7,21 @@ import { Staff } from "../models/staff.model";
 import { Student } from "../models/student.model";
 import { getDateHeure, isSameDay } from "./timeManagement";
 import { CompanyTutor } from "../models/company-tutor.model";
+import { StudentStaffAcademicYearService } from "../services/student-staff-academicYear.service";
+import { Student_TrainingYear_AcademicYear } from "../models/student-trainingYear-academicYear.model";
+import { forkJoin } from "rxjs";
+import { Student_Staff_AcademicYear } from "../models/student-staff-academicYear.model";
+import { AcademicYear } from "../models/academic-year.model";
+import { Student_Staff_AcademicYear_String } from "../models/student-staff-academicYear-string.model";
 
-export async function loadSoutenancesForPlanning(planning: Planning, allSoutenances: Soutenance[], slots: SlotItem[], allStudents: Student[], allStaff: Staff[], allCompanies: Company[], allTutors: CompanyTutor[], cdRef: ChangeDetectorRef): Promise<SlotItem[]> {
+export async function loadSoutenancesForPlanning(planning: Planning, allSoutenances: Soutenance[], slots: SlotItem[], allStudents: Student[], allStaff: Staff[], allCompanies: Company[], allTutors: CompanyTutor[], referents: Student_Staff_AcademicYear_String[], trainingAcademicYears: Student_TrainingYear_AcademicYear[], academicYears: AcademicYear[], cdRef: ChangeDetectorRef): Promise<SlotItem[]> {
     try {
       console.log("Chargement des soutenances pour le planning:", planning.nom);
       const filteredSoutenances = allSoutenances.filter((s) => {
         return s.idPlanning === planning.idPlanning;
       });
 
-      slots = await convertSoutenancesToSlots(filteredSoutenances, allStudents, allStaff, allCompanies, allTutors);
+      slots = await convertSoutenancesToSlots(filteredSoutenances, allStudents, allStaff, allCompanies, allTutors, referents, trainingAcademicYears, academicYears);
       console.log("soutenances : ", slots);
       cdRef.detectChanges();
     } catch (error) {
@@ -25,7 +31,7 @@ export async function loadSoutenancesForPlanning(planning: Planning, allSoutenan
     return slots;
   }
 
-export async function convertSoutenancesToSlots(soutenances: Soutenance[], allStudents: Student[], allStaff: Staff[], allCompanies: Company[], allTutors: CompanyTutor[]): Promise<SlotItem[]> {
+export async function convertSoutenancesToSlots(soutenances: Soutenance[], allStudents: Student[], allStaff: Staff[], allCompanies: Company[], allTutors: CompanyTutor[], referents: Student_Staff_AcademicYear_String[], trainingAcademicYears: Student_TrainingYear_AcademicYear[], academicYears: AcademicYear[]): Promise<SlotItem[]> {
     const validSoutenances = soutenances.filter(
       (s) =>
         s.date !== null &&
@@ -38,9 +44,9 @@ export async function convertSoutenancesToSlots(soutenances: Soutenance[], allSt
     );
      return validSoutenances.map(s => {
     const student = allStudents.find(st => st.idUPPA === s.idUPPA);
-    const referent = student?.idTuteur 
-      ? allStaff.find(f => f.idPersonnel === student.idTuteur)
-      : null;
+    const studentYear = trainingAcademicYears.find(a => a.idUPPA === s.idUPPA);
+    const academicYear = academicYears.find(a => a.idAnneeUniversitaire === studentYear?.idAcademicYear);
+    const referent = referents.find(r => r.idUPPA === student?.idUPPA && r.idAnneeUniversitaire === studentYear?.idAcademicYear);
 
     const lecteur = allStaff.find(f => f.idPersonnel === s.idLecteur);
 
@@ -48,7 +54,9 @@ export async function convertSoutenancesToSlots(soutenances: Soutenance[], allSt
       ? allCompanies.find(c => c.idEntreprise === student.idEntreprise)
       : null;
 
-    const tutor = allTutors.find(t => t.idEntreprise === company?.idEntreprise);
+    const tutor = student?.idTuteur 
+    ? allTutors.find(f => f.idTuteur === student.idTuteur)
+    : null;
 
     return {
         id: s.idSoutenance,
@@ -57,7 +65,7 @@ export async function convertSoutenancesToSlots(soutenances: Soutenance[], allSt
         dateDebut: getDateHeure(s.date!, s.heureDebut!),
         dateFin: getDateHeure(s.date!, s.heureFin!),
         etudiant: student ? `${student.nom} ${student.prenom}` : "Étudiant inconnu",
-        referent: referent ? `${referent.prenom![0]}. ${referent.nom}` : "Pas de référent",
+        referent: referent ? `${referent.prenomPersonnel![0]}. ${referent.nomPersonnel}` : "Pas de référent",
         lecteur: lecteur ? `${lecteur.prenom![0]}. ${lecteur.nom}` : "Lecteur inconnu",
         entreprise: company ? company.raisonSociale! : "Pas d'entreprise",
         tuteur: tutor ? `${tutor.nom} ${tutor.prenom}` : "Tuteur d'entreprise inconnu",
