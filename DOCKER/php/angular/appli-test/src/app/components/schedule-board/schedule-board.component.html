@@ -35,7 +35,7 @@
                         }
                     </div>
 
-                    @if(slot.salle === salle && isSameDay(slot.dateDebut, jourActuel)){
+                    @if(slot.salle === salle && checkSameDay(slot.dateDebut, jourActuel)){
                         <app-slot 
                             [slot]="slot"
                             (editSlot)="onEditSlot($event)">

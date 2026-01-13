@@ -16,33 +16,52 @@ class AlgorithmeController extends Controller
     public function run($idUPPA, $idFicheDescriptive)
     {
         $scriptPath = base_path(env('ALGO_AFFECTATION_URL'));
-        
+
         $command = "php " . escapeshellarg($scriptPath) . " " . escapeshellarg($idUPPA) . " " . escapeshellarg($idFicheDescriptive);
         $output = shell_exec($command);
         return $output;
     }
 
-    public function runPlanning($startMorningTime, $endMorningTime, $startAfternoonTime, $endAfternoonTime, $normalPresentationLength, $accommodatedPresentationLength, $inBetweenBreakLength, $maxTeachersWeeklyWorkedTime)
+
+    public function runPlanning($startMorningTime, $endMorningHour, $startAfternoonTime, $endAfternoonTime, $normalPresentationLength, $accommodatedPresentationLength, $inBetweenBreakLength, $maxTeachersWeeklyWorkedTime)
     {
-        $scriptPath = base_path(env('ALGO_PLANNING_URL'));
 
-        $cmd = "$scriptPath $startMorningTime $endMorningTime $startAfternoonTime $endAfternoonTime $normalPresentationLength $accommodatedPresentationLength $inBetweenBreakLength $maxTeachersWeeklyWorkedTime";
-        $output = [];
-        // $code = null;
-        $status = 0;
-        exec($cmd . ' 2>&1', $output, /*$code*/$status);
+        $binaryPath = base_path(env('ALGO_PLANNING_URL'));
 
-        if ($status != 0)
-        {
-            foreach ($output as $line) { echo $line . "\n"; }
-            echo "Error: " . $status . "\n";
-            exit(1);
+        $endMorningTime = $endMorningHour * 60 + 30;
+        $accommodatedPresentationLength = $normalPresentationLength + 20;
+
+        $jsonDirPath = "/var/www/html/suivi-stage/json";
+
+
+        $args = [
+            $startMorningTime,
+            $endMorningTime,
+            $startAfternoonTime,
+            $endAfternoonTime,
+            $normalPresentationLength,
+            $accommodatedPresentationLength,
+            $inBetweenBreakLength,
+            $maxTeachersWeeklyWorkedTime,
+            $jsonDirPath
+        ];
+
+        $cmd = $binaryPath . " " . implode(" ", $args);
+
+        exec($cmd, $output, $status);
+
+
+        if ($status !== 0) {
+            return response()->json([
+                'status' => 'error',
+                'exit_code' => $status,
+                'output' => $output,
+            ], 500);
         }
 
-        foreach ($output as $line) { echo $line . "\n"; }
-        // return response()->json([
-        //     'exit_code' => $code,
-        //     'output' => $output,
-        // ]);
+        return response()->json([
+            'status' => 'success',
+            'output' => $output,
+        ]);
     }
 }
