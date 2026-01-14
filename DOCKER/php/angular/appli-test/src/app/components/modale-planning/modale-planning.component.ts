@@ -120,7 +120,10 @@ export class ModalePlanningComponent implements OnInit {
                   idPlanning: null,
                 }));
                 this.router.navigate(["/schedule/add-schedule"], {
-                  state: { soutenances },
+                  state: {
+                    soutenances: soutenances,
+                    salles: this.salles
+                  },
                 });
               }
             },
