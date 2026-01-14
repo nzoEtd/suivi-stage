@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { SlotItem } from '../../models/slotItem.model';
 // import { Staff } from '../../models/staff.model';
 // import { SalleService } from '../../services/salle.service';
 // import { Salle } from '../../models/salle.model';
@@ -25,7 +26,7 @@ export class ModaleSoutenanceComponent {
     constructor() {}
 
     formatDate(pDate: Date, showDate: boolean=false, showHeure: boolean=false): string {
-        let date_str = pDate.toLocaleString("fr-FR", { timeZone: "UTC" });
+        let date_str = pDate.toLocaleString("fr-FR");
         const [date, heure] = date_str.split(' ');
 
         if (showDate && !showHeure) {
@@ -73,18 +74,4 @@ export class ModaleSoutenanceComponent {
     //         this.newSoutenance.heureFin!
     //     );
     // }
-}
-
-interface SlotItem {
-    id: number;
-    topPercent: number;
-    heightPercent: number;
-    dateDebut: Date;
-    dateFin: Date;
-    etudiant: string;
-    referent: string;
-    lecteur: string;
-    entreprise: string;
-    tuteur: string;
-    salle: number;
 }

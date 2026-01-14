@@ -67,17 +67,13 @@ export class AddUpdateScheduleComponent implements AfterViewInit {
     this.sallesAffiches = getAllSallesUsed(this.salles, this.selectedJour, this.soutenances);
   }
 
-  openModal(): void {
-    this.isModalOpen=true;
-  }
-
   exit() {
     this.router.navigate(['/schedule']);
   }
 
   openEditModal(slot: SlotItem) {
     console.log("le slot sélectionné : ",slot)
-    this.selectedSoutenance = slot;
+    this.selectedSoutenance = slot!;
     this.idSoutenance = this.selectedSoutenance!.id;
     this.isModalOpen = true;
   }

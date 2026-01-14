@@ -15,6 +15,8 @@
     margin-left: 2%;
     cursor: pointer;
     z-index: 10;
+    width: 90%;
+    max-width: 400px;
 }
 
 .slot:hover {

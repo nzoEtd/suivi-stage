@@ -62,7 +62,7 @@
 
 <app-modale-soutenance
   *ngIf="isModalOpen"
-  (cancel)="isModalOpen = false"/>
+  (cancel)="isModalOpen = false"
+  [soutenance]="selectedSoutenance!"/>
   <!-- idSoutenance="idSoutenance" -->
   <!-- (save)="onSoutenanceSaved($event)" -->
-  <!-- [soutenance]="selectedSoutenance" -->

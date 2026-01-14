@@ -33,6 +33,7 @@ import { AcademicYear } from "../../models/academic-year.model";
 import { AcademicYearService } from "../../services/academic-year.service";
 import { Student_Staff_AcademicYear } from "../../models/student-staff-academicYear.model";
 import { Student_Staff_AcademicYear_String } from "../../models/student-staff-academicYear-string.model";
+import { ModaleSoutenanceComponent } from "../modale-soutenance/modale-soutenance.component";
 
 @Component({
   selector: "app-schedule",
@@ -43,6 +44,7 @@ import { Student_Staff_AcademicYear_String } from "../../models/student-staff-ac
     FormsModule,
     ScheduleBoardComponent,
     ModalePlanningComponent,
+    ModaleSoutenanceComponent
   ],
   templateUrl: "./schedule.component.html",
   styleUrls: ["./schedule.component.css"],
@@ -56,6 +58,7 @@ export class ScheduleComponent implements AfterViewInit {
   currentUserRole?: string;
   allDataLoaded: boolean = false;
   isModalOpen: boolean = false;
+  isModalSoutenanceOpen: boolean = false;
 
   allPlannings: Planning[] = [];
   allSoutenances: Soutenance[] = [];
@@ -76,6 +79,8 @@ export class ScheduleComponent implements AfterViewInit {
   selectedJour?: Date;
   sallesDispo: number[] = [];
   sallesAffiches:number[] = [];
+  selectedSoutenance?: SlotItem;
+  idSoutenance?: number;
   slots: SlotItem[] = [];
   timeBlocks: TimeBlockConfig[] = [];
 
@@ -174,6 +179,13 @@ export class ScheduleComponent implements AfterViewInit {
     this.router.navigate([
       "/schedule/update-schedule/" + this.selectedPlanning?.idPlanning,
     ]);
+  }
+
+  openModal(slot: SlotItem) {
+    console.log("le slot sélectionné : ",slot)
+    this.selectedSoutenance = slot!;
+    this.idSoutenance = this.selectedSoutenance!.id;
+    this.isModalSoutenanceOpen = true;
   }
 
   async onPlanningChange(planningName: string) {
