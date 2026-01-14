@@ -79,6 +79,11 @@ class EtudiantAnneeformAnneeunivSeeder extends Seeder
                 'idUPPA' => '613453',
                 'idAnneeFormation' => 3,
                 'idAnneeUniversitaire' => 2,
+            ],
+            [
+                'idUPPA' => '611107',
+                'idAnneeFormation' => 2,
+                'idAnneeUniversitaire' => 1
             ]
         ]);
     }
