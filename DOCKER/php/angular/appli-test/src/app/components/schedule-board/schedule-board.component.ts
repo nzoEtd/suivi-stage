@@ -28,6 +28,7 @@ export class ScheduleBoardComponent implements OnInit {
   private slotsCache = new Map<TimeBlock, SlotItem[]>();
 
   async ngOnInit() {
+    console.log("RECUP",this.slots,this.sallesDispo)
     const converted = this.timeBlocks.map((b: TimeBlockConfig) => {
       const startMin = this.toMinutes(b.start);
       const endMin = this.toMinutes(b.end);

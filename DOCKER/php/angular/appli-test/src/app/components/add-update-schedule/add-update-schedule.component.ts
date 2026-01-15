@@ -1,4 +1,4 @@
-import { Component, Input, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Planning } from '../../models/planning.model';
 import { ScheduleBoardComponent } from '../schedule-board/schedule-board.component';
@@ -14,7 +14,7 @@ import { ModaleSoutenanceComponent } from '../modale-soutenance/modale-soutenanc
   templateUrl: './add-update-schedule.component.html',
   styleUrls: ['./add-update-schedule.component.css']
 })
-export class AddUpdateScheduleComponent implements AfterViewInit {
+export class AddUpdateScheduleComponent implements OnChanges {
   @Input() isEditMode!: Boolean;
   @Input() planning: Planning | undefined;
   @Input() soutenances: SlotItem[] = [];
@@ -33,29 +33,34 @@ export class AddUpdateScheduleComponent implements AfterViewInit {
     private router: Router
   ) {}
 
-  async ngAfterViewInit() {
-    console.log("planning : ",this.planning)
-    console.log("jours : ",this.jours)
-    console.log("soutenances finales : ",this.soutenances)
-    this.timeBlocks = [];
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['planning'] || changes['jours'] || changes['soutenances']) {
+      console.log("planning : ", this.planning);
+      console.log("jours : ", this.jours);
+      console.log("soutenances finales : ", this.soutenances);
 
-    if (this.planning && this.planning.dateDebut && this.planning.dateFin 
-      && this.planning.heureDebutMatin && this.planning.heureFinMatin
-      && this.planning.heureDebutAprem && this.planning.heureFinAprem
-      && this.jours) {
-      this.selectedJour = this.jours[0];
-      const newTimeBlocks: TimeBlockConfig[] = [
-        { start: this.planning.heureDebutMatin, end: this.planning.heureFinMatin, type: "morning" },
-        { start: this.planning.heureDebutAprem, end: this.planning.heureFinAprem, type: "afternoon" }
-      ];
-      
-      this.timeBlocks.push(...newTimeBlocks);
-      
+      this.timeBlocks = [];
+
+      if (
+        this.planning && this.planning.dateDebut && this.planning.dateFin &&
+        this.planning.heureDebutMatin && this.planning.heureFinMatin &&
+        this.planning.heureDebutAprem && this.planning.heureFinAprem &&
+        this.jours.length > 0
+      ) {
+        this.selectedJour = this.jours[0];
+
+        const newTimeBlocks: TimeBlockConfig[] = [
+          { start: this.planning.heureDebutMatin, end: this.planning.heureFinMatin, type: "morning" },
+          { start: this.planning.heureDebutAprem, end: this.planning.heureFinAprem, type: "afternoon" }
+        ];
+        
+        this.timeBlocks.push(...newTimeBlocks);
+      } else {
+        this.selectedJour = undefined;
+      }
+
       this.allDataLoaded = true;
       this.cdRef.detectChanges();
-    } else {
-      this.selectedJour = undefined;
-      this.allDataLoaded = true;
     }
   }
 
@@ -64,7 +69,7 @@ export class AddUpdateScheduleComponent implements AfterViewInit {
   }
 
   openModal(): void {
-    this.isModalOpen=true;
+    this.isModalOpen = true;
   }
 
   exit() {
@@ -72,7 +77,7 @@ export class AddUpdateScheduleComponent implements AfterViewInit {
   }
 
   openEditModal(slot: SlotItem) {
-    console.log("le slot sélectionné : ",slot)
+    console.log("le slot sélectionné : ", slot);
     this.selectedSoutenance = slot;
     this.idSoutenance = this.selectedSoutenance!.id;
     this.isModalOpen = true;

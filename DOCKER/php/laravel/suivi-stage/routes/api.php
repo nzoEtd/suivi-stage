@@ -57,7 +57,7 @@ Route::get('/cas-logout', function (Request $request) {
 });
 
 Route::get('/run-algo/{idUPPA}-{idFicheDescriptive}', [AlgorithmeController::class, 'run']);
-Route::get('/run-algo-planning/{startMorningTime}-{endMorningTime}-{startAfternoonTime}-{endAfternoonTime}-{normalPresentationLength}-{accommodatedPresentationLength}-{inBetweenBreakLength}-{maxTeachersWeeklyWorkedTime}', [AlgorithmeController::class, 'runPlanning']);
+Route::post('/run-algo-planning', [AlgorithmeController::class, 'runPlanning']);
 
 // Route pour le Controller Auth
 Route::get('/get-authenticated-user', [AuthController::class, 'getUser']);

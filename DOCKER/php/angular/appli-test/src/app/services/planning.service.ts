@@ -3,6 +3,7 @@ import { environment } from "../../environments/environment";
 import { Planning } from "../models/planning.model";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Observable, catchError, tap, of } from "rxjs";
+import { Salle } from "../models/salle.model";
 
 @Injectable({
   providedIn: "root",
@@ -46,7 +47,6 @@ export class PlanningService {
         catchError((error) => this.handleError(error, undefined))
       );
   }
-
   runAlgorithmPlanning(
     startMorningTime: number,
     endMorningTime: number,
@@ -55,15 +55,20 @@ export class PlanningService {
     normalPresentationLength: number,
     accommodatedPresentationLength: number,
     inBetweenBreakLength: number,
-    maxTeachersWeeklyWorkedTime: number
+    maxTeachersWeeklyWorkedTime: number,
+    sallesDispo: Salle[]
   ): Observable<string> {
-
-    return this.http.get<string>(
-      `${this.apiUrl}/api/run-algo-planning/${startMorningTime}-${endMorningTime}-${startAfternoonTime}-${endAfternoonTime}-${normalPresentationLength}-${accommodatedPresentationLength}-${inBetweenBreakLength}-${maxTeachersWeeklyWorkedTime}`,
-      {
-        params: { jsonDirPath: "/var/www/html/suivi-stage/json" },
-      }
-    );
+    return this.http.post<string>(`${this.apiUrl}/api/run-algo-planning`, {
+      startMorningTime,
+      endMorningTime,
+      startAfternoonTime,
+      endAfternoonTime,
+      normalPresentationLength,
+      accommodatedPresentationLength,
+      inBetweenBreakLength,
+      maxTeachersWeeklyWorkedTime,
+      sallesDispo,
+    });
   }
 
   //Ajout d'un planning

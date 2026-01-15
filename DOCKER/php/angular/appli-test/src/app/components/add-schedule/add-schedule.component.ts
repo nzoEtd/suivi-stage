@@ -30,7 +30,7 @@ export class AddScheduleComponent implements OnInit {
   currentUser?: any;
   currentUserRole?: string;
   allDataLoaded: boolean = false;
-  planning: Planning= new Planning();
+  planning: Planning = new Planning();
   salles$!: Observable<Salle[]>;
   soutenance$!: Soutenance[];
   slots: SlotItem[] = [];
@@ -39,7 +39,7 @@ export class AddScheduleComponent implements OnInit {
   allCompanies: Company[] = [];
   id!: number;
   jours: Date[] = [];
-  sallesDispo: number[]=[];
+  sallesDispo: number[] = [];
 
   constructor(
     private readonly authService: AuthService,
@@ -67,20 +67,19 @@ export class AddScheduleComponent implements OnInit {
       students: students$,
       staff: staff$,
       companies: companies$,
-      salles: salles$
+      salles: salles$,
     }).subscribe(async (result) => {
       this.soutenance$ = result.soutenances;
-      console.log("Soutenances passées au component : ",this.soutenance$)
+      this.planning = state?.newPlanning;
+
       if (this.soutenance$.length > 0) {
         const dates = this.soutenance$
           .map((s) => new Date(s.date || ""))
           .filter((d) => !isNaN(d.getTime()));
 
-        this.planning.dateDebut = new Date(
-          Math.min(...dates.map((d) => d.getTime()))
+        this.planning.dateFin = new Date(
+          Math.max(...dates.map((d) => d.getTime()))
         );
-
-         this.planning.dateFin = new Date(Math.max(...dates.map((d) => d.getTime())));
       }
 
       this.jours = getDatesBetween(
@@ -98,9 +97,9 @@ export class AddScheduleComponent implements OnInit {
         this.allStaff,
         this.allCompanies
       );
-      console.log("les slots", this.slots);
-
-      this.sallesDispo = (result.salles.filter(s => s.estDisponible).map(s => s.nomSalle));
+      this.sallesDispo = result.salles
+        .filter((s) => s.estDisponible)
+        .map((s) => s.nomSalle);
 
       this.allDataLoaded = true;
       this.cdRef.detectChanges();

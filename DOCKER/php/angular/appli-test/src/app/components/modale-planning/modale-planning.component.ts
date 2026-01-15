@@ -102,8 +102,9 @@ export class ModalePlanningComponent implements OnInit {
             endAfternoonMinutes,
             this.newPlanning.dureeSoutenance!,
             this.newPlanning.dureeSoutenance! * 1.3,
-            5,
-            20 * 60
+            5, //break
+            20 * 60, //tps profs
+            this.selectedSalles
           )
           .subscribe({
             next: (result: any) => {
@@ -112,7 +113,7 @@ export class ModalePlanningComponent implements OnInit {
                 const soutenances: Soutenance[] = parsed.map((item) => ({
                   idSoutenance: -1,
                   date: addDays(this.newPlanning.dateDebut!, item.date),
-                  nomSalle: item.nomSalle,
+                  nomSalle: Number(item.nomSalle),
                   heureDebut: minutesToHHMM(item.heureDebut),
                   heureFin: minutesToHHMM(item.heureFin),
                   idUPPA: item.idUPPA.toString(),
@@ -121,6 +122,7 @@ export class ModalePlanningComponent implements OnInit {
                 }));
                 this.router.navigate(["/schedule/add-schedule"], {
                   state: {
+                    newPlanning:this.newPlanning,
                     soutenances: soutenances,
                     salles: this.salles
                   },
