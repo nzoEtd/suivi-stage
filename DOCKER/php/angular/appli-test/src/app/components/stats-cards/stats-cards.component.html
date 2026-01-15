@@ -1,6 +1,8 @@
 <!-- Vue étudiant - Journal de recherche - Affichage des cartes de statistiques -->
 @if (currentPageUrl === '/dashboard' && currentUserRole === 'STUDENT') {
   <div class="stats-grid">
+    <button (click)="openModalTest()">Afficher la modale de soutenance</button>
+  <app-modale-soutenance *ngIf="showModal" [soutenance]="soutenance" [sallesDispo]="sallesDispo" (cancel)="closeModalTest()" />
     <div class="stats-card primary">
       <h3>Recherches de stage refusés</h3>
       <p>{{ countSearchesByStudentIdAndStatut(currentUserId, 'Refusé') }}</p>

@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Output, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-// import { Staff } from '../../models/staff.model';
-// import { SalleService } from '../../services/salle.service';
-// import { Salle } from '../../models/salle.model';
+import { Soutenance } from '../../models/soutenance.model';
+import { SoutenanceService } from '../../services/soutenance.service';
+import { Staff } from '../../models/staff.model';
+import { Salle } from '../../models/salle.model';
 
 @Component({
   selector: "app-modale-soutenance",
@@ -16,16 +17,20 @@ import { FormsModule } from '@angular/forms';
 export class ModaleSoutenanceComponent {
   isSubmitting: boolean = false;
   @Input() soutenance!: SlotItem;
-  //newSoutenance!: Soutenance;
-  //enseignantsLecteurs: Staff[] = [];
-  //sallesDisponibles: Salle[] = [];
+  @Input() editMode: boolean = false;
+  newSoutenance!: Soutenance;
+  enseignantsLecteurs: Staff[] = [];
+  @Input() sallesDispo!: Salle[];
 
   @Output() cancel = new EventEmitter<void>();
 
-    constructor() {}
+    constructor(private readonly soutenanceService: SoutenanceService) {}
 
     formatDate(pDate: Date, showDate: boolean=false, showHeure: boolean=false): string {
-        let date_str = pDate.toLocaleString("fr-FR", { timeZone: "UTC" });
+        
+        if (pDate === null) return "";
+
+        let date_str = pDate.toLocaleString("fr-FR");
         const [date, heure] = date_str.split(' ');
 
         if (showDate && !showHeure) {
@@ -43,36 +48,36 @@ export class ModaleSoutenanceComponent {
         this.cancel.emit(); 
     }
 
-    // /**
-    //  * Handles form submission by updating the soutenance
-    //  */
-    // async onSubmit() {
-    //     if (this.isFormValid()) {
-    //         try {
-    //             this.isSubmitting = true;
+    /**
+     * Handles form submission by updating the soutenance
+     */
+    async onSubmit() {
+        if (this.isFormValid()) {
+            try {
+                this.isSubmitting = true;
 
-    //             this.soutenanceService.updateSoutenance(this.newSoutenance);
+                this.soutenanceService.updateSoutenance(this.newSoutenance);
 
-    //         } catch (error) {
-    //             console.error('Erreur lors de la mise à jour de la soutenance :', error);
-    //         } finally {
-    //             this.isSubmitting = false;
-    //         }
-    //     }
-    // }
+            } catch (error) {
+                console.error('Erreur lors de la mise à jour de la soutenance :', error);
+            } finally {
+                this.isSubmitting = false;
+            }
+        }
+    }
 
-    // /**
-    //  * Validates if all required fields in the internship search form are filled correctly
-    //  * @returns Boolean indicating if the form is valid
-    //  */
-    // isFormValid(): boolean {
-    //     return !!(
-    //         this.newSoutenance.nomSalle!.trim() &&
-    //         this.newSoutenance.date! &&
-    //         this.newSoutenance.heureDebut! &&
-    //         this.newSoutenance.heureFin!
-    //     );
-    // }
+    /**
+     * Validates if all required fields in the internship search form are filled correctly
+     * @returns Boolean indicating if the form is valid
+     */
+    isFormValid(): boolean {
+        return !!(
+            this.newSoutenance.nomSalle!.trim() &&
+            this.newSoutenance.date! &&
+            this.newSoutenance.heureDebut! &&
+            this.newSoutenance.heureFin!
+        );
+    }
 }
 
 interface SlotItem {

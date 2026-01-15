@@ -1,28 +1,106 @@
 <div class="modal-overlay">
-    <div class="modal">
-        <div class="modal-topbar">
-            <button type="button" (click)="onCancel()" class="close-button">
-                x
-            </button>
-            <h1 class="modal-title">
-                Soutenance {{ formatDate(soutenance.dateDebut, false, true) }}-{{ formatDate(soutenance.dateFin, false, true) }} S{{ soutenance.salle }}
-            </h1>
-        </div>
-
-        <div class="form">
-            <p><span>Etudiant :</span> {{ soutenance.etudiant }}</p>
-            <p><span>Enseignant référent :</span> {{ soutenance.referent }}</p>
-            <p><span>Entreprise :</span> {{ soutenance.entreprise }}</p>
-            <p><span>Tuteur d'entreprise :</span> {{ soutenance.tuteur }}</p>
-            <p><span>Enseignant lecteur :</span> {{ soutenance.lecteur }}</p>
-            <div class="line-wrapper">
-                <p><span>Heure début :</span> {{ formatDate(soutenance.dateDebut, false, true)  }}</p>
-                <p><span>Heure fin :</span> {{ formatDate(soutenance.dateFin, false, true) }}</p>
-            </div>
-            <div class="line-wrapper">
-                <p><span>Jour :</span> {{ formatDate(soutenance.dateDebut, true, false) }}</p>
-                <p><span>Salle :</span> {{ soutenance.salle }}</p>
-            </div>
-        </div>
+  <div class="modal">
+    <div class="modal-topbar">
+        <button type="button" (click)="onCancel()" class="close-button">
+          x
+        </button>
+        <h1 class="modal-title">
+          Soutenance {{ formatDate(soutenance.dateDebut, false, true) }}-{{ formatDate(soutenance.dateFin, false, true) }} S{{ soutenance.salle }}
+        </h1>
     </div>
+    <form (ngSubmit)="onSubmit()" 
+      #soutenanceForm="ngForm"
+      [class.disabled-form]="isSubmitting"
+      class="form"
+    >
+      <!--Non modifiables-->
+      <div class="input-wrapper">
+        <label for="etudiant">Etudiant :</label>
+        <input type="text" name="etudiant" value="{{ soutenance.etudiant }}" disabled>
+      </div>
+      <div class="input-wrapper">
+        <label for="referent">Enseignant référent :</label>
+        <input type="text" name="referent" value="{{ soutenance.referent }}" disabled>
+      </div>
+      <div class="input-wrapper">
+        <label for="entreprise">Entreprise :</label>
+        <input type="text" name="entreprise" value="{{ soutenance.entreprise }}" disabled>
+      </div>
+      <div class="input-wrapper">
+        <label for="tuteur">Tuteur d'entreprise :</label>
+        <input type="text" name="tuteur" value="{{ soutenance.tuteur }}" disabled>
+      </div>
+
+      <!--Modifiables en tant que responsable des stages-->
+      <!--Enseignant lecteur-->
+      <div class="input-wrapper">
+        <label for="lecteur">Enseignant lecteur :</label>
+        <select
+          name="salle"
+          [(ngModel)]="newSoutenance.idLecteur"
+          ng-disabled="!editMode"
+          placeholder="vvv"
+        >
+          <option ng-disabled="!editMode" selected>
+            {{ soutenance.lecteur }}
+          </option>
+          <option
+            *ngFor="let enseignantLecteur of enseignantsLecteurs"
+            value="{{ enseignantLecteur.idPersonnel }}"
+            ng-disabled="!editMode"
+          >
+            {{ enseignantLecteur.nom }} {{ enseignantLecteur.prenom }}
+          </option>
+        </select>
+      </div>
+      <!--Heure de début et de fin-->
+      <div>
+        <div class="input-wrapper">
+          <label for="heureDebut">Heure début :</label>
+          <input type="time" name="heureDebut" ng-disabled="!editMode" value="{{ formatDate(soutenance.dateDebut, false, true) }}">
+        </div>
+        <div class="input-wrapper">
+          <label for="heureFin">Heure fin :</label>
+          <input type="text" name="heureFin" ng-disabled="!editMode" value="{{ formatDate(soutenance.dateFin, false, true) }}">
+        </div>
+      </div>
+      <!--Jour et salle-->
+      <div>
+        <div class="input-wrapper">
+          <label for="jour">Jour :</label>
+          <input type="date" name="jour" ng-disabled="!editMode" value="{{ formatDate(soutenance.dateDebut, true, false) }}">
+        </div>
+        <div class="input-wrapper">
+          <label for="salle">Salle :</label>
+          <select
+            name="salle"
+            [(ngModel)]="newSoutenance.nomSalle"
+            ng-disabled="!editMode"
+            placeholder="vvv"
+          >
+            <option value="soutenance.nomSalle" selected ng-disabled="!editMode">
+              {{ soutenance.salle }}
+            </option>
+            <option
+              *ngFor="let salle of sallesDispo"
+              value="salle.nomSalle"
+              ng-disabled="!editMode"
+            >
+              {{ salle.nomSalle }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <!-- Boutons (mode édition) -->
+      @if (editMode)
+      {
+        <div class="modal-buttons">
+          <button type="button" (click)="onCancel()" class="cancel-button">
+              Annuler
+          </button>
+          <button type="submit" class="generate-button">Valider</button>
+        </div>
+      }
+    </form>
+  </div>
 </div>
