@@ -167,6 +167,7 @@ export class ScheduleComponent implements AfterViewInit {
     this.selectedJour = jour;
     //Recherche de toutes les salles réellement utilisées
     this.sallesAffiches = getAllSallesUsed(this.sallesDispo, this.selectedJour, this.slots);
+    console.log(this.sallesAffiches)
   }
 
   export() {}
@@ -235,6 +236,7 @@ export class ScheduleComponent implements AfterViewInit {
       console.log("les slots ?", this.slots)
       //Recherche de toutes les salles réellement utilisées
       this.sallesAffiches = getAllSallesUsed(this.sallesDispo, this.selectedJour, this.slots);
+      console.log(this.sallesAffiches)
       this.allDataLoaded = true;
     } else {
       this.jours = [];

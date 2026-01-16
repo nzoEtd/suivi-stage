@@ -5,10 +5,11 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { SlotItem } from '../../models/slotItem.model';
 import { TimeBlock, TimeBlockConfig } from '../../models/timeBlock.model';
 import { isSameDay } from '../../utils/timeManagement';
+import {CdkDrag} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-schedule-board',
-  imports: [CommonModule, SlotComponent, MatGridListModule],
+  imports: [CommonModule, SlotComponent, MatGridListModule, CdkDrag],
   standalone: true,
   templateUrl: './schedule-board.component.html',
   styleUrls: ['./schedule-board.component.css']
@@ -18,6 +19,7 @@ export class ScheduleBoardComponent implements OnInit {
   @Input() slots!: SlotItem[];
   @Input() sallesDispo!: number[];
   @Input() timeBlocks!: TimeBlockConfig[];
+  @Input() onlyDisplay!: boolean;
 
   @Output() editSlot = new EventEmitter<SlotItem>();
 
@@ -94,8 +96,12 @@ export class ScheduleBoardComponent implements OnInit {
       })
       .filter(slot => {return (slot as any).startMin >= block.startMin && (slot as any).startMin < block.endMin})
       .map(slot => {
+        console.log("slot: ", slot.startMin, slot.endMin)
+        console.log("block: ",block.startMin)
         const top = slot.startMin - block.startMin;
         const height = slot.endMin - slot.startMin;
+        console.log("top slot : ",top, (top / block.duration) * 100)
+        console.log("height slot : ",height, (height / block.duration) * 100)
 
         return {
           ...slot,

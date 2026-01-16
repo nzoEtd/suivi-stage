@@ -27,6 +27,17 @@
         @for(salle of sallesDispo; track salle){
             <div class="salle-cell" [style.height.px]="block.heightPercent * 3">
                 @for(slot of slotsInBlock(block); track slot){
+                    @if(slot.salle === salle && checkSameDay(slot.dateDebut, jourActuel)){
+                        <div class="slot"
+                        [style.top.%]="slot.topPercent" 
+                        cdkDrag [cdkDragDisabled]="onlyDisplay">
+                            <app-slot 
+                                [slot]="slot"
+                                [style.height.px]="slot.heightPercent * 3"
+                                (editSlot)="onEditSlot($event)">
+                            </app-slot>
+                        </div>
+                    }
                     <div class="time-grid">
                         @for(mark of [].constructor(getQuarterHourMarks(block)); track $index){
                             <div class="quarter-mark" 
@@ -34,13 +45,6 @@
                             </div>
                         }
                     </div>
-
-                    @if(slot.salle === salle && checkSameDay(slot.dateDebut, jourActuel)){
-                        <app-slot 
-                            [slot]="slot"
-                            (editSlot)="onEditSlot($event)">
-                        </app-slot>
-                    }
                 }
             </div>
         }
