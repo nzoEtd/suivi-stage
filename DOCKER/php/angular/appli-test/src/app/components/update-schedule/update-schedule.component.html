@@ -1,0 +1,22 @@
+<div class="schedule">
+    <div class="content">
+      @if (!currentUser || !allDataLoaded) {
+      <app-loading />
+      }
+      @else{
+        <app-add-update-schedule
+            [isEditMode]="true"
+            [planning]="planning"
+            [soutenances]="slots"
+            [salles]="sallesDispo"
+            [jours]="jours"></app-add-update-schedule>
+            <!-- (editSlot)="openEditModal($event)" -->
+      }
+    </div>
+  </div>
+
+  <!-- <app-modale-soutenance
+    *ngIf="isEditModalOpen"
+    (cancel)="isEditModalOpen = false"/> -->
+    <!-- [soutenance]="selectedSoutenance"
+    (save)="onSoutenanceSaved($event)" -->

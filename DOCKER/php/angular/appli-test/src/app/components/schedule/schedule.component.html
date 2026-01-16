@@ -1,0 +1,61 @@
+<div class="schedule">
+    <div class="content">
+      @if (!currentUser || !allDataLoaded) {
+        <app-loading/>
+      }
+        <div [hidden]="!allDataLoaded" class="header-schedule-content">
+            <div>
+                <select [(ngModel)]="selectedOption" (ngModelChange)="onPlanningChange($event)" class="select-schedule">
+                    <option *ngFor="let option of optionSchedule" [value]="option">
+                      {{ option }}
+                    </option>
+                  </select>
+                &nbsp;
+                <button (click)="goToAdd()"class="btn-generate-schedule" *ngIf="selectedOption !== 'Sélectionner un planning existant'">+</button>
+            </div>
+          <h3 class="title" *ngIf="selectedOption !== 'Sélectionner un planning existant'">{{selectedJour | date:'EEEE dd MMMM yyyy':'':'fr'}}</h3>
+            <div *ngIf="selectedOption !== 'Sélectionner un planning existant'">
+                <button (click)="goToUpdate()"class="btn-update-schedule">Modifier</button>
+                &nbsp;
+                <button (click)="export()"class="btn-export-schedule">Exporter</button>
+            </div>
+        </div>
+        <div [hidden]="!allDataLoaded">
+            <div class="empty-schedule" *ngIf="selectedOption === 'Sélectionner un planning existant'">
+                <button (click)="goToAdd()"class="btn-generate-schedule">Générer un planning</button>
+            </div>
+            <div *ngIf="selectedOption !== 'Sélectionner un planning existant'" class="schedule-content">
+              <div class="planning-scroll">
+                <app-schedule-board
+                *ngIf="allDataLoaded && selectedPlanning && selectedJour"
+                [jourActuel]="selectedJour"
+                [slots]="slots"
+                [sallesDispo]="sallesAffiches"
+                [timeBlocks]="timeBlocks"
+                (editSlot)="openModal($event)"></app-schedule-board>
+              </div>
+                <div class="scroll-day">
+                    <div *ngFor="let jour of jours">
+                        @if(selectedJour === jour){
+                            <span class="selectedJour">{{jour | date:'EEE d':'':'fr'}}</span>
+                        }
+                        @else {
+                            <span class="jour" (click)="updateJour(jour)">{{jour | date:'EEE d':'':'fr'}}</span>
+                        }
+                    </div>
+                </div>
+            </div>            
+        </div>
+    </div>
+  </div>
+
+<app-modale-planning
+*ngIf="isModalOpen"
+(cancel)="isModalOpen = false"/>
+
+<app-modale-soutenance
+  *ngIf="isModalSoutenanceOpen"
+  [soutenance]="selectedSoutenance!"
+  (cancel)="isModalSoutenanceOpen = false"/>
+  <!-- idSoutenance="idSoutenance" -->
+  <!-- (save)="onSoutenanceSaved($event)" -->

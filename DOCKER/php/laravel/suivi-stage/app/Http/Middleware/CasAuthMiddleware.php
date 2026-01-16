@@ -42,10 +42,9 @@ class CasAuthMiddleware
         }
 
         $userLogin = \phpCAS::getUser();
-        
+                    
         $user = Personnel::where('login', $userLogin)->first();
         $userType = "Personnel";
-        
 
         if (!$user) {
             $user = Etudiant::where('login', $userLogin)->first();

@@ -40,6 +40,10 @@ export class PlanningService {
     );
   }
 
+  runAlgorithm(startMorningTime: number, endMorningTime: number, startAfternoonTime: number, endAfternoonTime: number, normalPresentationLength: number, accommodatedPresentationLength: number, inBetweenBreakLength: number, maxTeachersWeeklyWorkedTime: number): Observable<string> {
+    return this.http.get<string>(`${this.apiUrl}/api/run-algo-planning/${startMorningTime}-${endMorningTime}-${startAfternoonTime}-${endAfternoonTime}-${normalPresentationLength}-${accommodatedPresentationLength}-${inBetweenBreakLength}-${maxTeachersWeeklyWorkedTime}`);
+  }
+
   //Ajout d'un planning
   addPlanning(planning: Planning): Observable<Planning> {
     const httpOptions = {
@@ -59,7 +63,7 @@ export class PlanningService {
       headers: new HttpHeaders({'Content-type': 'application/json'})
     };
 
-    return this.http.put(`${this.apiUrl}/api/planning/update/${planning.id}`, planning, httpOptions).pipe(
+    return this.http.put(`${this.apiUrl}/api/planning/update/${planning.idPlanning}`, planning, httpOptions).pipe(
       tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );
@@ -67,7 +71,7 @@ export class PlanningService {
 
   //Supression d'un planning
   deletePlanning(planning: Planning): Observable<null> {
-    return this.http.delete(`${this.apiUrl}/api/planning/delete/${planning.id}`).pipe(
+    return this.http.delete(`${this.apiUrl}/api/planning/delete/${planning.idPlanning}`).pipe(
       tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );

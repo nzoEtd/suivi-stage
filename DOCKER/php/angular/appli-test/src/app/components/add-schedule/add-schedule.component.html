@@ -1,0 +1,13 @@
+<div class="schedule">
+  <div class="content">
+    @if (!currentUser || !allDataLoaded) {
+    <app-loading />
+    }
+    <app-add-update-schedule
+      [isEditMode]="false"></app-add-update-schedule>
+      <!-- [planning]="planning"
+      [soutenances]="slots"
+      [salles]="sallesDispo"
+      [jours]="jours" -->
+  </div>
+</div>

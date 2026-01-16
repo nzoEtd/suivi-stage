@@ -20,7 +20,7 @@ export class SoutenanceService {
       params = params.set('fields', fields.join(','));
     }
 
-    return this.http.get<Soutenance[]>(`${this.apiUrl}/api/soutenances`, {params}).pipe(
+    return this.http.get<Soutenance[]>(`${this.apiUrl}/api/soutenance`, {params}).pipe(
       tap(response => this.log(response)),
       catchError(error => this.handleError(error, undefined))
     );
@@ -59,7 +59,7 @@ export class SoutenanceService {
       headers: new HttpHeaders({'Content-type': 'application/json'})
     };
 
-    return this.http.put(`${this.apiUrl}/api/soutenance/update/${soutenance.id}`, soutenance, httpOptions).pipe(
+    return this.http.put(`${this.apiUrl}/api/soutenance/update/${soutenance.idSoutenance}`, soutenance, httpOptions).pipe(
       tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );
@@ -67,7 +67,7 @@ export class SoutenanceService {
 
   //Supression d'une soutenance
   deleteSoutenance(soutenance: Soutenance): Observable<null> {
-    return this.http.delete(`${this.apiUrl}/api/soutenance/delete/${soutenance.id}`).pipe(
+    return this.http.delete(`${this.apiUrl}/api/soutenance/delete/${soutenance.idSoutenance}`).pipe(
       tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );

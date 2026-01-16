@@ -17,7 +17,7 @@ class SalleSeeder extends Seeder
         DB::table('salles')->insert([
             [
                 'nomSalle' => 110,
-                'estDisponible' => true
+                'estDisponible' => false
             ],
             [
                 'nomSalle' => 124,
@@ -29,7 +29,7 @@ class SalleSeeder extends Seeder
             ],
             [
                 'nomSalle' => 126,
-                'estDisponible' => false
+                'estDisponible' => true
             ],            [
                 'nomSalle' => 127,
                 'estDisponible' => true
