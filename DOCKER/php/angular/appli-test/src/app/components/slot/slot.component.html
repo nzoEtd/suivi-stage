@@ -1,0 +1,11 @@
+<div class="slot"
+    [style.top.%]="slot.topPercent"
+    (click)="onSlotClick()">
+    <!-- [style.height.%]="slot.heightPercent" -->
+
+    <b>{{ slot.dateDebut | date:'HH:mm' }} - {{ slot.dateFin | date:'HH:mm' }}</b>
+    <p><b>Etudiant :</b> {{slot.etudiant}}</p>
+    <p><b>Référent :</b> {{slot.referent}}</p>
+    <p><b>Entreprise :</b> {{slot.entreprise}}</p>
+    <p><b>Lecteur :</b> {{slot.lecteur}}</p>
+</div>

@@ -72,7 +72,7 @@ export class ModaleSoutenanceComponent {
      */
     isFormValid(): boolean {
         return !!(
-            this.newSoutenance.nomSalle!.trim() &&
+            this.newSoutenance.nomSalle! &&
             this.newSoutenance.date! &&
             this.newSoutenance.heureDebut! &&
             this.newSoutenance.heureFin!

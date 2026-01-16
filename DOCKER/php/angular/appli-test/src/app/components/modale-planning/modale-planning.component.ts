@@ -8,6 +8,7 @@ import { TrainingYearService } from "../../services/training-year.service";
 import { TrainingYear } from "../../models/training-year.model";
 import { Salle } from "../../models/salle.model";
 import { SalleService } from "../../services/salle.service";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "app-modale-planning",
@@ -72,24 +73,63 @@ export class ModalePlanningComponent implements OnInit {
    * Handles form submission by adding new internship search
    */
   async onSubmit() {
-    if (this.isFormValid()) {
+    console.log("onsubmit", this.isFormValid())
+    // if (this.isFormValid()) {
+      console.log("valide")
       try {
         this.isSubmitting = true;
+        console.log("avant planning")
 
-        this.planningService.addPlanning(this.newPlanning);
 
-        for (const salle of this.salles) {
-          if (!this.selectedSalles.includes(salle)) {
-            salle.estDisponible = false;
-            this.salleService.updateSalle(salle);
-          }
-        }
+        this.planningService.runAlgorithm(7, 12, 14, 17, 60, 60+20,5, 20/*this.newPlanning.heureDebutMatin!, this.newPlanning.heureFinMatin!, this.newPlanning.heureDebutAprem, this.newPlanning.heureFinAprem, this.newPlanning.dureeSoutenance, this.newPlanning.dureeSoutenance * 1.3, 5, 20*/)
+          .subscribe({
+            next: (rawData) => {
+                if (rawData) {
+                  console.log("le planning ?",rawData)
+                    // let tutorList: algorithmResponse[] = Object.entries(rawData).map(([id, data]: [string, any]) => ({
+                    //     idPersonnel: Number(id),
+                    //     nom: data.NOM,
+                    //     prenom: data.PRENOM,
+                    //     compteurEtudiant: data.COMPTEUR_ETUDIANT,
+                    //     distanceGpsProfEntreprise: data.DISTANCE_GPS_PROF_ENTREPRISE,
+                    //     etudiantPresentVille: !!data.ETUDIANT_DEJA_PRESENT_VILLE,
+                    //     etudiantPresentEntreprise: !!data.ETUDIANT_DEJA_PRESENT_ENREPRISE,
+                    //     equiteDeuxTroisAnnees: !!data.EQUITE_DEUX_TROIS_ANNEE,
+                    //     somme: data.SOMME
+                    // }));
+                    // tutorList = tutorList.sort((a, b) => {
+                    //     if (b.somme! !== a.somme!) {
+                    //         return b.somme! - a.somme!;
+                    //     }
+                    //     return (a.nom || '').localeCompare(b.nom || '');
+                    // });
+                    // this.teachers = tutorList;
+                }
+            },
+            error: (error) => {
+                console.error("Erreur lors de la génération du planning", error);
+                this.isSubmitting = true;
+            },
+            complete: () => {
+              this.isSubmitting = true;
+            }
+        });
+        // this.planningService.addPlanning(this.newPlanning);
+        console.log("après planning")
+
+        // for (const salle of this.salles) {
+        //   if (!this.selectedSalles.includes(salle)) {
+        //     salle.estDisponible = false;
+        //     this.salleService.updateSalle(salle);
+        //   }
+        // }
+        this.router.navigate(['/schedule/add-schedule']);
       } catch (error) {
-        console.error("Erreur lors de l'ajout du planning :", error);
+        console.error("Erreur lors de la création du planning :", error);
       } finally {
         this.isSubmitting = false;
       }
-    }
+    // }
   }
 
   /**
@@ -97,8 +137,18 @@ export class ModalePlanningComponent implements OnInit {
    * @returns Boolean indicating if the form is valid
    */
   isFormValid(): boolean {
-    return !!(
-      this.newPlanning.id &&
+    console.log("isValid",!!(this.newPlanning.idPlanning,
+      this.newPlanning.nom!.trim(),
+      this.newPlanning.dateDebut!,
+      this.newPlanning.dateFin!,
+      this.newPlanning.heureDebutMatin!,
+      this.newPlanning.heureDebutAprem!,
+      this.newPlanning.heureFinMatin!,
+      this.newPlanning.heureFinAprem!,
+      this.newPlanning.dureeSoutenance!,
+      this.newPlanning.idAnneeFormation!))
+    return (!!(
+      this.newPlanning.idPlanning &&
       this.newPlanning.nom!.trim() &&
       this.newPlanning.dateDebut! &&
       this.newPlanning.dateFin! &&
@@ -108,7 +158,7 @@ export class ModalePlanningComponent implements OnInit {
       this.newPlanning.heureFinAprem! &&
       this.newPlanning.dureeSoutenance! &&
       this.newPlanning.idAnneeFormation!
-    );
+    ));
   }
 
   onCancel() {
