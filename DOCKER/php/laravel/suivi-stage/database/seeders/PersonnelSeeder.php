@@ -98,6 +98,20 @@ class PersonnelSeeder extends Seeder
                 'codePostal' => '64500',
                 'longitudeAdresse' => '-1.690278',
                 'latitudeAdresse' => '43.388056'
+            ],
+            [
+                'roles' => 'Enseignant',
+                'login' => 'cdutourni001',
+                'nom' => 'DUTOURNIER',
+                'prenom' => 'Candice',
+                'telephone' => '+33601020304',
+                'adresseMail' => 'cdutourni001@iutbayonne.univ-pau.fr',
+                'quotaEtudiant' => 0,
+                'adresse' => '5 rue de la mairie',
+                'ville' => 'Saint Jean de Luz',
+                'codePostal' => '64500',
+                'longitudeAdresse' => '-1.690278',
+                'latitudeAdresse' => '43.388056'
             ]
         ]);
     }
