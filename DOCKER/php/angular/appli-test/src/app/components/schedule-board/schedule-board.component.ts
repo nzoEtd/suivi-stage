@@ -5,11 +5,11 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { SlotItem } from '../../models/slotItem.model';
 import { TimeBlock, TimeBlockConfig } from '../../models/timeBlock.model';
 import { isSameDay } from '../../utils/timeManagement';
-import {CdkDrag} from '@angular/cdk/drag-drop';
+import { CdkDrag,   CdkDragPlaceholder } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-schedule-board',
-  imports: [CommonModule, SlotComponent, MatGridListModule, CdkDrag],
+  imports: [CommonModule, SlotComponent, MatGridListModule, CdkDrag, CdkDragPlaceholder],
   standalone: true,
   templateUrl: './schedule-board.component.html',
   styleUrls: ['./schedule-board.component.css']
@@ -54,8 +54,13 @@ export class ScheduleBoardComponent implements OnInit {
       heightPercent: b.duration / totalMinutes * 100
     }));
 
+    let i = 0;
     this.blocks.forEach(block => {
       this.slotsCache.set(block, this.calculateSlotsInBlock(block, this.slots));
+      console.log("slot height et top: ", this.slots[i].heightPercent, this.slots[i].topPercent)
+      console.log("slotCache height et top: ", this.slotsCache)
+      console.log("block height: ", block.heightPercent)
+      i++;
     });
   }
 
@@ -96,8 +101,6 @@ export class ScheduleBoardComponent implements OnInit {
       })
       .filter(slot => {return (slot as any).startMin >= block.startMin && (slot as any).startMin < block.endMin})
       .map(slot => {
-        console.log("slot: ", slot.startMin, slot.endMin)
-        console.log("block: ",block.startMin)
         const top = slot.startMin - block.startMin;
         const height = slot.endMin - slot.startMin;
         console.log("top slot : ",top, (top / block.duration) * 100)
