@@ -65,10 +65,10 @@ class PlanningController extends Controller
                 'nom' => 'required|string|max:50',
                 'dateDebut' => 'required|date',
                 'dateFin' => 'required|date|after_or_equal:dateDebut',
-                'heureDebutMatin' => 'required|date_format:H:i:s',
-                'heureFinMatin' => 'required|date_format:H:i:s|after:heureDebutMatin',
-                'heureDebutAprem' => 'required|date_format:H:i:s',
-                'heureFinAprem' => 'required|date_format:H:i:s|after:heureDebutAprem',
+                'heureDebutMatin' => 'required|date_format:H:i',
+                'heureFinMatin' => 'required|date_format:H:i|after:heureDebutMatin',
+                'heureDebutAprem' => 'required|date_format:H:i',
+                'heureFinAprem' => 'required|date_format:H:i|after:heureDebutAprem',
                 'dureeSoutenance' => 'required|integer',
                 'idAnneeFormation' => 'required|integer'
             ]);
@@ -153,10 +153,10 @@ class PlanningController extends Controller
                 'nom' => 'required|string|max:50',
                 'dateDebut' => 'required|date',
                 'dateFin' => 'required|date|after_or_equal:dateDebut',
-                'heureDebutMatin' => 'required|date_format:H:i:s',
-                'heureFinMatin' => 'required|date_format:H:i:s|after:heureDebutMatin',
-                'heureDebutAprem' => 'required|date_format:H:i:s',
-                'heureFinAprem' => 'required|date_format:H:i:s|after:heureDebutAprem',
+                'heureDebutMatin' => 'required|date_format:H:i',
+                'heureFinMatin' => 'required|date_format:H:i|after:heureDebutMatin',
+                'heureDebutAprem' => 'required|date_format:H:i',
+                'heureFinAprem' => 'required|date_format:H:i|after:heureDebutAprem',
                 'dureeSoutenance' => 'required|integer',
                 'idAnneeFormation' => 'required|integer'
             ]);

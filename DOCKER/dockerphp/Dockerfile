@@ -46,3 +46,8 @@ COPY ./docker-param.ini /usr/local/etc/php/conf.d/docker-param.ini
 COPY ./ssmtp.conf /etc/ssmtp/ssmtp.conf
 
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

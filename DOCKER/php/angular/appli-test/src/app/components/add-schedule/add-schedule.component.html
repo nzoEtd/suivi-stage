@@ -4,10 +4,12 @@
     <app-loading />
     }
     <app-add-update-schedule
-      [isEditMode]="false"></app-add-update-schedule>
-      <!-- [planning]="planning"
-      [soutenances]="slots"
+      [isEditMode]="false"
+      [planning]="planning"
+      [slots]="slots"
       [salles]="sallesDispo"
-      [jours]="jours" -->
+      [jours]="jours"
+      [soutenances]="soutenance$"
+    ></app-add-update-schedule>
   </div>
 </div>

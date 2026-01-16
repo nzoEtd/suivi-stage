@@ -28,7 +28,7 @@
                                 <app-schedule-board
                                 *ngIf="selectedJour"
                                 [jourActuel]="selectedJour"
-                                [slots]="soutenances"
+                                [slots]="slots"
                                 [sallesDispo]="sallesAffiches"
                                 [timeBlocks]="timeBlocks"
                                 (editSlot)="openEditModal($event)"></app-schedule-board>
@@ -48,10 +48,10 @@
                     <div class="footer">
                         <button class="btn secondary" (click)="exit()"><b>Annuler</b></button>
                         @if (isEditMode){
-                            <button class="btn primary"><b>Valider</b></button>
+                            <button class="btn primary" (click)="onValidate()"><b>Valider</b></button>
                         }
                         @else {
-                            <button class="btn primary"><b>Ajouter</b></button>
+                            <button class="btn primary" (click)="onValidate()"><b>Ajouter</b></button>
                         }
                     </div>
                 </div>

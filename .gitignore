@@ -3,3 +3,4 @@
 /dist
 *.env
 mysql_data*
+.DS_STORE

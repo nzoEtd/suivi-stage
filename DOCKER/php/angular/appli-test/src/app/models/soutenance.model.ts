@@ -28,3 +28,14 @@ export class Soutenance {
       this.idPlanning = idPlanning;
     }
   }
+
+
+  export interface SoutenanceCreate {
+  date: string | null;
+  nomSalle: number | null;
+  heureDebut: string| null;
+  heureFin: string| null;
+  idUPPA: string| null;
+  idLecteur: number| null;
+  idPlanning: number| null;
+}
