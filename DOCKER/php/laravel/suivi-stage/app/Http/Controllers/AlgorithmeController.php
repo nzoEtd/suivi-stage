@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Etudiant;
+use App\Models\EtudiantAnneeformAnneeuniv;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class AlgorithmeController extends Controller
 {
@@ -24,36 +27,66 @@ class AlgorithmeController extends Controller
     }
 
 
-    public function generateTeachers(int $count = 15): array
+    /**
+     * Récupère tous les enseignants
+     *
+     * @return array
+     */
+    public function getTeachers(): array
     {
-        $teachers = [];
-        for ($i = 0; $i < $count; $i++) {
-            $name = sprintf("Teacher_%02d", $i);
-            $teachers[] = [
-                "id" => $i,
-                "name" => $name,
-                "isTechnical" => (mt_rand(0, 1) === 1),
-                "weeklyRemainingMinutes" => 1200
+        $teachers = \App\Models\Personnel::where('roles', 'Enseignant')->get();
+
+        return $teachers->map(function ($teacher, $index) {
+            return [
+                'id' => $teacher->idPersonnel, 
+                'name' => $teacher->nom,
+                'isTechnical' => (bool)$teacher->estTechnique,
+                'weeklyRemainingMinutes' => 1200
             ];
-        }
-        return $teachers;
+        })->toArray();
     }
 
-    public function generateStudents(int $count = 60, int $teacherCount = 15): array
+
+    /**
+     * Récupère les étudiants d'une année de formation spécifique
+     * et d'une année universitaire donnée
+     *
+     * @param int $idStudentFormationYear
+     * @param int $idAcademicYear
+     * @return array
+     */
+    public function getStudentsForFormationYear(int $idStudentFormationYear, int $idAcademicYear): array
     {
-        $students = [];
-        for ($i = 0; $i < $count; $i++) {
-            $name = sprintf("Student_%02d", $i);
-            $students[] = [
-                "id" => $i,
-                "name" => $name,
-                "hasAccommodations" => (mt_rand(1, 4) === 1),
-                "referentTeacherId" => mt_rand(0, max(0, $teacherCount - 1)),
-                "tutorId" => $i
+
+        // Récupérer les liens avec les étudiants de l'année de formation et universiatire passées
+        $relations = EtudiantAnneeformAnneeuniv::where('idAnneeFormation', $idStudentFormationYear)
+            ->where('idAnneeUniversitaire', $idAcademicYear)
+            ->get();
+        Log::info("EtudiantAnneeformAnneeuniv " . $relations);
+        // Récupérer les profs référents des étudiants trouvés
+        $referents = DB::table('table_personnel_etudiant_anneeuniv')
+            ->where('idAnneeUniversitaire', $idAcademicYear)
+            ->pluck('idPersonnel', 'idUPPA');
+        Log::info("Profs référents " . $referents);
+
+
+        // Récupérer les informations des étudiants trouvés
+        $students = $relations->map(function ($rel) use ($referents) {
+            $student = Etudiant::find($rel->idUPPA);
+
+            return [
+                'id' => (int) $student->idUPPA,
+                'name' => $student->nom,
+                'hasAccommodations' => (bool) $student->tierTemps,
+                'referentTeacherId' => $referents[$student->idUPPA] ?? null,
+                'tutorId' => $student->idTuteur
             ];
-        }
+        })->toArray();
+
         return $students;
     }
+
+
 
     public function runPlanning(Request $request)
     {
@@ -74,15 +107,18 @@ class AlgorithmeController extends Controller
 
         $cmd = $binaryPath . ' ' . implode(' ', $args);
 
-        Log::info($cmd);
+        Log::info("CMD ".$cmd);
 
-        $stdinTeachers = $this->generateTeachers();
-        $stdinStudents = $this->generateStudents(60, count($stdinTeachers));
+        $stdinTeachers = $this->getTeachers();
+        $idStudentFormationYear = $data['idStudentFormationYear'];
+        $idCurrentUnivYear = $data['idCurrentUnivYear'];
+
+        $stdinStudents = $this->getStudentsForFormationYear($idStudentFormationYear, $idCurrentUnivYear);
         $stdinRooms =
             array_map(
                 fn($salle) => [
                     'id'  => $salle['nomSalle'],
-                    'tag' =>(string) $salle['nomSalle'],
+                    'tag' => (string) $salle['nomSalle'],
                 ],
                 $data['sallesDispo']
             );
@@ -92,7 +128,7 @@ class AlgorithmeController extends Controller
             . json_encode($stdinTeachers) . "\n"
             . json_encode($stdinRooms) . "\n";
 
-        Log::info($stdinContent);
+        Log::info("stdinContent ".$stdinContent);
 
         $descriptorSpecs = [
             0 => ['pipe', 'r'], // stdin

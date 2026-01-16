@@ -14,6 +14,8 @@ import {
   timeStringToMinutes,
 } from "../../utils/timeManagement";
 import { Soutenance } from "../../models/soutenance.model";
+import { AcademicYearService } from "../../services/academic-year.service";
+import { forkJoin } from "rxjs";
 
 @Component({
   selector: "app-modale-planning",
@@ -28,6 +30,7 @@ export class ModalePlanningComponent implements OnInit {
   promos: TrainingYear[] = [];
   salles: Salle[] = [];
   selectedSalles: Salle[] = [];
+  currentAcademicYearId!: number;
   dropdownOpen: boolean = false;
 
   @Output() cancel = new EventEmitter<void>();
@@ -36,21 +39,22 @@ export class ModalePlanningComponent implements OnInit {
     private readonly router: Router,
     private readonly planningService: PlanningService,
     private readonly trainingYearService: TrainingYearService,
-    private readonly salleService: SalleService
+    private readonly salleService: SalleService,
+    private readonly academicYearService: AcademicYearService
   ) {}
 
   ngOnInit() {
-    // Récupération des promos
-    this.trainingYearService
-      .getTrainingYears(["libelle"])
-      .subscribe((promos) => {
-        this.promos = promos;
-      });
-
-    // Récupération des salles
-    this.salleService.getSalles().subscribe((salles) => {
+    forkJoin({
+      promos: this.trainingYearService.getTrainingYears(["libelle"]),
+      salles: this.salleService.getSalles(),
+      academicYear: this.academicYearService.getCurrentAcademicYear(),
+    }).subscribe(({ promos, salles, academicYear }) => {
+      this.promos = promos;
       this.salles = salles.filter((s) => s.estDisponible);
-      this.selectedSalles = salles.filter((s) => s.estDisponible);
+      this.selectedSalles = [...this.salles];
+      if (academicYear) {
+        this.currentAcademicYearId = academicYear.idAnneeUniversitaire;
+      }
     });
   }
 
@@ -104,7 +108,9 @@ export class ModalePlanningComponent implements OnInit {
             this.newPlanning.dureeSoutenance! * 1.3,
             5, //break
             20 * 60, //tps profs
-            this.selectedSalles
+            this.selectedSalles,
+            this.newPlanning.idAnneeFormation!,
+            this.currentAcademicYearId
           )
           .subscribe({
             next: (result: any) => {
@@ -122,9 +128,9 @@ export class ModalePlanningComponent implements OnInit {
                 }));
                 this.router.navigate(["/schedule/add-schedule"], {
                   state: {
-                    newPlanning:this.newPlanning,
+                    newPlanning: this.newPlanning,
                     soutenances: soutenances,
-                    salles: this.salles
+                    salles: this.salles,
                   },
                 });
               }

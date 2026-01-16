@@ -56,7 +56,9 @@ export class PlanningService {
     accommodatedPresentationLength: number,
     inBetweenBreakLength: number,
     maxTeachersWeeklyWorkedTime: number,
-    sallesDispo: Salle[]
+    sallesDispo: Salle[],
+    idStudentFormationYear:number,
+    idCurrentUnivYear: number,
   ): Observable<string> {
     return this.http.post<string>(`${this.apiUrl}/api/run-algo-planning`, {
       startMorningTime,
@@ -68,6 +70,8 @@ export class PlanningService {
       inBetweenBreakLength,
       maxTeachersWeeklyWorkedTime,
       sallesDispo,
+      idStudentFormationYear,
+      idCurrentUnivYear
     });
   }
 
