@@ -35,3 +35,16 @@ export class Planning {
       this.dureeSoutenance = dureeSoutenance
     }
   }
+
+
+  export interface PlanningCreate {
+  nom: string | null;
+  idAnneeFormation: number | null;
+  dateDebut: string | null;
+  dateFin: string | null;
+  heureDebutMatin: string | null;
+  heureDebutAprem: string | null;
+  heureFinMatin: string | null;
+  heureFinAprem: string | null;
+  dureeSoutenance: number | null;
+}
