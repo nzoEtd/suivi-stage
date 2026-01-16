@@ -10,15 +10,13 @@ import { InternshipSearchService } from '../../services/internship-search.servic
 import { FactsheetsService } from '../../services/description-sheet.service';
 import { AuthService } from '../../services/auth.service';
 import { forkJoin } from 'rxjs';
-import { ModaleSoutenanceComponent } from '../modale-soutenance/modale-soutenance.component';
-import { Salle } from '../../models/salle.model';
 
 const VALIDED_INTERNSHIP_SEARCH_STATUT = 'Validé';
 
 @Component({
   selector: 'app-stats-cards',
   standalone: true,
-  imports: [CommonModule, ModaleSoutenanceComponent],
+  imports: [CommonModule],
   templateUrl: './stats-cards.component.html',
   styleUrls: ['./stats-cards.component.css']
 })
@@ -32,22 +30,6 @@ export class StatsCardsComponent implements OnInit {
   students!: Student[];
   searches!: InternshipSearch[];
   factsheets!: Factsheets[];
-    //Modal test
-  showModal = false;
-  soutenance: SlotItem = {
-      id: 1,
-      topPercent: 0,
-      heightPercent: 0,
-      dateDebut: new Date("2025-01-11 08:30:00"),
-      dateFin: new Date("2025-01-11 09:30:00"),
-      etudiant: "HERRMANN Anthony",
-      referent: "M. BORTHWICK",
-      lecteur: "P. LOPISTEGUY",
-      entreprise: "Geek Tonic",
-      tuteur: "BAGIEU Pascal",
-      salle: 126
-  };
-  sallesDispo: Salle[] = [{nomSalle: 110, estDisponible: true}, {nomSalle: 131, estDisponible: true}];
 
   constructor(
     private navigationService: NavigationService,
@@ -56,15 +38,6 @@ export class StatsCardsComponent implements OnInit {
     private factsheetsService: FactsheetsService,
     private authService: AuthService
   ) {}
-
-  //Modal test
-  openModalTest() {
-    this.showModal = true;
-  }
-
-  closeModalTest() {
-    this.showModal = false;
-  }
 
   /**
    * Initializes the component, sets up user information and starts data loading
@@ -286,19 +259,4 @@ export class StatsCardsComponent implements OnInit {
     lastWeekDate.setDate(today.getDate() - 7);
     return today;
   }
-}
-
-//A supprimer après test
-interface SlotItem {
-    id: number;
-    topPercent: number;
-    heightPercent: number;
-    dateDebut: Date;
-    dateFin: Date;
-    etudiant: string;
-    referent: string;
-    lecteur: string;
-    entreprise: string;
-    tuteur: string;
-    salle: number;
 }
