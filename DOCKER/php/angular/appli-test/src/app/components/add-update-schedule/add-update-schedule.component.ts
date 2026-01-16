@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { SlotItem } from '../../models/slotItem.model';
 import { TimeBlockConfig } from '../../models/timeBlock.model';
 import { ModaleSoutenanceComponent } from '../modale-soutenance/modale-soutenance.component';
+import { getAllSallesUsed } from '../../utils/fonctions';
 
 @Component({
   selector: 'app-add-update-schedule',
@@ -27,6 +28,7 @@ export class AddUpdateScheduleComponent implements OnChanges {
   isModalOpen: boolean = false;
   selectedSoutenance?: SlotItem;
   idSoutenance?: number;
+  sallesAffiches: number[]= [];
   
   constructor(
     private readonly cdRef: ChangeDetectorRef,
@@ -55,8 +57,12 @@ export class AddUpdateScheduleComponent implements OnChanges {
         ];
         
         this.timeBlocks.push(...newTimeBlocks);
+        this.sallesAffiches = getAllSallesUsed(this.salles, this.selectedJour, this.soutenances);
+      this.allDataLoaded = true;
+      this.cdRef.detectChanges();
       } else {
         this.selectedJour = undefined;
+      this.allDataLoaded = true;
       }
 
       this.allDataLoaded = true;
@@ -64,8 +70,10 @@ export class AddUpdateScheduleComponent implements OnChanges {
     }
   }
 
+
   updateJour(jour: Date){
     this.selectedJour = jour;
+    this.sallesAffiches = getAllSallesUsed(this.salles, this.selectedJour, this.soutenances);
   }
 
   openModal(): void {
@@ -87,3 +95,4 @@ export class AddUpdateScheduleComponent implements OnChanges {
     this.isModalOpen = false;
   }
 }
+

@@ -19,6 +19,10 @@ import { Staff } from "../../models/staff.model";
 import { Company } from "../../models/company.model";
 import { getDatesBetween } from "../../utils/timeManagement";
 import { SalleService } from "../../services/salle.service";
+import { CompanyTutorService } from "../../services/company-tutor.service";
+import { StudentTrainingYearAcademicYearService } from "../../services/student-trainingYear-academicYear.service";
+import { StudentStaffAcademicYearService } from "../../services/student-staff-academicYear.service";
+import { AcademicYearService } from "../../services/academic-year.service";
 
 @Component({
   selector: "app-add-schedule",
@@ -49,12 +53,21 @@ export class AddScheduleComponent implements OnInit {
     private readonly staffService: StaffService,
     private readonly studentsService: StudentService,
     private readonly companyService: CompanyService,
-    private readonly sallesService: SalleService
+    private readonly sallesService: SalleService,
+    private readonly companyTutorService: CompanyTutorService,
+    private readonly studentTrainingAcademicYearService: StudentTrainingYearAcademicYearService,
+    private readonly referentService: StudentStaffAcademicYearService,
+    private readonly academicYearService: AcademicYearService
   ) {}
   async ngOnInit() {
     const students$ = this.studentsService.getStudents();
     const staff$ = this.staffService.getStaffs();
     const companies$ = this.companyService.getCompanies();
+    const companiesTutors$ = this.companyTutorService.getCompanyTutors();
+    const studentTrainingAcademicYear$ =
+      this.studentTrainingAcademicYearService.getStudentsTrainingYearsAcademicYears();
+    const referents$ = this.referentService.getAllStudentTeachers();
+    const academicYear$ = this.academicYearService.getAcademicYears();
     const state = history.state;
     const soutenance$ = state?.soutenances
       ? of(state.soutenances)
@@ -67,7 +80,11 @@ export class AddScheduleComponent implements OnInit {
       students: students$,
       staff: staff$,
       companies: companies$,
+      companiesTutors: companiesTutors$,
       salles: salles$,
+      referents: referents$,
+      academicYears: academicYear$,
+      trainingAcademicYear: studentTrainingAcademicYear$,
     }).subscribe(async (result) => {
       this.soutenance$ = result.soutenances;
       this.planning = state?.newPlanning;
@@ -87,15 +104,15 @@ export class AddScheduleComponent implements OnInit {
         this.planning.dateFin!
       );
 
-      this.allStudents = result.students;
-      this.allStaff = result.staff;
-      this.allCompanies = result.companies;
-
       this.slots = await convertSoutenancesToSlots(
         this.soutenance$,
-        this.allStudents,
-        this.allStaff,
-        this.allCompanies
+        result.students,
+        result.staff,
+        result.companies,
+        result.companiesTutors,
+        result.referents,
+        result.trainingAcademicYear,
+        result.academicYears
       );
       this.sallesDispo = result.salles
         .filter((s) => s.estDisponible)

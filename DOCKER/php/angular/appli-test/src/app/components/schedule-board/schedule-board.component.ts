@@ -119,12 +119,13 @@ export class ScheduleBoardComponent implements OnInit {
     return this.slotsCache.get(block) || [];
   }
 
+  checkSameDay(date1: Date, date2: Date): boolean{
+    return isSameDay(date1, date2);
+  }
+
   onEditSlot(slot: SlotItem) {
     console.log("slot cliqué, dans schedule board", slot);
     this.editSlot.emit(slot);
   }
 
-  checkSameDay(d1: Date, d2: Date): boolean {
-    return isSameDay(d1, d2);
-  }
 }

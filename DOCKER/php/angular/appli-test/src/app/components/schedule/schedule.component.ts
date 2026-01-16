@@ -22,8 +22,18 @@ import { Staff } from "../../models/staff.model";
 import { Company } from "../../models/company.model";
 import { SlotItem } from "../../models/slotItem.model";
 import { TimeBlockConfig } from "../../models/timeBlock.model";
-import { loadSoutenancesForPlanning } from "../../utils/fonctions";
+import { getAllSallesUsed, loadSoutenancesForPlanning } from "../../utils/fonctions";
 import { getDatesBetween, isSameDay } from "../../utils/timeManagement";
+import { CompanyTutorService } from "../../services/company-tutor.service";
+import { CompanyTutor } from "../../models/company-tutor.model";
+import { StudentStaffAcademicYearService } from "../../services/student-staff-academicYear.service";
+import { StudentTrainingYearAcademicYearService } from "../../services/student-trainingYear-academicYear.service";
+import { Student_TrainingYear_AcademicYear } from "../../models/student-trainingYear-academicYear.model";
+import { AcademicYear } from "../../models/academic-year.model";
+import { AcademicYearService } from "../../services/academic-year.service";
+import { Student_Staff_AcademicYear } from "../../models/student-staff-academicYear.model";
+import { Student_Staff_AcademicYear_String } from "../../models/student-staff-academicYear-string.model";
+import { ModaleSoutenanceComponent } from "../modale-soutenance/modale-soutenance.component";
 
 @Component({
   selector: "app-schedule",
@@ -34,6 +44,7 @@ import { getDatesBetween, isSameDay } from "../../utils/timeManagement";
     FormsModule,
     ScheduleBoardComponent,
     ModalePlanningComponent,
+    ModaleSoutenanceComponent
   ],
   templateUrl: "./schedule.component.html",
   styleUrls: ["./schedule.component.css"],
@@ -47,6 +58,7 @@ export class ScheduleComponent implements AfterViewInit {
   currentUserRole?: string;
   allDataLoaded: boolean = false;
   isModalOpen: boolean = false;
+  isModalSoutenanceOpen: boolean = false;
 
   allPlannings: Planning[] = [];
   allSoutenances: Soutenance[] = [];
@@ -54,6 +66,10 @@ export class ScheduleComponent implements AfterViewInit {
   allStudents: Student[] = [];
   allStaff: Staff[] = [];
   allCompanies: Company[] = [];
+  allTutors: CompanyTutor[] = [];
+  allTrainingAcademicYears: Student_TrainingYear_AcademicYear[] = [];
+  allAcademicYears: AcademicYear[] = [];
+  allReferents: Student_Staff_AcademicYear_String[] = [];
 
   selectedPlanning?: Planning;
   optionSchedule: string[] = ["Sélectionner un planning existant"];
@@ -63,6 +79,8 @@ export class ScheduleComponent implements AfterViewInit {
   selectedJour?: Date;
   sallesDispo: number[] = [];
   sallesAffiches:number[] = [];
+  selectedSoutenance?: SlotItem;
+  idSoutenance?: number;
   slots: SlotItem[] = [];
   timeBlocks: TimeBlockConfig[] = [];
 
@@ -76,7 +94,11 @@ export class ScheduleComponent implements AfterViewInit {
     private readonly soutenanceService: SoutenanceService,
     private readonly studentService: StudentService,
     private readonly staffService: StaffService,
-    private readonly companyService: CompanyService
+    private readonly companyService: CompanyService,
+    private readonly tutorService: CompanyTutorService,
+    private readonly referentService: StudentStaffAcademicYearService,
+    private readonly studentTrainingAcademicYearService: StudentTrainingYearAcademicYearService,
+    private readonly academicYearService: AcademicYearService
   ) {}
 
   async ngAfterViewInit() {
@@ -86,6 +108,10 @@ export class ScheduleComponent implements AfterViewInit {
     const students$ = this.studentService.getStudents();
     const staff$ = this.staffService.getStaffs();
     const companies$ = this.companyService.getCompanies();
+    const tutors$ = this.tutorService.getCompanyTutors();
+    const studentTrainingAcademicYear$ = this.studentTrainingAcademicYearService.getStudentsTrainingYearsAcademicYears();
+    const referent$ = this.referentService.getAllStudentTeachers();
+    const academicYear$ = this.academicYearService.getAcademicYears();
 
     forkJoin({
       salles: this.salle$,
@@ -94,12 +120,22 @@ export class ScheduleComponent implements AfterViewInit {
       students: students$,
       staff: staff$,
       companies: companies$,
+      tutors: tutors$,
+      trainingAcademicYears: studentTrainingAcademicYear$,
+      referent: referent$,
+      academicYear: academicYear$
     }).subscribe((result) => {
       this.allPlannings = result.planning;
       this.allSoutenances = result.soutenance;
       this.allStudents = result.students;
       this.allStaff = result.staff;
-      this.allCompanies =result.companies;
+      this.allCompanies = result.companies;
+      this.allTutors = result.tutors;
+      this.allTrainingAcademicYears = result.trainingAcademicYears;
+      this.allAcademicYears = result.academicYear;
+      this.allReferents = result.referent;
+      console.log("les referents et autre :", this.allReferents)
+      console.log("les academic year et autre :", this.allAcademicYears)
 
       this.sallesDispo = result.salles
         .filter((s) => s.estDisponible)
@@ -130,20 +166,7 @@ export class ScheduleComponent implements AfterViewInit {
   updateJour(jour: Date) {
     this.selectedJour = jour;
     //Recherche de toutes les salles réellement utilisées
-    this.sallesAffiches = this.getAllSallesUsed(this.sallesDispo, this.selectedJour);
-  }
-
-  getAllSallesUsed(sallesDispo: number[], jour:Date): number[] {
-    const salles: number[] = [];
-    this.slots.forEach(slot => {
-      sallesDispo.forEach(salle => {
-        if(salle === slot.salle && !salles.includes(salle) && isSameDay(slot.dateDebut, jour)){
-          salles.push(salle);
-        }
-      });
-    });
-
-    return salles;
+    this.sallesAffiches = getAllSallesUsed(this.sallesDispo, this.selectedJour, this.slots);
   }
 
   export() {}
@@ -156,6 +179,13 @@ export class ScheduleComponent implements AfterViewInit {
     this.router.navigate([
       "/schedule/update-schedule/" + this.selectedPlanning?.idPlanning,
     ]);
+  }
+
+  openModal(slot: SlotItem) {
+    console.log("le slot sélectionné : ",slot)
+    this.selectedSoutenance = slot!;
+    this.idSoutenance = this.selectedSoutenance!.id;
+    this.isModalSoutenanceOpen = true;
   }
 
   async onPlanningChange(planningName: string) {
@@ -201,8 +231,10 @@ export class ScheduleComponent implements AfterViewInit {
       this.timeBlocks.push(...newTimeBlocks);
 
       // Charger les soutenances pour ce planning
-      this.slots = await loadSoutenancesForPlanning(this.selectedPlanning, this.allSoutenances, this.slots, this.allStudents, this.allStaff, this.allCompanies, this.cdRef);
+      this.slots = await loadSoutenancesForPlanning(this.selectedPlanning, this.allSoutenances, this.slots, this.allStudents, this.allStaff, this.allCompanies, this.allTutors, this.allReferents, this.allTrainingAcademicYears, this.allAcademicYears, this.cdRef);
       console.log("les slots ?", this.slots)
+      //Recherche de toutes les salles réellement utilisées
+      this.sallesAffiches = getAllSallesUsed(this.sallesDispo, this.selectedJour, this.slots);
       this.allDataLoaded = true;
     } else {
       this.jours = [];

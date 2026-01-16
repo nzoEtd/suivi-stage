@@ -22,6 +22,14 @@ import { SlotItem } from '../../models/slotItem.model';
 import { TimeBlockConfig } from '../../models/timeBlock.model';
 import { convertSoutenancesToSlots } from '../../utils/fonctions';
 import { getDatesBetween } from '../../utils/timeManagement';
+import { CompanyTutor } from '../../models/company-tutor.model';
+import { CompanyTutorService } from '../../services/company-tutor.service';
+import { StudentStaffAcademicYearService } from '../../services/student-staff-academicYear.service';
+import { StudentTrainingYearAcademicYearService } from '../../services/student-trainingYear-academicYear.service';
+import { Student_TrainingYear_AcademicYear } from '../../models/student-trainingYear-academicYear.model';
+import { AcademicYear } from '../../models/academic-year.model';
+import { Student_Staff_AcademicYear_String } from '../../models/student-staff-academicYear-string.model';
+import { AcademicYearService } from '../../services/academic-year.service';
 
 @Component({
   selector: 'app-update-schedule',
@@ -38,6 +46,10 @@ export class UpdateScheduleComponent implements AfterViewInit {
   allStudents: Student[] = [];
   allStaff: Staff[] = [];
   allCompanies: Company[] = [];
+  allTutors: CompanyTutor[] = [];
+  allTrainingAcademicYears: Student_TrainingYear_AcademicYear[] = [];
+  allAcademicYears: AcademicYear[] = [];
+  allReferents: Student_Staff_AcademicYear_String[] = [];
   planning!: Planning;
   id!: number;
   jours: Date[] = [];
@@ -62,7 +74,11 @@ export class UpdateScheduleComponent implements AfterViewInit {
     private readonly studentService: StudentService,
     private readonly staffService: StaffService,
     private readonly companyService: CompanyService,
-    private route: ActivatedRoute
+    private readonly tutorService: CompanyTutorService,
+    private route: ActivatedRoute,
+    private readonly referentService: StudentStaffAcademicYearService,
+    private readonly studentTrainingAcademicYearService: StudentTrainingYearAcademicYearService,
+    private readonly academicYearService: AcademicYearService
   ) {}
 
   async ngAfterViewInit() {
@@ -73,6 +89,10 @@ export class UpdateScheduleComponent implements AfterViewInit {
     const students$ = this.studentService.getStudents();
     const staff$ = this.staffService.getStaffs();
     const companies$ = this.companyService.getCompanies();
+    const tutors$ = this.tutorService.getCompanyTutors();
+    const studentTrainingAcademicYear$ = this.studentTrainingAcademicYearService.getStudentsTrainingYearsAcademicYears();
+    const referent$ = this.referentService.getAllStudentTeachers();
+    const academicYear$ = this.academicYearService.getAcademicYears();
     forkJoin({
       salles: this.salle$,
       planning: this.planning$,
@@ -80,8 +100,16 @@ export class UpdateScheduleComponent implements AfterViewInit {
       students: students$,
       staff: staff$,
       companies: companies$,
+      tutors: tutors$,
+      trainingAcademicYears: studentTrainingAcademicYear$,
+      referent: referent$,
+      academicYear: academicYear$
     }).subscribe(async result => {
         this.planning = result.planning!;
+        this.allTutors = result.tutors;
+        this.allTrainingAcademicYears = result.trainingAcademicYears;
+        this.allAcademicYears = result.academicYear;
+        this.allReferents = result.referent;
         console.log("le planning",this.planning)
         this.jours = getDatesBetween(
           this.planning.dateDebut!, 
@@ -96,7 +124,7 @@ export class UpdateScheduleComponent implements AfterViewInit {
         this.allStaff = result.staff;
         this.allCompanies =result.companies;
         console.log("les soutenances avant slot",this.allSoutenances)
-        this.slots = await convertSoutenancesToSlots(this.allSoutenances, this.allStudents, this.allStaff, this.allCompanies);
+        this.slots = await convertSoutenancesToSlots(this.allSoutenances, this.allStudents, this.allStaff, this.allCompanies,this.allTutors, this.allReferents, this.allTrainingAcademicYears, this.allAcademicYears);
         console.log("les slots",this.slots)
         
         this.allDataLoaded = true;

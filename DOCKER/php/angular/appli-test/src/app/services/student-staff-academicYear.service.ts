@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Student_Staff_AcademicYear } from '../models/student-staff-academicYear.model';
+import { Student_Staff_AcademicYear_String } from '../models/student-staff-academicYear-string.model';
 import { catchError, Observable, of, tap } from 'rxjs';
 
 interface ExcelResponse {
@@ -18,6 +19,19 @@ export class StudentStaffAcademicYearService {
   apiUrl = environment.apiUrl;
 
   constructor(private readonly http: HttpClient) {}
+
+  getAllStudentTeachers(fields?: string[]): Observable<Student_Staff_AcademicYear_String[]> {
+    let params = new HttpParams();
+
+    if (fields && fields.length > 0) {
+      params = params.set('fields', fields.join(','));
+    }
+
+    return this.http.get<Student_Staff_AcademicYear>(`${this.apiUrl}/api/affectation`, {params}).pipe(
+      tap(response => this.log(response)),
+      catchError(error => this.handleError(error, null))
+    );
+  }
 
   getTutorByUppaAndYear(studentId: string, idAnneeUniversitaire: number, fields?: string[]): Observable<Student_Staff_AcademicYear | undefined> {
     let params = new HttpParams();

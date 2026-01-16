@@ -21,7 +21,7 @@ class AffectationEnseignantController extends Controller
             ->join('personnels', 'table_personnel_etudiant_anneeuniv.idPersonnel', '=', 'personnels.idPersonnel')
             ->join('etudiants', 'table_personnel_etudiant_anneeuniv.idUPPA', '=', 'etudiants.idUPPA')
             ->join('annee_universitaires', 'table_personnel_etudiant_anneeuniv.idAnneeUniversitaire', '=', 'annee_universitaires.idAnneeUniversitaire')
-            ->select('annee_universitaires.libelle as anneeUniversitaire','personnels.nom as nomPersonnel', 'personnels.prenom as prenomPersonnel', 'etudiants.nom as nomEtudiant', 'etudiants.prenom as prenomEtudiant')
+            ->select('annee_universitaires.idAnneeUniversitaire as idAnneeUniversitaire','annee_universitaires.libelle as anneeUniversitaire','personnels.idPersonnel as idPersonnel','personnels.nom as nomPersonnel', 'personnels.prenom as prenomPersonnel', 'etudiants.idUPPA as idUPPA', 'etudiants.nom as nomEtudiant', 'etudiants.prenom as prenomEtudiant')
             ->get();
 
         return response()->json($affectations, 200);
