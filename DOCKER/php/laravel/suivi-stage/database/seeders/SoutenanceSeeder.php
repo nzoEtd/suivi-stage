@@ -15,7 +15,6 @@ class SoutenanceSeeder extends Seeder
     public function run()
     {
         DB::table('soutenances')->insert([
-            [
                 [
                     'date' => '2026-06-11',
                     'heureDebut' => '08:30:00',
@@ -231,10 +230,7 @@ class SoutenanceSeeder extends Seeder
                     'idPlanning' => 1,
                     'idUPPA' => '610459',
                     'idLecteur' => 1,
-                ],
-            ]
-            
-            
+                ]
         ]);
     }
 }
