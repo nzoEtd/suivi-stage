@@ -40,7 +40,8 @@ export async function convertSoutenancesToSlots(soutenances: Soutenance[], allSt
         s.idLecteur !== null &&
         s.idUPPA != null &&
         s.nomSalle !== null &&
-        s.idSoutenance
+        s.idSoutenance &&
+        s.idPlanning
     );
      return validSoutenances.map(s => {
     const student = allStudents.find(st => st.idUPPA === s.idUPPA);
@@ -64,12 +65,15 @@ export async function convertSoutenancesToSlots(soutenances: Soutenance[], allSt
         heightPercent: 0,
         dateDebut: getDateHeure(s.date!, s.heureDebut!),
         dateFin: getDateHeure(s.date!, s.heureFin!),
+        idEtudiant: s.idUPPA!,
         etudiant: student ? `${student.nom} ${student.prenom}` : "Étudiant inconnu",
         referent: referent ? `${referent.prenomPersonnel![0]}. ${referent.nomPersonnel}` : "Pas de référent",
+        idLecteur: lecteur ? lecteur.idPersonnel : -1,
         lecteur: lecteur ? `${lecteur.prenom![0]}. ${lecteur.nom}` : "Lecteur inconnu",
         entreprise: company ? company.raisonSociale! : "Pas d'entreprise",
         tuteur: tutor ? `${tutor.nom} ${tutor.prenom}` : "Tuteur d'entreprise inconnu",
         salle: s.nomSalle!,
+        idPlanning: s.idPlanning!
       } ;
   });
 }

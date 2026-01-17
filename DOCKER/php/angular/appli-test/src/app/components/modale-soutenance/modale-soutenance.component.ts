@@ -1,10 +1,12 @@
-import { Component, EventEmitter, Output, Input } from '@angular/core';
+import { Component, EventEmitter, Output, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Soutenance } from '../../models/soutenance.model';
 import { SoutenanceService } from '../../services/soutenance.service';
 import { Staff } from '../../models/staff.model';
 import { Salle } from '../../models/salle.model';
+import { SlotItem } from '../../models/slotItem.model';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: "app-modale-soutenance",
@@ -14,82 +16,137 @@ import { Salle } from '../../models/salle.model';
   styleUrl: "./modale-soutenance.component.css",
 })
 
-export class ModaleSoutenanceComponent {
+export class ModaleSoutenanceComponent implements OnInit {
+  currentUser?: any;
+  currentUserRole?: string;
   isSubmitting: boolean = false;
   @Input() soutenance!: SlotItem;
   @Input() editMode: boolean = false;
-  newSoutenance!: Soutenance;
+  newSoutenance: Soutenance = new Soutenance();
   enseignantsLecteurs: Staff[] = [];
   @Input() sallesDispo!: Salle[];
+  newDate!: string;
 
   @Output() cancel = new EventEmitter<void>();
 
-    constructor(private readonly soutenanceService: SoutenanceService) {}
+  constructor(private readonly soutenanceService: SoutenanceService, private readonly authService: AuthService) {}
 
-    formatDate(pDate: Date, showDate: boolean=false, showHeure: boolean=false): string {
+  ngOnInit(): void {
+    this.convertSlotToSoutenance(this.soutenance);
+
+    this.authService.getAuthenticatedUser().subscribe(currentUser => {
+      this.currentUser = currentUser;
+      
+      if (this.authService.isStudent(this.currentUser)) {
+        this.currentUserRole = 'STUDENT';
+      }
+      else if (this.authService.isStaff(this.currentUser)) {
+        this.currentUserRole = 'INTERNSHIP_MANAGER';
+        this.editMode = true;
+      }
+    });
+  }
+
+  convertSlotToSoutenance(slot: SlotItem) {
+    this.newSoutenance.idSoutenance = slot.id;
+    this.newSoutenance.date = new Date(this.formatDate(slot.dateFin, 'Date'));
+    this.newSoutenance.nomSalle = slot.salle;
+    this.newSoutenance.heureDebut = this.formatDate(slot.dateDebut, 'Heure');
+    this.newSoutenance.heureFin = this.formatDate(slot.dateFin, 'Heure');
+    this.newSoutenance.idUPPA = slot.idEtudiant;
+    this.newSoutenance.idLecteur = slot.idLecteur;
+    this.newSoutenance.idPlanning = slot.idPlanning;
+  }
+
+  formatDate(pDate: Date, modeAffichage: TypeAffichage): string {
+      
+    if (pDate === null) return "Erreur de récupération de la date";
+
+    const [jourSemaine, mois, jour, annee, heure] = pDate.toDateString().split(' ');
+    let date_locale_str = pDate.toLocaleString("fr-FR");
+
+    const [dateStr, heureStr] = date_locale_str.split(' ');
+    let moisNb = dateStr.split('/')[1];
+
+    let result;
+
+    switch (modeAffichage) {
+      case 'Date':
+        result = `${annee}-${moisNb}-${jour}`;
+        break;
+
+      case 'Heure':
+        result = heureStr;
+        break;
+
+      case 'DateHeure':
+        result = `${annee}-${moisNb}-${jour} ${heure}`;
+        break;
+
+      case 'DateToStr':
+        result = `${dateStr}`;
+        break;
+
+      case 'HeureToStr':
+        result = heureStr.split(':')[0] + "h" + heureStr.split(':')[1];
+        break;
+
+      case 'DateHeureToStr':
+        result = `le ${dateStr} à ` + heureStr.split(':')[0] + "h" + heureStr.split(':')[1];
+        break;
         
-        if (pDate === null) return "";
-
-        let date_str = pDate.toLocaleString("fr-FR");
-        const [date, heure] = date_str.split(' ');
-
-        if (showDate && !showHeure) {
-            return `${date}`;
-        }
-        else if (!showDate && showHeure) {
-            return heure.split(':')[0] + "h" + heure.split(':')[1];
-        }
-        else {
-            return `le ${date} à ` + heure.split(':')[0] + "h" + heure.split(':')[1];
-        }
+      default:
+        result = date_locale_str;
+        break;
     }
 
-    onCancel() {
-        this.cancel.emit(); 
+    return result;
+  }
+
+  onCancel() {
+    this.cancel.emit(); 
+  }
+
+  /**
+   * Handles form submission by updating the soutenance
+   */
+  async onSubmit() {
+    console.log(this.isFormValid());
+    if (this.isFormValid()) {
+      try {
+        this.isSubmitting = true;
+
+        this.soutenanceService.updateSoutenance(this.newSoutenance);
+        console.log("Changement effectué");
+
+      } catch (error) {
+        console.error('Erreur lors de la mise à jour de la soutenance :', error);
+      } finally {
+        this.isSubmitting = false;
+      }
     }
+  }
 
-    /**
-     * Handles form submission by updating the soutenance
-     */
-    async onSubmit() {
-        if (this.isFormValid()) {
-            try {
-                this.isSubmitting = true;
-
-                this.soutenanceService.updateSoutenance(this.newSoutenance);
-
-            } catch (error) {
-                console.error('Erreur lors de la mise à jour de la soutenance :', error);
-            } finally {
-                this.isSubmitting = false;
-            }
-        }
-    }
-
-    /**
-     * Validates if all required fields in the internship search form are filled correctly
-     * @returns Boolean indicating if the form is valid
-     */
-    isFormValid(): boolean {
-        return !!(
-            this.newSoutenance.nomSalle! &&
-            this.newSoutenance.date! &&
-            this.newSoutenance.heureDebut! &&
-            this.newSoutenance.heureFin!
-        );
-    }
+  /**
+   * Validates if all required fields in the internship search form are filled correctly
+   * @returns Boolean indicating if the form is valid
+   */
+  isFormValid(): boolean {
+    this.newSoutenance.date = new Date(this.newDate);
+      return !!(
+          this.newSoutenance.nomSalle! &&
+          this.newSoutenance.date! &&
+          this.newSoutenance.heureDebut! &&
+          this.newSoutenance.heureFin! &&
+          this.newSoutenance.idLecteur!
+      );
+  }
 }
 
-interface SlotItem {
-    id: number;
-    topPercent: number;
-    heightPercent: number;
-    dateDebut: Date;
-    dateFin: Date;
-    etudiant: string;
-    referent: string;
-    lecteur: string;
-    entreprise: string;
-    tuteur: string;
-    salle: number;
-}
+type TypeAffichage = 
+  | 'Date'
+  | 'Heure'
+  | 'DateHeure'
+  | 'DateToStr'
+  | 'HeureToStr'
+  | 'DateHeureToStr';

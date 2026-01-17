@@ -53,8 +53,8 @@
   gap: 15px;
 }
 
-span {
-  font-weight: 700;
+input[disabled] {
+  background-color: #d6d6d6 !important;
 }
 
 /* Input wrapper */
