@@ -165,7 +165,7 @@ export class ModalePlanningComponent implements OnInit {
    */
 
   isFormValid(): boolean {
-    console.log("Check validty", this.newPlanning);
+    console.log("Check validity", this.newPlanning);
     return !!(
       this.newPlanning.nom!.trim() &&
       this.newPlanning.dateDebut! &&
