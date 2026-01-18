@@ -5,11 +5,11 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { SlotItem } from '../../models/slotItem.model';
 import { TimeBlock, TimeBlockConfig } from '../../models/timeBlock.model';
 import { isSameDay } from '../../utils/timeManagement';
-import { CdkDrag,   CdkDragPlaceholder } from '@angular/cdk/drag-drop';
+import { CdkDrag,   CdkDragDrop,   CdkDragPlaceholder, CdkDropList, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-schedule-board',
-  imports: [CommonModule, SlotComponent, MatGridListModule, CdkDrag, CdkDragPlaceholder],
+  imports: [CommonModule, SlotComponent, MatGridListModule, CdkDrag, CdkDragPlaceholder, CdkDropList],
   standalone: true,
   templateUrl: './schedule-board.component.html',
   styleUrls: ['./schedule-board.component.css']
@@ -20,8 +20,10 @@ export class ScheduleBoardComponent implements OnInit {
   @Input() sallesDispo!: number[];
   @Input() timeBlocks!: TimeBlockConfig[];
   @Input() onlyDisplay!: boolean;
+  @Input() planningByDay: Record<string, SlotItem[]> = {};
 
   @Output() editSlot = new EventEmitter<SlotItem>();
+  @Output() slotUpdated = new EventEmitter<SlotItem>();
 
   blocks: TimeBlock[] = [];
   PAUSE_HEIGHT = 20;
@@ -34,7 +36,6 @@ export class ScheduleBoardComponent implements OnInit {
       const startMin = this.toMinutes(b.start);
       const endMin = this.toMinutes(b.end);
       const duration = endMin - startMin;
-      // console.log(startMin + " - " + endMin + " - " + duration)
 
       return {
         ...b,
@@ -54,13 +55,8 @@ export class ScheduleBoardComponent implements OnInit {
       heightPercent: b.duration / totalMinutes * 100
     }));
 
-    let i = 0;
     this.blocks.forEach(block => {
       this.slotsCache.set(block, this.calculateSlotsInBlock(block, this.slots));
-      console.log("slot height et top: ", this.slots[i].heightPercent, this.slots[i].topPercent)
-      console.log("slotCache height et top: ", this.slotsCache)
-      console.log("block height: ", block.heightPercent)
-      i++;
     });
   }
 
@@ -89,29 +85,22 @@ export class ScheduleBoardComponent implements OnInit {
 
   calculateSlotsInBlock(block: TimeBlock, slots: SlotItem[]): SlotItem[] {
     return slots
-      .map(slot => {
-        const startMin = slot.dateDebut.getHours() * 60 + slot.dateDebut.getMinutes();
-        const endMin = slot.dateFin.getHours() * 60 + slot.dateFin.getMinutes();
+    .filter(slot => {
+      const startMin = slot.dateDebut.getHours() * 60 + slot.dateDebut.getMinutes();
+      return startMin >= block.startMin && startMin < block.endMin;
+    })
+    .map(slot => {
+      const startMin = slot.dateDebut.getHours() * 60 + slot.dateDebut.getMinutes();
+      const endMin = slot.dateFin.getHours() * 60 + slot.dateFin.getMinutes();
 
-        return {
-          ...slot,
-          startMin,
-          endMin
-        };
-      })
-      .filter(slot => {return (slot as any).startMin >= block.startMin && (slot as any).startMin < block.endMin})
-      .map(slot => {
-        const top = slot.startMin - block.startMin;
-        const height = slot.endMin - slot.startMin;
-        console.log("top slot : ",top, (top / block.duration) * 100)
-        console.log("height slot : ",height, (height / block.duration) * 100)
+      const top = startMin - block.startMin;
+      const height = endMin - startMin;
 
-        return {
-          ...slot,
-          topPercent: (top / block.duration) * 100,
-          heightPercent: (height / block.duration) * 100
-        };
-      });
+      slot.topPercent = (top / block.duration) * 100;
+      slot.heightPercent = (height / block.duration) * 100;
+
+      return slot;
+    });
   }
 
   slotsInBlock(block: TimeBlock): SlotItem[] {
@@ -125,6 +114,113 @@ export class ScheduleBoardComponent implements OnInit {
   onEditSlot(slot: SlotItem) {
     console.log("slot cliqué, dans schedule board", slot)
     this.editSlot.emit(slot);
+  }
+
+  //Fonctions pour drag and drop
+  onDrop(
+    event: CdkDragDrop<any>,
+    container: HTMLElement,
+    targetDay: Date,
+    targetSalleId: number,
+    block: TimeBlock
+  ) {
+    console.log("salle : ",targetSalleId)
+    const draggedSlot = event.item.data as SlotItem;
+    console.log("slot dragué",draggedSlot)
+    const rect = container.getBoundingClientRect();
+
+    const containerTop = rect.top;
+    const containerHeight = rect.height;
+
+    const existingSlots = this.slots.filter(s =>
+      s.id !== draggedSlot.id &&
+      s.salle === targetSalleId &&
+      isSameDay(s.dateDebut, targetDay)
+    );
+    
+    // Nouvelles dates et heures du slot (dateDebut, dateFin)
+    const newStart = this.yToDate(
+      event.dropPoint.y,
+      containerTop,
+      containerHeight,
+      block.type,
+      this.jourActuel
+    );
+  
+    const duration = draggedSlot.dateFin.getTime() - draggedSlot.dateDebut.getTime();
+  
+    const newEnd = new Date(newStart.getTime() + duration);
+
+    // Nouvelle position du slot (topPercent)
+    const top = (newStart.getHours() * 60 + newStart.getMinutes()) - block.startMin;
+    const newTop = (top / block.duration) * 100;
+    console.log("newTop : ",newTop)
+  
+    // Vérification de la disponibilité du créneau choisit
+    if (!this.canPlaceSlot(newStart, newEnd, existingSlots)) {
+      // Le slot revient à sa place
+      return;
+    }
+  
+    // Placement accepté
+    draggedSlot.dateDebut = newStart;
+    draggedSlot.dateFin = newEnd;
+    draggedSlot.salle = targetSalleId;
+    draggedSlot.topPercent = newTop;
+    console.log("le slot drag droppé",draggedSlot)
+    this.rebuildSlotsCache();
+
+    this.slotUpdated.emit(draggedSlot);
+  }
+  
+  overlaps(aStart: Date, aEnd: Date, bStart: Date, bEnd: Date) {
+    return aStart < bEnd && aEnd > bStart;
+  }
+  
+  canPlaceSlot(
+    start: Date,
+    end: Date,
+    existingSlots: SlotItem[]
+  ): boolean {
+    return !existingSlots.some(s =>
+      this.overlaps(start, end, s.dateDebut, s.dateFin)
+    );
+  }
+  
+  yToDate(
+    mouseY: number,
+    containerTop: number,
+    containerHeight: number,
+    bloc: "morning" | "afternoon",
+    day: Date
+  ): Date {
+    const blocConfig = {
+      "morning": { start: 8, end: 12 },
+      "afternoon": { start: 13, end: 18 }
+    };
+  
+    const { start, end } = blocConfig[bloc];
+    const ratio = (mouseY - containerTop) / containerHeight;
+    const hour = start + ratio * (end - start);
+  
+    const h = Math.floor(hour);
+    // Arrondissement à 5min (drop possible toutes les 5 minutes)
+    const m = Math.round((hour - h) * 60 / 5) * 5;
+  
+    const d = new Date(day);
+    d.setHours(h, m, 0, 0);
+    return d;
+  }
+    
+  rebuildSlotsCache() {
+    this.slotsCache.clear();
+  
+    for (const block of this.blocks) {
+      this.slotsCache.set(
+        block,
+        this.calculateSlotsInBlock(block, this.slots)
+      );
+    }
   }
 }
 

@@ -25,18 +25,30 @@
 
         <div class="body-planning">
         @for(salle of sallesDispo; track salle){
-            <div class="salle-cell" [style.height.px]="block.heightPercent * 3">
+            <div class="salle-cell" 
+            #bloc
+            [style.height.px]="block.heightPercent * 3"
+            cdkDropList
+            [cdkDropListData]="slots"
+            (cdkDropListDropped)="onDrop($event, bloc, jourActuel, salle, block)">
                 @for(slot of slotsInBlock(block); track slot){
                     @if(slot.salle === salle && checkSameDay(slot.dateDebut, jourActuel)){
                         <div class="slot"
                         [style.top.%]="slot.topPercent" 
                         [style.height.%]="slot.heightPercent"
-                        cdkDrag [cdkDragDisabled]="onlyDisplay">
-                            <div class="custom-placeholder" *cdkDragPlaceholder></div>
-                            <app-slot 
-                                [slot]="slot"
-                                (editSlot)="onEditSlot($event)">
-                            </app-slot>
+                        cdkDrag 
+                        [cdkDragDisabled]="onlyDisplay"
+                        [cdkDragData]="slot">
+                            <!-- <div class="custom-placeholder" *cdkDragPlaceholder></div> -->
+                            <!-- <ng-template cdkDragPreview>
+                                <div class="slot preview"
+                                [style.height.%]="slot.heightPercent"> -->
+                                    <app-slot 
+                                        [slot]="slot"
+                                        (editSlot)="onEditSlot($event)">
+                                    </app-slot>
+                                <!-- </div>
+                            </ng-template> -->
                         </div>
                     }
                     <div class="time-grid">
