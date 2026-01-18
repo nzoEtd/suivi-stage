@@ -47,6 +47,10 @@
   color: #666;
 }
 
+.loading-overlay {
+  margin-top: 100px;
+}
+
 .form {
   display: flex;
   flex-direction: column;

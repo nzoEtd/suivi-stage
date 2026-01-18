@@ -7,11 +7,14 @@ import { Staff } from '../../models/staff.model';
 import { Salle } from '../../models/salle.model';
 import { SlotItem } from '../../models/slotItem.model';
 import { AuthService } from '../../services/auth.service';
+import { LoadingComponent } from '../loading/loading.component';
+import { lastValueFrom } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: "app-modale-soutenance",
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LoadingComponent],
   templateUrl: "./modale-soutenance.component.html",
   styleUrl: "./modale-soutenance.component.css",
 })
@@ -29,7 +32,9 @@ export class ModaleSoutenanceComponent implements OnInit {
 
   @Output() cancel = new EventEmitter<void>();
 
-  constructor(private readonly soutenanceService: SoutenanceService, private readonly authService: AuthService) {}
+  constructor(private readonly soutenanceService: SoutenanceService, 
+              private readonly authService: AuthService,
+              private readonly router: Router) {}
 
   ngOnInit(): void {
     this.convertSlotToSoutenance(this.soutenance);
@@ -37,14 +42,13 @@ export class ModaleSoutenanceComponent implements OnInit {
     this.authService.getAuthenticatedUser().subscribe(currentUser => {
       this.currentUser = currentUser;
       
-      if (this.authService.isStudent(this.currentUser)) {
-        this.currentUserRole = 'STUDENT';
-      }
-      else if (this.authService.isStaff(this.currentUser)) {
+      if (this.authService.isStaff(this.currentUser)) {
         this.currentUserRole = 'INTERNSHIP_MANAGER';
         this.editMode = true;
       }
     });
+
+    this.newDate = this.formatDate(this.soutenance.dateDebut, 'Date');
   }
 
   convertSlotToSoutenance(slot: SlotItem) {
@@ -67,6 +71,7 @@ export class ModaleSoutenanceComponent implements OnInit {
 
     const [dateStr, heureStr] = date_locale_str.split(' ');
     let moisNb = dateStr.split('/')[1];
+    let heure_formattee = heureStr.split(':')[0] + ":" + heureStr.split(':')[1];
 
     let result;
 
@@ -76,11 +81,11 @@ export class ModaleSoutenanceComponent implements OnInit {
         break;
 
       case 'Heure':
-        result = heureStr;
+        result = heure_formattee;
         break;
 
       case 'DateHeure':
-        result = `${annee}-${moisNb}-${jour} ${heure}`;
+        result = `${annee}-${moisNb}-${jour} ${heure_formattee}`;
         break;
 
       case 'DateToStr':
@@ -100,7 +105,13 @@ export class ModaleSoutenanceComponent implements OnInit {
         break;
     }
 
+    //console.log("date/heure : ", result);
+
     return result;
+  }
+
+  onJourChange(changed_date: string): void {
+    this.newDate = changed_date;
   }
 
   onCancel() {
@@ -111,13 +122,18 @@ export class ModaleSoutenanceComponent implements OnInit {
    * Handles form submission by updating the soutenance
    */
   async onSubmit() {
-    console.log(this.isFormValid());
     if (this.isFormValid()) {
       try {
         this.isSubmitting = true;
 
-        this.soutenanceService.updateSoutenance(this.newSoutenance);
-        console.log("Changement effectué");
+        const response = await lastValueFrom(
+          this.soutenanceService.updateSoutenance(this.newSoutenance)
+        );
+
+        console.log('Soutenance mise à jour avec succès : ', response);
+
+        //Redirection vers la page des plannings
+        this.router.navigateByUrl('/schedule');
 
       } catch (error) {
         console.error('Erreur lors de la mise à jour de la soutenance :', error);
@@ -133,13 +149,17 @@ export class ModaleSoutenanceComponent implements OnInit {
    */
   isFormValid(): boolean {
     this.newSoutenance.date = new Date(this.newDate);
-      return !!(
-          this.newSoutenance.nomSalle! &&
-          this.newSoutenance.date! &&
-          this.newSoutenance.heureDebut! &&
-          this.newSoutenance.heureFin! &&
-          this.newSoutenance.idLecteur!
-      );
+    this.newSoutenance.heureDebut = this.newSoutenance.heureDebut + ":00";
+    this.newSoutenance.heureFin = this.newSoutenance.heureFin + ":00";
+
+    return !!(
+      this.newSoutenance.idSoutenance &&
+      this.newSoutenance.nomSalle! &&
+      this.newSoutenance.date! &&
+      this.newSoutenance.heureDebut! &&
+      this.newSoutenance.heureFin! &&
+      this.newSoutenance.idLecteur!
+    );
   }
 }
 

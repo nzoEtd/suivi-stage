@@ -54,12 +54,14 @@ export class SoutenanceService {
   }
 
   //Mise à jour d'une soutenance
-  updateSoutenance(soutenance: Soutenance): Observable<null> {
+  updateSoutenance(soutenance: Soutenance): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({'Content-type': 'application/json'})
     };
 
-    return this.http.put(`${this.apiUrl}/api/soutenance/update/${soutenance.idSoutenance}`, soutenance, httpOptions).pipe(
+    const url = this.http.put(`${this.apiUrl}/api/soutenance/update/${soutenance.idSoutenance}`, soutenance, httpOptions)
+
+    return url.pipe(
       tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );

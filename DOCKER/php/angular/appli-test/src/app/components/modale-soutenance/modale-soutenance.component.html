@@ -8,110 +8,119 @@
           Soutenance {{ formatDate(soutenance.dateDebut, 'HeureToStr') }}-{{ formatDate(soutenance.dateFin, 'HeureToStr') }} S{{ soutenance.salle }}
         </h1>
     </div>
-    <form (ngSubmit)="onSubmit()" 
-      #soutenanceForm="ngForm"
-      [class.disabled-form]="isSubmitting"
-      class="form"
-    >
-      <!--Non modifiables-->
-      <div class="input-wrapper">
-        <label for="etudiant">Etudiant :</label>
-        <input type="text" name="etudiant" id="etudiant" [value]="soutenance.etudiant" [disabled]="true">
+    @if (isSubmitting) {
+      <div class="loading-overlay">
+        <app-loading></app-loading>
       </div>
-      <div class="input-wrapper">
-        <label for="referent">Enseignant référent :</label>
-        <input type="text" name="referent" id="referent" [value]="soutenance.referent" [disabled]="true">
-      </div>
-      <div class="input-wrapper">
-        <label for="entreprise">Entreprise :</label>
-        <input type="text" name="entreprise" id="entreprise" [value]="soutenance.entreprise" [disabled]="true">
-      </div>
-      <div class="input-wrapper">
-        <label for="tuteur">Tuteur d'entreprise :</label>
-        <input type="text" name="tuteur" id="tuteur" [value]="soutenance.tuteur" [disabled]="true">
-      </div>
+    }
+    @if (!isSubmitting) {
+      <form (ngSubmit)="onSubmit()" 
+        #soutenanceForm="ngForm"
+        [class.disabled-form]="isSubmitting"
+        class="form"
+      >
+        <!--Non modifiables-->
+        <div class="input-wrapper">
+          <label for="etudiant">Etudiant :</label>
+          <input type="text" name="etudiant" id="etudiant" [value]="soutenance.etudiant" [disabled]="true">
+        </div>
+        <div class="input-wrapper">
+          <label for="referent">Enseignant référent :</label>
+          <input type="text" name="referent" id="referent" [value]="soutenance.referent" [disabled]="true">
+        </div>
+        <div class="input-wrapper">
+          <label for="entreprise">Entreprise :</label>
+          <input type="text" name="entreprise" id="entreprise" [value]="soutenance.entreprise" [disabled]="true">
+        </div>
+        <div class="input-wrapper">
+          <label for="tuteur">Tuteur d'entreprise :</label>
+          <input type="text" name="tuteur" id="tuteur" [value]="soutenance.tuteur" [disabled]="true">
+        </div>
 
-      <!--Modifiables en tant que responsable des stages-->
-      <!--Enseignant lecteur-->
-      <div class="input-wrapper">
-        <label for="lecteur">Enseignant lecteur :</label>
-        @if (editMode) {
-          <select
-            name="lecteur"
-            id="lecteur"
-            [(ngModel)]="newSoutenance.idLecteur"
-          >
-            <option [value]="soutenance.idLecteur" selected>
-              {{ soutenance.lecteur }}
-            </option>
-            <option
-              *ngFor="let enseignantLecteur of enseignantsLecteurs"
-              [value]="enseignantLecteur.idPersonnel"
-            >
-              {{ enseignantLecteur.prenom }} {{ enseignantLecteur.nom }}
-            </option>
-          </select>
-        }
-        @else {
-          <input type="text" name="lecteur" id="lecteur" [value]="soutenance.lecteur" [disabled]="!editMode">
-        }
-
-      </div>
-      <!--Heure de début et de fin-->
-      <div class="line-wrapper">
+        <!--Modifiables en tant que responsable des stages-->
+        <!--Enseignant lecteur-->
         <div class="input-wrapper">
-          <label for="heureDebut">Heure début :</label>
-          <input type="time" name="heureDebut" id="heureDebut" [disabled]="!editMode" [value]="formatDate(soutenance.dateDebut, 'Heure')">
-        </div>
-        <div class="input-wrapper">
-          <label for="heureFin">Heure fin :</label>
-          <input type="time" name="heureFin" id="heureFin" [disabled]="!editMode" [value]="formatDate(soutenance.dateFin, 'Heure')">
-        </div>
-      </div>
-      <!--Jour et salle-->
-      <div class="line-wrapper">
-        <div class="input-wrapper">
-          <label for="jour">Jour :</label>
-          <input type="date" name="jour" id="jour" [(ngModel)]="newDate" [disabled]="!editMode" [value]="formatDate(soutenance.dateDebut, 'Date')">
-        </div>
-        <div class="input-wrapper">
-          <label for="salle">Salle :</label>
+          <label for="lecteur">Enseignant lecteur :</label>
           @if (editMode) {
             <select
-              name="salle"
-              id="salle"
-              [(ngModel)]="newSoutenance.nomSalle"
-              [disabled]="!editMode"
-              placeholder="vvv"
-              [value]="soutenance.salle"
+              name="lecteur"
+              id="lecteur"
+              [(ngModel)]="newSoutenance.idLecteur"
             >
-              <option [value]="soutenance.salle" selected [disabled]="!editMode">
-                {{ soutenance.salle.toString() }}
+              <option [value]="soutenance.idLecteur" selected>
+                {{ soutenance.lecteur }}
               </option>
               <option
-                *ngFor="let salle of sallesDispo"
-                [value]="salle.nomSalle"
-                [disabled]="!editMode"
+                *ngFor="let enseignantLecteur of enseignantsLecteurs"
+                [value]="enseignantLecteur.idPersonnel"
               >
-                {{ salle.nomSalle.toString() }}
+                {{ enseignantLecteur.prenom }} {{ enseignantLecteur.nom }}
               </option>
             </select>
           }
           @else {
-            <input type="text" name="salle" id="salle" [value]="soutenance.salle" [disabled]="!editMode">
+            <input type="text" name="lecteur" id="lecteur" [value]="soutenance.lecteur" [disabled]="!editMode">
           }
+
         </div>
-      </div>
-      <!-- Boutons (mode édition) -->
-      @if (editMode)
-      {
-        <div class="modal-buttons">
-          <button type="button" (click)="onCancel()" class="cancel-button">
-              Annuler
-          </button>
-          <button type="submit" class="validate-button">Valider</button>
+        <!--Heure de début et de fin-->
+        <div class="line-wrapper">
+          <div class="input-wrapper">
+            <label for="heureDebut">Heure début :</label>
+            <input type="time" name="heureDebut" id="heureDebut" [(ngModel)]="newSoutenance.heureDebut" [disabled]="!editMode" [value]="formatDate(soutenance.dateDebut, 'Heure')">
+          </div>
+          <div class="input-wrapper">
+            <label for="heureFin">Heure fin :</label>
+            <input type="time" name="heureFin" id="heureFin" [(ngModel)]="newSoutenance.heureFin" [disabled]="!editMode" [value]="formatDate(soutenance.dateFin, 'Heure')">
+          </div>
         </div>
-      }
-    </form>
+        <!--Jour et salle-->
+        <div class="line-wrapper">
+          <div class="input-wrapper">
+            <label for="jour">Jour :</label>
+            <input type="date" name="jour" id="jour" [(ngModel)]="newDate" (ngModelChange)="onJourChange($event)" [disabled]="!editMode" [value]="formatDate(soutenance.dateDebut, 'Date')">
+          </div>
+          <div class="input-wrapper">
+            <label for="salle">Salle :</label>
+            @if (editMode) {
+              <select
+                name="salle"
+                id="salle"
+                [(ngModel)]="newSoutenance.nomSalle"
+                [disabled]="!editMode"
+                placeholder="vvv"
+                [value]="soutenance.salle"
+              >
+                <option [value]="soutenance.salle" selected [disabled]="!editMode">
+                  {{ soutenance.salle.toString() }}
+                </option>
+                <option
+                  *ngFor="let salle of sallesDispo"
+                  [value]="salle.nomSalle"
+                  [disabled]="!editMode"
+                >
+                  {{ salle.nomSalle.toString() }}
+                </option>
+              </select>
+            }
+            @else {
+              <input type="text" name="salle" id="salle" [value]="soutenance.salle" [disabled]="!editMode">
+            }
+          </div>
+        </div>
+        <!-- Boutons (mode édition) -->
+        @if (editMode)
+        {
+          <div class="modal-buttons">
+            <button type="button" (click)="onCancel()" class="cancel-button">
+                Annuler
+            </button>
+            <button type="submit" class="validate-button">
+              Valider
+            </button>
+          </div>
+        }
+      </form>
+    }
   </div>
 </div>
