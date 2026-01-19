@@ -1,114 +1,104 @@
-import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
-import { Student_TrainingYear_AcademicYear } from '../models/student-trainingYear-academicYear.model';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, catchError, tap, of } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { environment } from "../../environments/environment";
+import { Student_TrainingYear_AcademicYear } from "../models/student-trainingYear-academicYear.model";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { Observable, catchError, tap, of } from "rxjs";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class StudentTrainingYearAcademicYearService {
-    apiUrl = environment.apiUrl;
-    private readonly mockStudentTdAcademicYear: Student_TrainingYear_AcademicYear[] = [
-        {
-            idUPPA: '610000',
-            idTrainingYear: 2,
-            idAcademicYear: 1
-        },
-        {
-            idUPPA: '610001',
-            idTrainingYear: 2,
-            idAcademicYear: 1
-        },
-        {
-            idUPPA: '610459',
-            idTrainingYear: 2,
-            idAcademicYear: 1
-        },
-        {
-            idUPPA: '610123',
-            idTrainingYear: 2,
-            idAcademicYear: 1
-        },
-        {
-            idUPPA: '611082',
-            idTrainingYear: 2,
-            idAcademicYear: 1
-        },
-        {
-            idUPPA: '613453',
-            idTrainingYear: 2,
-            idAcademicYear: 1
-        },
-        {
-            idUPPA: '610000',
-            idTrainingYear: 3,
-            idAcademicYear: 2
-        },
-        {
-            idUPPA: '610001',
-            idTrainingYear: 3,
-            idAcademicYear: 2
-        },
-        {
-            idUPPA: '610459',
-            idTrainingYear: 3,
-            idAcademicYear: 2
-        },
-        {
-            idUPPA: '610123',
-            idTrainingYear: 3,
-            idAcademicYear: 2
-        },
-        {
-            idUPPA: '611082',
-            idTrainingYear: 3,
-            idAcademicYear: 2
-        },
-        {
-            idUPPA: '613453',
-            idTrainingYear: 3,
-            idAcademicYear: 2
-        }
-    ];
+  apiUrl = environment.apiUrl;
+  constructor(private http: HttpClient) {}
 
-
-    constructor(private http: HttpClient) {}
-
-    getStudentsTrainingYearsAcademicYears(fields?: string[]): Observable<Student_TrainingYear_AcademicYear[]> {
-        let params = new HttpParams();
-
-        if (fields && fields.length > 0) {
-        params = params.set('fields', fields.join(','));
-        }
-    //     return this.http.get<Student_TrainingYear_AcademicYear[]>(`${this.apiUrl}/api/`, {params}).pipe(
-    //         tap(response => this.log(response)),
-    //         catchError(error => this.handleError(error, null))
-    //     );
-    // }
-
-    // getAffectationByUppaAndTraining(studentId: string, trainingId: number, fields?: string[]): Observable<Student_TrainingYear_AcademicYear | null> {
-    //     let params = new HttpParams();
-
-    //     if (fields && fields.length > 0) {
-    //         params = params.set('fields', fields.join(','));
-    //     }
-
-    //     return this.http.get<Student_TrainingYear_AcademicYear[]>(`${this.apiUrl}/api/`, {params}).pipe(
-    //         tap(response => this.log(response)),
-    //         catchError(error => this.handleError(error, null))
-    //     );
-        return of(this.mockStudentTdAcademicYear);
+  // Récupère toutes les relations étudiant / année de formation / année universitaire
+  getStudentsTrainingYearsAcademicYears(
+    fields?: string[]
+  ): Observable<Student_TrainingYear_AcademicYear[]> {
+    let params = new HttpParams();
+    if (fields && fields.length > 0) {
+      params = params.set("fields", fields.join(","));
     }
 
-    //Log la réponse de l'API
-    private log(response: any) {
-        console.table(response);
-    }
+    return this.http
+      .get<Student_TrainingYear_AcademicYear[]>(
+        `${this.apiUrl}/api/etudiants-annee-formation`,
+        { params }
+      )
+      .pipe(
+        tap((response) => this.log(response)),
+        catchError((error) => this.handleError(error, []))
+      );
+  }
 
-    //Retourne l'erreur en cas de problème avec l'API
-    private handleError(error: Error, errorValue: any) {
-        console.error(error);
-        return of(errorValue);
-    }
+  // Filtrer les relations selon idUPPA, idTrainingYear ou idAcademicYear
+  filterStudentsTrainingYearsAcademicYears(
+    paramsObj: Partial<Student_TrainingYear_AcademicYear>
+  ): Observable<Student_TrainingYear_AcademicYear[]> {
+    let params = new HttpParams();
+    Object.keys(paramsObj).forEach((key) => {
+      const value = (paramsObj as any)[key];
+      if (value !== undefined && value !== null) {
+        params = params.set(key, value.toString());
+      }
+    });
+
+    return this.http
+      .get<Student_TrainingYear_AcademicYear[]>(
+        `${this.apiUrl}/api/etudiants-annee-formation/filter`,
+        { params }
+      )
+      .pipe(
+        tap((response) => this.log(response)),
+        catchError((error) => this.handleError(error, []))
+      );
+  }
+
+  // Créer une nouvelle relation étudiant / année de formation / année universitaire
+  createStudentTrainingYearAcademicYear(
+    payload: Student_TrainingYear_AcademicYear
+  ): Observable<Student_TrainingYear_AcademicYear | null> {
+    const httpOptions = {
+      headers: new HttpHeaders({ "Content-Type": "application/json" }),
+    };
+
+    return this.http
+      .post<Student_TrainingYear_AcademicYear>(
+        `${this.apiUrl}/api/etudiants-annee-formation`,
+        payload,
+        httpOptions
+      )
+      .pipe(
+        tap((response) => this.log(response)),
+        catchError((error) => this.handleError(error, null))
+      );
+  }
+
+  // Supprime une relation étudiant / année de formation / année universitaire
+  deleteStudentTrainingYearAcademicYear(
+    payload: Student_TrainingYear_AcademicYear
+  ): Observable<null> {
+    const httpOptions = {
+      headers: new HttpHeaders({ "Content-Type": "application/json" }),
+      body: payload,
+    };
+
+    return this.http
+      .delete<null>(`${this.apiUrl}/api/etudiants-annee-formation`, httpOptions)
+      .pipe(
+        tap((response) => this.log(response)),
+        catchError((error) => this.handleError(error, null))
+      );
+  }
+
+  // Log la réponse de l'API
+  private log(response: any) {
+    console.table(response);
+  }
+
+  // Retourne l'erreur en cas de problème avec l'API
+  private handleError(error: any, errorValue: any) {
+    console.error("Erreur API StudentTrainingYearAcademicYearService :", error);
+    return of(errorValue);
+  }
 }

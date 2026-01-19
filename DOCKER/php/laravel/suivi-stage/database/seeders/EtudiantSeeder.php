@@ -153,7 +153,19 @@ class EtudiantSeeder extends Seeder
                 'idDepartement' => 1,
                 'idEntreprise' => 3,
                 'idTuteur' => 4
-            ]
+            ],
+        ...array_map(function ($i) {
+                return [
+                    'idUPPA' => 700000 + $i,
+                    'login' => 'etudiant' . $i,
+                    'nom' => 'NOM' . $i,
+                    'prenom' => 'Prenom' . $i,
+                    'adresseMail' => 'etudiant' . $i . '@example.com',
+                    'idDepartement' => 1,
+                    'idEntreprise' => rand(1, 7),
+                    'idTuteur' => rand(1, 7),
+                ];
+            }, range(1, 50)),
         ]);
     }
 }
