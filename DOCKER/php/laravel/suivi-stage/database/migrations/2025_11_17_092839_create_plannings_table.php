@@ -14,24 +14,26 @@ class CreatePlanningsTable extends Migration
     public function up()
     {
         Schema::create('plannings', function (Blueprint $table) {
-             $table->engine = 'InnoDB';
+            $table->engine = 'InnoDB';
             // Clé primaire
             $table->increments('idPlanning');
 
             // Attributs
             $table->string('nom');
-            $table->date('dateDebut'); 
-            $table->date('dateFin'); 
+            $table->date('dateDebut');
+            $table->date('dateFin');
             $table->time('heureDebutMatin');
             $table->time('heureFinMatin');
             $table->time('heureDebutAprem');
             $table->time('heureFinAprem');
             $table->integer('dureeSoutenance'); // en minutes
-            
-            // Clé étrangère
+
+            // Clés étrangères
             $table->unsignedTinyInteger('idAnneeFormation');
             $table->foreign('idAnneeFormation')->references('idAnneeFormation')->on('annee_formations');
 
+            $table->unsignedInteger('idAnneeUniversitaire');
+            $table->foreign('idAnneeUniversitaire')->references('idAnneeUniversitaire')->on('annee_universitaires');
         });
     }
 

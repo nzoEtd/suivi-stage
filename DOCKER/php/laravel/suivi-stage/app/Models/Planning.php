@@ -19,6 +19,7 @@ class Planning extends Model
         'heureFinAprem',
         'dureeSoutenance',
         'idAnneeFormation',
+        'idAnneeUniversitaire'
     ];
 
      // Définit l'attribut de la clé primaire
@@ -33,6 +34,13 @@ class Planning extends Model
     {
         return $this->belongsTo(AnneeFormation::class);
     }
+
+     // Relation 1-N avec AnneeUniversiataire
+    public function anneeUniversitaire()
+    {
+        return $this->belongsTo(AnneeUniversitaire::class);
+    }
+
 
     // Relation N-N avec Salle
     public function salles()
