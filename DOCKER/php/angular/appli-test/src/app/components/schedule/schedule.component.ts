@@ -218,11 +218,9 @@ export class ScheduleComponent implements AfterViewInit {
 
       const jourHeader = document.createElement("h2");
       jourHeader.style.textAlign = "center";
-      jourHeader.style.margin = "10px 0";
-      jourHeader.style.padding = "10px 0";
+      jourHeader.style.padding = "20px 0";
       jourHeader.style.fontSize = "28px";
       jourHeader.style.fontWeight = "500";
-      jourHeader.style.width = "100%";
       jourHeader.style.display = "block";
       jourHeader.style.letterSpacing = "0.5px";
       jourHeader.textContent = formattedJour;
@@ -263,8 +261,10 @@ export class ScheduleComponent implements AfterViewInit {
       }
     }
 
-    const blobUrl = pdf.output("bloburl");
-    window.open(blobUrl, "_blank");
+    const planningName = this.selectedPlanning?.nom ?? "planning";
+    const safeName = planningName.replace(/\s+/g, "_").replace(/[^\w\-]/g, "");
+
+    pdf.save(`${safeName}.pdf`);
 
     this.isExporting = false;
   }
