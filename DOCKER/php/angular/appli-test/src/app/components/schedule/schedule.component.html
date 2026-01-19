@@ -1,6 +1,6 @@
 <div class="schedule">
     <div class="content">
-      @if (!currentUser || !allDataLoaded) {
+      @if (!currentUser || !allDataLoaded  || isExporting) {
         <app-loading/>
       }
         <div [hidden]="!allDataLoaded" class="header-schedule-content">

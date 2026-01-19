@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, AfterViewInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { CommonModule, DatePipe } from "@angular/common";
 import { AuthService } from "../../services/auth.service";
 import { InitService } from "../../services/init.service";
 import { LoadingComponent } from "../loading/loading.component";
@@ -26,7 +26,7 @@ import {
   getAllSallesUsed,
   loadSoutenancesForPlanning,
 } from "../../utils/fonctions";
-import { getDatesBetween, isSameDay } from "../../utils/timeManagement";
+import { getDatesBetween } from "../../utils/timeManagement";
 import { CompanyTutorService } from "../../services/company-tutor.service";
 import { CompanyTutor } from "../../models/company-tutor.model";
 import { StudentStaffAcademicYearService } from "../../services/student-staff-academicYear.service";
@@ -34,7 +34,6 @@ import { StudentTrainingYearAcademicYearService } from "../../services/student-t
 import { Student_TrainingYear_AcademicYear } from "../../models/student-trainingYear-academicYear.model";
 import { AcademicYear } from "../../models/academic-year.model";
 import { AcademicYearService } from "../../services/academic-year.service";
-import { Student_Staff_AcademicYear } from "../../models/student-staff-academicYear.model";
 import { Student_Staff_AcademicYear_String } from "../../models/student-staff-academicYear-string.model";
 import { ModaleSoutenanceComponent } from "../modale-soutenance/modale-soutenance.component";
 import jsPDF from "jspdf";
@@ -51,6 +50,7 @@ import html2canvas from "html2canvas";
     ModalePlanningComponent,
     ModaleSoutenanceComponent,
   ],
+  providers: [DatePipe],
   templateUrl: "./schedule.component.html",
   styleUrls: ["./schedule.component.css"],
 })
@@ -89,6 +89,8 @@ export class ScheduleComponent implements AfterViewInit {
   slots: SlotItem[] = [];
   timeBlocks: TimeBlockConfig[] = [];
 
+  isExporting: boolean = false;
+
   constructor(
     private readonly authService: AuthService,
     private readonly cdRef: ChangeDetectorRef,
@@ -103,7 +105,8 @@ export class ScheduleComponent implements AfterViewInit {
     private readonly tutorService: CompanyTutorService,
     private readonly referentService: StudentStaffAcademicYearService,
     private readonly studentTrainingAcademicYearService: StudentTrainingYearAcademicYearService,
-    private readonly academicYearService: AcademicYearService
+    private readonly academicYearService: AcademicYearService,
+    private datePipe: DatePipe
   ) {}
 
   async ngAfterViewInit() {
@@ -179,10 +182,10 @@ export class ScheduleComponent implements AfterViewInit {
     );
   }
 
-
-
   async export() {
     if (!this.selectedPlanning || !this.jours.length) return;
+
+    this.isExporting = true;
 
     const pdf = new jsPDF({
       orientation: "landscape",
@@ -194,14 +197,7 @@ export class ScheduleComponent implements AfterViewInit {
     if (!element) return;
 
     for (const jour of this.jours) {
-      this.selectedJour = jour;
-      this.cdRef.detectChanges();
-
-      await new Promise((r) => setTimeout(r, 100));
-
-      // Container temporaire sans scroll
       const tempContainer = document.createElement("div");
-      tempContainer.id = "temp-pdf-container";
       tempContainer.style.position = "absolute";
       tempContainer.style.left = "-9999px";
       tempContainer.style.top = "0";
@@ -209,12 +205,38 @@ export class ScheduleComponent implements AfterViewInit {
       tempContainer.style.height = "auto";
       tempContainer.style.width = element.scrollWidth + "px";
       tempContainer.style.backgroundColor = "white";
-      tempContainer.style.zIndex = "-1";
 
       const clone = element.cloneNode(true) as HTMLElement;
       clone.style.overflow = "visible";
       clone.style.height = "auto";
       clone.style.maxHeight = "none";
+
+      // Jour en titre
+      let formattedJour =
+        this.datePipe.transform(jour, "EEEE dd MMMM yyyy", "", "fr") || "";
+      formattedJour = formattedJour.replace(/\u00A0/g, " ");
+
+      const jourHeader = document.createElement("h2");
+      jourHeader.style.textAlign = "center";
+      jourHeader.style.margin = "10px 0";
+      jourHeader.style.padding = "10px 0";
+      jourHeader.style.fontSize = "28px";
+      jourHeader.style.fontWeight = "500";
+      jourHeader.style.width = "100%";
+      jourHeader.style.display = "block";
+      jourHeader.style.letterSpacing = "0.5px";
+      jourHeader.textContent = formattedJour;
+
+      clone.insertBefore(jourHeader, clone.firstChild);
+
+      clone.querySelectorAll<HTMLElement>(".jour").forEach((el) => {
+        if (new Date(el.dataset["jour"]!)?.getTime() === jour.getTime()) {
+          el.classList.add("selectedJour");
+        } else {
+          el.classList.remove("selectedJour");
+        }
+      });
+
       tempContainer.appendChild(clone);
       document.body.appendChild(tempContainer);
 
@@ -244,7 +266,7 @@ export class ScheduleComponent implements AfterViewInit {
     const blobUrl = pdf.output("bloburl");
     window.open(blobUrl, "_blank");
 
-    this.cdRef.detectChanges();
+    this.isExporting = false;
   }
 
   goToAdd() {
