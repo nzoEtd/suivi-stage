@@ -67,6 +67,7 @@ export async function convertSoutenancesToSlots(soutenances: Soutenance[], allSt
         dateFin: getDateHeure(s.date!, s.heureFin!),
         idEtudiant: s.idUPPA!,
         etudiant: student ? `${student.nom} ${student.prenom}` : "Étudiant inconnu",
+        idReferent: referent ? referent.idPersonnel : -1,
         referent: referent ? `${referent.prenomPersonnel![0]}. ${referent.nomPersonnel}` : "Pas de référent",
         idLecteur: lecteur ? lecteur.idPersonnel : -1,
         lecteur: lecteur ? `${lecteur.prenom![0]}. ${lecteur.nom}` : "Lecteur inconnu",
@@ -77,7 +78,6 @@ export async function convertSoutenancesToSlots(soutenances: Soutenance[], allSt
       } ;
   });
 }
-
 
 export function getAllSallesUsed(sallesDispo: number[], jour:Date, slots: SlotItem[]): number[] {
   const salles: number[] = [];

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Soutenance } from '../../models/soutenance.model';
 import { SoutenanceService } from '../../services/soutenance.service';
@@ -10,6 +10,7 @@ import { AuthService } from '../../services/auth.service';
 import { LoadingComponent } from '../loading/loading.component';
 import { lastValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
+import { StaffService } from '../../services/staff.service';
 
 @Component({
   selector: "app-modale-soutenance",
@@ -30,13 +31,15 @@ export class ModaleSoutenanceComponent implements OnInit {
   @Input() sallesDispo!: Salle[];
   newDate!: string;
 
+
   @Output() cancel = new EventEmitter<void>();
 
   constructor(private readonly soutenanceService: SoutenanceService, 
               private readonly authService: AuthService,
-              private readonly router: Router) {}
+              private readonly router: Router,
+              private readonly staffService: StaffService) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.convertSlotToSoutenance(this.soutenance);
 
     this.authService.getAuthenticatedUser().subscribe(currentUser => {
@@ -47,6 +50,14 @@ export class ModaleSoutenanceComponent implements OnInit {
         this.editMode = true;
       }
     });
+
+    let dateSoutenance = new Date(this.formatDate(this.soutenance.dateDebut, 'Date'));
+
+    console.log("date soutenance", dateSoutenance);
+
+    this.enseignantsLecteurs = await this.getFreeLecteurs(dateSoutenance, this.soutenance.idReferent, this.soutenance.idPlanning);
+
+    console.log("enseignants lecteur potentiels : ", this.enseignantsLecteurs);
 
     this.newDate = this.formatDate(this.soutenance.dateDebut, 'Date');
   }
@@ -62,52 +73,92 @@ export class ModaleSoutenanceComponent implements OnInit {
     this.newSoutenance.idPlanning = slot.idPlanning;
   }
 
-  formatDate(pDate: Date, modeAffichage: TypeAffichage): string {
-      
-    if (pDate === null) return "Erreur de récupération de la date";
+  async getFreeLecteurs(jour: Date, idEnseignantReferent: number, idPlanning: number): Promise<Staff[]> {
+    let lecteursPotentiels: Staff[] = [];
+  
+    /**
+     * Récupérer le planning et les soutenances pour le jour
+     * Faire une liste de lecteurs à ne pas inclure avec
+     * Récupérer la liste de tous les enseignants
+     */
+    let soutenancesJour = await this.loadSoutenancesPlanningJour(idPlanning, jour);
 
-    const [jourSemaine, mois, jour, annee, heure] = pDate.toDateString().split(' ');
-    let date_locale_str = pDate.toLocaleString("fr-FR");
+    const idLecteursNonPotentiels = this.getLecteursJour(soutenancesJour);
 
-    const [dateStr, heureStr] = date_locale_str.split(' ');
-    let moisNb = dateStr.split('/')[1];
-    let heure_formattee = heureStr.split(':')[0] + ":" + heureStr.split(':')[1];
+    console.log("id lecteurs non potentiels : ", idLecteursNonPotentiels);
+  
+    /**
+     * Récupérer l'enseignant référent pour savoir s'il est technique
+     * -> S'il est pas technique : l'enseignant lecteur doit être technique
+     * -> S'il est technique : l'enseignant lecteur doit pas être technique
+     * -> Chaque enseignant lecteur potentiel ne doit pas faire parti de la liste des lecteurs qui sont dans la même journée
+     */
+    const referentTechnique = this.referentEstTechnique(idEnseignantReferent);
+    lecteursPotentiels = this.getAllPotentialLecteurs(idLecteursNonPotentiels);
 
-    let result;
-
-    switch (modeAffichage) {
-      case 'Date':
-        result = `${annee}-${moisNb}-${jour}`;
-        break;
-
-      case 'Heure':
-        result = heure_formattee;
-        break;
-
-      case 'DateHeure':
-        result = `${annee}-${moisNb}-${jour} ${heure_formattee}`;
-        break;
-
-      case 'DateToStr':
-        result = `${dateStr}`;
-        break;
-
-      case 'HeureToStr':
-        result = heureStr.split(':')[0] + "h" + heureStr.split(':')[1];
-        break;
-
-      case 'DateHeureToStr':
-        result = `le ${dateStr} à ` + heureStr.split(':')[0] + "h" + heureStr.split(':')[1];
-        break;
-        
-      default:
-        result = date_locale_str;
-        break;
+    //Si le prof référent n'est pas technique, il faut absolument un enseignant lecteur technique
+    if (!referentTechnique) {
+      lecteursPotentiels = lecteursPotentiels.filter((l) => {
+        return l.estTechnique === 1;
+      });
     }
 
-    //console.log("date/heure : ", result);
+    return lecteursPotentiels;
+  }
 
-    return result;
+async loadSoutenancesPlanningJour(idPlanning: number, jour: Date): Promise<Soutenance[]> {
+  try {
+    const allSoutenances = await lastValueFrom(this.soutenanceService.getSoutenances());
+    
+    const filteredSoutenances = allSoutenances.filter((s) => {
+
+      return s.date?.getDay() === jour?.getDay();
+    });
+
+    return filteredSoutenances;
+  } catch (error) {
+    console.error("Erreur lors du chargement des soutenances : ", error);
+    return [];
+  }
+}
+
+  getAllPotentialLecteurs(idLecteursBlacklist: number[]): Staff[] {
+    let potentialTeachers: Staff[] = [];
+
+    this.staffService.getStaffs().subscribe((teachers) => {
+      potentialTeachers = teachers;
+    });
+
+    const filteredTeachers = potentialTeachers.filter((t) => {
+      !idLecteursBlacklist.find(id => id === t.idPersonnel);
+    });
+
+    return filteredTeachers;
+
+  }
+
+  async referentEstTechnique(idReferent: number): Promise<boolean> {
+  if (idReferent > -1) {
+    try {
+      const enseignant = await this.staffService.getStaffById(idReferent).toPromise();
+      return enseignant?.estTechnique === 1;
+    } 
+    catch {
+      return true;
+    }
+  } else {
+    return true;
+  }
+}
+
+  getLecteursJour(soutenances: Soutenance[]): number[] {
+    let idLecteurs: number[] = [];
+    
+    for (const soutenance of soutenances) {
+      idLecteurs.push(soutenance.idLecteur!);
+    }
+
+    return idLecteurs;
   }
 
   onJourChange(changed_date: string): void {
@@ -160,6 +211,52 @@ export class ModaleSoutenanceComponent implements OnInit {
       this.newSoutenance.heureFin! &&
       this.newSoutenance.idLecteur!
     );
+  }
+
+  formatDate(pDate: Date, modeAffichage: TypeAffichage): string {
+        
+    if (pDate === null) return "Erreur de récupération de la date";
+
+    const [jourSemaine, mois, jour, annee, heure] = pDate.toDateString().split(' ');
+    let date_locale_str = pDate.toLocaleString("fr-FR");
+
+    const [dateStr, heureStr] = date_locale_str.split(' ');
+    let moisNb = dateStr.split('/')[1];
+    let heure_formattee = heureStr.split(':')[0] + ":" + heureStr.split(':')[1];
+
+    let result;
+
+    switch (modeAffichage) {
+      case 'Date':
+        result = `${annee}-${moisNb}-${jour}`;
+        break;
+
+      case 'Heure':
+        result = heure_formattee;
+        break;
+
+      case 'DateHeure':
+        result = `${annee}-${moisNb}-${jour} ${heure_formattee}`;
+        break;
+
+      case 'DateToStr':
+        result = `${dateStr}`;
+        break;
+
+      case 'HeureToStr':
+        result = heureStr.split(':')[0] + "h" + heureStr.split(':')[1];
+        break;
+
+      case 'DateHeureToStr':
+        result = `le ${dateStr} à ` + heureStr.split(':')[0] + "h" + heureStr.split(':')[1];
+        break;
+        
+      default:
+        result = date_locale_str;
+        break;
+    }
+
+    return result;
   }
 }
 

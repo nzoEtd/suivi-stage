@@ -7,6 +7,7 @@ export interface SlotItem {
     dateFin: Date;
     idEtudiant: string;
     etudiant: string;
+    idReferent: number;
     referent: string;
     idLecteur: number;
     lecteur: string;
