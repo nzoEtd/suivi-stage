@@ -8,7 +8,14 @@ import { TrainingYearService } from "../../services/training-year.service";
 import { TrainingYear } from "../../models/training-year.model";
 import { Salle } from "../../models/salle.model";
 import { SalleService } from "../../services/salle.service";
-import { Observable } from "rxjs";
+import {
+  addDays,
+  minutesToHHMM,
+  timeStringToMinutes,
+} from "../../utils/timeManagement";
+import { Soutenance } from "../../models/soutenance.model";
+import { AcademicYearService } from "../../services/academic-year.service";
+import { forkJoin } from "rxjs";
 
 @Component({
   selector: "app-modale-planning",
@@ -23,7 +30,8 @@ export class ModalePlanningComponent implements OnInit {
   promos: TrainingYear[] = [];
   salles: Salle[] = [];
   selectedSalles: Salle[] = [];
-  dropdownOpen: boolean = false; 
+  currentAcademicYearId!: number;
+  dropdownOpen: boolean = false;
 
   @Output() cancel = new EventEmitter<void>();
 
@@ -31,22 +39,22 @@ export class ModalePlanningComponent implements OnInit {
     private readonly router: Router,
     private readonly planningService: PlanningService,
     private readonly trainingYearService: TrainingYearService,
-    private readonly salleService: SalleService
+    private readonly salleService: SalleService,
+    private readonly academicYearService: AcademicYearService
   ) {}
 
   ngOnInit() {
-    // Récupération des promos
-    this.trainingYearService
-      .getTrainingYears(["libelle"])
-      .subscribe((promos) => {
-        this.promos = promos;
-      });
-
-    // Récupération des salles
-    this.salleService.getSalles().subscribe((salles) => {
+    forkJoin({
+      promos: this.trainingYearService.getTrainingYears(["libelle"]),
+      salles: this.salleService.getSalles(),
+      academicYear: this.academicYearService.getCurrentAcademicYear(),
+    }).subscribe(({ promos, salles, academicYear }) => {
+      this.promos = promos;
       this.salles = salles.filter((s) => s.estDisponible);
-      this.selectedSalles = salles.filter((s) => s.estDisponible);
-
+      this.selectedSalles = [...this.salles];
+      if (academicYear) {
+        this.currentAcademicYearId = academicYear.idAnneeUniversitaire;
+      }
     });
   }
 
@@ -64,58 +72,78 @@ export class ModalePlanningComponent implements OnInit {
   }
 
   get selectedSallesText(): string {
-  return this.selectedSalles.length > 0
-    ? this.selectedSalles.map(s => s.nomSalle).join(', ')
-    : '-- Sélectionner --';
-}
+    return this.selectedSalles.length > 0
+      ? this.selectedSalles.map((s) => s.nomSalle).join(", ")
+      : "-- Sélectionner --";
+  }
 
   /**
    * Handles form submission by adding new internship search
    */
   async onSubmit() {
-    console.log("onsubmit", this.isFormValid())
-    // if (this.isFormValid()) {
-      console.log("valide")
+    console.log("onsubmit", this.isFormValid());
+    if (this.isFormValid()) {
       try {
         this.isSubmitting = true;
-        console.log("avant planning")
+        const startMorningMinutes = timeStringToMinutes(
+          this.newPlanning.heureDebutMatin!
+        );
+        const endMorningMinutes = timeStringToMinutes(
+          this.newPlanning.heureFinMatin!
+        );
+        const startAfternoonMinutes = timeStringToMinutes(
+          this.newPlanning.heureDebutAprem!
+        );
+        const endAfternoonMinutes = timeStringToMinutes(
+          this.newPlanning.heureFinAprem!
+        );
 
-
-        this.planningService.runAlgorithm(7, 12, 14, 17, 60, 60+20,5, 20/*this.newPlanning.heureDebutMatin!, this.newPlanning.heureFinMatin!, this.newPlanning.heureDebutAprem, this.newPlanning.heureFinAprem, this.newPlanning.dureeSoutenance, this.newPlanning.dureeSoutenance * 1.3, 5, 20*/)
+        this.planningService
+          .runAlgorithmPlanning(
+            startMorningMinutes,
+            endMorningMinutes,
+            startAfternoonMinutes,
+            endAfternoonMinutes,
+            this.newPlanning.dureeSoutenance!,
+            this.newPlanning.dureeSoutenance! * 1.3,
+            5, //break
+            20 * 60, //tps profs
+            this.selectedSalles,
+            this.newPlanning.idAnneeFormation!,
+            this.currentAcademicYearId
+          )
           .subscribe({
-            next: (rawData) => {
-                if (rawData) {
-                  console.log("le planning ?",rawData)
-                    // let tutorList: algorithmResponse[] = Object.entries(rawData).map(([id, data]: [string, any]) => ({
-                    //     idPersonnel: Number(id),
-                    //     nom: data.NOM,
-                    //     prenom: data.PRENOM,
-                    //     compteurEtudiant: data.COMPTEUR_ETUDIANT,
-                    //     distanceGpsProfEntreprise: data.DISTANCE_GPS_PROF_ENTREPRISE,
-                    //     etudiantPresentVille: !!data.ETUDIANT_DEJA_PRESENT_VILLE,
-                    //     etudiantPresentEntreprise: !!data.ETUDIANT_DEJA_PRESENT_ENREPRISE,
-                    //     equiteDeuxTroisAnnees: !!data.EQUITE_DEUX_TROIS_ANNEE,
-                    //     somme: data.SOMME
-                    // }));
-                    // tutorList = tutorList.sort((a, b) => {
-                    //     if (b.somme! !== a.somme!) {
-                    //         return b.somme! - a.somme!;
-                    //     }
-                    //     return (a.nom || '').localeCompare(b.nom || '');
-                    // });
-                    // this.teachers = tutorList;
-                }
+            next: (result: any) => {
+              if (result.status === "success") {
+                const parsed = JSON.parse(result.output) as any[];
+                const soutenances: Soutenance[] = parsed.map((item) => ({
+                  idSoutenance: -1,
+                  date: addDays(this.newPlanning.dateDebut!, item.date),
+                  nomSalle: Number(item.nomSalle),
+                  heureDebut: minutesToHHMM(item.heureDebut),
+                  heureFin: minutesToHHMM(item.heureFin),
+                  idUPPA: item.idUPPA.toString(),
+                  idLecteur: item.idLecteur,
+                  idPlanning: null,
+                }));
+                this.router.navigate(["/schedule/add-schedule"], {
+                  state: {
+                    newPlanning: this.newPlanning,
+                    soutenances: soutenances,
+                    salles: this.salles,
+                  },
+                });
+              }
             },
             error: (error) => {
-                console.error("Erreur lors de la génération du planning", error);
-                this.isSubmitting = true;
+              console.error("Erreur lors de la génération du planning", error);
+              this.isSubmitting = true;
             },
             complete: () => {
               this.isSubmitting = true;
-            }
-        });
+            },
+          });
         // this.planningService.addPlanning(this.newPlanning);
-        console.log("après planning")
 
         // for (const salle of this.salles) {
         //   if (!this.selectedSalles.includes(salle)) {
@@ -123,32 +151,22 @@ export class ModalePlanningComponent implements OnInit {
         //     this.salleService.updateSalle(salle);
         //   }
         // }
-        this.router.navigate(['/schedule/add-schedule']);
       } catch (error) {
         console.error("Erreur lors de la création du planning :", error);
       } finally {
         this.isSubmitting = false;
       }
-    // }
+    }
   }
 
   /**
    * Validates if all required fields in the internship search form are filled correctly
    * @returns Boolean indicating if the form is valid
    */
+
   isFormValid(): boolean {
-    console.log("isValid",!!(this.newPlanning.idPlanning,
-      this.newPlanning.nom!.trim(),
-      this.newPlanning.dateDebut!,
-      this.newPlanning.dateFin!,
-      this.newPlanning.heureDebutMatin!,
-      this.newPlanning.heureDebutAprem!,
-      this.newPlanning.heureFinMatin!,
-      this.newPlanning.heureFinAprem!,
-      this.newPlanning.dureeSoutenance!,
-      this.newPlanning.idAnneeFormation!))
-    return (!!(
-      this.newPlanning.idPlanning &&
+    console.log("Check validity", this.newPlanning);
+    return !!(
       this.newPlanning.nom!.trim() &&
       this.newPlanning.dateDebut! &&
       this.newPlanning.dateFin! &&
@@ -156,9 +174,9 @@ export class ModalePlanningComponent implements OnInit {
       this.newPlanning.heureDebutAprem! &&
       this.newPlanning.heureFinMatin! &&
       this.newPlanning.heureFinAprem! &&
-      this.newPlanning.dureeSoutenance! &&
-      this.newPlanning.idAnneeFormation!
-    ));
+      this.newPlanning.dureeSoutenance != null &&
+      this.newPlanning.idAnneeFormation != null
+    );
   }
 
   onCancel() {

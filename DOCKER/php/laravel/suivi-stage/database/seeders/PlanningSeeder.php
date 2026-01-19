@@ -18,7 +18,7 @@ class PlanningSeeder extends Seeder
             [
                 'nom' => 'Planning S4',
                 'dateDebut' => '2026-06-10',
-                'dateFin' => '2025-06-20',
+                'dateFin' => '2026-06-20',
                 'heureDebutMatin' => '08:00:00',
                 'heureFinMatin' => '12:00:00',
                 'heureDebutAprem' => '13:00:00',
