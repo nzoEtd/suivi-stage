@@ -219,6 +219,10 @@ class SoutenanceController extends Controller
     public function updateMany(Request $request)
     {
         dd('JARRIVE ICI', $request->all());
+        dd(
+            $request->headers->get('content-type'),
+            $request->all()
+        );
         try {
             dump("TEEEESSSTT");
             $updatedSoutenances = [];            

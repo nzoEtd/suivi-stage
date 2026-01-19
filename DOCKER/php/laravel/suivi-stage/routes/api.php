@@ -129,6 +129,14 @@ Route::resource('planning', PlanningController::class);
 // Route pour le Controller Soutenance
 Route::resource('soutenance', SoutenanceController::class);
 Route::post('soutenance/create-many', [SoutenanceController::class, 'storeMany']);
+// Route::put('/soutenance/update-many', [SoutenanceController::class, 'updateMany']);
+Route::put('/soutenance/update-many', function (Request $request) {
+    return response()->json([
+        'ok' => true,
+        'data' => $request->all()
+    ]);
+});
+
 
 
 // Routes pour le Controller EtudiantAnneeformAnneeunivController
