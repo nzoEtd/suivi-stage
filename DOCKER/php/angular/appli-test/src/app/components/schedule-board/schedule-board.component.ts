@@ -9,7 +9,7 @@ import { CdkDrag,   CdkDragDrop,   CdkDragPlaceholder, CdkDropList, moveItemInAr
 
 @Component({
   selector: "app-schedule-board",
-  imports: [CommonModule, SlotComponent, MatGridListModule, CdkDrag, CdkDragPlaceholder, CdkDropList],
+  imports: [CommonModule, SlotComponent, MatGridListModule, CdkDrag/*, CdkDragPlaceholder*/, CdkDropList],
   standalone: true,
   templateUrl: "./schedule-board.component.html",
   styleUrls: ["./schedule-board.component.css"],

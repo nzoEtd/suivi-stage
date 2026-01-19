@@ -5,8 +5,10 @@ export interface SlotItem {
     heightPercent: number;
     dateDebut: Date;
     dateFin: Date;
+    idUPPA: string;
     etudiant: string;
     referent: string;
+    idLecteur: number;
     lecteur: string;
     entreprise: string;
     tuteur: string;

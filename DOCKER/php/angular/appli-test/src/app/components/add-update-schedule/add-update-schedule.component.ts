@@ -15,7 +15,7 @@ import { TimeBlockConfig } from "../../models/timeBlock.model";
 import { ModaleSoutenanceComponent } from "../modale-soutenance/modale-soutenance.component";
 import { getAllSallesUsed } from "../../utils/fonctions";
 import { PlanningService } from "../../services/planning.service";
-import { Soutenance } from "../../models/soutenance.model";
+import { Soutenance, SoutenanceUpdate } from "../../models/soutenance.model";
 import { switchMap } from "rxjs";
 import { SoutenanceService } from "../../services/soutenance.service";
 import { formatDateToYYYYMMDD } from "../../utils/timeManagement";
@@ -47,6 +47,7 @@ export class AddUpdateScheduleComponent implements OnChanges {
   selectedSoutenance?: SlotItem;
   idSoutenance?: number;
   sallesAffiches: number[] = [];
+  finalSlots: SoutenanceUpdate[] = [];
 
   //Variables drag and drop
   items: SlotItem[] = [];
@@ -146,8 +147,23 @@ export class AddUpdateScheduleComponent implements OnChanges {
 
   onValidate() {
     console.log("Validation du planning");
+    this.finalSlots = this.convertSlotsToSoutenances();
     if (this.isEditMode) {
       // UPDATE
+      console.log("UPDATING Planning:", this.planning);
+      console.log("UPDATING Soutenances:", this.finalSlots);
+      this.soutenanceService.updateManySoutenance(
+        this.finalSlots
+      )
+      .subscribe({
+        next: () => {
+          console.log("Soutenances mises à jour");
+          // this.router.navigate(["/schedule"]);
+        },
+        error: (err) => {
+          console.error("Erreur lors de la création", err);
+        },
+      });
     } else {
       //CREATE
       const { idPlanning, ...plannToCreate } = this.planning as Planning;
@@ -207,4 +223,29 @@ export class AddUpdateScheduleComponent implements OnChanges {
     this.planningByDay[dayKey].push(slot);
   }
   
+  getAllSlots(): SlotItem[] {
+    return Object.values(this.planningByDay).flat();
+  }
+
+  convertSlotsToSoutenances(): SoutenanceUpdate[] {
+    let soutenances: SoutenanceUpdate[] = [];
+    const slots = this.getAllSlots();
+    const planning = this.planning as Planning;
+    const idPlanning = planning.idPlanning;
+
+    slots.forEach(s => {
+      soutenances.push({
+        idSoutenance: s.id,
+        date: s.dateDebut.toISOString().slice(0, 10),
+        nomSalle: s.salle,
+        heureDebut: s.dateDebut.getHours().toString().padStart(2, '0') + ":" + s.dateDebut.getMinutes().toString().padStart(2, '0'),
+        heureFin: s.dateFin.getHours().toString().padStart(2, '0') + ":" + s.dateFin.getMinutes().toString().padStart(2, '0'),
+        idUPPA: s.idUPPA,
+        idLecteur: s.idLecteur,
+        idPlanning: idPlanning
+      })
+    })
+
+    return soutenances;
+  }
 }

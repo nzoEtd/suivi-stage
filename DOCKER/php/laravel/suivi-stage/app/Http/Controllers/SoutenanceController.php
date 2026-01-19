@@ -57,7 +57,7 @@ class SoutenanceController extends Controller
                 'heureFin' => 'required|date_format:H:i|after:heureDebut',
                 'nomSalle' => 'required|integer',
                 'idPlanning' => 'required|integer',
-                'idUPPA' => 'required|integer',
+                'idUPPA' => 'required|string',
                 'idLecteur' => 'required|integer',
             ]);
 
@@ -103,7 +103,7 @@ class SoutenanceController extends Controller
                     'heureFin' => 'required|date_format:H:i|after:heureDebut',
                     'nomSalle' => 'required|integer',
                     'idPlanning' => 'required|integer',
-                    'idUPPA' => 'required|integer',
+                    'idUPPA' => 'required|string',
                     'idLecteur' => 'required|integer',
                 ])->validate();
 
@@ -185,7 +185,7 @@ class SoutenanceController extends Controller
                 'heureFin' => 'required|date_format:H:i|after:heureDebut',
                 'nomSalle' => 'required|integer',
                 'idPlanning' => 'required|integer',
-                'idUPPA' => 'required|integer',
+                'idUPPA' => 'required|string',
                 'idLecteur' => 'required|integer',
             ]);
 
@@ -193,6 +193,54 @@ class SoutenanceController extends Controller
             $soutenance->update($donneesValidees);
 
             return response()->json($soutenance, 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['message' => 'Erreur de validation', 'erreurs' => $e->errors()], 422);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Soutenance non trouvée'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Une erreur s\'est produite', 'exception' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Modifie plusieurs soutenances en une seule requête
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     * Code HTTP retourné :
+     *      - Code 200 : si la soutenance a bien été modifiée
+     *      - Code 404 : si la soutenance n'a pas été trouvée
+     *      - Code 422 : s'il y a eu une erreur de validation des données
+     *      - Code 500 : s'il y a eu une erreur
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \Exception
+     */
+    public function updateMany(Request $request)
+    {
+        dd('JARRIVE ICI', $request->all());
+        try {
+            dump("TEEEESSSTT");
+            $updatedSoutenances = [];            
+
+            $donneesValidees = $request->validate([
+                'soutenances.*.idSoutenance' => 'required|integer',
+                'soutenances.*.date' => 'required|date',
+                'soutenances.*.heureDebut' => 'required|date_format:H:i',
+                'soutenances.*.heureFin' => 'required|date_format:H:i|after:heureDebut',
+                'soutenances.*.nomSalle' => 'required|integer',
+                'soutenances.*.idPlanning' => 'required|integer',
+                'soutenances.*.idUPPA' => 'required|string',
+                'soutenances.*.idLecteur' => 'required|integer',
+            ]);
+            dd("Données update soutenances " . $donneesValidees);
+
+            foreach ($donneesValidees['soutenances'] as $item) {
+
+                $updatedSoutenances[] = Soutenance::where('idSoutenance', $item['idSoutenance'])->update($item);
+            }
+
+            return response()->json($updatedSoutenances, 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['message' => 'Erreur de validation', 'erreurs' => $e->errors()], 422);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {

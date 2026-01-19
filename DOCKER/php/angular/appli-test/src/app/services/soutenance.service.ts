@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { environment } from "../../environments/environment";
-import { Soutenance, SoutenanceCreate } from "../models/soutenance.model";
+import { Soutenance, SoutenanceCreate, SoutenanceUpdate } from "../models/soutenance.model";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Observable, catchError, tap, of } from "rxjs";
 
@@ -93,6 +93,25 @@ export class SoutenanceService {
       .put(
         `${this.apiUrl}/api/soutenance/update/${soutenance.idSoutenance}`,
         soutenance,
+        httpOptions
+      )
+      .pipe(
+        tap((response) => this.log(response)),
+        catchError((error) => this.handleError(error, null))
+      );
+  }
+
+  //Mise à jour de plusieurs soutenance
+  updateManySoutenance(soutenances: SoutenanceUpdate[]): Observable<null> {
+    const httpOptions = {
+      headers: new HttpHeaders({ "Content-type": "application/json" }),
+    };
+    const payload = { soutenances: soutenances };
+    console.log(JSON.stringify(payload, null, 2));
+    return this.http
+      .put(
+        `${this.apiUrl}/api/soutenance/update-many`,
+        payload,
         httpOptions
       )
       .pipe(
