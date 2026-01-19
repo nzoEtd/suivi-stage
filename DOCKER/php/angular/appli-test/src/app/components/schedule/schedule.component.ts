@@ -22,7 +22,10 @@ import { Staff } from "../../models/staff.model";
 import { Company } from "../../models/company.model";
 import { SlotItem } from "../../models/slotItem.model";
 import { TimeBlockConfig } from "../../models/timeBlock.model";
-import { getAllSallesUsed, loadSoutenancesForPlanning } from "../../utils/fonctions";
+import {
+  getAllSallesUsed,
+  loadSoutenancesForPlanning,
+} from "../../utils/fonctions";
 import { getDatesBetween, isSameDay } from "../../utils/timeManagement";
 import { CompanyTutorService } from "../../services/company-tutor.service";
 import { CompanyTutor } from "../../models/company-tutor.model";
@@ -34,6 +37,8 @@ import { AcademicYearService } from "../../services/academic-year.service";
 import { Student_Staff_AcademicYear } from "../../models/student-staff-academicYear.model";
 import { Student_Staff_AcademicYear_String } from "../../models/student-staff-academicYear-string.model";
 import { ModaleSoutenanceComponent } from "../modale-soutenance/modale-soutenance.component";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 @Component({
   selector: "app-schedule",
@@ -44,7 +49,7 @@ import { ModaleSoutenanceComponent } from "../modale-soutenance/modale-soutenanc
     FormsModule,
     ScheduleBoardComponent,
     ModalePlanningComponent,
-    ModaleSoutenanceComponent
+    ModaleSoutenanceComponent,
   ],
   templateUrl: "./schedule.component.html",
   styleUrls: ["./schedule.component.css"],
@@ -78,7 +83,7 @@ export class ScheduleComponent implements AfterViewInit {
 
   selectedJour?: Date;
   sallesDispo: number[] = [];
-  sallesAffiches:number[] = [];
+  sallesAffiches: number[] = [];
   selectedSoutenance?: SlotItem;
   idSoutenance?: number;
   slots: SlotItem[] = [];
@@ -109,7 +114,8 @@ export class ScheduleComponent implements AfterViewInit {
     const staff$ = this.staffService.getStaffs();
     const companies$ = this.companyService.getCompanies();
     const tutors$ = this.tutorService.getCompanyTutors();
-    const studentTrainingAcademicYear$ = this.studentTrainingAcademicYearService.getStudentsTrainingYearsAcademicYears();
+    const studentTrainingAcademicYear$ =
+      this.studentTrainingAcademicYearService.getStudentsTrainingYearsAcademicYears();
     const referent$ = this.referentService.getAllStudentTeachers();
     const academicYear$ = this.academicYearService.getAcademicYears();
 
@@ -123,7 +129,7 @@ export class ScheduleComponent implements AfterViewInit {
       tutors: tutors$,
       trainingAcademicYears: studentTrainingAcademicYear$,
       referent: referent$,
-      academicYear: academicYear$
+      academicYear: academicYear$,
     }).subscribe((result) => {
       this.allPlannings = result.planning;
       this.allSoutenances = result.soutenance;
@@ -134,8 +140,8 @@ export class ScheduleComponent implements AfterViewInit {
       this.allTrainingAcademicYears = result.trainingAcademicYears;
       this.allAcademicYears = result.academicYear;
       this.allReferents = result.referent;
-      console.log("les referents et autre :", this.allReferents)
-      console.log("les academic year et autre :", this.allAcademicYears)
+      console.log("les referents et autre :", this.allReferents);
+      console.log("les academic year et autre :", this.allAcademicYears);
 
       this.sallesDispo = result.salles
         .filter((s) => s.estDisponible)
@@ -166,10 +172,80 @@ export class ScheduleComponent implements AfterViewInit {
   updateJour(jour: Date) {
     this.selectedJour = jour;
     //Recherche de toutes les salles réellement utilisées
-    this.sallesAffiches = getAllSallesUsed(this.sallesDispo, this.selectedJour, this.slots);
+    this.sallesAffiches = getAllSallesUsed(
+      this.sallesDispo,
+      this.selectedJour,
+      this.slots
+    );
   }
 
-  export() {}
+
+
+  async export() {
+    if (!this.selectedPlanning || !this.jours.length) return;
+
+    const pdf = new jsPDF({
+      orientation: "landscape",
+      unit: "mm",
+      format: "a3",
+    });
+
+    const element = document.getElementById("schedule-board-pdf");
+    if (!element) return;
+
+    for (const jour of this.jours) {
+      this.selectedJour = jour;
+      this.cdRef.detectChanges();
+
+      await new Promise((r) => setTimeout(r, 100));
+
+      // Container temporaire sans scroll
+      const tempContainer = document.createElement("div");
+      tempContainer.id = "temp-pdf-container";
+      tempContainer.style.position = "absolute";
+      tempContainer.style.left = "-9999px";
+      tempContainer.style.top = "0";
+      tempContainer.style.overflow = "visible";
+      tempContainer.style.height = "auto";
+      tempContainer.style.width = element.scrollWidth + "px";
+      tempContainer.style.backgroundColor = "white";
+      tempContainer.style.zIndex = "-1";
+
+      const clone = element.cloneNode(true) as HTMLElement;
+      clone.style.overflow = "visible";
+      clone.style.height = "auto";
+      clone.style.maxHeight = "none";
+      tempContainer.appendChild(clone);
+      document.body.appendChild(tempContainer);
+
+      const canvas = await html2canvas(tempContainer, {
+        scale: 1.5,
+        useCORS: true,
+        windowWidth: tempContainer.scrollWidth,
+        windowHeight: tempContainer.scrollHeight,
+        scrollX: 0,
+        scrollY: 0,
+      });
+
+      document.body.removeChild(tempContainer);
+
+      const imgData = canvas.toDataURL("image/png");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+
+      if (jour !== this.jours[this.jours.length - 1]) {
+        pdf.addPage();
+      }
+    }
+
+    const blobUrl = pdf.output("bloburl");
+    window.open(blobUrl, "_blank");
+
+    this.cdRef.detectChanges();
+  }
 
   goToAdd() {
     this.isModalOpen = true;
@@ -182,7 +258,7 @@ export class ScheduleComponent implements AfterViewInit {
   }
 
   openModal(slot: SlotItem) {
-    console.log("le slot sélectionné : ",slot)
+    console.log("le slot sélectionné : ", slot);
     this.selectedSoutenance = slot!;
     this.idSoutenance = this.selectedSoutenance!.id;
     this.isModalSoutenanceOpen = true;
@@ -231,10 +307,26 @@ export class ScheduleComponent implements AfterViewInit {
       this.timeBlocks.push(...newTimeBlocks);
 
       // Charger les soutenances pour ce planning
-      this.slots = await loadSoutenancesForPlanning(this.selectedPlanning, this.allSoutenances, this.slots, this.allStudents, this.allStaff, this.allCompanies, this.allTutors, this.allReferents, this.allTrainingAcademicYears, this.allAcademicYears, this.cdRef);
-      console.log("les slots ?", this.slots)
+      this.slots = await loadSoutenancesForPlanning(
+        this.selectedPlanning,
+        this.allSoutenances,
+        this.slots,
+        this.allStudents,
+        this.allStaff,
+        this.allCompanies,
+        this.allTutors,
+        this.allReferents,
+        this.allTrainingAcademicYears,
+        this.allAcademicYears,
+        this.cdRef
+      );
+      console.log("les slots ?", this.slots);
       //Recherche de toutes les salles réellement utilisées
-      this.sallesAffiches = getAllSallesUsed(this.sallesDispo, this.selectedJour, this.slots);
+      this.sallesAffiches = getAllSallesUsed(
+        this.sallesDispo,
+        this.selectedJour,
+        this.slots
+      );
       this.allDataLoaded = true;
     } else {
       this.jours = [];

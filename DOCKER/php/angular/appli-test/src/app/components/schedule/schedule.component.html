@@ -25,7 +25,7 @@
                 <button (click)="goToAdd()"class="btn-generate-schedule">Générer un planning</button>
             </div>
             <div *ngIf="selectedOption !== 'Sélectionner un planning existant'" class="schedule-content">
-              <div class="planning-scroll">
+              <div class="planning-scroll" id="schedule-board-pdf">
                 <app-schedule-board
                 *ngIf="allDataLoaded && selectedPlanning && selectedJour"
                 [jourActuel]="selectedJour"
