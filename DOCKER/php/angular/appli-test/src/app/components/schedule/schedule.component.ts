@@ -203,7 +203,7 @@ export class ScheduleComponent implements AfterViewInit {
       tempContainer.style.top = "0";
       tempContainer.style.overflow = "visible";
       tempContainer.style.height = "auto";
-      tempContainer.style.width = element.scrollWidth + "px";
+      tempContainer.style.width = "1400px";
       tempContainer.style.backgroundColor = "white";
 
       const clone = element.cloneNode(true) as HTMLElement;
@@ -241,7 +241,7 @@ export class ScheduleComponent implements AfterViewInit {
       const canvas = await html2canvas(tempContainer, {
         scale: 1.5,
         useCORS: true,
-        windowWidth: tempContainer.scrollWidth,
+        windowWidth: 1400,
         windowHeight: tempContainer.scrollHeight,
         scrollX: 0,
         scrollY: 0,
