@@ -158,7 +158,7 @@ export class AddUpdateScheduleComponent implements OnChanges {
       .subscribe({
         next: () => {
           console.log("Soutenances mises à jour");
-          // this.router.navigate(["/schedule"]);
+          this.router.navigate(["/schedule"]);
         },
         error: (err) => {
           console.error("Erreur lors de la création", err);

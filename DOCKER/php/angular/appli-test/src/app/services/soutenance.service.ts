@@ -110,7 +110,7 @@ export class SoutenanceService {
     console.log(JSON.stringify(payload, null, 2));
     return this.http
       .put(
-        `${this.apiUrl}/api/soutenance/update-many`,
+        `${this.apiUrl}/api/soutenances/update-many`,
         payload,
         httpOptions
       )
