@@ -181,7 +181,6 @@ export class ScheduleComponent implements AfterViewInit {
       this.slots
     );
   }
-
   async export() {
     if (!this.selectedPlanning || !this.jours.length) return;
 
@@ -196,7 +195,15 @@ export class ScheduleComponent implements AfterViewInit {
     const element = document.getElementById("schedule-board-pdf");
     if (!element) return;
 
+    const originalSelectedJour = this.selectedJour;
+
     for (const jour of this.jours) {
+      this.selectedJour = jour;
+      this.cdRef.detectChanges();
+
+      // Attendre que le DOM se maj
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       const tempContainer = document.createElement("div");
       tempContainer.style.position = "absolute";
       tempContainer.style.left = "-9999px";
@@ -227,14 +234,6 @@ export class ScheduleComponent implements AfterViewInit {
 
       clone.insertBefore(jourHeader, clone.firstChild);
 
-      clone.querySelectorAll<HTMLElement>(".jour").forEach((el) => {
-        if (new Date(el.dataset["jour"]!)?.getTime() === jour.getTime()) {
-          el.classList.add("selectedJour");
-        } else {
-          el.classList.remove("selectedJour");
-        }
-      });
-
       tempContainer.appendChild(clone);
       document.body.appendChild(tempContainer);
 
@@ -260,6 +259,10 @@ export class ScheduleComponent implements AfterViewInit {
         pdf.addPage();
       }
     }
+
+  
+    this.selectedJour = originalSelectedJour;
+    this.cdRef.detectChanges();
 
     const planningName = this.selectedPlanning?.nom ?? "planning";
     const safeName = planningName.replace(/\s+/g, "_").replace(/[^\w\-]/g, "");
