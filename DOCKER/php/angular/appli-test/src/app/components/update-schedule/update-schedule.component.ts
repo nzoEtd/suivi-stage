@@ -124,7 +124,7 @@ export class UpdateScheduleComponent implements AfterViewInit {
         this.allStaff = result.staff;
         this.allCompanies =result.companies;
         console.log("les soutenances avant slot",this.allSoutenances)
-        this.slots = await convertSoutenancesToSlots(this.allSoutenances, this.allStudents, this.allStaff, this.allCompanies,this.allTutors, this.allReferents, this.allTrainingAcademicYears, this.allAcademicYears);
+        this.slots = await convertSoutenancesToSlots(this.allSoutenances, this.allStudents, this.allStaff, this.allCompanies,this.allTutors, this.allReferents, this.allTrainingAcademicYears, this.planning.idAnneeUniversitaire);
         console.log("les slots",this.slots)
         
         this.allDataLoaded = true;
