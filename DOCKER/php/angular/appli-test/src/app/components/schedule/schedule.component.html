@@ -1,9 +1,9 @@
 <div class="schedule">
     <div class="content">
-      @if (!currentUser || !allDataLoaded) {
+      @if (!currentUser || !allDataLoaded  || isExporting) {
         <app-loading/>
       }
-        <div [hidden]="!allDataLoaded" class="header-schedule-content">
+        <div [hidden]="!allDataLoaded || isExporting" class="header-schedule-content">
             <div>
                 <select [(ngModel)]="selectedOption" (ngModelChange)="onPlanningChange($event)" class="select-schedule">
                     <option *ngFor="let option of optionSchedule" [value]="option">
@@ -13,19 +13,19 @@
                 &nbsp;
                 <button (click)="goToAdd()"class="btn-generate-schedule" *ngIf="selectedOption !== 'Sélectionner un planning existant'">+</button>
             </div>
-          <h3 class="title" *ngIf="selectedOption !== 'Sélectionner un planning existant'">{{selectedJour | date:'EEEE dd MMMM yyyy':'':'fr'}}</h3>
+          <h3 class="title" *ngIf="selectedOption !== 'Sélectionner un planning existant' && !isExporting">{{selectedJour | date:'EEEE dd MMMM yyyy':'':'fr'}}</h3>
             <div *ngIf="selectedOption !== 'Sélectionner un planning existant'">
                 <button (click)="goToUpdate()"class="btn-update-schedule">Modifier</button>
                 &nbsp;
                 <button (click)="export()"class="btn-export-schedule">Exporter</button>
             </div>
         </div>
-        <div [hidden]="!allDataLoaded">
+        <div [hidden]="!allDataLoaded || isExporting ">
             <div class="empty-schedule" *ngIf="selectedOption === 'Sélectionner un planning existant'">
                 <button (click)="goToAdd()"class="btn-generate-schedule">Générer un planning</button>
             </div>
             <div *ngIf="selectedOption !== 'Sélectionner un planning existant'" class="schedule-content">
-              <div class="planning-scroll">
+              <div class="planning-scroll" id="schedule-board-pdf">
                 <app-schedule-board
                 *ngIf="allDataLoaded && selectedPlanning && selectedJour"
                 [jourActuel]="selectedJour"
