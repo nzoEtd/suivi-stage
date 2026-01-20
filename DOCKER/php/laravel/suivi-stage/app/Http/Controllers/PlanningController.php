@@ -25,7 +25,8 @@ class PlanningController extends Controller
             'heureDebutAprem',
             'heureFinAprem',
             'dureeSoutenance',
-            'idAnneeFormation'
+            'idAnneeFormation',
+            'idAnneeUniversitaire'
         ];
         $fields = array_intersect($fields, $allowedFields);
 
@@ -70,13 +71,13 @@ class PlanningController extends Controller
                 'heureDebutAprem' => 'required|date_format:H:i',
                 'heureFinAprem' => 'required|date_format:H:i|after:heureDebutAprem',
                 'dureeSoutenance' => 'required|integer',
-                'idAnneeFormation' => 'required|integer'
+                'idAnneeFormation' => 'required|integer',
+                'idAnneeUniversitaire' => 'required|integer'
             ]);
 
             $planning = Planning::create($donneesValidees);
 
             return response()->json($planning, 201);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Erreur de validation',
@@ -158,14 +159,15 @@ class PlanningController extends Controller
                 'heureDebutAprem' => 'required|date_format:H:i',
                 'heureFinAprem' => 'required|date_format:H:i|after:heureDebutAprem',
                 'dureeSoutenance' => 'required|integer',
-                'idAnneeFormation' => 'required|integer'
+                'idAnneeFormation' => 'required|integer',
+                'idAnneeUniversitaire' => 'required|integer'
+
             ]);
 
             $planning = Planning::findOrFail($idPlanning);
             $planning->update($donneesValidees);
 
             return response()->json($planning, 200);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Erreur de validation',
@@ -204,7 +206,6 @@ class PlanningController extends Controller
             return response()->json([
                 'message' => 'Planning supprimé'
             ], 200);
-
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Planning non trouvé'

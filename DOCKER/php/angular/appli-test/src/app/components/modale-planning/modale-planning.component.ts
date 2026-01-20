@@ -97,6 +97,7 @@ export class ModalePlanningComponent implements OnInit {
         const endAfternoonMinutes = timeStringToMinutes(
           this.newPlanning.heureFinAprem!
         );
+        this.newPlanning.idAnneeUniversitaire=this.currentAcademicYearId;
 
         this.planningService
           .runAlgorithmPlanning(

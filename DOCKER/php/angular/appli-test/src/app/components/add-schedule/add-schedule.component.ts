@@ -112,7 +112,7 @@ export class AddScheduleComponent implements OnInit {
         result.companiesTutors,
         result.referents,
         result.trainingAcademicYear,
-        result.academicYears
+        this.planning.idAnneeUniversitaire
       );
       this.sallesDispo = result.salles
         .filter((s) => s.estDisponible)
