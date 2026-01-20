@@ -7,7 +7,7 @@ import { Staff } from '../../models/staff.model';
 import { Salle } from '../../models/salle.model';
 import { SlotItem } from '../../models/slotItem.model';
 import { LoadingComponent } from '../loading/loading.component';
-import { lastValueFrom, map, Observable } from 'rxjs';
+import { firstValueFrom, lastValueFrom, map, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { StaffService } from '../../services/staff.service';
 
@@ -29,6 +29,9 @@ export class ModaleSoutenanceComponent implements OnInit {
   enseignantsLecteurs: Staff[] = [];
   @Input() sallesDispo!: Salle[];
   newDate!: string;
+  @Output() slotsModifies: SlotItem[] = [];
+  @Output() slotSoutenance?: SlotItem;
+  soutenancesJour!: Record<string, SlotItem[]>;
 
   @Output() cancel = new EventEmitter<void>();
 
@@ -42,8 +45,6 @@ export class ModaleSoutenanceComponent implements OnInit {
     let dateSoutenance = this.formatDate(this.soutenance.dateDebut, 'Date');
 
     this.enseignantsLecteurs = await this.getFreeLecteurs(dateSoutenance, this.soutenance.idReferent, this.soutenance.idPlanning);
-
-    console.log("enseignants lecteur potentiels : ", this.enseignantsLecteurs);
 
     this.newDate = this.formatDate(this.soutenance.dateDebut, 'Date');
   }
@@ -68,8 +69,6 @@ export class ModaleSoutenanceComponent implements OnInit {
     let soutenancesJour = await this.loadSoutenancesPlanningJour(idPlanning, jour);
 
     const idLecteursNonPotentiels = this.getLecteursJour(soutenancesJour);
-
-    console.log("id lecteurs non potentiels : ", idLecteursNonPotentiels);
   
     /**
      * Récupérer l'enseignant référent pour savoir s'il est technique
@@ -129,7 +128,7 @@ getLecteursJour(soutenances: Soutenance[]): SoutenanceLecteur[] {
 async referentEstTechnique(idReferent: number): Promise<boolean> {
   if (idReferent > -1) {
     try {
-      const enseignant = await this.staffService.getStaffById(idReferent).toPromise();
+      const enseignant = await lastValueFrom(this.staffService.getStaffById(idReferent));
       return enseignant?.estTechnique === 1;
     } 
     catch {
@@ -173,14 +172,55 @@ getAllPotentialLecteurs(idLecteursBlacklist: SoutenanceLecteur[], heureSoutenanc
       try {
         this.isSubmitting = true;
 
-        const response = await lastValueFrom(
-          this.soutenanceService.updateSoutenance(this.newSoutenance)
-        );
+        /**
+         * Valeurs modifiables à vérifier :
+         * - Heure début
+         * - Heure fin
+         * - Jour
+         * - Enseignant lecteur
+         * - Salle
+         */
+        let aDateChange = false;
 
-        console.log('Soutenance mise à jour avec succès : ', response);
+        if (this.newSoutenance.idSoutenance === this.soutenance.id) {
+          //heureDebut, heureFin & jour
+          if (this.newSoutenance.heureDebut !== this.formatDate(this.soutenance.dateDebut, 'Heure') || this.newSoutenance.heureFin !== this.formatDate(this.soutenance.dateFin, 'Heure'))
+          {
+            let dateDebut = this.formatDate(this.newSoutenance.date!, 'Date') + " " + this.newSoutenance.heureDebut;
+            let dateFin = this.formatDate(this.newSoutenance.date!, 'Date') + " " + this.newSoutenance.heureFin;
+            this.soutenance.dateDebut = new Date(dateDebut);
+            this.soutenance.dateFin = new Date(dateFin);
 
-        //Redirection vers la page des plannings
-        this.router.navigateByUrl('/schedule');
+            if (this.formatDate(this.soutenance.dateDebut, 'Date') !== this.newSoutenance.date!.toString())
+            {
+              aDateChange = true;
+            }
+          }
+          //Lecteur
+          if (this.newSoutenance.idLecteur !== this.soutenance.idLecteur)
+          {
+            this.soutenance.idLecteur = this.newSoutenance.idLecteur!;
+            this.soutenance.lecteur = await this.loadTeacherData(this.newSoutenance.idLecteur!);
+          }
+          //Salle
+          if (this.newSoutenance.nomSalle = this.soutenance.salle)
+          {
+            this.soutenance.salle = this.newSoutenance.nomSalle;
+          }
+        }
+
+        for (const slotsTab of Object.values(this.soutenancesJour)) {
+          const i = slotsTab.findIndex(soutenance => soutenance.id === this.soutenance.id);
+          if (i !== -1 && !aDateChange) {
+            slotsTab[i] = this.soutenance;
+            break;
+          }
+          if (i !== -1 && aDateChange) //Si la date a changé, on enlève la soutenance du planning
+          {
+            slotsTab.splice(i, 1);
+            this.slotSoutenance = this.soutenance;
+          }
+        }
 
       } catch (error) {
         console.error('Erreur lors de la mise à jour de la soutenance :', error);
@@ -207,6 +247,20 @@ getAllPotentialLecteurs(idLecteursBlacklist: SoutenanceLecteur[], heureSoutenanc
       this.newSoutenance.heureFin! &&
       this.newSoutenance.idLecteur!
     );
+  }
+
+  async loadTeacherData(idLecteur: number): Promise<string> {
+    try {
+      const lecteur = await firstValueFrom(this.staffService.getStaffById(idLecteur));
+      
+      if (lecteur) {
+        return lecteur.nom! + lecteur.prenom;
+      } else {
+        throw new Error("Enseignant non trouvé.");
+      }
+    } catch (error) {
+      throw new Error("Enseignant non trouvé.");
+    }
   }
 
   formatDate(pDate: Date, modeAffichage: TypeAffichage): string {
