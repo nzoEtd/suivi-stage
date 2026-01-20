@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 // Import du contrôleur
 use App\Http\Controllers\RechercheStageController;
 use App\Http\Controllers\EntrepriseController;
-use App\Http\Controllers\FicheDescriptiveController; 
+use App\Http\Controllers\FicheDescriptiveController;
 use App\Http\Controllers\EtudiantController;
 use App\Http\Controllers\AuthController;
 
@@ -19,6 +19,7 @@ use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\AffectationEnseignantController;
 use App\Http\Middleware\DispatchDataDescriptiveSheet;
 use App\Http\Controllers\AlgorithmeController;
+use App\Http\Controllers\EtudiantAnneeformAnneeunivController;
 use App\Http\Controllers\PlanningController;
 use App\Http\Controllers\SalleController;
 use App\Http\Controllers\SoutenanceController;
@@ -57,7 +58,7 @@ Route::get('/cas-logout', function (Request $request) {
 });
 
 Route::get('/run-algo/{idUPPA}-{idFicheDescriptive}', [AlgorithmeController::class, 'run']);
-Route::get('/run-algo-planning/{startMorningTime}-{endMorningTime}-{startAfternoonTime}-{endAfternoonTime}-{normalPresentationLength}-{accommodatedPresentationLength}-{inBetweenBreakLength}-{maxTeachersWeeklyWorkedTime}', [AlgorithmeController::class, 'runPlanning']);
+Route::post('/run-algo-planning', [AlgorithmeController::class, 'runPlanning']);
 
 // Route pour le Controller Auth
 Route::get('/get-authenticated-user', [AuthController::class, 'getUser']);
@@ -128,3 +129,11 @@ Route::resource('planning', PlanningController::class);
 // Route pour le Controller Soutenance
 Route::put('/soutenance/update/{idSoutenance}', [SoutenanceController::class, 'update'])->name('soutenance.update');
 Route::resource('soutenance', SoutenanceController::class);
+Route::post('soutenance/create-many', [SoutenanceController::class, 'storeMany']);
+
+
+// Routes pour le Controller EtudiantAnneeformAnneeunivController
+Route::get('/etudiants-annee-formation',[EtudiantAnneeformAnneeunivController::class, 'index']);
+Route::post('/etudiants-annee-formation',[EtudiantAnneeformAnneeunivController::class, 'store']);
+Route::get('/etudiants-annee-formation/filter',[EtudiantAnneeformAnneeunivController::class, 'filter']);
+Route::delete('/etudiants-annee-formation',[EtudiantAnneeformAnneeunivController::class, 'destroy']);

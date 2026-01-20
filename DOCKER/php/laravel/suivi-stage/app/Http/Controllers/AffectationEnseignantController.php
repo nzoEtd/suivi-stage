@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Etudiant;
-use App\Models\Personnel;
-use App\Models\AnneUniversitaire;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AffectationsExport;
 use Illuminate\Support\Facades\Log;
@@ -19,7 +17,7 @@ class AffectationEnseignantController extends Controller
      */
     public function index()
     {
-        $affectations = \DB::table('table_personnel_etudiant_anneeuniv')
+        $affectations = DB::table('table_personnel_etudiant_anneeuniv')
             ->join('personnels', 'table_personnel_etudiant_anneeuniv.idPersonnel', '=', 'personnels.idPersonnel')
             ->join('etudiants', 'table_personnel_etudiant_anneeuniv.idUPPA', '=', 'etudiants.idUPPA')
             ->join('annee_universitaires', 'table_personnel_etudiant_anneeuniv.idAnneeUniversitaire', '=', 'annee_universitaires.idAnneeUniversitaire')

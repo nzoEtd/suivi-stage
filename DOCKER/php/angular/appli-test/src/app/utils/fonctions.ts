@@ -21,9 +21,10 @@ export async function loadSoutenancesForPlanning(planning: Planning, allSoutenan
         return s.idPlanning === planning.idPlanning;
       });
 
-      slots = await convertSoutenancesToSlots(filteredSoutenances, allStudents, allStaff, allCompanies, allTutors, referents, trainingAcademicYears, academicYears);
+      slots = await convertSoutenancesToSlots(filteredSoutenances, allStudents, allStaff, allCompanies, allTutors, referents, trainingAcademicYears, planning.idAnneeUniversitaire);
       console.log("soutenances : ", slots);
       cdRef.detectChanges();
+
     } catch (error) {
       console.error("Erreur lors du chargement des soutenances:", error);
       slots = [];
@@ -31,7 +32,7 @@ export async function loadSoutenancesForPlanning(planning: Planning, allSoutenan
     return slots;
   }
 
-export async function convertSoutenancesToSlots(soutenances: Soutenance[], allStudents: Student[], allStaff: Staff[], allCompanies: Company[], allTutors: CompanyTutor[], referents: Student_Staff_AcademicYear_String[], trainingAcademicYears: Student_TrainingYear_AcademicYear[], academicYears: AcademicYear[]): Promise<SlotItem[]> {
+export async function convertSoutenancesToSlots(soutenances: Soutenance[], allStudents: Student[], allStaff: Staff[], allCompanies: Company[], allTutors: CompanyTutor[], referents: Student_Staff_AcademicYear_String[], trainingAcademicYears: Student_TrainingYear_AcademicYear[], academicYearId: number|null): Promise<SlotItem[]> {
     const validSoutenances = soutenances.filter(
       (s) =>
         s.date !== null &&
@@ -45,9 +46,8 @@ export async function convertSoutenancesToSlots(soutenances: Soutenance[], allSt
     );
      return validSoutenances.map(s => {
     const student = allStudents.find(st => st.idUPPA === s.idUPPA);
-    const studentYear = trainingAcademicYears.find(a => a.idUPPA === s.idUPPA);
-    const academicYear = academicYears.find(a => a.idAnneeUniversitaire === studentYear?.idAcademicYear);
-    const referent = referents.find(r => r.idUPPA === student?.idUPPA && r.idAnneeUniversitaire === studentYear?.idAcademicYear);
+
+    const referent = academicYearId? referents.find(r => r.idUPPA === student?.idUPPA && r.idAnneeUniversitaire === academicYearId): undefined;
 
     const lecteur = allStaff.find(f => f.idPersonnel === s.idLecteur);
 
