@@ -6,9 +6,8 @@ import { SoutenanceService } from '../../services/soutenance.service';
 import { Staff } from '../../models/staff.model';
 import { Salle } from '../../models/salle.model';
 import { SlotItem } from '../../models/slotItem.model';
-import { AuthService } from '../../services/auth.service';
 import { LoadingComponent } from '../loading/loading.component';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, map, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { StaffService } from '../../services/staff.service';
 
@@ -25,35 +24,22 @@ export class ModaleSoutenanceComponent implements OnInit {
   currentUserRole?: string;
   isSubmitting: boolean = false;
   @Input() soutenance!: SlotItem;
-  @Input() editMode: boolean = false;
+  @Input() editMode: boolean = true;
   newSoutenance: Soutenance = new Soutenance();
   enseignantsLecteurs: Staff[] = [];
   @Input() sallesDispo!: Salle[];
   newDate!: string;
 
-
   @Output() cancel = new EventEmitter<void>();
 
-  constructor(private readonly soutenanceService: SoutenanceService, 
-              private readonly authService: AuthService,
+  constructor(private readonly soutenanceService: SoutenanceService,
               private readonly router: Router,
               private readonly staffService: StaffService) {}
 
   async ngOnInit(): Promise<void> {
     this.convertSlotToSoutenance(this.soutenance);
 
-    this.authService.getAuthenticatedUser().subscribe(currentUser => {
-      this.currentUser = currentUser;
-      
-      if (this.authService.isStaff(this.currentUser)) {
-        this.currentUserRole = 'INTERNSHIP_MANAGER';
-        this.editMode = true;
-      }
-    });
-
-    let dateSoutenance = new Date(this.formatDate(this.soutenance.dateDebut, 'Date'));
-
-    console.log("date soutenance", dateSoutenance);
+    let dateSoutenance = this.formatDate(this.soutenance.dateDebut, 'Date');
 
     this.enseignantsLecteurs = await this.getFreeLecteurs(dateSoutenance, this.soutenance.idReferent, this.soutenance.idPlanning);
 
@@ -73,10 +59,8 @@ export class ModaleSoutenanceComponent implements OnInit {
     this.newSoutenance.idPlanning = slot.idPlanning;
   }
 
-  async getFreeLecteurs(jour: Date, idEnseignantReferent: number, idPlanning: number): Promise<Staff[]> {
-    let lecteursPotentiels: Staff[] = [];
-  
-    /**
+  async getFreeLecteurs(jour: string, idEnseignantReferent: number, idPlanning: number): Promise<Staff[]> {
+    /*
      * Récupérer le planning et les soutenances pour le jour
      * Faire une liste de lecteurs à ne pas inclure avec
      * Récupérer la liste de tous les enseignants
@@ -94,50 +78,55 @@ export class ModaleSoutenanceComponent implements OnInit {
      * -> Chaque enseignant lecteur potentiel ne doit pas faire parti de la liste des lecteurs qui sont dans la même journée
      */
     const referentTechnique = this.referentEstTechnique(idEnseignantReferent);
-    lecteursPotentiels = this.getAllPotentialLecteurs(idLecteursNonPotentiels);
+    const lecteursPotentiels$ = this.getAllPotentialLecteurs(idLecteursNonPotentiels, this.newSoutenance.heureDebut!);
+		const lecteurs = await lastValueFrom(lecteursPotentiels$);
+		let lecteursPotentiels;
 
     //Si le prof référent n'est pas technique, il faut absolument un enseignant lecteur technique
     if (!referentTechnique) {
-      lecteursPotentiels = lecteursPotentiels.filter((l) => {
-        return l.estTechnique === 1;
-      });
+      lecteursPotentiels = lecteurs.filter((l) => l.estTechnique === 1);
     }
+		else {
+			lecteursPotentiels = lecteurs;
+		}
 
     return lecteursPotentiels;
   }
 
-async loadSoutenancesPlanningJour(idPlanning: number, jour: Date): Promise<Soutenance[]> {
+async loadSoutenancesPlanningJour(idPlanning: number, jour: string): Promise<Soutenance[]> {
   try {
     const allSoutenances = await lastValueFrom(this.soutenanceService.getSoutenances());
-    
-    const filteredSoutenances = allSoutenances.filter((s) => {
 
-      return s.date?.getDay() === jour?.getDay();
+    const filteredSoutenances = allSoutenances.filter((s) => {
+			if (s.date) {
+				return s.idPlanning === idPlanning && s.date.toString() === jour;
+			}
+			else {
+				throw new Error("La date de soutenance n'est pas une date.");
+			}
     });
 
     return filteredSoutenances;
-  } catch (error) {
+  } 
+	catch (error) {
     console.error("Erreur lors du chargement des soutenances : ", error);
     return [];
   }
 }
 
-  getAllPotentialLecteurs(idLecteursBlacklist: number[]): Staff[] {
-    let potentialTeachers: Staff[] = [];
+getLecteursJour(soutenances: Soutenance[]): SoutenanceLecteur[] {
+	let idLecteursHeures: SoutenanceLecteur[] = [];
+	
+	for (const soutenance of soutenances) {
+		if (soutenance.idLecteur && soutenance.heureDebut && soutenance.heureFin) {
+			idLecteursHeures.push({idLecteur: soutenance.idLecteur, heureDebut: soutenance.heureDebut, heureFin: soutenance.heureFin});
+		}
+	}
 
-    this.staffService.getStaffs().subscribe((teachers) => {
-      potentialTeachers = teachers;
-    });
+	return idLecteursHeures;
+}
 
-    const filteredTeachers = potentialTeachers.filter((t) => {
-      !idLecteursBlacklist.find(id => id === t.idPersonnel);
-    });
-
-    return filteredTeachers;
-
-  }
-
-  async referentEstTechnique(idReferent: number): Promise<boolean> {
+async referentEstTechnique(idReferent: number): Promise<boolean> {
   if (idReferent > -1) {
     try {
       const enseignant = await this.staffService.getStaffById(idReferent).toPromise();
@@ -151,15 +140,22 @@ async loadSoutenancesPlanningJour(idPlanning: number, jour: Date): Promise<Soute
   }
 }
 
-  getLecteursJour(soutenances: Soutenance[]): number[] {
-    let idLecteurs: number[] = [];
-    
-    for (const soutenance of soutenances) {
-      idLecteurs.push(soutenance.idLecteur!);
-    }
+getAllPotentialLecteurs(idLecteursBlacklist: SoutenanceLecteur[], heureSoutenance: string): Observable<Staff[]> {
+  return this.staffService.getStaffs().pipe(
+    map((teachers) => {
+      if (idLecteursBlacklist.length === 0) {
+        return teachers;
+      }
 
-    return idLecteurs;
-  }
+      return teachers.filter((t) =>
+        idLecteursBlacklist.every((lecteur) =>
+          t.idPersonnel !== lecteur.idLecteur ||
+          lecteur.heureFin < heureSoutenance
+        )
+      );
+    })
+  );
+}
 
   onJourChange(changed_date: string): void {
     this.newDate = changed_date;
@@ -267,3 +263,9 @@ type TypeAffichage =
   | 'DateToStr'
   | 'HeureToStr'
   | 'DateHeureToStr';
+
+interface SoutenanceLecteur {
+	idLecteur: number,
+	heureDebut: string,
+	heureFin: string
+}
