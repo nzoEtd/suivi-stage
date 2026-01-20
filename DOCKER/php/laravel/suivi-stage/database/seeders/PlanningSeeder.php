@@ -24,7 +24,8 @@ class PlanningSeeder extends Seeder
                 'heureDebutAprem' => '13:00:00',
                 'heureFinAprem' => '17:00:00',
                 'dureeSoutenance' => 60,
-                'idAnneeFormation' => 2
+                'idAnneeFormation' => 2,
+                'idAnneeUniversitaire' => 3
             ],
             [
                 'nom' => 'Planning S6',
@@ -35,7 +36,8 @@ class PlanningSeeder extends Seeder
                 'heureDebutAprem' => '14:00:00',
                 'heureFinAprem' => '18:00:00',
                 'dureeSoutenance' => 60,
-                'idAnneeFormation' => 3
+                'idAnneeFormation' => 3,
+                'idAnneeUniversitaire' => 3
             ]
         ]);
     }

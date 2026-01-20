@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { environment } from "../../environments/environment";
-import { Planning } from "../models/planning.model";
+import { Planning, PlanningCreate } from "../models/planning.model";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Observable, catchError, tap, of } from "rxjs";
 import { Salle } from "../models/salle.model";
@@ -76,14 +76,14 @@ export class PlanningService {
   }
 
   //Ajout d'un planning
-  addPlanning(planning: Planning): Observable<Planning> {
+  addPlanning(planning: PlanningCreate): Observable<Planning> {
     const httpOptions = {
       headers: new HttpHeaders({ "Content-type": "application/json" }),
     };
 
     return this.http
       .post<Planning>(
-        `${this.apiUrl}/api/planning/create`,
+        `${this.apiUrl}/api/planning`,
         planning,
         httpOptions
       )

@@ -128,6 +128,7 @@ Route::resource('planning', PlanningController::class);
 
 // Route pour le Controller Soutenance
 Route::resource('soutenance', SoutenanceController::class);
+Route::post('soutenance/create-many', [SoutenanceController::class, 'storeMany']);
 
 
 // Routes pour le Controller EtudiantAnneeformAnneeunivController
