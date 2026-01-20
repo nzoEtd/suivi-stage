@@ -4,6 +4,7 @@ import {
   OnChanges,
   SimpleChanges,
   ChangeDetectorRef,
+  OnDestroy,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Planning, PlanningCreate } from "../../models/planning.model";
@@ -16,9 +17,10 @@ import { ModaleSoutenanceComponent } from "../modale-soutenance/modale-soutenanc
 import { getAllSallesUsed } from "../../utils/fonctions";
 import { PlanningService } from "../../services/planning.service";
 import { Soutenance } from "../../models/soutenance.model";
-import { switchMap } from "rxjs";
+import { Subject, switchMap, takeUntil } from "rxjs";
 import { SoutenanceService } from "../../services/soutenance.service";
 import { formatDateToYYYYMMDD } from "../../utils/timeManagement";
+import { DataStoreService } from "../../services/data.service";
 
 @Component({
   selector: "app-add-update-schedule",
@@ -31,7 +33,9 @@ import { formatDateToYYYYMMDD } from "../../utils/timeManagement";
   templateUrl: "./add-update-schedule.component.html",
   styleUrls: ["./add-update-schedule.component.css"],
 })
-export class AddUpdateScheduleComponent implements OnChanges {
+export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   @Input() isEditMode!: Boolean;
   @Input() planning: Planning | PlanningCreate | undefined;
   @Input() slots: SlotItem[] = [];
@@ -50,6 +54,7 @@ export class AddUpdateScheduleComponent implements OnChanges {
   constructor(
     private readonly planningService: PlanningService,
     private readonly soutenanceService: SoutenanceService,
+    private readonly dataStore: DataStoreService,
     private readonly cdRef: ChangeDetectorRef,
     private router: Router
   ) {}
@@ -105,6 +110,11 @@ export class AddUpdateScheduleComponent implements OnChanges {
     }
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   updateJour(jour: Date) {
     this.selectedJour = jour;
     this.sallesAffiches = getAllSallesUsed(
@@ -152,6 +162,7 @@ export class AddUpdateScheduleComponent implements OnChanges {
       this.planningService
         .addPlanning(planningToCreate)
         .pipe(
+          takeUntil(this.destroy$),
           switchMap((createdPlanning) => {
             const planningId = createdPlanning.idPlanning;
             console.log("Planning créé avec id:", planningId);
@@ -173,6 +184,10 @@ export class AddUpdateScheduleComponent implements OnChanges {
         .subscribe({
           next: () => {
             console.log("Planning + soutenances créés");
+            
+            // Rafraîchir les données du store après la création
+            this.dataStore.refreshKeys(["plannings", "soutenances"]);
+            
             this.router.navigate(["/schedule"]);
           },
           error: (err) => {
