@@ -199,6 +199,11 @@ export class ScheduleComponent implements AfterViewInit {
 
     for (const jour of this.jours) {
       this.selectedJour = jour;
+      this.sallesAffiches = getAllSallesUsed(
+      this.sallesDispo,
+      jour,
+      this.slots
+    );
       this.cdRef.detectChanges();
 
       // Attendre que le DOM se maj
@@ -262,6 +267,7 @@ export class ScheduleComponent implements AfterViewInit {
 
   
     this.selectedJour = originalSelectedJour;
+    
     this.cdRef.detectChanges();
 
     const planningName = this.selectedPlanning?.nom ?? "planning";
