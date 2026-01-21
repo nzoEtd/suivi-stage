@@ -24,7 +24,7 @@ export class ModaleSoutenanceComponent implements OnInit {
   currentUserRole?: string;
   isSubmitting: boolean = false;
   @Input() soutenance!: SlotItem;
-  @Input() editMode: boolean = true;
+  @Input() editMode: boolean = false;
   newSoutenance: Soutenance = new Soutenance();
   enseignantsLecteurs: Staff[] = [];
   @Input() sallesDispo!: Salle[];
