@@ -17,7 +17,7 @@
             <div *ngIf="selectedOption !== 'Sélectionner un planning existant'">
                 <button (click)="goToUpdate()"class="btn-update-schedule">Modifier</button>
                 &nbsp;
-                <button (click)="export()"class="btn-export-schedule">Exporter</button>
+                <button  (click)="export()" class="btn-export-schedule">Exporter</button>
             </div>
         </div>
         <div [hidden]="!allDataLoaded || isExporting ">
