@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, AfterViewInit } from "@angular/core";
+import { ChangeDetectorRef, Component, AfterViewInit, OnDestroy } from "@angular/core";
 import { CommonModule, DatePipe } from "@angular/common";
 import { AuthService } from "../../services/auth.service";
 import { InitService } from "../../services/init.service";
@@ -6,16 +6,10 @@ import { LoadingComponent } from "../loading/loading.component";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import { ScheduleBoardComponent } from "../schedule-board/schedule-board.component";
-import { Observable, forkJoin } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 import { Planning } from "../../models/planning.model";
 import { Salle } from "../../models/salle.model";
 import { Soutenance } from "../../models/soutenance.model";
-import { SalleService } from "../../services/salle.service";
-import { PlanningService } from "../../services/planning.service";
-import { SoutenanceService } from "../../services/soutenance.service";
-import { StudentService } from "../../services/student.service";
-import { StaffService } from "../../services/staff.service";
-import { CompanyService } from "../../services/company.service";
 import { ModalePlanningComponent } from "../modale-planning/modale-planning.component";
 import { Student } from "../../models/student.model";
 import { Staff } from "../../models/staff.model";
@@ -27,17 +21,14 @@ import {
   loadSoutenancesForPlanning,
 } from "../../utils/fonctions";
 import { getDatesBetween } from "../../utils/timeManagement";
-import { CompanyTutorService } from "../../services/company-tutor.service";
 import { CompanyTutor } from "../../models/company-tutor.model";
-import { StudentStaffAcademicYearService } from "../../services/student-staff-academicYear.service";
-import { StudentTrainingYearAcademicYearService } from "../../services/student-trainingYear-academicYear.service";
 import { Student_TrainingYear_AcademicYear } from "../../models/student-trainingYear-academicYear.model";
 import { AcademicYear } from "../../models/academic-year.model";
-import { AcademicYearService } from "../../services/academic-year.service";
 import { Student_Staff_AcademicYear_String } from "../../models/student-staff-academicYear-string.model";
 import { ModaleSoutenanceComponent } from "../modale-soutenance/modale-soutenance.component";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { DataStoreService } from "../../services/data.service";
 
 @Component({
   selector: "app-schedule",
@@ -54,10 +45,8 @@ import html2canvas from "html2canvas";
   templateUrl: "./schedule.component.html",
   styleUrls: ["./schedule.component.css"],
 })
-export class ScheduleComponent implements AfterViewInit {
-  planning$!: Observable<Planning[]>;
-  salle$!: Observable<Salle[]>;
-  soutenance$!: Observable<Soutenance[]>;
+export class ScheduleComponent implements AfterViewInit, OnDestroy {
+  private destroy$ = new Subject<void>();
 
   currentUser?: any;
   currentUserRole?: string;
@@ -67,7 +56,6 @@ export class ScheduleComponent implements AfterViewInit {
 
   allPlannings: Planning[] = [];
   allSoutenances: Soutenance[] = [];
-
   allStudents: Student[] = [];
   allStaff: Staff[] = [];
   allCompanies: Company[] = [];
@@ -75,6 +63,7 @@ export class ScheduleComponent implements AfterViewInit {
   allTrainingAcademicYears: Student_TrainingYear_AcademicYear[] = [];
   allAcademicYears: AcademicYear[] = [];
   allReferents: Student_Staff_AcademicYear_String[] = [];
+  allSalles: Salle[] = [];
 
   selectedPlanning?: Planning;
   optionSchedule: string[] = ["Sélectionner un planning existant"];
@@ -96,68 +85,58 @@ export class ScheduleComponent implements AfterViewInit {
     private readonly cdRef: ChangeDetectorRef,
     private readonly initService: InitService,
     private router: Router,
-    private readonly planningService: PlanningService,
-    private readonly salleService: SalleService,
-    private readonly soutenanceService: SoutenanceService,
-    private readonly studentService: StudentService,
-    private readonly staffService: StaffService,
-    private readonly companyService: CompanyService,
-    private readonly tutorService: CompanyTutorService,
-    private readonly referentService: StudentStaffAcademicYearService,
-    private readonly studentTrainingAcademicYearService: StudentTrainingYearAcademicYearService,
-    private readonly academicYearService: AcademicYearService,
+    private readonly dataStore: DataStoreService,
     private datePipe: DatePipe
   ) {}
 
   async ngAfterViewInit() {
-    this.soutenance$ = this.soutenanceService.getSoutenances();
-    this.planning$ = this.planningService.getPlannings();
-    this.salle$ = this.salleService.getSalles();
-    const students$ = this.studentService.getStudents();
-    const staff$ = this.staffService.getStaffs();
-    const companies$ = this.companyService.getCompanies();
-    const tutors$ = this.tutorService.getCompanyTutors();
-    const studentTrainingAcademicYear$ =
-      this.studentTrainingAcademicYearService.getStudentsTrainingYearsAcademicYears();
-    const referent$ = this.referentService.getAllStudentTeachers();
-    const academicYear$ = this.academicYearService.getAcademicYears();
+    this.dataStore.ensureDataLoaded([
+      "plannings",
+      "soutenances",
+      "salles",
+      "students",
+      "staff",
+      "companies",
+      "tutors",
+      "trainingAcademicYears",
+      "referents",
+      "academicYears"
+    ]);
 
-    forkJoin({
-      salles: this.salle$,
-      planning: this.planning$,
-      soutenance: this.soutenance$,
-      students: students$,
-      staff: staff$,
-      companies: companies$,
-      tutors: tutors$,
-      trainingAcademicYears: studentTrainingAcademicYear$,
-      referent: referent$,
-      academicYear: academicYear$,
-    }).subscribe((result) => {
-      this.allPlannings = result.planning;
-      this.allSoutenances = result.soutenance;
-      this.allStudents = result.students;
-      this.allStaff = result.staff;
-      this.allCompanies = result.companies;
-      this.allTutors = result.tutors;
-      this.allTrainingAcademicYears = result.trainingAcademicYears;
-      this.allAcademicYears = result.academicYear;
-      this.allReferents = result.referent;
-      console.log("les referents et autre :", this.allReferents);
-      console.log("les academic year et autre :", this.allAcademicYears);
+    this.dataStore.data$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        if (!data.loaded || data.loading) {
+          this.allDataLoaded = false;
+          return;
+        }
 
-      this.sallesDispo = result.salles
-        .filter((s) => s.estDisponible)
-        .map((s) => s.nomSalle);
+        this.allPlannings = data.plannings;
+        this.allSoutenances = data.soutenances;
+        this.allStudents = data.students;
+        this.allStaff = data.staff;
+        this.allCompanies = data.companies;
+        this.allTutors = data.tutors;
+        this.allTrainingAcademicYears = data.trainingAcademicYears;
+        this.allAcademicYears = data.academicYears;
+        this.allReferents = data.referents;
+        this.allSalles = data.salles;
 
-      const planningNames = result.planning
-        .map((p) => p.nom)
-        .filter((nom): nom is string => nom !== null);
+        console.log("les referents et autre :", this.allReferents);
+        console.log("les academic year et autre :", this.allAcademicYears);
 
-      this.optionSchedule.push(...planningNames);
-      this.allDataLoaded = true;
-      this.cdRef.detectChanges();
-    });
+        this.sallesDispo = data.salles
+          .filter((s) => s.estDisponible)
+          .map((s) => s.nomSalle);
+
+        const planningNames = data.plannings
+          .map((p) => p.nom)
+          .filter((nom): nom is string => nom !== null);
+
+        this.optionSchedule = ["Sélectionner un planning existant", ...planningNames];
+        this.allDataLoaded = true;
+        this.cdRef.detectChanges();
+      });
 
     this.authService.getAuthenticatedUser().subscribe((currentUser) => {
       this.currentUser = currentUser;
@@ -172,6 +151,11 @@ export class ScheduleComponent implements AfterViewInit {
     });
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   updateJour(jour: Date) {
     this.selectedJour = jour;
     //Recherche de toutes les salles réellement utilisées
@@ -181,6 +165,7 @@ export class ScheduleComponent implements AfterViewInit {
       this.slots
     );
   }
+
   async export() {
     if (!this.selectedPlanning || !this.jours.length) return;
 
@@ -195,20 +180,7 @@ export class ScheduleComponent implements AfterViewInit {
     const element = document.getElementById("schedule-board-pdf");
     if (!element) return;
 
-    const originalSelectedJour = this.selectedJour;
-
     for (const jour of this.jours) {
-      this.selectedJour = jour;
-      this.sallesAffiches = getAllSallesUsed(
-      this.sallesDispo,
-      jour,
-      this.slots
-    );
-      this.cdRef.detectChanges();
-
-      // Attendre que le DOM se maj
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
       const tempContainer = document.createElement("div");
       tempContainer.style.position = "absolute";
       tempContainer.style.left = "-9999px";
@@ -239,6 +211,14 @@ export class ScheduleComponent implements AfterViewInit {
 
       clone.insertBefore(jourHeader, clone.firstChild);
 
+      clone.querySelectorAll<HTMLElement>(".jour").forEach((el) => {
+        if (new Date(el.dataset["jour"]!)?.getTime() === jour.getTime()) {
+          el.classList.add("selectedJour");
+        } else {
+          el.classList.remove("selectedJour");
+        }
+      });
+
       tempContainer.appendChild(clone);
       document.body.appendChild(tempContainer);
 
@@ -264,11 +244,6 @@ export class ScheduleComponent implements AfterViewInit {
         pdf.addPage();
       }
     }
-
-  
-    this.selectedJour = originalSelectedJour;
-    
-    this.cdRef.detectChanges();
 
     const planningName = this.selectedPlanning?.nom ?? "planning";
     const safeName = planningName.replace(/\s+/g, "_").replace(/[^\w\-]/g, "");
