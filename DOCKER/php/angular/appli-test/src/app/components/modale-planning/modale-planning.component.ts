@@ -26,12 +26,22 @@ import { forkJoin } from "rxjs";
 })
 export class ModalePlanningComponent implements OnInit {
   newPlanning: Planning = new Planning();
-  isSubmitting: boolean = false;
+  isSubmitting = false;
+
   promos: TrainingYear[] = [];
   salles: Salle[] = [];
   selectedSalles: Salle[] = [];
+  dropdownOpen = false;
+
   currentAcademicYearId!: number;
-  dropdownOpen: boolean = false;
+
+  formErrors = {
+    nom: false,
+    promo: false,
+    date: null as string | null,
+    time: null as string | null,
+    duree: false,
+  };
 
   @Output() cancel = new EventEmitter<void>();
 
@@ -40,7 +50,7 @@ export class ModalePlanningComponent implements OnInit {
     private readonly planningService: PlanningService,
     private readonly trainingYearService: TrainingYearService,
     private readonly salleService: SalleService,
-    private readonly academicYearService: AcademicYearService
+    private readonly academicYearService: AcademicYearService,
   ) {}
 
   ngOnInit() {
@@ -52,16 +62,11 @@ export class ModalePlanningComponent implements OnInit {
       this.promos = promos;
       this.salles = salles.filter((s) => s.estDisponible);
       this.selectedSalles = [...this.salles];
-      if (academicYear) {
-        this.currentAcademicYearId = academicYear.idAnneeUniversitaire;
-      }
+      this.currentAcademicYearId = academicYear?.idAnneeUniversitaire || 0;
     });
   }
 
-  toggleDropdown() {
-    this.dropdownOpen = !this.dropdownOpen;
-  }
-
+  // Sélection/désélection des salles
   onSalleToggle(event: Event, salle: Salle) {
     const checkbox = event.target as HTMLInputElement;
     if (checkbox.checked) {
@@ -71,113 +76,160 @@ export class ModalePlanningComponent implements OnInit {
     }
   }
 
+  toggleDropdown() {
+    this.dropdownOpen = !this.dropdownOpen;
+  }
+
   get selectedSallesText(): string {
     return this.selectedSalles.length > 0
       ? this.selectedSalles.map((s) => s.nomSalle).join(", ")
       : "-- Sélectionner --";
   }
 
-  /**
-   * Handles form submission by adding new internship search
-   */
-  async onSubmit() {
-    console.log("onsubmit", this.isFormValid());
-    if (this.isFormValid()) {
-      try {
-        this.isSubmitting = true;
-        const startMorningMinutes = timeStringToMinutes(
-          this.newPlanning.heureDebutMatin!
-        );
-        const endMorningMinutes = timeStringToMinutes(
-          this.newPlanning.heureFinMatin!
-        );
-        const startAfternoonMinutes = timeStringToMinutes(
-          this.newPlanning.heureDebutAprem!
-        );
-        const endAfternoonMinutes = timeStringToMinutes(
-          this.newPlanning.heureFinAprem!
-        );
-        this.newPlanning.idAnneeUniversitaire=this.currentAcademicYearId;
+  // Validation complète du formulaire
+  validateForm(): boolean {
+    this.formErrors = {
+      nom: false,
+      promo: false,
+      date: null,
+      time: null,
+      duree: false,
+    };
+    let valid = true;
 
-        this.planningService
-          .runAlgorithmPlanning(
-            startMorningMinutes,
-            endMorningMinutes,
-            startAfternoonMinutes,
-            endAfternoonMinutes,
-            this.newPlanning.dureeSoutenance!,
-            this.newPlanning.dureeSoutenance! * 1.3,
-            5, //break
-            20 * 60, //tps profs
-            this.selectedSalles,
-            this.newPlanning.idAnneeFormation!,
-            this.currentAcademicYearId
-          )
-          .subscribe({
-            next: (result: any) => {
-              if (result.status === "success") {
-                const parsed = JSON.parse(result.output) as any[];
-                const soutenances: Soutenance[] = parsed.map((item) => ({
-                  idSoutenance: -1,
-                  date: addDays(this.newPlanning.dateDebut!, item.date),
-                  nomSalle: Number(item.nomSalle),
-                  heureDebut: minutesToHHMM(item.heureDebut),
-                  heureFin: minutesToHHMM(item.heureFin),
-                  idUPPA: item.idUPPA.toString(),
-                  idLecteur: item.idLecteur,
-                  idPlanning: null,
-                }));
-                this.router.navigate(["/schedule/add-schedule"], {
-                  state: {
-                    newPlanning: this.newPlanning,
-                    soutenances: soutenances,
-                    salles: this.salles,
-                  },
-                });
-              }
-            },
-            error: (error) => {
-              console.error("Erreur lors de la génération du planning", error);
-              this.isSubmitting = true;
-            },
-            complete: () => {
-              this.isSubmitting = true;
-            },
-          });
-        // this.planningService.addPlanning(this.newPlanning);
-
-        // for (const salle of this.salles) {
-        //   if (!this.selectedSalles.includes(salle)) {
-        //     salle.estDisponible = false;
-        //     this.salleService.updateSalle(salle);
-        //   }
-        // }
-      } catch (error) {
-        console.error("Erreur lors de la création du planning :", error);
-      } finally {
-        this.isSubmitting = false;
-      }
+    if (!this.newPlanning.nom?.trim()) {
+      this.formErrors.nom = true;
+      valid = false;
     }
+
+    if (!this.newPlanning.idAnneeFormation) {
+      this.formErrors.promo = true;
+      valid = false;
+    }
+
+    if (!this.newPlanning.dureeSoutenance) {
+      this.formErrors.duree = true;
+      valid = false;
+    }
+
+    if (!this.newPlanning.dateDebut || !this.newPlanning.dateFin) {
+      valid = false;
+    } else if (this.newPlanning.dateFin < this.newPlanning.dateDebut) {
+      this.formErrors.date =
+        "La date de fin doit être postérieure à la date de début.";
+      valid = false;
+    }
+
+    const { heureDebutMatin, heureFinMatin, heureDebutAprem, heureFinAprem } =
+      this.newPlanning;
+
+    if (heureDebutMatin && heureFinMatin && heureDebutAprem && heureFinAprem) {
+      const debutMatin = timeStringToMinutes(heureDebutMatin);
+      const finMatin = timeStringToMinutes(heureFinMatin);
+      const debutAprem = timeStringToMinutes(heureDebutAprem);
+      const finAprem = timeStringToMinutes(heureFinAprem);
+
+      if (finMatin <= debutMatin) {
+        this.formErrors.time = "La fin du matin doit être supérieure au début.";
+        valid = false;
+      } else if (debutAprem <= finMatin) {
+        this.formErrors.time =
+          "Le début de l'après-midi doit être après la fin du matin.";
+        valid = false;
+      } else if (finAprem <= debutAprem) {
+        this.formErrors.time =
+          "La fin de l'après-midi doit être après le début.";
+        valid = false;
+      }
+    } else {
+      valid = false;
+    }
+
+    return valid;
   }
 
-  /**
-   * Validates if all required fields in the internship search form are filled correctly
-   * @returns Boolean indicating if the form is valid
-   */
-
-  isFormValid(): boolean {
-    console.log("Check validity", this.newPlanning);
-    return !!(
-      this.newPlanning.nom!.trim() &&
-      this.newPlanning.dateDebut! &&
-      this.newPlanning.dateFin! &&
-      this.newPlanning.heureDebutMatin! &&
-      this.newPlanning.heureDebutAprem! &&
-      this.newPlanning.heureFinMatin! &&
-      this.newPlanning.heureFinAprem! &&
-      this.newPlanning.dureeSoutenance != null &&
-      this.newPlanning.idAnneeFormation != null
+  get isFormValid(): boolean {
+    return (
+      !this.formErrors.nom &&
+      !this.formErrors.promo &&
+      !this.formErrors.date &&
+      !this.formErrors.time &&
+      !this.formErrors.duree
     );
+  }
+
+  // Soumission du formulaire
+  async onSubmit() {
+    if (!this.validateForm()) return;
+
+    try {
+      this.isSubmitting = true;
+
+      const startMorningMinutes = timeStringToMinutes(
+        this.newPlanning.heureDebutMatin!,
+      );
+      const endMorningMinutes = timeStringToMinutes(
+        this.newPlanning.heureFinMatin!,
+      );
+      const startAfternoonMinutes = timeStringToMinutes(
+        this.newPlanning.heureDebutAprem!,
+      );
+      const endAfternoonMinutes = timeStringToMinutes(
+        this.newPlanning.heureFinAprem!,
+      );
+
+      this.newPlanning.idAnneeUniversitaire = this.currentAcademicYearId;
+
+      this.planningService
+        .runAlgorithmPlanning(
+          startMorningMinutes,
+          endMorningMinutes,
+          startAfternoonMinutes,
+          endAfternoonMinutes,
+          this.newPlanning.dureeSoutenance!,
+          this.newPlanning.dureeSoutenance! * 1.3,
+          5,
+          20 * 60,
+          this.selectedSalles,
+          this.newPlanning.idAnneeFormation!,
+          this.currentAcademicYearId,
+        )
+        .subscribe({
+          next: (result: any) => {
+            if (result.status === "success") {
+              const parsed = JSON.parse(result.output) as any[];
+              const soutenances: Soutenance[] = parsed.map((item) => ({
+                idSoutenance: -1,
+                date: addDays(this.newPlanning.dateDebut!, item.date),
+                nomSalle: Number(item.nomSalle),
+                heureDebut: minutesToHHMM(item.heureDebut),
+                heureFin: minutesToHHMM(item.heureFin),
+                idUPPA: item.idUPPA.toString(),
+                idLecteur: item.idLecteur,
+                idPlanning: null,
+              }));
+
+              this.router.navigate(["/schedule/add-schedule"], {
+                state: {
+                  newPlanning: this.newPlanning,
+                  soutenances,
+                  salles: this.salles,
+                },
+              });
+            }
+          },
+          error: (error) => {
+            console.error("Erreur lors de la génération du planning", error);
+            this.isSubmitting = false;
+          },
+          complete: () => {
+            this.isSubmitting = false;
+          },
+        });
+    } catch (error) {
+      console.error("Erreur lors de la création du planning :", error);
+      this.isSubmitting = false;
+    }
   }
 
   onCancel() {
