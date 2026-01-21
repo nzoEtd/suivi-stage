@@ -188,12 +188,8 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
     const originalSelectedJour = this.selectedJour;
 
     for (const jour of this.jours) {
-      this.selectedJour = jour;
-      this.sallesAffiches = getAllSallesUsed(
-        this.sallesDispo,
-        jour,
-        this.slots,
-      );
+      this.updateJour(jour);
+
       this.cdRef.detectChanges();
 
       // Attendre que le DOM se maj
@@ -255,7 +251,7 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
       }
     }
 
-    this.selectedJour = originalSelectedJour;
+    if (originalSelectedJour) this.updateJour(originalSelectedJour);
 
     this.cdRef.detectChanges();
 
