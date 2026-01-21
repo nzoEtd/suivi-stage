@@ -1,4 +1,9 @@
-import { ChangeDetectorRef, Component, AfterViewInit, OnDestroy } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  Component,
+  AfterViewInit,
+  OnDestroy,
+} from "@angular/core";
 import { CommonModule, DatePipe } from "@angular/common";
 import { AuthService } from "../../services/auth.service";
 import { InitService } from "../../services/init.service";
@@ -86,7 +91,7 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
     private readonly initService: InitService,
     private router: Router,
     private readonly dataStore: DataStoreService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
   ) {}
 
   async ngAfterViewInit() {
@@ -100,43 +105,44 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
       "tutors",
       "trainingAcademicYears",
       "referents",
-      "academicYears"
+      "academicYears",
     ]);
 
-    this.dataStore.data$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        if (!data.loaded || data.loading) {
-          this.allDataLoaded = false;
-          return;
-        }
+    this.dataStore.data$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
+      if (!data.loaded || data.loading) {
+        this.allDataLoaded = false;
+        return;
+      }
 
-        this.allPlannings = data.plannings;
-        this.allSoutenances = data.soutenances;
-        this.allStudents = data.students;
-        this.allStaff = data.staff;
-        this.allCompanies = data.companies;
-        this.allTutors = data.tutors;
-        this.allTrainingAcademicYears = data.trainingAcademicYears;
-        this.allAcademicYears = data.academicYears;
-        this.allReferents = data.referents;
-        this.allSalles = data.salles;
+      this.allPlannings = data.plannings;
+      this.allSoutenances = data.soutenances;
+      this.allStudents = data.students;
+      this.allStaff = data.staff;
+      this.allCompanies = data.companies;
+      this.allTutors = data.tutors;
+      this.allTrainingAcademicYears = data.trainingAcademicYears;
+      this.allAcademicYears = data.academicYears;
+      this.allReferents = data.referents;
+      this.allSalles = data.salles;
 
-        console.log("les referents et autre :", this.allReferents);
-        console.log("les academic year et autre :", this.allAcademicYears);
+      console.log("les referents et autre :", this.allReferents);
+      console.log("les academic year et autre :", this.allAcademicYears);
 
-        this.sallesDispo = data.salles
-          .filter((s) => s.estDisponible)
-          .map((s) => s.nomSalle);
+      this.sallesDispo = data.salles
+        .filter((s) => s.estDisponible)
+        .map((s) => s.nomSalle);
 
-        const planningNames = data.plannings
-          .map((p) => p.nom)
-          .filter((nom): nom is string => nom !== null);
+      const planningNames = data.plannings
+        .map((p) => p.nom)
+        .filter((nom): nom is string => nom !== null);
 
-        this.optionSchedule = ["Sélectionner un planning existant", ...planningNames];
-        this.allDataLoaded = true;
-        this.cdRef.detectChanges();
-      });
+      this.optionSchedule = [
+        "Sélectionner un planning existant",
+        ...planningNames,
+      ];
+      this.allDataLoaded = true;
+      this.cdRef.detectChanges();
+    });
 
     this.authService.getAuthenticatedUser().subscribe((currentUser) => {
       this.currentUser = currentUser;
@@ -162,10 +168,9 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
     this.sallesAffiches = getAllSallesUsed(
       this.sallesDispo,
       this.selectedJour,
-      this.slots
+      this.slots,
     );
   }
-
   async export() {
     if (!this.selectedPlanning || !this.jours.length) return;
 
@@ -180,7 +185,20 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
     const element = document.getElementById("schedule-board-pdf");
     if (!element) return;
 
+    const originalSelectedJour = this.selectedJour;
+
     for (const jour of this.jours) {
+      this.selectedJour = jour;
+      this.sallesAffiches = getAllSallesUsed(
+        this.sallesDispo,
+        jour,
+        this.slots,
+      );
+      this.cdRef.detectChanges();
+
+      // Attendre que le DOM se maj
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       const tempContainer = document.createElement("div");
       tempContainer.style.position = "absolute";
       tempContainer.style.left = "-9999px";
@@ -211,14 +229,6 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
 
       clone.insertBefore(jourHeader, clone.firstChild);
 
-      clone.querySelectorAll<HTMLElement>(".jour").forEach((el) => {
-        if (new Date(el.dataset["jour"]!)?.getTime() === jour.getTime()) {
-          el.classList.add("selectedJour");
-        } else {
-          el.classList.remove("selectedJour");
-        }
-      });
-
       tempContainer.appendChild(clone);
       document.body.appendChild(tempContainer);
 
@@ -244,6 +254,10 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
         pdf.addPage();
       }
     }
+
+    this.selectedJour = originalSelectedJour;
+
+    this.cdRef.detectChanges();
 
     const planningName = this.selectedPlanning?.nom ?? "planning";
     const safeName = planningName.replace(/\s+/g, "_").replace(/[^\w\-]/g, "");
@@ -274,7 +288,7 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
     this.allDataLoaded = false;
     // Trouver le planning sélectionné
     this.selectedPlanning = this.allPlannings.find(
-      (p) => p.nom === planningName
+      (p) => p.nom === planningName,
     );
 
     if (
@@ -289,7 +303,7 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
       // Générer les dates pour ce planning uniquement
       this.jours = getDatesBetween(
         this.selectedPlanning.dateDebut,
-        this.selectedPlanning.dateFin
+        this.selectedPlanning.dateFin,
       );
 
       // Sélectionner le premier jour par défaut
@@ -324,14 +338,14 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
         this.allReferents,
         this.allTrainingAcademicYears,
         this.allAcademicYears,
-        this.cdRef
+        this.cdRef,
       );
       console.log("les slots ?", this.slots);
       //Recherche de toutes les salles réellement utilisées
       this.sallesAffiches = getAllSallesUsed(
         this.sallesDispo,
         this.selectedJour,
-        this.slots
+        this.slots,
       );
       this.allDataLoaded = true;
     } else {
