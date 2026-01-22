@@ -1,36 +1,33 @@
 <div class="modal-overlay">
   <div class="modal">
-    <!-- HEADER FIXE -->
     <div class="modal-header">
       <h3 class="modal-title">Générer un planning</h3>
       <button type="button" class="close-button" (click)="onCancel()">✕</button>
     </div>
 
-    <!-- BODY SCROLLABLE -->
     <div class="modal-body">
-      <form class="form" [class.disabled-form]="isSubmitting">
+      <form
+        class="form"
+        [formGroup]="planningForm"
+        (ngSubmit)="onSubmit()"
+        [class.disabled-form]="isSubmitting"
+      >
         <!-- Nom -->
         <div class="input-wrapper">
           <label>Nom du planning* :</label>
-          <input
-            type="text"
-            name="nom"
-            [(ngModel)]="newPlanning.nom"
-            (ngModelChange)="validateForm()"
-          />
+          <input type="text" formControlName="nom" />
         </div>
-        <div class="error-message" *ngIf="formErrors.nom">
+        <div
+          class="error-message"
+          *ngIf="submitted && planningForm.get('nom')?.hasError('required')"
+        >
           Le nom du planning est obligatoire.
         </div>
 
         <!-- Promo -->
         <div class="input-wrapper">
           <label>Promo étudiants* :</label>
-          <select
-            name="promo"
-            [(ngModel)]="newPlanning.idAnneeFormation"
-            (ngModelChange)="validateForm()"
-          >
+          <select formControlName="idAnneeFormation">
             <option [ngValue]="null">-- Sélectionner --</option>
             <option
               *ngFor="let promo of promos"
@@ -40,7 +37,13 @@
             </option>
           </select>
         </div>
-        <div class="error-message" *ngIf="formErrors.promo">
+        <div
+          class="error-message"
+          *ngIf="
+            submitted &&
+            planningForm.get('idAnneeFormation')?.hasError('required')
+          "
+        >
           La promo est obligatoire.
         </div>
 
@@ -48,78 +51,98 @@
         <div class="line-wrapper">
           <div class="input-wrapper">
             <label>Début* :</label>
-            <input
-              type="date"
-              name="dateDebut"
-              [(ngModel)]="newPlanning.dateDebut"
-              (ngModelChange)="validateForm()"
-            />
+            <input type="date" formControlName="dateDebut" />
           </div>
-
           <div class="input-wrapper">
             <label>Fin* :</label>
-            <input
-              type="date"
-              name="dateFin"
-              [(ngModel)]="newPlanning.dateFin"
-              (ngModelChange)="validateForm()"
-            />
+            <input type="date" formControlName="dateFin" />
           </div>
         </div>
-        <div class="error-message" *ngIf="formErrors.date">
-          {{ formErrors.date }}
+        <div
+          class="error-message"
+          *ngIf="
+            submitted && planningForm.get('dateDebut')?.hasError('required')
+          "
+        >
+          La date de début est obligatoire.
+        </div>
+        <div
+          class="error-message"
+          *ngIf="submitted && planningForm.get('dateFin')?.hasError('required')"
+        >
+          La date de fin est obligatoire.
+        </div>
+        <div class="error-message" *ngIf="planningForm.hasError('dateOrder')">
+          La date de fin doit être postérieure à la date de début.
         </div>
 
-        <!-- Heures matin -->
+        <!-- Matin -->
         <div class="time-section">Matin</div>
         <div class="line-wrapper">
           <div class="input-wrapper">
             <label>Début* :</label>
-            <input
-              type="time"
-              name="heureDebutMatin"
-              [(ngModel)]="newPlanning.heureDebutMatin"
-              (ngModelChange)="validateForm()"
-            />
+            <input type="time" formControlName="heureDebutMatin" />
           </div>
-
           <div class="input-wrapper">
             <label>Fin* :</label>
-            <input
-              type="time"
-              name="heureFinMatin"
-              [(ngModel)]="newPlanning.heureFinMatin"
-              (ngModelChange)="validateForm()"
-            />
+            <input type="time" formControlName="heureFinMatin" />
           </div>
         </div>
+        <div
+          class="error-message"
+          *ngIf="
+            submitted &&
+            planningForm.get('heureDebutMatin')?.hasError('required')
+          "
+        >
+          L'heure de début du matin est obligatoire.
+        </div>
+        <div
+          class="error-message"
+          *ngIf="
+            submitted && planningForm.get('heureFinMatin')?.hasError('required')
+          "
+        >
+          L'heure de fin du matin est obligatoire.
+        </div>
+        <div class="error-message" *ngIf="planningForm.hasError('matinOrder')">
+          La fin du matin doit être après le début.
+        </div>
 
-        <!-- Heures aprem -->
+        <!-- Aprem -->
         <div class="time-section">Après-midi</div>
         <div class="line-wrapper">
           <div class="input-wrapper">
             <label>Début* :</label>
-            <input
-              type="time"
-              name="heureDebutAprem"
-              [(ngModel)]="newPlanning.heureDebutAprem"
-              (ngModelChange)="validateForm()"
-            />
+            <input type="time" formControlName="heureDebutAprem" />
           </div>
-
           <div class="input-wrapper">
             <label>Fin* :</label>
-            <input
-              type="time"
-              name="heureFinAprem"
-              [(ngModel)]="newPlanning.heureFinAprem"
-              (ngModelChange)="validateForm()"
-            />
+            <input type="time" formControlName="heureFinAprem" />
           </div>
         </div>
-
-        <div class="error-message" *ngIf="formErrors.time">
-          {{ formErrors.time }}
+        <div
+          class="error-message"
+          *ngIf="
+            submitted &&
+            planningForm.get('heureDebutAprem')?.hasError('required')
+          "
+        >
+          L'heure de début de l'après-midi est obligatoire.
+        </div>
+        <div
+          class="error-message"
+          *ngIf="
+            submitted && planningForm.get('heureFinAprem')?.hasError('required')
+          "
+        >
+          L'heure de fin de l'après-midi est obligatoire.
+        </div>
+        <div class="error-message" *ngIf="planningForm.hasError('apremStart')">
+          L'après-midi doit commencer après la fin du matin.
+        </div>
+        <div class="error-message" *ngIf="planningForm.hasError('apremOrder')">
+          La fin de l'après-midi doit être après le début.
         </div>
 
         <!-- Salles -->
@@ -130,7 +153,6 @@
               {{ selectedSallesText }}
               <span class="arrow"></span>
             </div>
-
             <div class="options" *ngIf="dropdownOpen">
               <label *ngFor="let salle of salles" class="option">
                 <input
@@ -138,7 +160,7 @@
                   [checked]="selectedSalles.includes(salle)"
                   (change)="onSalleToggle($event, salle)"
                 />
-                <span class="option-text">{{ salle.nomSalle }}</span>
+                {{ salle.nomSalle }}
               </label>
             </div>
           </div>
@@ -147,28 +169,28 @@
         <!-- Durée -->
         <div class="input-wrapper">
           <label>Durée soutenance* :</label>
-          <input
-            type="number"
-            name="duree"
-            [(ngModel)]="newPlanning.dureeSoutenance"
-            (ngModelChange)="validateForm()"
-          />
-          minutes
+          <input type="number" formControlName="dureeSoutenance" /> minutes
         </div>
-        <div class="error-message" *ngIf="formErrors.duree">
+        <div
+          class="error-message"
+          *ngIf="
+            submitted &&
+            planningForm.get('dureeSoutenance')?.hasError('required')
+          "
+        >
           La durée est obligatoire.
         </div>
       </form>
     </div>
 
-    <!-- FOOTER FIXE -->
+    <!-- Btn -->
     <div class="modal-footer">
       <button type="button" class="cancel-button" (click)="onCancel()">
         Annuler
       </button>
       <button
         class="generate-button"
-        [disabled]="isSubmitting || !isFormValid"
+        [disabled]="isSubmitting"
         (click)="onSubmit()"
       >
         Générer

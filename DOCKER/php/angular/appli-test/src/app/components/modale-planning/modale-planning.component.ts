@@ -1,33 +1,45 @@
-import { Component, OnInit, EventEmitter, Output } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ValidatorFn,
+  AbstractControl,
+} from "@angular/forms";
 import { Router } from "@angular/router";
-import { Planning } from "../../models/planning.model";
+import { forkJoin } from "rxjs";
+import { CommonModule } from "@angular/common";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+
 import { PlanningService } from "../../services/planning.service";
 import { TrainingYearService } from "../../services/training-year.service";
+import { SalleService } from "../../services/salle.service";
+import { AcademicYearService } from "../../services/academic-year.service";
+
 import { TrainingYear } from "../../models/training-year.model";
 import { Salle } from "../../models/salle.model";
-import { SalleService } from "../../services/salle.service";
+import { Soutenance } from "../../models/soutenance.model";
+
 import {
   addDays,
   minutesToHHMM,
   timeStringToMinutes,
 } from "../../utils/timeManagement";
-import { Soutenance } from "../../models/soutenance.model";
-import { AcademicYearService } from "../../services/academic-year.service";
-import { forkJoin } from "rxjs";
+import { Planning } from "../../models/planning.model";
 
 @Component({
   selector: "app-modale-planning",
-  standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: "./modale-planning.component.html",
   styleUrls: ["./modale-planning.component.css"],
 })
 export class ModalePlanningComponent implements OnInit {
-  newPlanning: Planning = new Planning();
-  isSubmitting = false;
+  @Output() cancel = new EventEmitter<void>();
 
+  planningForm!: FormGroup;
+  submitted = false;
+  isSubmitting = false;
+  newPlanning: Planning = new Planning();
   promos: TrainingYear[] = [];
   salles: Salle[] = [];
   selectedSalles: Salle[] = [];
@@ -35,25 +47,18 @@ export class ModalePlanningComponent implements OnInit {
 
   currentAcademicYearId!: number;
 
-  formErrors = {
-    nom: false,
-    promo: false,
-    date: null as string | null,
-    time: null as string | null,
-    duree: false,
-  };
-
-  @Output() cancel = new EventEmitter<void>();
-
   constructor(
-    private readonly router: Router,
-    private readonly planningService: PlanningService,
-    private readonly trainingYearService: TrainingYearService,
-    private readonly salleService: SalleService,
-    private readonly academicYearService: AcademicYearService,
+    private fb: FormBuilder,
+    private router: Router,
+    private planningService: PlanningService,
+    private trainingYearService: TrainingYearService,
+    private salleService: SalleService,
+    private academicYearService: AcademicYearService,
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.initForm();
+
     forkJoin({
       promos: this.trainingYearService.getTrainingYears(["libelle"]),
       salles: this.salleService.getSalles(),
@@ -66,105 +71,91 @@ export class ModalePlanningComponent implements OnInit {
     });
   }
 
-  // Sélection/désélection des salles
+
+  initForm() {
+    this.planningForm = this.fb.group(
+      {
+        nom: ["", Validators.required],
+        idAnneeFormation: [null, Validators.required],
+        dateDebut: [null, Validators.required],
+        dateFin: [null, Validators.required],
+        heureDebutMatin: [null, Validators.required],
+        heureFinMatin: [null, Validators.required],
+        heureDebutAprem: [null, Validators.required],
+        heureFinAprem: [null, Validators.required],
+        dureeSoutenance: [null, Validators.required],
+      },
+      {
+        validators: [
+          this.dateOrderValidator,
+          this.matinOrderValidator,
+          this.apremStartValidator,
+          this.apremOrderValidator,
+        ],
+      },
+    );
+  }
+
+
+  dateOrderValidator: ValidatorFn = (form: AbstractControl) => {
+    const debut = form.get("dateDebut")?.value;
+    const fin = form.get("dateFin")?.value;
+    if (!debut || !fin) return null;
+    return fin >= debut ? null : { dateOrder: true };
+  };
+
+  matinOrderValidator: ValidatorFn = (form: AbstractControl) => {
+    const debut = form.get("heureDebutMatin")?.value;
+    const fin = form.get("heureFinMatin")?.value;
+    if (!debut || !fin) return null;
+    return fin > debut ? null : { matinOrder: true };
+  };
+
+  apremStartValidator: ValidatorFn = (form: AbstractControl) => {
+    const finMatin = form.get("heureFinMatin")?.value;
+    const debutAprem = form.get("heureDebutAprem")?.value;
+    if (!finMatin || !debutAprem) return null;
+    return debutAprem > finMatin ? null : { apremStart: true };
+  };
+
+  apremOrderValidator: ValidatorFn = (form: AbstractControl) => {
+    const debut = form.get("heureDebutAprem")?.value;
+    const fin = form.get("heureFinAprem")?.value;
+    if (!debut || !fin) return null;
+    return fin > debut ? null : { apremOrder: true };
+  };
+
+
+  toggleDropdown() {
+    this.dropdownOpen = !this.dropdownOpen;
+  }
+
   onSalleToggle(event: Event, salle: Salle) {
-    const checkbox = event.target as HTMLInputElement;
-    if (checkbox.checked) {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
       this.selectedSalles.push(salle);
     } else {
       this.selectedSalles = this.selectedSalles.filter((s) => s !== salle);
     }
   }
 
-  toggleDropdown() {
-    this.dropdownOpen = !this.dropdownOpen;
-  }
-
   get selectedSallesText(): string {
-    return this.selectedSalles.length > 0
+    return this.selectedSalles.length
       ? this.selectedSalles.map((s) => s.nomSalle).join(", ")
       : "-- Sélectionner --";
   }
 
-  // Validation complète du formulaire
-  validateForm(): boolean {
-    this.formErrors = {
-      nom: false,
-      promo: false,
-      date: null,
-      time: null,
-      duree: false,
-    };
-    let valid = true;
-
-    if (!this.newPlanning.nom?.trim()) {
-      this.formErrors.nom = true;
-      valid = false;
-    }
-
-    if (!this.newPlanning.idAnneeFormation) {
-      this.formErrors.promo = true;
-      valid = false;
-    }
-
-    if (!this.newPlanning.dureeSoutenance) {
-      this.formErrors.duree = true;
-      valid = false;
-    }
-
-    if (!this.newPlanning.dateDebut || !this.newPlanning.dateFin) {
-      valid = false;
-    } else if (this.newPlanning.dateFin < this.newPlanning.dateDebut) {
-      this.formErrors.date =
-        "La date de fin doit être postérieure à la date de début.";
-      valid = false;
-    }
-
-    const { heureDebutMatin, heureFinMatin, heureDebutAprem, heureFinAprem } =
-      this.newPlanning;
-
-    if (heureDebutMatin && heureFinMatin && heureDebutAprem && heureFinAprem) {
-      const debutMatin = timeStringToMinutes(heureDebutMatin);
-      const finMatin = timeStringToMinutes(heureFinMatin);
-      const debutAprem = timeStringToMinutes(heureDebutAprem);
-      const finAprem = timeStringToMinutes(heureFinAprem);
-
-      if (finMatin <= debutMatin) {
-        this.formErrors.time = "La fin du matin doit être supérieure au début.";
-        valid = false;
-      } else if (debutAprem <= finMatin) {
-        this.formErrors.time =
-          "Le début de l'après-midi doit être après la fin du matin.";
-        valid = false;
-      } else if (finAprem <= debutAprem) {
-        this.formErrors.time =
-          "La fin de l'après-midi doit être après le début.";
-        valid = false;
-      }
-    } else {
-      valid = false;
-    }
-
-    return valid;
-  }
-
-  get isFormValid(): boolean {
-    return (
-      !this.formErrors.nom &&
-      !this.formErrors.promo &&
-      !this.formErrors.date &&
-      !this.formErrors.time &&
-      !this.formErrors.duree
-    );
-  }
 
   // Soumission du formulaire
   async onSubmit() {
-    if (!this.validateForm()) return;
+    this.submitted = true;
 
+    if (this.planningForm.invalid) return;
     try {
       this.isSubmitting = true;
+      this.newPlanning = this.planningForm.value;
 
+      // Transformation des heures au format attendu par l'algo
       const startMorningMinutes = timeStringToMinutes(
         this.newPlanning.heureDebutMatin!,
       );
@@ -180,6 +171,7 @@ export class ModalePlanningComponent implements OnInit {
 
       this.newPlanning.idAnneeUniversitaire = this.currentAcademicYearId;
 
+      // Execution de l'algo
       this.planningService
         .runAlgorithmPlanning(
           startMorningMinutes,
