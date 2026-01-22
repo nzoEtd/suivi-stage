@@ -47,14 +47,18 @@
   color: #666;
 }
 
+.loading-overlay {
+  margin-top: 100px;
+}
+
 .form {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-span {
-  font-weight: 700;
+input[disabled] {
+  background-color: #d6d6d6 !important;
 }
 
 /* Input wrapper */
