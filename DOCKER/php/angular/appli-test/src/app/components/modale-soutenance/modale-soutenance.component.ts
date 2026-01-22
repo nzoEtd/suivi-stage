@@ -8,7 +8,6 @@ import { Salle } from '../../models/salle.model';
 import { SlotItem } from '../../models/slotItem.model';
 import { LoadingComponent } from '../loading/loading.component';
 import { firstValueFrom, lastValueFrom, map, Observable } from 'rxjs';
-import { Router } from '@angular/router';
 import { StaffService } from '../../services/staff.service';
 
 @Component({
@@ -36,7 +35,6 @@ export class ModaleSoutenanceComponent implements OnInit {
   @Output() cancel = new EventEmitter<void>();
 
   constructor(private readonly soutenanceService: SoutenanceService,
-              private readonly router: Router,
               private readonly staffService: StaffService) {}
 
   async ngOnInit(): Promise<void> {
