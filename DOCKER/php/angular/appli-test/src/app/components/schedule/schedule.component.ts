@@ -171,6 +171,7 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
       this.slots,
     );
   }
+  
   async export() {
     if (!this.selectedPlanning || !this.jours.length) return;
 

@@ -52,9 +52,9 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   idSoutenance?: number;
   sallesAffiches: number[] = [];
   finalSlots: SoutenanceUpdate[] = [];
+  isValidating: boolean = false;
 
   //Variables drag and drop
-  items: SlotItem[] = [];
   planningByDay: Record<string, SlotItem[]> = {};
   
   constructor(
@@ -105,7 +105,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
           this.slots
         );
         this.slots.forEach(slot => {
-          const dayKey = slot.dateDebut.toISOString().slice(0,10); // "YYYY-MM-DD"
+          const dayKey = slot.dateDebut ? slot.dateDebut.toISOString().slice(0,10) : "attente"; // "YYYY-MM-DD"
           if (!this.planningByDay[dayKey]) this.planningByDay[dayKey] = [];
           this.planningByDay[dayKey].push(slot);
         });
@@ -156,6 +156,8 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   }
 
   onValidate() {
+    this.isValidating = true;
+    console.log("?????? ",this.isValidating)
     console.log("Validation du planning");
     this.finalSlots = this.convertSlotsToSoutenances();
     if (this.isEditMode) {
@@ -168,12 +170,17 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
       .subscribe({
         next: () => {
           console.log("Soutenances mises à jour");
+            
+          // Rafraîchir les données du store après la création
+          this.dataStore.refreshKeys(["soutenances"]);
+
           this.router.navigate(["/schedule"]);
         },
         error: (err) => {
           console.error("Erreur lors de la création", err);
         },
       });
+      this.isValidating = false;
     } else {
       //CREATE
       const { idPlanning, ...plannToCreate } = this.planning as Planning;
@@ -221,13 +228,14 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
             console.error("Erreur lors de la création", err);
           },
         });
+        this.isValidating = false;
     }
   }
 
   //Fonctions drag and drop
   onSlotUpdated(slot: SlotItem) {
     console.log("nouveau slot ?",slot)
-    const dayKey = slot.dateDebut.toISOString().slice(0, 10);
+    const dayKey = slot.dateDebut ? slot.dateDebut.toISOString().slice(0, 10) : "attente";
   
     // retirer de l'ancien jour si nécessaire
     for (const key in this.planningByDay) {
@@ -249,6 +257,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     const idPlanning = planning.idPlanning;
 
     slots.forEach(s => {
+      s.dateDebut && s.dateFin ?
       soutenances.push({
         idSoutenance: s.id,
         date: s.dateDebut.toISOString().slice(0, 10),
@@ -259,6 +268,8 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
         idLecteur: s.idLecteur,
         idPlanning: idPlanning
       })
+      : console.log("attention tous les slots sont pas placés.")
+      return [];
     })
 
     return soutenances;

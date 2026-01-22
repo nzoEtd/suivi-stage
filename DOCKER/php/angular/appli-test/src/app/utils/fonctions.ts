@@ -81,7 +81,7 @@ export function getAllSallesUsed(sallesDispo: number[], jour:Date, slots: SlotIt
   const salles: number[] = [];
   slots.forEach(slot => {
     sallesDispo.forEach(salle => {
-      if(salle === slot.salle && !salles.includes(salle) && isSameDay(slot.dateDebut, jour)){
+      if(salle === slot.salle && !salles.includes(salle) && isSameDay(slot.dateDebut!, jour)){
         salles.push(salle);
       }
     });

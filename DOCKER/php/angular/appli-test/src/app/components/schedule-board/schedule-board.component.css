@@ -1,7 +1,24 @@
+.add-update-schedule{
+  display: flex;
+  margin: 0 auto;
+  gap: 15px;
+  padding-left: 4px;
+}
+
 .planning {
   display: flex;
   flex-direction: column;
   width: 100%;
+}
+
+.slot-box {
+    border: 2px dashed #0A63A4;
+    border-radius: 15px;
+    width: 200px; 
+    flex-shrink: 0; 
+    margin-left: 4px;
+    display: flex;
+    flex-direction: column;
 }
 
 .header-planning {

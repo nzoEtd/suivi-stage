@@ -1,70 +1,87 @@
-<div class="planning">
-    <div class="header-planning">
-        <div class="hours-header"></div>
-        @for(salle of sallesDispo; track salle){
-            <span class="salle-header">Salle {{salle}}</span>
+<div class="add-update-schedule" CdkDropListGroup>
+    <div class="slot-box"
+    [class.hidden]="onlyDisplay"
+    cdkDropList
+    #waitingList="cdkDropList"
+    [cdkDropListData]="items"
+    cdkDropListSortingDisabled
+    [cdkDropListConnectedTo]="[scheduleList]"
+    (cdkDropListDropped)="onDrop($event)">
+        @for (item of items; track item) {
+            <div class="example-box" cdkDrag>{{ item }}</div>
         }
     </div>
-
-    <div *ngFor="let block of blocks; let last = last"
-    class="time-row"
-    [style.min-height.px]="block.heightPercent * 3">
-
-        <div class="hours">
-            <div *ngFor="let h of getHours(block.startMin, block.endMin); let i = index"
-            class="hour-item"
-            [style.height.%]="115 / getHours(block.startMin, block.endMin).length">
-                {{ h }}h
-            </div>
-
-            <!-- pause compressée uniquement si ce bloc le nécessite -->
-            <div *ngIf="block.type === 'morning'" 
-                class="pause" 
-                [style.height.px]="PAUSE_HEIGHT"></div>
+    <div class="planning"
+    cdkDropList
+    #scheduleList="cdkDropList"
+    [cdkDropListData]="planningByDay"
+    [cdkDropListConnectedTo]="[waitingList]">
+        <div class="header-planning">
+            <div class="hours-header"></div>
+            @for(salle of sallesDispo; track salle){
+                <span class="salle-header">Salle {{salle}}</span>
+            }
         </div>
 
-        <div class="body-planning">
-        @for(salle of sallesDispo; track salle){
-            <div class="salle-cell" 
-            #bloc
-            [style.height.px]="block.heightPercent * 3"
-            cdkDropList
-            [cdkDropListData]="slots"
-            (cdkDropListDropped)="onDrop($event, bloc, jourActuel, salle, block)">
-                @for(slot of slotsInBlock(block); track slot){
-                    @if(slot.salle === salle && checkSameDay(slot.dateDebut, jourActuel)){
-                        <div class="slot"
-                        [style.top.%]="slot.topPercent" 
-                        [style.height.%]="slot.heightPercent"
-                        cdkDrag 
-                        [cdkDragDisabled]="onlyDisplay"
-                        [cdkDragData]="slot">
-                            <!-- <div class="custom-placeholder" *cdkDragPlaceholder></div> -->
-                            <!-- <ng-template cdkDragPreview>
-                                <div class="slot preview"
-                                [style.height.%]="slot.heightPercent"> -->
-                                    <app-slot 
-                                        [slot]="slot"
-                                        (editSlot)="onEditSlot($event)">
-                                    </app-slot>
-                                <!-- </div>
-                            </ng-template> -->
-                        </div>
-                    }
-                    <div class="time-grid">
-                        <!-- pause compressée uniquement si ce bloc le nécessite -->
-                        <!-- <div *ngIf="block.type === 'afternoon'" 
-                            class="pause" 
-                            [style.height.px]="PAUSE_HEIGHT"></div> -->
-                        @for(mark of [].constructor(getQuarterHourMarks(block)); track $index){
-                            <div class="quarter-mark" 
-                                [style.top.%]="($index / getQuarterHourMarks(block)) * 100">
+        <div *ngFor="let block of blocks; let last = last"
+        class="time-row"
+        [style.min-height.px]="block.heightPercent * 3">
+
+            <div class="hours">
+                <div *ngFor="let h of getHours(block.startMin, block.endMin); let i = index"
+                class="hour-item"
+                [style.height.%]="115 / getHours(block.startMin, block.endMin).length">
+                    {{ h }}h
+                </div>
+
+                <!-- pause compressée uniquement si ce bloc le nécessite -->
+                <div *ngIf="block.type === 'morning'" 
+                    class="pause" 
+                    [style.height.px]="PAUSE_HEIGHT"></div>
+            </div>
+
+            <div class="body-planning">
+            @for(salle of sallesDispo; track salle){
+                <div class="salle-cell" 
+                [style.height.px]="block.heightPercent * 3"
+                cdkDropList
+                #bloc
+                (cdkDropListDropped)="onDrop($event, bloc, jourActuel, salle, block)">
+                    @for(slot of slotsInBlock(block); track slot){
+                        @if(slot.salle === salle && checkSameDay(slot.dateDebut!, jourActuel)){
+                            <div class="slot"
+                            [style.top.%]="slot.topPercent" 
+                            [style.height.%]="slot.heightPercent"
+                            cdkDrag 
+                            [cdkDragDisabled]="onlyDisplay"
+                            [cdkDragData]="slot">
+                                <!-- <div class="custom-placeholder" *cdkDragPlaceholder></div> -->
+                                <!-- <ng-template cdkDragPreview>
+                                    <div class="slot preview"
+                                    [style.height.%]="slot.heightPercent"> -->
+                                        <app-slot 
+                                            [slot]="slot"
+                                            (editSlot)="onEditSlot($event)">
+                                        </app-slot>
+                                    <!-- </div>
+                                </ng-template> -->
                             </div>
                         }
-                    </div>
-                }
+                        <div class="time-grid">
+                            <!-- pause compressée uniquement si ce bloc le nécessite -->
+                            <!-- <div *ngIf="block.type === 'afternoon'" 
+                                class="pause" 
+                                [style.height.px]="PAUSE_HEIGHT"></div> -->
+                            @for(mark of [].constructor(getQuarterHourMarks(block)); track $index){
+                                <div class="quarter-mark" 
+                                    [style.top.%]="($index / getQuarterHourMarks(block)) * 100">
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
             </div>
-        }
         </div>
     </div>
 </div>

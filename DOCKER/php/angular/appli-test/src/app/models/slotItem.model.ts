@@ -3,8 +3,8 @@ export interface SlotItem {
     id: number;
     topPercent: number;
     heightPercent: number;
-    dateDebut: Date;
-    dateFin: Date;
+    dateDebut: Date | null;
+    dateFin: Date | null;
     idUPPA: string;
     etudiant: string;
     referent: string;
@@ -12,5 +12,5 @@ export interface SlotItem {
     lecteur: string;
     entreprise: string;
     tuteur: string;
-    salle: number;
+    salle: number | null;
 }
