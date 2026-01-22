@@ -6,7 +6,8 @@
     [cdkDropListData]="items"
     cdkDropListSortingDisabled
     [cdkDropListConnectedTo]="[scheduleList]"
-    (cdkDropListDropped)="onDrop($event)">
+    (cdkDropListDropped)="onPlanningDrop($event)">
+    <!-- (cdkDropListDropped)="zoneOut($event, jourActuel)" -->
         @for (item of items; track item) {
             <div class="item"
             cdkDrag 
@@ -21,8 +22,8 @@
     <div class="planning"
     cdkDropList
     #scheduleList="cdkDropList"
-    [cdkDropListData]="planningByDay"
-    [cdkDropListConnectedTo]="[waitingList]">
+    [cdkDropListConnectedTo]="[waitingList]"
+    (cdkDropListDropped)="onPlanningDrop($event)">
         <div class="header-planning">
             <div class="hours-header"></div>
             @for(salle of sallesDispo; track salle){
@@ -50,10 +51,12 @@
             <div class="body-planning">
             @for(salle of sallesDispo; track salle){
                 <div class="salle-cell" 
-                [style.height.px]="block.heightPercent * 3"
-                cdkDropList
+                [attr.data-salle]="salle"
+                [style.height.px]="block.heightPercent * 3">
+                <!-- cdkDropList
                 #bloc
-                (cdkDropListDropped)="onDrop($event, bloc, jourActuel, block)">
+                (cdkDropListDropped)="onDrop($event, jourActuel, bloc, block)" -->
+                <!-- [cdkDropListData]="planningByDay" -->
                     @for(slot of slotsInBlock(block); track slot){
                         @if(slot.salle === salle && checkSameDay(slot.dateDebut!, jourActuel)){
                             <div class="slot"

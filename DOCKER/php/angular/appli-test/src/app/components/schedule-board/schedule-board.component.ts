@@ -112,7 +112,6 @@ export class ScheduleBoardComponent implements OnInit {
   }
 
   slotsInBlock(block: TimeBlock): SlotItem[] {
-    console.log("dans slots in block")
     this.rebuildSlotsCache();
     return this.slotsCache.get(block) || [];
   }
@@ -130,11 +129,13 @@ export class ScheduleBoardComponent implements OnInit {
   //Fonctions principales
   onDrop(
     event: CdkDragDrop<any>,
-    container?: HTMLElement,
-    targetDay?: Date,
-    block?: TimeBlock
+    targetDay: Date,
+    container: HTMLElement,
+    block: TimeBlock
   ) {
     const draggedSlot = event.item.data as SlotItem;
+    const dayKey = targetDay.toISOString().slice(0,10);
+    this.planningByDay[dayKey] ??= [];
     console.log("slot dragué",draggedSlot)
     console.log("jour droppé ? ", targetDay)
     
@@ -144,24 +145,26 @@ export class ScheduleBoardComponent implements OnInit {
     if (container && targetDay && block) {
       const rect = container.getBoundingClientRect();
 
-      // Nouvelle salle ?
+      // Recherche de la salle choisie (retourne null si le slot a été laché en dehors du planning)
       const newRoom = this.xToRoom(event.dropPoint.x);
       console.log("nouvelle salle ? ", newRoom)
 
       if(newRoom === null){
         //Le slot est drag dans la zone d'attente s'il n'y a aucune salle
         console.log("transfert dans zone attente")
-        // draggedSlot.duree = duration;
-        draggedSlot.dateDebut = null;
-        draggedSlot.dateFin = null;
-        draggedSlot.salle = null;
-        this.items.push(draggedSlot);
-        console.log("zone attente : ", this.items)
+        if(!this.items.find(i => i.id === draggedSlot.id)){
+          draggedSlot.duree = duration;
+          draggedSlot.dateDebut = null;
+          draggedSlot.dateFin = null;
+          draggedSlot.salle = null;
+          this.items.push(draggedSlot);
 
-        //Enlever slot de planningByDay
-        for (const key in this.planningByDay) {
-          this.planningByDay[key] = this.planningByDay[key].filter(s => s.id !== draggedSlot.id);
+          //Enlever slot de planningByDay
+          for (const key in this.planningByDay) {
+            this.planningByDay[key] = this.planningByDay[key].filter(s => s.id !== draggedSlot.id);
+          }
         }
+        console.log("zone attente : ", this.items)
         console.log("new planning by day: ",this.planningByDay)
 
         this.rebuildSlotsCache();
@@ -169,7 +172,7 @@ export class ScheduleBoardComponent implements OnInit {
       else{
         // S'il y a une salle le slot est droppé dans la salle au bon endroit
         console.log("transfert dans zone planning")
-        // duration == null ? duration = draggedSlot.duree : duration = duration;
+        duration == null ? duration = draggedSlot.duree : duration = duration;
 
         // Si slot était en liste d'attente on l'enlève
         this.items = this.items.filter(i => i.id !== draggedSlot.id);
@@ -177,7 +180,7 @@ export class ScheduleBoardComponent implements OnInit {
         const containerTop = rect.top;
         const containerHeight = rect.height;
 
-        const existingSlots = this.planningByDay[targetDay.toISOString().slice(0,10)].filter(s =>
+        const existingSlots = this.planningByDay[dayKey].filter(s =>
           s.id !== draggedSlot.id &&
           s.salle === newRoom
         );
@@ -215,13 +218,13 @@ export class ScheduleBoardComponent implements OnInit {
         draggedSlot.topPercent = newTop;
         console.log("le slot drag droppé",draggedSlot)
         // Si le slot a changé de date on le supprime de l'ancienne dans planningByDay
-        if(lastDate != null && this.planningByDay[targetDay.toISOString().slice(0,10)].find(s => s.id === draggedSlot.id)){
-          this.planningByDay[targetDay.toISOString().slice(0,10)].filter(s => s.id !== draggedSlot.id)
+        if(lastDate != null && dayKey !== lastDate){
+          this.planningByDay[lastDate] = this.planningByDay[lastDate].filter(s => s.id !== draggedSlot.id)
         }
 
         // Si le slot est pas encore dans planningByDay ou a été supprimé après avoir changé de date on l'y met
-        if (!this.planningByDay[targetDay.toISOString().slice(0,10)].find(s => s.id === draggedSlot.id)) {
-          this.planningByDay[targetDay.toISOString().slice(0,10)].push(draggedSlot);
+        if (!this.planningByDay[dayKey].find(s => s.id === draggedSlot.id)) {
+          this.planningByDay[dayKey].push(draggedSlot);
         }
         this.rebuildSlotsCache();
       }
@@ -231,8 +234,45 @@ export class ScheduleBoardComponent implements OnInit {
 
     this.slotUpdated.emit(this.planningByDay);
   }
+
+  onPlanningDrop(event: CdkDragDrop<any>) {
+    console.log('DROP DANS PLANNING');
+  
+    const planningEl = document.querySelector('.planning') as HTMLElement;
+  
+    if (!planningEl) {
+      console.warn('planning introuvable');
+      return;
+    }
+  
+    // Trouver le bloc (morning / afternoon) à partir du Y souris
+    const block = this.findBlockFromY(event.dropPoint.y);
+  
+    if (!block) {
+      console.warn('bloc introuvable');
+      return;
+    }
+  
+    this.onDrop(event, this.jourActuel, planningEl, block);
+  }
+  
   
   //Fonctions secondaires
+  findBlockFromY(mouseY: number): TimeBlock | null {
+    const rows = Array.from(
+      document.querySelectorAll<HTMLElement>('.time-row')
+    );
+  
+    for (let i = 0; i < rows.length; i++) {
+      const rect = rows[i].getBoundingClientRect();
+      if (mouseY >= rect.top && mouseY <= rect.bottom) {
+        return this.blocks[i];
+      }
+    }
+  
+    return null;
+  }
+  
   overlaps(aStart: Date, aEnd: Date, bStart: Date, bEnd: Date) {
     return aStart < bEnd && aEnd > bStart;
   }
@@ -306,24 +346,22 @@ export class ScheduleBoardComponent implements OnInit {
 
   xToRoom(mouseX: number): number | null {
     // Récupérer toutes les cellules de salle
-    const salleCells = document.querySelectorAll('.salle-cell');
+      const salleCells = Array.from(
+        document.querySelectorAll<HTMLElement>('.salle-cell')
+      );
     
-    for (let i = 0; i < salleCells.length / 2; i++) {
-      const cell = salleCells[i] as HTMLElement;
-      const rect = cell.getBoundingClientRect();
-      
-      // Vérifier si la souris est dans cette cellule
-      if (mouseX >= rect.left && mouseX <= rect.right) {
-        return this.sallesDispo[i] || null;
+      for (const cell of salleCells) {
+        const rect = cell.getBoundingClientRect();
+        if (mouseX >= rect.left && mouseX <= rect.right) {
+          return Number(cell.dataset['salle']) ?? null;
+        }
       }
-    }
     
-    return null;
+      return null;
   }
     
   rebuildSlotsCache() {
     this.slotsCache.clear();
-    console.log("planningbyday ds rebuildslotcache",this.planningByDay)
   
     for (const block of this.blocks) {
       this.slotsCache.set(
