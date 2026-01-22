@@ -19,6 +19,7 @@ import { AcademicYearService } from "../../services/academic-year.service";
 import { TrainingYear } from "../../models/training-year.model";
 import { Salle } from "../../models/salle.model";
 import { Soutenance } from "../../models/soutenance.model";
+import { OverlayModule, ConnectedPosition } from "@angular/cdk/overlay";
 
 import {
   addDays,
@@ -29,7 +30,7 @@ import { Planning } from "../../models/planning.model";
 
 @Component({
   selector: "app-modale-planning",
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, OverlayModule],
   templateUrl: "./modale-planning.component.html",
   styleUrls: ["./modale-planning.component.css"],
 })
@@ -71,7 +72,6 @@ export class ModalePlanningComponent implements OnInit {
     });
   }
 
-
   initForm() {
     this.planningForm = this.fb.group(
       {
@@ -95,7 +95,6 @@ export class ModalePlanningComponent implements OnInit {
       },
     );
   }
-
 
   dateOrderValidator: ValidatorFn = (form: AbstractControl) => {
     const debut = form.get("dateDebut")?.value;
@@ -125,11 +124,6 @@ export class ModalePlanningComponent implements OnInit {
     return fin > debut ? null : { apremOrder: true };
   };
 
-
-  toggleDropdown() {
-    this.dropdownOpen = !this.dropdownOpen;
-  }
-
   onSalleToggle(event: Event, salle: Salle) {
     const checked = (event.target as HTMLInputElement).checked;
     if (checked) {
@@ -144,7 +138,6 @@ export class ModalePlanningComponent implements OnInit {
       ? this.selectedSalles.map((s) => s.nomSalle).join(", ")
       : "-- Sélectionner --";
   }
-
 
   // Soumission du formulaire
   async onSubmit() {

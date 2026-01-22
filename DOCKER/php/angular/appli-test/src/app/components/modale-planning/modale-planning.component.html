@@ -148,21 +148,37 @@
         <!-- Salles -->
         <div class="input-wrapper">
           <label>Salles disponibles* :</label>
+
           <div class="multi-select">
-            <div class="select-box" (click)="toggleDropdown()">
+            <div
+              class="select-box"
+              cdkOverlayOrigin
+              #origin="cdkOverlayOrigin"
+              (click)="dropdownOpen = !dropdownOpen"
+            >
               {{ selectedSallesText }}
               <span class="arrow"></span>
             </div>
-            <div class="options" *ngIf="dropdownOpen">
-              <label *ngFor="let salle of salles" class="option">
-                <input
-                  type="checkbox"
-                  [checked]="selectedSalles.includes(salle)"
-                  (change)="onSalleToggle($event, salle)"
-                />
-                {{ salle.nomSalle }}
-              </label>
-            </div>
+
+            <ng-template
+              cdkConnectedOverlay
+              [cdkConnectedOverlayOrigin]="origin"
+              [cdkConnectedOverlayOpen]="dropdownOpen"
+              [cdkConnectedOverlayHasBackdrop]="true"
+              [cdkConnectedOverlayBackdropClass]="'transparent-backdrop'"
+              (backdropClick)="dropdownOpen = false"
+            >
+              <div class="options">
+                <label *ngFor="let salle of salles" class="option">
+                  <input
+                    type="checkbox"
+                    [checked]="selectedSalles.includes(salle)"
+                    (change)="onSalleToggle($event, salle)"
+                  />
+                  {{ salle.nomSalle }}
+                </label>
+              </div>
+            </ng-template>
           </div>
         </div>
 
