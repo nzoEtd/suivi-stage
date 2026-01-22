@@ -13,4 +13,5 @@ export interface SlotItem {
     entreprise: string;
     tuteur: string;
     salle: number | null;
+    // duree: number | null;
 }

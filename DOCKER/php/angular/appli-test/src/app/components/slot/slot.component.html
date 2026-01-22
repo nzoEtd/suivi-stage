@@ -3,7 +3,7 @@
     (click)="onSlotClick()">
     <!-- [style.height.%]="slot.heightPercent" -->
 
-    <b>{{ slot.dateDebut | date:'HH:mm' }} - {{ slot.dateFin | date:'HH:mm' }}</b>
+    <b>{{ slot.dateDebut ? (slot.dateDebut | date:'HH:mm') : '.. : ..' }} - {{ slot.dateFin ? (slot.dateFin | date:'HH:mm') : '.. : ..' }}</b>
     <p><b>Etudiant :</b> {{slot.etudiant}}</p>
     <p><b>Référent :</b> {{slot.referent}}</p>
     <p><b>Entreprise :</b> {{slot.entreprise}}</p>

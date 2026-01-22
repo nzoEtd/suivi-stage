@@ -8,7 +8,14 @@
     [cdkDropListConnectedTo]="[scheduleList]"
     (cdkDropListDropped)="onDrop($event)">
         @for (item of items; track item) {
-            <div class="example-box" cdkDrag>{{ item }}</div>
+            <div class="item"
+            cdkDrag 
+            [cdkDragData]="item">
+                <app-slot 
+                    [slot]="item"
+                    (editSlot)="onEditSlot($event)">
+                </app-slot>
+            </div>
         }
     </div>
     <div class="planning"
@@ -46,7 +53,7 @@
                 [style.height.px]="block.heightPercent * 3"
                 cdkDropList
                 #bloc
-                (cdkDropListDropped)="onDrop($event, bloc, jourActuel, salle, block)">
+                (cdkDropListDropped)="onDrop($event, bloc, jourActuel, block)">
                     @for(slot of slotsInBlock(block); track slot){
                         @if(slot.salle === salle && checkSameDay(slot.dateDebut!, jourActuel)){
                             <div class="slot"

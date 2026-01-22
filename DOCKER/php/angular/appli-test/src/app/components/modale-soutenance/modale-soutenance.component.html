@@ -5,7 +5,7 @@
                 x
             </button>
             <h1 class="modal-title">
-                Soutenance {{ soutenance.dateDebut ? formatDate(soutenance.dateDebut, false, true) : '..:..' }}-{{ soutenance.dateFin ? formatDate(soutenance.dateFin, false, true) : '..:..' }} S{{ soutenance.salle ? soutenance.salle : '...' }}
+                Soutenance {{ soutenance.dateDebut ? formatDate(soutenance.dateDebut, false, true) : '.. : ..' }}-{{ soutenance.dateFin ? formatDate(soutenance.dateFin, false, true) : '.. : ..' }} S{{ soutenance.salle ? soutenance.salle : '...' }}
             </h1>
         </div>
 
@@ -16,11 +16,11 @@
             <p><span>Tuteur d'entreprise :</span> {{ soutenance.tuteur }}</p>
             <p><span>Enseignant lecteur :</span> {{ soutenance.lecteur }}</p>
             <div class="line-wrapper">
-                <p><span>Heure début :</span> {{ soutenance.dateDebut ? formatDate(soutenance.dateDebut, false, true) : '..:..' }}</p>
-                <p><span>Heure fin :</span> {{ soutenance.dateFin ? formatDate(soutenance.dateFin, false, true) : '..:..' }}</p>
+                <p><span>Heure début :</span> {{ soutenance.dateDebut ? formatDate(soutenance.dateDebut, false, true) : '.. : ..' }}</p>
+                <p><span>Heure fin :</span> {{ soutenance.dateFin ? formatDate(soutenance.dateFin, false, true) : '.. : ..' }}</p>
             </div>
             <div class="line-wrapper">
-                <p><span>Jour :</span> {{ soutenance.dateDebut ? formatDate(soutenance.dateDebut, true, false) : '..:..' }}</p>
+                <p><span>Jour :</span> {{ soutenance.dateDebut ? formatDate(soutenance.dateDebut, true, false) : '.. / .. / ....' }}</p>
                 <p><span>Salle :</span> {{ soutenance.salle ? soutenance.salle : '...' }}</p>
             </div>
         </div>

@@ -233,17 +233,18 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   }
 
   //Fonctions drag and drop
-  onSlotUpdated(slot: SlotItem) {
-    console.log("nouveau slot ?",slot)
-    const dayKey = slot.dateDebut ? slot.dateDebut.toISOString().slice(0, 10) : "attente";
+  onSlotUpdated(planningByDay: Record<string, SlotItem[]>) {
+    console.log("nouveau planning ?",planningByDay)
+    // const dayKey = slot.dateDebut ? slot.dateDebut.toISOString().slice(0, 10) : "attente";
   
+    this.planningByDay = planningByDay;
     // retirer de l'ancien jour si nécessaire
-    for (const key in this.planningByDay) {
-      this.planningByDay[key] = this.planningByDay[key].filter(s => s.id !== slot.id);
-    }
+    // for (const key in this.planningByDay) {
+    //   this.planningByDay[key] = this.planningByDay[key].filter(s => s.id !== slot.id);
+    // }
   
-    // ajouter au bon jour
-    this.planningByDay[dayKey].push(slot);
+    // // ajouter au bon jour
+    // this.planningByDay[dayKey].push(slot);
   }
   
   getAllSlots(): SlotItem[] {

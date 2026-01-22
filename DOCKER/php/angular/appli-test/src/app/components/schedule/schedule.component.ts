@@ -82,6 +82,7 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
   idSoutenance?: number;
   slots: SlotItem[] = [];
   timeBlocks: TimeBlockConfig[] = [];
+  planningByDay: Record<string, SlotItem[]> = {};
 
   isExporting: boolean = false;
 
@@ -338,6 +339,11 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
         this.cdRef,
       );
       console.log("les slots ?", this.slots);
+      this.slots.forEach(slot => {
+        const dayKey = slot.dateDebut ? slot.dateDebut.toISOString().slice(0,10) : "attente"; // "YYYY-MM-DD"
+        if (!this.planningByDay[dayKey]) this.planningByDay[dayKey] = [];
+        this.planningByDay[dayKey].push(slot);
+      });
       //Recherche de toutes les salles réellement utilisées
       this.sallesAffiches = getAllSallesUsed(
         this.sallesDispo,

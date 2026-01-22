@@ -23,10 +23,10 @@ export class ScheduleBoardComponent implements OnInit {
   @Input() planningByDay: Record<string, SlotItem[]> = {};
 
   @Output() editSlot = new EventEmitter<SlotItem>();
-  @Output() slotUpdated = new EventEmitter<SlotItem>();
+  @Output() slotUpdated = new EventEmitter<Record<string, SlotItem[]>>();
 
   blocks: TimeBlock[] = [];
-  PAUSE_HEIGHT = 20;
+  PAUSE_HEIGHT = 15;
   isModalOpen: boolean = false;
 
   // Variables for drag and drop
@@ -34,6 +34,7 @@ export class ScheduleBoardComponent implements OnInit {
   items: SlotItem[] = [];
 
   async ngOnInit() {
+    console.log("planningbyday au tt début ds schedule-board", this.planningByDay)
       console.log("RECUP",this.slots,this.sallesDispo)
       const converted = this.timeBlocks.map((b: TimeBlockConfig) => {
       const startMin = this.toMinutes(b.start);
@@ -62,8 +63,9 @@ export class ScheduleBoardComponent implements OnInit {
     }));
 
     this.blocks.forEach((block) => {
-      this.slotsCache.set(block, this.calculateSlotsInBlock(block, this.slots));
+      this.slotsCache.set(block, this.calculateSlotsInBlock(block, this.planningByDay[this.jourActuel.toISOString().slice(0,10)]));
     });
+    console.log("planningbyday au début ds schedule-board", this.planningByDay)
   }
 
   toMinutes(str: string): number {
@@ -110,6 +112,8 @@ export class ScheduleBoardComponent implements OnInit {
   }
 
   slotsInBlock(block: TimeBlock): SlotItem[] {
+    console.log("dans slots in block")
+    this.rebuildSlotsCache();
     return this.slotsCache.get(block) || [];
   }
 
@@ -128,98 +132,104 @@ export class ScheduleBoardComponent implements OnInit {
     event: CdkDragDrop<any>,
     container?: HTMLElement,
     targetDay?: Date,
-    targetSalleId?: number,
     block?: TimeBlock
   ) {
-    console.log("salle : ",targetSalleId)
     const draggedSlot = event.item.data as SlotItem;
     console.log("slot dragué",draggedSlot)
+    console.log("jour droppé ? ", targetDay)
     
-    const duration = draggedSlot.dateFin!.getTime() - draggedSlot.dateDebut!.getTime();
+    let duration = draggedSlot.dateDebut && draggedSlot.dateFin ? draggedSlot.dateFin.getTime() - draggedSlot.dateDebut.getTime() : null;
+    const lastDate = draggedSlot.dateDebut ? draggedSlot.dateDebut.toISOString().slice(0,10) : null;
 
-    if (container && targetDay && targetSalleId && block) {
-      console.log("transfert dans zone planning")
-      // Le slot est drag dans la zone du planning
-      if(event.previousContainer !== event.container){
-        console.log("transfert dans zone planning depuis zone attente")
-        transferArrayItem(
-          event.previousContainer.data,
-          event.container.data,
-          event.previousIndex,
-          event.currentIndex,
-        );
+    if (container && targetDay && block) {
+      const rect = container.getBoundingClientRect();
+
+      // Nouvelle salle ?
+      const newRoom = this.xToRoom(event.dropPoint.x);
+      console.log("nouvelle salle ? ", newRoom)
+
+      if(newRoom === null){
+        //Le slot est drag dans la zone d'attente s'il n'y a aucune salle
+        console.log("transfert dans zone attente")
+        // draggedSlot.duree = duration;
+        draggedSlot.dateDebut = null;
+        draggedSlot.dateFin = null;
+        draggedSlot.salle = null;
+        this.items.push(draggedSlot);
+        console.log("zone attente : ", this.items)
+
+        //Enlever slot de planningByDay
+        for (const key in this.planningByDay) {
+          this.planningByDay[key] = this.planningByDay[key].filter(s => s.id !== draggedSlot.id);
+        }
+        console.log("new planning by day: ",this.planningByDay)
+
+        this.rebuildSlotsCache();
+      }
+      else{
+        // S'il y a une salle le slot est droppé dans la salle au bon endroit
+        console.log("transfert dans zone planning")
+        // duration == null ? duration = draggedSlot.duree : duration = duration;
 
         // Si slot était en liste d'attente on l'enlève
         this.items = this.items.filter(i => i.id !== draggedSlot.id);
-      }
-      const rect = container.getBoundingClientRect();
+        
+        const containerTop = rect.top;
+        const containerHeight = rect.height;
 
-      const containerTop = rect.top;
-      const containerHeight = rect.height;
-
-      const existingSlots = this.planningByDay[targetDay.toISOString().slice(0,10)].filter(s =>
-        s.id !== draggedSlot.id &&
-        s.salle === targetSalleId
-      );
-      console.log("slots existants : ", existingSlots)
+        const existingSlots = this.planningByDay[targetDay.toISOString().slice(0,10)].filter(s =>
+          s.id !== draggedSlot.id &&
+          s.salle === newRoom
+        );
+        console.log("slots existants : ", existingSlots)
+        
+        // Nouvelles dates et heures du slot (dateDebut, dateFin)
+        const [newStart, newBloc] = this.yToDate(
+          event.dropPoint.y,
+          containerTop,
+          containerHeight,
+          block.type,
+          this.jourActuel, 
+          duration! / 60000 //durée de la soutenance en minutes
+        );
+        console.log("new heure deb et new bloc",newStart, newBloc)
       
-      // Nouvelles dates et heures du slot (dateDebut, dateFin)
-      const [newStart, newBloc] = this.yToDate(
-        event.dropPoint.y,
-        containerTop,
-        containerHeight,
-        block.type,
-        this.jourActuel, 
-        duration / 60000 //durée de la soutenance en minutes
-      );
-      console.log("new heure deb et new bloc",newStart, newBloc)
-    
-      const newEnd = new Date(newStart.getTime() + duration);
+        const newEnd = new Date(newStart.getTime() + duration!);
 
-      // Nouvelle position du slot (topPercent)
-      const top = (newStart.getHours() * 60 + newStart.getMinutes()) - newBloc.startMin;
-      const newTop = (top / newBloc.duration) * 100;
-      console.log("newTop : ",newTop)
-    
-      // Vérification de la disponibilité du créneau choisit
-      if (!this.canPlaceSlot(newStart, newEnd, existingSlots)) {
-        // Le slot revient à sa place
-        console.log("la place est déjà prise")
-        return;
+        // Nouvelle position du slot (topPercent)
+        const top = (newStart.getHours() * 60 + newStart.getMinutes()) - newBloc.startMin;
+        const newTop = (top / newBloc.duration) * 100;
+        console.log("newTop : ",newTop)
+      
+        // Vérification de la disponibilité du créneau choisit
+        if (!this.canPlaceSlot(newStart, newEnd, existingSlots)) {
+          // Le slot revient à sa place
+          console.log("la place est déjà prise")
+          return;
+        }
+      
+        // Placement accepté
+        draggedSlot.dateDebut = newStart;
+        draggedSlot.dateFin = newEnd;
+        draggedSlot.salle = newRoom;
+        draggedSlot.topPercent = newTop;
+        console.log("le slot drag droppé",draggedSlot)
+        // Si le slot a changé de date on le supprime de l'ancienne dans planningByDay
+        if(lastDate != null && this.planningByDay[targetDay.toISOString().slice(0,10)].find(s => s.id === draggedSlot.id)){
+          this.planningByDay[targetDay.toISOString().slice(0,10)].filter(s => s.id !== draggedSlot.id)
+        }
+
+        // Si le slot est pas encore dans planningByDay ou a été supprimé après avoir changé de date on l'y met
+        if (!this.planningByDay[targetDay.toISOString().slice(0,10)].find(s => s.id === draggedSlot.id)) {
+          this.planningByDay[targetDay.toISOString().slice(0,10)].push(draggedSlot);
+        }
+        this.rebuildSlotsCache();
       }
-    
-      // Placement accepté
-      draggedSlot.dateDebut = newStart;
-      draggedSlot.dateFin = newEnd;
-      draggedSlot.salle = targetSalleId;
-      draggedSlot.topPercent = newTop;
-      console.log("le slot drag droppé",draggedSlot)
-      this.rebuildSlotsCache();
-    } else {
-      //Le slot est drag dans la zone d'attente
-      console.log("transfert dans zone attente")
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex,
-      );
-      draggedSlot.dateDebut = null;
-      draggedSlot.dateFin = null;
-      draggedSlot.salle = null;
-      this.items.push(draggedSlot);
-
-      //Enlever slot de planningByDay
-      for (const key in this.planningByDay) {
-        this.planningByDay[key] = this.planningByDay[key].filter(s => s.id !== draggedSlot.id);
-      }
-
-      this.rebuildSlotsCache();
     }
     console.log("liste d'items",this.items)
     console.log("liste planning by day",this.planningByDay)
 
-    this.slotUpdated.emit(draggedSlot);
+    this.slotUpdated.emit(this.planningByDay);
   }
   
   //Fonctions secondaires
@@ -293,14 +303,32 @@ export class ScheduleBoardComponent implements OnInit {
     d.setHours(h, m, 0, 0);
     return [d, timeBloc!];
   }
+
+  xToRoom(mouseX: number): number | null {
+    // Récupérer toutes les cellules de salle
+    const salleCells = document.querySelectorAll('.salle-cell');
+    
+    for (let i = 0; i < salleCells.length / 2; i++) {
+      const cell = salleCells[i] as HTMLElement;
+      const rect = cell.getBoundingClientRect();
+      
+      // Vérifier si la souris est dans cette cellule
+      if (mouseX >= rect.left && mouseX <= rect.right) {
+        return this.sallesDispo[i] || null;
+      }
+    }
+    
+    return null;
+  }
     
   rebuildSlotsCache() {
     this.slotsCache.clear();
+    console.log("planningbyday ds rebuildslotcache",this.planningByDay)
   
     for (const block of this.blocks) {
       this.slotsCache.set(
         block,
-        this.calculateSlotsInBlock(block, this.slots)
+        this.calculateSlotsInBlock(block, this.planningByDay[this.jourActuel.toISOString().slice(0,10)])
       );
     }
   }
