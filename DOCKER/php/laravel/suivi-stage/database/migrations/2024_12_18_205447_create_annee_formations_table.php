@@ -19,7 +19,7 @@ class CreateAnneeFormationsTable extends Migration
             $table->tinyIncrements('idAnneeFormation');
             
             // Attributs
-            $table->string('libelle',6);
+            $table->string('libelle',10);
         });
     }
 

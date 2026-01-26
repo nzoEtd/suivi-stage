@@ -19,6 +19,7 @@ use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\AffectationEnseignantController;
 use App\Http\Middleware\DispatchDataDescriptiveSheet;
 use App\Http\Controllers\AlgorithmeController;
+use App\Http\Controllers\AnneeFormationController;
 use App\Http\Controllers\EtudiantAnneeformAnneeunivController;
 use App\Http\Controllers\PlanningController;
 use App\Http\Controllers\SalleController;
@@ -139,4 +140,7 @@ Route::get('/etudiants-annee-formation/filter',[EtudiantAnneeformAnneeunivContro
 Route::delete('/etudiants-annee-formation',[EtudiantAnneeformAnneeunivController::class, 'destroy']);
 
 // Routes pour le Controller TDController
-Route::apiResource('tds', TDController::class);
+Route::resource('tds', TDController::class);
+
+// Routes pour le Controller TDController
+Route::resource('anneeForm', AnneeFormationController::class);
