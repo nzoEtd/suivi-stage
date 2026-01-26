@@ -23,6 +23,7 @@ use App\Http\Controllers\EtudiantAnneeformAnneeunivController;
 use App\Http\Controllers\PlanningController;
 use App\Http\Controllers\SalleController;
 use App\Http\Controllers\SoutenanceController;
+use App\Http\Controllers\TDController;
 
 /*
 |--------------------------------------------------------------------------
@@ -136,3 +137,6 @@ Route::get('/etudiants-annee-formation',[EtudiantAnneeformAnneeunivController::c
 Route::post('/etudiants-annee-formation',[EtudiantAnneeformAnneeunivController::class, 'store']);
 Route::get('/etudiants-annee-formation/filter',[EtudiantAnneeformAnneeunivController::class, 'filter']);
 Route::delete('/etudiants-annee-formation',[EtudiantAnneeformAnneeunivController::class, 'destroy']);
+
+// Routes pour le Controller TDController
+Route::apiResource('tds', TDController::class);
