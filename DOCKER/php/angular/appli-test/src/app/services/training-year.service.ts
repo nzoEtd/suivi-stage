@@ -20,7 +20,7 @@ export class TrainingYearService {
         params = params.set('fields', fields.join(','));
         }
 
-        return this.http.get<TrainingYear[]>(`${this.apiUrl}/api/anneeForm`, {params}).pipe(
+        return this.http.get<TrainingYear[]>(`${this.apiUrl}/api/annee-form`, {params}).pipe(
         tap(response => this.log(response)),
         catchError(error => this.handleError(error, null))
         );
@@ -35,7 +35,7 @@ export class TrainingYearService {
         params = params.set('fields', fields.join(','));
         }
 
-        return this.http.get<TrainingYear>(`${this.apiUrl}/api/anneeForm/${TrainingYearId}`, {params}).pipe(
+        return this.http.get<TrainingYear>(`${this.apiUrl}/api/annee-form/${TrainingYearId}`, {params}).pipe(
         tap(response => this.log(response)),
         catchError(error => this.handleError(error, null))
         );
@@ -48,7 +48,7 @@ export class TrainingYearService {
           headers: new HttpHeaders({ "Content-type": "application/json" }),
         };
     
-        return this.http.post<TrainingYear>(`${this.apiUrl}/api/anneeForm`, ty, httpOptions).pipe(
+        return this.http.post<TrainingYear>(`${this.apiUrl}/api/annee-form`, ty, httpOptions).pipe(
           tap((response) => this.log(response)),
           catchError((error) => this.handleError(error, null)),
         );
@@ -61,7 +61,7 @@ export class TrainingYearService {
         };
     
         return this.http
-          .put(`${this.apiUrl}/api/anneeForm/update/${ty.idAnneeFormation}`, ty, httpOptions)
+          .put(`${this.apiUrl}/api/annee-form/update/${ty.idAnneeFormation}`, ty, httpOptions)
           .pipe(
             tap((response) => this.log(response)),
             catchError((error) => this.handleError(error, null)),
@@ -70,7 +70,7 @@ export class TrainingYearService {
     
       //Supression d'une année de formation
       deleteTrainingYear(ty: TrainingYear): Observable<null> {
-        return this.http.delete(`${this.apiUrl}/api/anneeForm/delete/${ty.idAnneeFormation}`).pipe(
+        return this.http.delete(`${this.apiUrl}/api/annee-form/delete/${ty.idAnneeFormation}`).pipe(
           tap((response) => this.log(response)),
           catchError((error) => this.handleError(error, null)),
         );
