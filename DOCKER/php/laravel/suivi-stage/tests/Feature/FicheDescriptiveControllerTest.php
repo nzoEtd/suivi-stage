@@ -177,8 +177,8 @@ class FicheDescriptiveControllerTest extends TestCase
 
     public function test_store_methode_doit_retourner_une_erreur_500_car_un_probleme_est_survenue(){
         // Mock du modèle RechercheStage pour déclencher une exception
-        $this->mock(\App\Http\Controllers\FicheDescriptiveController::class, function ($mock) {
-            $mock->shouldReceive('store')->andThrow(new \Exception('Erreur simulée'));
+        $this->mock(FicheDescriptive::class, function ($mock) {
+            $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
         });
         
         $donnees = [
@@ -327,8 +327,8 @@ class FicheDescriptiveControllerTest extends TestCase
      */
     public function test_update_methode_doit_retourner_une_erreur_500_car_une_erreur_de_base_de_donnees_a_eu_lieu(){
         // Mock du modèle FicheDescriptive pour déclencher une exception
-        $this->partialMock(\App\Http\Controllers\FicheDescriptiveController::class, function ($mock) {
-            $mock->shouldReceive('update')->andThrow(new QueryException('',[],new \Exception('Erreur SQL')));
+         $this->mock(FicheDescriptive::class, function ($mock) {
+            $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
         });
         
         $donnees = [
@@ -422,8 +422,8 @@ class FicheDescriptiveControllerTest extends TestCase
      */
     public function test_update_methode_doit_retourner_une_erreur_500_car_un_probleme_est_survenu(){
         // Mock du modèle FicheDescriptive pour déclencher une exception
-        $this->partialMock(\App\Http\Controllers\FicheDescriptiveController::class, function ($mock) {
-            $mock->shouldReceive('update')->andThrow(new \Exception);
+        $this->mock(FicheDescriptive::class, function ($mock) {
+            $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
         });
         
         $donnees = [
@@ -677,8 +677,8 @@ class FicheDescriptiveControllerTest extends TestCase
      */
     public function test_show_methode_doit_retourner_une_erreur_500_si_une_erreur_survient(){
         // Mock du modèle FicheDescriptive pour déclencher une exception
-        $this->partialMock(\App\Http\Controllers\FicheDescriptiveController::class, function ($mock) {
-            $mock->shouldReceive('show')->andThrow(new \Exception);
+        $this->mock(FicheDescriptive::class, function ($mock) {
+            $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
         });
 
         $ficheDescriptive = FicheDescriptive::first();
@@ -733,8 +733,8 @@ class FicheDescriptiveControllerTest extends TestCase
     public function test_destroy_renvoie_une_erreur_generique_en_cas_d_exception()
     {
         // Mock du modèle FicheDescriptive pour déclencher une exception
-        $this->partialMock(\App\Http\Controllers\FicheDescriptiveController::class, function ($mock) {
-            $mock->shouldReceive('destroy')->andThrow(new \Exception);
+        $this->mock(FicheDescriptive::class, function ($mock) {
+            $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
         });
 
         $uneFicheDescriptive = FicheDescriptive::first();
