@@ -19,10 +19,13 @@ use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\AffectationEnseignantController;
 use App\Http\Middleware\DispatchDataDescriptiveSheet;
 use App\Http\Controllers\AlgorithmeController;
+use App\Http\Controllers\AnneeFormationController;
 use App\Http\Controllers\EtudiantAnneeformAnneeunivController;
+use App\Http\Controllers\EtudiantTdAnneeUnivController;
 use App\Http\Controllers\PlanningController;
 use App\Http\Controllers\SalleController;
 use App\Http\Controllers\SoutenanceController;
+use App\Http\Controllers\TDController;
 
 /*
 |--------------------------------------------------------------------------
@@ -136,3 +139,16 @@ Route::get('/etudiants-annee-formation',[EtudiantAnneeformAnneeunivController::c
 Route::post('/etudiants-annee-formation',[EtudiantAnneeformAnneeunivController::class, 'store']);
 Route::get('/etudiants-annee-formation/filter',[EtudiantAnneeformAnneeunivController::class, 'filter']);
 Route::delete('/etudiants-annee-formation',[EtudiantAnneeformAnneeunivController::class, 'destroy']);
+
+// Routes pour le Controller EtudiantTdAnneeUnivController
+Route::get('/etudiants-td-annee-univ',[EtudiantTdAnneeUnivController::class, 'index']);
+Route::post('/etudiants-td-annee-univ',[EtudiantTdAnneeUnivController::class, 'store']);
+Route::get('/etudiants-td-annee-univ/filter',[EtudiantTdAnneeUnivController::class, 'filter']);
+Route::delete('/etudiants-td-annee-univ',[EtudiantTdAnneeUnivController::class, 'destroy']);
+
+
+// Routes pour le Controller TDController
+Route::resource('tds', TDController::class);
+
+// Routes pour le Controller TDController
+Route::resource('annee-form', AnneeFormationController::class);

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { TrainingYear } from '../models/training-year.model';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { TrainingYear, TrainingYearCreate } from '../models/training-year.model';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, catchError, tap, of } from 'rxjs';
 
 @Injectable({
@@ -9,23 +9,10 @@ import { Observable, catchError, tap, of } from 'rxjs';
 })
 export class TrainingYearService {
     apiUrl = environment.apiUrl;
-    private readonly mockTrainingYear: TrainingYear[] = [
-        {
-            idAnneeFormation: 1,
-            libelle: 'BUT 1'
-        },
-        {
-            idAnneeFormation: 2,
-            libelle: 'BUT 2'
-        },
-        {
-            idAnneeFormation: 3,
-            libelle: 'BUT 3'
-        }
-    ];
 
     constructor(private http: HttpClient) {}
 
+    //Récupérer toutes les années de formation
     getTrainingYears(fields?: string[]): Observable<TrainingYear[]> {
         let params = new HttpParams();
 
@@ -33,15 +20,14 @@ export class TrainingYearService {
         params = params.set('fields', fields.join(','));
         }
 
-        /*
-        return this.http.get<TrainingYear[]>(`${this.apiUrl}/api/`, {params}).pipe(
+        return this.http.get<TrainingYear[]>(`${this.apiUrl}/api/annee-form`, {params}).pipe(
         tap(response => this.log(response)),
         catchError(error => this.handleError(error, null))
         );
-        */
-        return of(this.mockTrainingYear);
+
     }
 
+    // Selection de l'année de formation correspondant à l'id fourni
     getTrainingYearById(TrainingYearId: number, fields?: string[]): Observable<TrainingYear | undefined> {
         let params = new HttpParams();
 
@@ -49,14 +35,47 @@ export class TrainingYearService {
         params = params.set('fields', fields.join(','));
         }
 
-        /*
-        return this.http.get<TrainingYear>(`${this.apiUrl}/api/tds/${TDId}`, {params}).pipe(
+        return this.http.get<TrainingYear>(`${this.apiUrl}/api/annee-form/${TrainingYearId}`, {params}).pipe(
         tap(response => this.log(response)),
         catchError(error => this.handleError(error, null))
         );
-        */
-        return of(this.mockTrainingYear.find(td => td.idAnneeFormation === TrainingYearId));
     }
+    
+    
+      //Ajout d'une année de formation
+      addTrainingYear(ty: TrainingYearCreate): Observable<TrainingYear> {
+        const httpOptions = {
+          headers: new HttpHeaders({ "Content-type": "application/json" }),
+        };
+    
+        return this.http.post<TrainingYear>(`${this.apiUrl}/api/annee-form`, ty, httpOptions).pipe(
+          tap((response) => this.log(response)),
+          catchError((error) => this.handleError(error, null)),
+        );
+      }
+    
+      //Mise à jour d'une année de formation
+      updateTrainingYear(ty: TrainingYear): Observable<null> {
+        const httpOptions = {
+          headers: new HttpHeaders({ "Content-type": "application/json" }),
+        };
+    
+        return this.http
+          .put(`${this.apiUrl}/api/annee-form/update/${ty.idAnneeFormation}`, ty, httpOptions)
+          .pipe(
+            tap((response) => this.log(response)),
+            catchError((error) => this.handleError(error, null)),
+          );
+      }
+    
+      //Supression d'une année de formation
+      deleteTrainingYear(ty: TrainingYear): Observable<null> {
+        return this.http.delete(`${this.apiUrl}/api/annee-form/delete/${ty.idAnneeFormation}`).pipe(
+          tap((response) => this.log(response)),
+          catchError((error) => this.handleError(error, null)),
+        );
+      }
+
 
     //Log la réponse de l'API
     private log(response: any) {
