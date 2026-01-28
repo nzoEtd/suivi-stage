@@ -8,12 +8,12 @@
           Soutenance {{ formatDate(soutenance.dateDebut, 'HeureToStr') }}-{{ formatDate(soutenance.dateFin, 'HeureToStr') }} S{{ soutenance.salle }}
         </h1>
     </div>
-    @if (isSubmitting) {
+    @if (isSubmitting || !isDataLoaded) {
       <div class="loading-overlay">
         <app-loading></app-loading>
       </div>
     }
-    @if (!isSubmitting) {
+    @if (!isSubmitting && isDataLoaded) {
       <form (ngSubmit)="onSubmit()" 
         #soutenanceForm="ngForm"
         [class.disabled-form]="isSubmitting"
@@ -50,15 +50,17 @@
               <option [value]="soutenance.idLecteur" selected>
                 {{ soutenance.lecteur }}
               </option>
-              <option
-                *ngFor="let enseignantLecteur of enseignantsLecteurs"
-                [value]="enseignantLecteur.idPersonnel"
-              >
-                {{ enseignantLecteur.prenom }} {{ enseignantLecteur.nom }}
-              </option>
+              @if (enseignantsLecteurs.length > 0) {
+                <option
+                  *ngFor="let enseignantLecteur of enseignantsLecteurs"
+                  [value]="enseignantLecteur.idPersonnel"
+                >
+                  {{ enseignantLecteur.prenom?.[0] }}. {{ enseignantLecteur.nom }}
+                </option>
+              }
             </select>
           }
-          @else {
+          @if (!editMode) {
             <input type="text" name="lecteur" id="lecteur" [value]="soutenance.lecteur" [disabled]="!editMode">
           }
 
@@ -67,18 +69,18 @@
         <div class="line-wrapper">
           <div class="input-wrapper">
             <label for="heureDebut">Heure début :</label>
-            <input type="time" name="heureDebut" id="heureDebut" [(ngModel)]="newSoutenance.heureDebut" [disabled]="!editMode" [value]="formatDate(soutenance.dateDebut, 'Heure')">
+            <input type="time" name="heureDebut" id="heureDebut" [(ngModel)]="newSoutenance.heureDebut" [disabled]="!editMode" [value]="heureDebut">
           </div>
           <div class="input-wrapper">
             <label for="heureFin">Heure fin :</label>
-            <input type="time" name="heureFin" id="heureFin" [(ngModel)]="newSoutenance.heureFin" [disabled]="!editMode" [value]="formatDate(soutenance.dateFin, 'Heure')">
+            <input type="time" name="heureFin" id="heureFin" [(ngModel)]="newSoutenance.heureFin" [disabled]="!editMode" [value]="heureFin">
           </div>
         </div>
         <!--Jour et salle-->
         <div class="line-wrapper">
           <div class="input-wrapper">
             <label for="jour">Jour :</label>
-            <input type="date" name="jour" id="jour" [(ngModel)]="newDate" (ngModelChange)="onJourChange($event)" [disabled]="!editMode" [value]="formatDate(soutenance.dateDebut, 'Date')">
+            <input type="date" name="jour" id="jour" [(ngModel)]="newDate" (ngModelChange)="onJourChange($event)" [disabled]="!editMode" [value]="dateSoutenance">
           </div>
           <div class="input-wrapper">
             <label for="salle">Salle :</label>
@@ -96,10 +98,10 @@
                 </option>
                 <option
                   *ngFor="let salle of sallesDispo"
-                  [value]="salle.nomSalle"
+                  [value]="salle"
                   [disabled]="!editMode"
                 >
-                  {{ salle.nomSalle.toString() }}
+                  {{ salle }}
                 </option>
               </select>
             }

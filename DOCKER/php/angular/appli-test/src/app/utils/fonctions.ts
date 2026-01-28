@@ -74,7 +74,8 @@ export async function convertSoutenancesToSlots(soutenances: Soutenance[], allSt
         entreprise: company ? company.raisonSociale! : "Pas d'entreprise",
         tuteur: tutor ? `${tutor.nom} ${tutor.prenom}` : "Tuteur d'entreprise inconnu",
         salle: s.nomSalle!,
-        idPlanning: s.idPlanning!
+        idPlanning: s.idPlanning!,
+        allStaff: allStaff
       } ;
   });
 }

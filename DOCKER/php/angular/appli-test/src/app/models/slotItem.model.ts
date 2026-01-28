@@ -1,3 +1,4 @@
+import { Staff } from "./staff.model";
 
 export interface SlotItem {
     id: number;
@@ -15,4 +16,5 @@ export interface SlotItem {
     tuteur: string;
     salle: number;
     idPlanning: number;
+    allStaff: Staff[];
 }
