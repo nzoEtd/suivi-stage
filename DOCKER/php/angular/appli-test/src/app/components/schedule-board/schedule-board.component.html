@@ -1,5 +1,7 @@
 <div class="add-update-schedule" CdkDropListGroup>
     <div class="slot-box"
+    [style.border-color]="onlyDisplay ? 'white' : '#0A63A4'"
+    [style.width]="onlyDisplay ? '0px' : '200px'"
     cdkDropList
     #waitingList="cdkDropList"
     [cdkDropListData]="items"
@@ -7,7 +9,6 @@
     [cdkDropListDisabled]="onlyDisplay"
     [cdkDropListConnectedTo]="[scheduleList]"
     (cdkDropListDropped)="onPlanningDrop($event)">
-    <!-- (cdkDropListDropped)="zoneOut($event, jourActuel)" -->
         @for (item of items; track item) {
             <div class="item"
             cdkDrag 
@@ -53,10 +54,6 @@
                 <div class="salle-cell" 
                 [attr.data-salle]="salle"
                 [style.height.px]="block.heightPercent * 3">
-                <!-- cdkDropList
-                #bloc
-                (cdkDropListDropped)="onDrop($event, jourActuel, bloc, block)" -->
-                <!-- [cdkDropListData]="planningByDay" -->
                     @for(slot of slotsInBlock(block); track slot){
                         @if(slot.salle === salle && checkSameDay(slot.dateDebut!, jourActuel)){
                             <div class="slot"

@@ -12,9 +12,8 @@
 }
 
 .slot-box {
-    border: 2px dashed #0A63A4;
+    border: 2px dashed;
     border-radius: 7px;
-    width: 200px; 
     flex-shrink: 0; 
     margin-left: 4px;
     display: flex;
