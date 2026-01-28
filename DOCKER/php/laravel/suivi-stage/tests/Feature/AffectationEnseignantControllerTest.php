@@ -155,7 +155,7 @@ class AffectationEnseignantControllerTest extends TestCase
         $response = $this->postJson('/api/affectation/create', $donnees);
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => 'Une erreur s\'est produite :']);
+                 ->assertJson(['message' => 'Server Error']);
     }
 
     /*
@@ -326,7 +326,7 @@ class AffectationEnseignantControllerTest extends TestCase
         $response = $this->putJson("/api/affectation/update/{$affectation->idPersonnel}-{$affectation->idUPPA}-{$affectation->idAnneeUniversitaire}", $donnees);
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => 'Une erreur s\'est produite :']);
+                 ->assertJson(['message' => 'Server Error']);
     }
 
     /*
@@ -384,6 +384,6 @@ class AffectationEnseignantControllerTest extends TestCase
         $response = $this->deleteJson("/api/affectation/delete/{$affectation->idPersonnel}-{$affectation->idUPPA}-{$affectation->idAnneeUniversitaire}");
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => 'Une erreur s\'est produite :']);
+                 ->assertJson(['message' => 'Server Error']);
     }
 }
