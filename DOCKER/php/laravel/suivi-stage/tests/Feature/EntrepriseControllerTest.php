@@ -124,11 +124,8 @@ class EntrepriseControllerTest extends TestCase
     public function test_store_renvoie_une_erreur_de_base_de_donnees()
     {
         // Mock du modèle RechercheStage pour déclencher une exception
-        $this->mock(\App\Http\Controllers\EntrepriseController::class, function ($mock) {
-            $mock->shouldReceive('store')->andThrow(new \Illuminate\Database\QueryException('Erreur simulée',
-            [],
-            new \Exception('Erreur simulée')
-            ));
+        $this->mock(Entreprise::class, function ($mock) {
+            $mock->shouldReceive('store')->andThrow(new \Exception('Erreur simulée'));
         });
 
         $donnees = [
@@ -200,7 +197,7 @@ class EntrepriseControllerTest extends TestCase
     public function test_show_retourne_une_erreur_en_cas_d_exception()
     {
         // Mock du modèle ENTREPRISE pour déclencher une exception
-        $this->mock(\App\Http\Controllers\EntrepriseController::class, function ($mock) {
+        $this->mock(Entreprise::class, function ($mock) {
             $mock->shouldReceive('show')->andThrow(new \Exception('Erreur simulée'));
         });
 
