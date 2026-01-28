@@ -5,6 +5,8 @@ import { MatGridListModule } from "@angular/material/grid-list";
 import { SlotItem } from "../../models/slotItem.model";
 import { TimeBlock, TimeBlockConfig } from "../../models/timeBlock.model";
 import { isSameDay } from "../../utils/timeManagement";
+import { ToastrService } from 'ngx-toastr';
+import { inject } from '@angular/core';
 import { CdkDrag,   CdkDragDrop,   CdkDragPlaceholder, CdkDropList, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
@@ -23,7 +25,9 @@ export class ScheduleBoardComponent implements OnInit {
   @Input() planningByDay: Record<string, SlotItem[]> = {};
 
   @Output() editSlot = new EventEmitter<SlotItem>();
-  @Output() slotUpdated = new EventEmitter<Record<string, SlotItem[]>>();
+  @Output() slotUpdated = new EventEmitter<{planningByDay:Record<string, SlotItem[]>, items:SlotItem[]}>();
+
+  toastr = inject(ToastrService);
 
   blocks: TimeBlock[] = [];
   PAUSE_HEIGHT = 15;
@@ -32,6 +36,7 @@ export class ScheduleBoardComponent implements OnInit {
   // Variables for drag and drop
   private slotsCache = new Map<TimeBlock, SlotItem[]>();
   items: SlotItem[] = [];
+  dropError: string[] = [];
 
   async ngOnInit() {
     console.log("planningbyday au tt début ds schedule-board", this.planningByDay)
@@ -141,6 +146,14 @@ export class ScheduleBoardComponent implements OnInit {
     this.planningByDay[dayKey] ??= [];
     console.log("slot dragué",draggedSlot)
     console.log("jour droppé ? ", targetDay)
+
+    const prevState = {
+      dateDebut: draggedSlot.dateDebut,
+      dateFin: draggedSlot.dateFin,
+      salle: draggedSlot.salle,
+      topPercent: draggedSlot.topPercent,
+      heightPercent: draggedSlot.heightPercent
+    };
     
     let duration = draggedSlot.dateDebut && draggedSlot.dateFin ? draggedSlot.dateFin.getTime() - draggedSlot.dateDebut.getTime() : null;
     const lastDate = draggedSlot.dateDebut ? draggedSlot.dateDebut.toISOString().slice(0,10) : null;
@@ -180,12 +193,6 @@ export class ScheduleBoardComponent implements OnInit {
         
         const containerTop = rect.top;
         const containerHeight = rect.height;
-
-        const existingSlots = this.planningByDay[dayKey].filter(s =>
-          s.id !== draggedSlot.id &&
-          s.salle === newRoom
-        );
-        console.log("slots existants : ", existingSlots)
         
         // Nouvelles dates et heures du slot (dateDebut, dateFin)
         const [newStart, newBloc] = this.yToDate(
@@ -204,11 +211,30 @@ export class ScheduleBoardComponent implements OnInit {
         const top = (newStart.getHours() * 60 + newStart.getMinutes()) - newBloc.startMin;
         const newTop = (top / newBloc.duration) * 100;
         console.log("newTop : ",newTop)
+
+        const existingSlots = this.planningByDay[dayKey].filter(s =>
+          s.id !== draggedSlot.id &&
+          (s.salle === newRoom ||
+          (s.dateDebut! < newEnd && s.dateFin! > newStart))
+        );
+        console.log("slots existants : ", existingSlots)
       
-        // Vérification de la disponibilité du créneau choisit
-        if (!this.canPlaceSlot(newStart, newEnd, existingSlots)) {
+        // Vérification de la disponibilité du créneau choisit et de la disponibilité des profs
+        if (!this.canPlaceSlot(newStart, newEnd, draggedSlot.referent, draggedSlot.lecteur, newRoom, existingSlots)) {
+          console.log("erreur de drop ?", this.dropError)
           // Le slot revient à sa place
-          console.log("la place est déjà prise", existingSlots)
+          this.dropError.forEach(e => {
+            this.toastr.error(e, 'Impossible de placer la soutenance.');
+          });
+
+          //Forcer le slot à se remettre à sa place
+          draggedSlot.dateDebut = prevState.dateDebut;
+          draggedSlot.dateFin = prevState.dateFin;
+          draggedSlot.salle = prevState.salle;
+          draggedSlot.topPercent = prevState.topPercent;
+          draggedSlot.heightPercent = prevState.heightPercent;
+
+          this.rebuildSlotsCache();
           return;
         }
 
@@ -236,7 +262,9 @@ export class ScheduleBoardComponent implements OnInit {
     console.log("liste d'items",this.items)
     console.log("liste planning by day",this.planningByDay)
 
-    this.slotUpdated.emit(this.planningByDay);
+    this.slotUpdated.emit({
+      planningByDay: this.planningByDay, 
+      items: this.items});
   }
 
   onPlanningDrop(event: CdkDragDrop<any>) {
@@ -280,33 +308,54 @@ export class ScheduleBoardComponent implements OnInit {
   
     return null;
   }
-  // findBlockFromY(mouseY: number): TimeBlock | null {
-  //   const rows = Array.from(
-  //     document.querySelectorAll<HTMLElement>('.time-row')
-  //   );
   
-  //   for (let i = 0; i < rows.length; i++) {
-  //     const rect = rows[i].getBoundingClientRect();
-  //     if (mouseY >= rect.top && mouseY <= rect.bottom) {
-  //       return this.blocks[i];
-  //     }
-  //   }
-  
-  //   return null;
-  // }
-  
-  overlaps(aStart: Date, aEnd: Date, bStart: Date, bEnd: Date) {
-    return aStart < bEnd && aEnd > bStart;
+  overlaps(aStart: Date, aEnd: Date, aSalle: number, bStart: Date, bEnd: Date, bStudent: string, bSalle: number) {
+    const hasOverlap = aStart < bEnd && aEnd > bStart && aSalle === bSalle;
+    if(hasOverlap) {
+      this.dropError.push(`La soutenance de ${bStudent} est déjà sur ce créneau dans la salle ${bSalle}.`);
+    }
+    return hasOverlap;
+  }
+
+  teachersOk(aReferent: string, aLecteur: string, aSalle: number, bReferent: string, bLecteur: string, bSalle: number) {
+    if (aSalle === bSalle) {
+      return true;
+    }
+
+    const referentOccupe = aReferent == bReferent || aReferent == bLecteur;
+    const lecteurOccupe = aLecteur == bReferent || aLecteur == bLecteur;
+    if(referentOccupe){
+      const erreurReferent = `${aReferent} n'est pas disponible pour ce créneau (soutenance en salle ${bSalle}).`;
+      if (!this.dropError.includes(erreurReferent)) {
+        this.dropError.push(erreurReferent);
+      }
+    }
+    if(lecteurOccupe){
+      const erreurLecteur = `${aLecteur} n'est pas disponible pour ce créneau (soutenance en salle ${bSalle}).`;
+      if (!this.dropError.includes(erreurLecteur)) {
+        this.dropError.push(erreurLecteur);
+      }
+    }
+    return !referentOccupe && !lecteurOccupe;
   }
   
   canPlaceSlot(
     start: Date,
     end: Date,
+    referent: string,
+    lecteur: string,
+    salle: number,
     existingSlots: SlotItem[]
   ): boolean {
-    return !existingSlots.some(s =>
-      this.overlaps(start, end, s.dateDebut!, s.dateFin!)
-    );
+    this.dropError = [];
+    const hasOverlap = existingSlots.some(s => this.overlaps(start, end, salle, s.dateDebut!, s.dateFin!, s.etudiant, s.salle!));
+    console.log("slot plaçable ?",hasOverlap)
+    if(hasOverlap){
+      return false;
+    }
+    const teacherAvailable = existingSlots.every(s => this.teachersOk(referent, lecteur, salle, s.referent, s.lecteur, s.salle!));
+    console.log(" profs bons ?", teacherAvailable)
+    return teacherAvailable;
   }
   
   yToDate(
@@ -395,4 +444,6 @@ export class ScheduleBoardComponent implements OnInit {
       );
     }
   }
+
+  neverEnter = () => false;
 }

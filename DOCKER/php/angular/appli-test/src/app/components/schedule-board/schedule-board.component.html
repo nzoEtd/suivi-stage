@@ -24,7 +24,10 @@
     cdkDropList
     #scheduleList="cdkDropList"
     [cdkDropListConnectedTo]="[waitingList]"
-    (cdkDropListDropped)="onPlanningDrop($event)">
+    (cdkDropListDropped)="onPlanningDrop($event)"
+    [cdkDropListSortingDisabled]="true"
+    [cdkDropListData]="[]"
+    [cdkDropListEnterPredicate]="neverEnter">
         <div class="header-planning">
             <div class="hours-header"></div>
             @for(salle of sallesDispo; track salle){
@@ -62,16 +65,13 @@
                             cdkDrag 
                             [cdkDragDisabled]="onlyDisplay"
                             [cdkDragData]="slot">
-                                <!-- <div class="custom-placeholder" *cdkDragPlaceholder></div> -->
-                                <!-- <ng-template cdkDragPreview>
-                                    <div class="slot preview"
-                                    [style.height.%]="slot.heightPercent"> -->
-                                        <app-slot 
-                                            [slot]="slot"
-                                            (editSlot)="onEditSlot($event)">
-                                        </app-slot>
-                                    <!-- </div>
-                                </ng-template> -->
+                                <ng-template cdkDragPlaceholder>
+                                    <div class="waiting-placeholder"></div>
+                                </ng-template>
+                                <app-slot 
+                                    [slot]="slot"
+                                    (editSlot)="onEditSlot($event)">
+                                </app-slot>
                             </div>
                         }
                         <div class="time-grid">

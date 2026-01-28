@@ -21,6 +21,8 @@ import { Subject, switchMap, takeUntil } from "rxjs";
 import { SoutenanceService } from "../../services/soutenance.service";
 import { formatDateToYYYYMMDD } from "../../utils/timeManagement";
 import { DataStoreService } from "../../services/data.service";
+import { ToastrService } from 'ngx-toastr';
+import { inject } from '@angular/core';
 import { CdkDrag, CdkDropList, CdkDropListGroup, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
@@ -36,6 +38,7 @@ import { CdkDrag, CdkDropList, CdkDropListGroup, CdkDragDrop, moveItemInArray, t
 })
 export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   private destroy$ = new Subject<void>();
+  toastr = inject(ToastrService);
 
   @Input() isEditMode!: Boolean;
   @Input() planning: Planning | PlanningCreate | undefined;
@@ -56,6 +59,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
 
   //Variables drag and drop
   planningByDay: Record<string, SlotItem[]> = {};
+  items: SlotItem[] = [];
   
   constructor(
     private readonly planningService: PlanningService,
@@ -160,6 +164,12 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     console.log("?????? ",this.isValidating)
     console.log("Validation du planning");
     this.finalSlots = this.convertSlotsToSoutenances();
+    console.log('les slots finaux ',this.finalSlots, this.finalSlots.length)
+    if(this.finalSlots.length == 0) {
+      this.toastr.error("Toutes les soutenances ne sont pas placées", "Impossible d'enregistrer le planning.");
+      this.isValidating = false;
+      return;
+    }
     if (this.isEditMode) {
       // UPDATE
       console.log("UPDATING Planning:", this.planning);
@@ -235,18 +245,12 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   }
 
   //Fonctions drag and drop
-  onSlotUpdated(planningByDay: Record<string, SlotItem[]>) {
-    console.log("nouveau planning ?",planningByDay)
-    // const dayKey = slot.dateDebut ? slot.dateDebut.toISOString().slice(0, 10) : "attente";
+  onSlotUpdated(event: {planningByDay: Record<string, SlotItem[]>, items: SlotItem[]}) {
+    console.log("nouveau planning ?",event.planningByDay)
+    console.log("des items non placés ?", event.items)
   
-    this.planningByDay = planningByDay;
-    // retirer de l'ancien jour si nécessaire
-    // for (const key in this.planningByDay) {
-    //   this.planningByDay[key] = this.planningByDay[key].filter(s => s.id !== slot.id);
-    // }
-  
-    // // ajouter au bon jour
-    // this.planningByDay[dayKey].push(slot);
+    this.items = event.items;
+    this.planningByDay = event.planningByDay;
   }
   
   getAllSlots(): SlotItem[] {
@@ -258,23 +262,24 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     const slots = this.getAllSlots();
     const planning = this.planning as Planning;
     const idPlanning = planning.idPlanning;
+    console.log("les slots items dans items à la fin : ", this.items)
 
-    slots.forEach(s => {
-      s.dateDebut && s.dateFin ?
-      soutenances.push({
-        idSoutenance: s.id,
-        date: s.dateDebut.toISOString().slice(0, 10),
-        nomSalle: s.salle,
-        heureDebut: s.dateDebut.getHours().toString().padStart(2, '0') + ":" + s.dateDebut.getMinutes().toString().padStart(2, '0'),
-        heureFin: s.dateFin.getHours().toString().padStart(2, '0') + ":" + s.dateFin.getMinutes().toString().padStart(2, '0'),
-        idUPPA: s.idUPPA,
-        idLecteur: s.idLecteur,
-        idPlanning: idPlanning
+    if(this.items.length == 0){
+      slots.forEach(s => {
+        soutenances.push({
+          idSoutenance: s.id,
+          date: s.dateDebut!.toISOString().slice(0, 10),
+          nomSalle: s.salle,
+          heureDebut: s.dateDebut!.getHours().toString().padStart(2, '0') + ":" + s.dateDebut!.getMinutes().toString().padStart(2, '0'),
+          heureFin: s.dateFin!.getHours().toString().padStart(2, '0') + ":" + s.dateFin!.getMinutes().toString().padStart(2, '0'),
+          idUPPA: s.idUPPA,
+          idLecteur: s.idLecteur,
+          idPlanning: idPlanning
+        });
       })
-      : console.log("attention tous les slots sont pas placés.")
-      return [];
-    })
 
-    return soutenances;
+      return soutenances;
+    }
+    return [];
   }
 }
