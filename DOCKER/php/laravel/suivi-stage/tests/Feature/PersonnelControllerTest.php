@@ -9,17 +9,7 @@ use App\Models\Personnel;
 
 class PersonnelControllerTest extends TestCase
 {
-    /**
-     * Recréer les tables avec ces seeders
-     * 
-     * @return void
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->artisan('migrate:fresh');
-        $this->artisan('db:seed');
-    }
+    use RefreshDatabase;
 
     /*
     ================================
