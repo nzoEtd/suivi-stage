@@ -34,6 +34,7 @@ jobs:
           touch .env
           echo "APP_NAME=Laravel" >> .env
           echo "APP_ENV=development" >> .env
+          echo "APP_KEY=" >> .env 
           echo "DB_CONNECTION=mysql" >> .env
           echo "DB_HOST=127.0.0.1" >> .env
           echo "DB_PORT=3306" >> .env
