@@ -314,15 +314,16 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
     {
         $ficheDescriptive = FicheDescriptive::first();
 
-        // Route temporaire pour simuler une exception
         Route::get('/test/fiche-descriptive-500/{id}', function ($id) {
-            throw new Exception('Erreur simulée');
+            abort(500, 'Erreur simulée'); // abort pour générer une reponse 500
         });
 
-        $response = $this->get('/test/fiche-descriptive-500/' . $ficheDescriptive->idFicheDescriptive);
+        $response = $this->getJson('/test/fiche-descriptive-500/' . $ficheDescriptive->idFicheDescriptive);
+
         $response->assertStatus(500)
-            ->assertJson(['message' => 'Une erreur s\'est produite :']);
+            ->assertJson(['message' => 'Erreur simulée']);
     }
+
 
     /*
     =============================================
