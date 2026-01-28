@@ -36,9 +36,10 @@ export class ScheduleBoardComponent implements OnInit {
   async ngOnInit() {
     console.log("planningbyday au tt début ds schedule-board", this.planningByDay)
       console.log("RECUP",this.slots,this.sallesDispo)
+      // Toujours commencer les blocs à une heure 'pile' donc sans minutes
       const converted = this.timeBlocks.map((b: TimeBlockConfig) => {
       const startMin = this.toMinutes(b.start);
-      const endMin = this.toMinutes(b.end);
+      const endMin = b.end.split(":").map(Number)[1] == 0 ? this.toMinutes(b.end) : this.toMinutes(b.end) + 60;
       const duration = endMin - startMin;
 
       return {
@@ -61,6 +62,7 @@ export class ScheduleBoardComponent implements OnInit {
       ...b,
       heightPercent: (b.duration / totalMinutes) * 100,
     }));
+    console.log("les blocs:",this.blocks)
 
     this.blocks.forEach((block) => {
       this.slotsCache.set(block, this.calculateSlotsInBlock(block, this.planningByDay[this.jourActuel.toISOString().slice(0,10)]));
@@ -70,7 +72,7 @@ export class ScheduleBoardComponent implements OnInit {
 
   toMinutes(str: string): number {
     const [h, m] = str.split(":").map(Number);
-    return h * 60 + m;
+    return h * 60 /*+ m*/;
   }
 
   getHours(startMin: number, endMin: number): string[] {
@@ -87,7 +89,7 @@ export class ScheduleBoardComponent implements OnInit {
   }
 
   getQuarterHourMarks(block: TimeBlock): number {
-    // Nombre de quarts d'heure dans le bloc (duration en minutes / 15)
+    // Nombre de quarts d'heure dans le bloc (durée du bloc en minutes / 15)
     return Math.floor(block.duration / 15);
   }
 
@@ -95,7 +97,8 @@ export class ScheduleBoardComponent implements OnInit {
     return slots
     .filter(slot => {
         const startMin = slot.dateDebut!.getHours() * 60 + slot.dateDebut!.getMinutes();
-        return startMin >= block.startMin && startMin < block.endMin;
+        const endMin = slot.dateFin!.getHours() * 60 + slot.dateFin!.getMinutes();
+        return startMin >= block.startMin && endMin <= block.endMin;
     })
     .map((slot) => {
       const startMin = slot.dateDebut!.getHours() * 60 + slot.dateDebut!.getMinutes();
@@ -144,6 +147,7 @@ export class ScheduleBoardComponent implements OnInit {
 
     if (container && targetDay && block) {
       const rect = container.getBoundingClientRect();
+      console.log("rect ?", rect)
 
       // Recherche de la salle choisie (retourne null si le slot a été laché en dehors du planning)
       const newRoom = this.xToRoom(event.dropPoint.x);
@@ -173,9 +177,6 @@ export class ScheduleBoardComponent implements OnInit {
         // S'il y a une salle le slot est droppé dans la salle au bon endroit
         console.log("transfert dans zone planning")
         duration == null ? duration = draggedSlot.duree : duration = duration;
-
-        // Si slot était en liste d'attente on l'enlève
-        this.items = this.items.filter(i => i.id !== draggedSlot.id);
         
         const containerTop = rect.top;
         const containerHeight = rect.height;
@@ -207,9 +208,12 @@ export class ScheduleBoardComponent implements OnInit {
         // Vérification de la disponibilité du créneau choisit
         if (!this.canPlaceSlot(newStart, newEnd, existingSlots)) {
           // Le slot revient à sa place
-          console.log("la place est déjà prise")
+          console.log("la place est déjà prise", existingSlots)
           return;
         }
+
+        // Si slot peut être posé et qu'il était en liste d'attente on l'enlève
+        this.items = this.items.filter(i => i.id !== draggedSlot.id);
       
         // Placement accepté
         draggedSlot.dateDebut = newStart;
@@ -245,20 +249,21 @@ export class ScheduleBoardComponent implements OnInit {
       return;
     }
   
-    // Trouver le bloc (morning / afternoon) à partir du Y souris
-    const block = this.findBlockFromY(event.dropPoint.y);
-  
-    if (!block) {
-      console.warn('bloc introuvable');
+    // Trouver le bloc (morning / afternoon) et le timerow à partir du Y souris
+    const result = this.findBlockAndRowFromY(event.dropPoint.y);
+
+    if (!result) {
+      console.warn('bloc ou row introuvable');
       return;
     }
+
+    const { block, timeRow } = result;
   
-    this.onDrop(event, this.jourActuel, planningEl, block);
+    this.onDrop(event, this.jourActuel, timeRow, block);
   }
   
-  
   //Fonctions secondaires
-  findBlockFromY(mouseY: number): TimeBlock | null {
+  findBlockAndRowFromY(mouseY: number): { block: TimeBlock; timeRow: HTMLElement } | null {
     const rows = Array.from(
       document.querySelectorAll<HTMLElement>('.time-row')
     );
@@ -266,12 +271,29 @@ export class ScheduleBoardComponent implements OnInit {
     for (let i = 0; i < rows.length; i++) {
       const rect = rows[i].getBoundingClientRect();
       if (mouseY >= rect.top && mouseY <= rect.bottom) {
-        return this.blocks[i];
+        return {
+          block: this.blocks[i],
+          timeRow: rows[i]
+        };
       }
     }
   
     return null;
   }
+  // findBlockFromY(mouseY: number): TimeBlock | null {
+  //   const rows = Array.from(
+  //     document.querySelectorAll<HTMLElement>('.time-row')
+  //   );
+  
+  //   for (let i = 0; i < rows.length; i++) {
+  //     const rect = rows[i].getBoundingClientRect();
+  //     if (mouseY >= rect.top && mouseY <= rect.bottom) {
+  //       return this.blocks[i];
+  //     }
+  //   }
+  
+  //   return null;
+  // }
   
   overlaps(aStart: Date, aEnd: Date, bStart: Date, bEnd: Date) {
     return aStart < bEnd && aEnd > bStart;
@@ -302,15 +324,18 @@ export class ScheduleBoardComponent implements OnInit {
   
     const { start, end } = blocConfig[bloc];
     let timeBloc = this.blocks.find(b => b.type == bloc);
-    const ratio = (mouseY - containerTop) / containerHeight;
+    const relativeY = mouseY - containerTop;
+    console.log("le timeblock, le top et height container et la souris : ", timeBloc, containerTop, containerHeight, mouseY, relativeY)
+    const ratio = relativeY / containerHeight;
     const hour = start! + ratio * (end! - start!);
   
     let h = Math.floor(hour);
+    console.log("h: ", h, hour)
     // Arrondissement à 5min (drop possible toutes les 5 minutes)
     let m = (Math.round((hour - h) * 60 / 5) * 5) % 60;
     console.log("debut fin  ytodate: ", start, end)
     console.log("heure ytodate: ", h, m, duree)
-
+    console.log("heure fin: ", h*60, h, h*60+duree, (h*60+duree)/60)
 
     // Vérifications que les slots sont bien dans les bons blocs et ne dépasse pas
     // Réglage du matin pour éviter avant début
@@ -333,9 +358,9 @@ export class ScheduleBoardComponent implements OnInit {
       timeBloc = this.blocks.find(b => b.type == "morning");
     }
     // Réglage de l'après-midi pour éviter après fin
-    else if(h >= end && bloc == "afternoon"){
+    else if((h >= end || (h*60+duree)/60 > end) && bloc == "afternoon"){
       console.log("hour dépasse la fin du bloc afternoon")
-      h = end - 1;
+      h = end - duree;
     }
     // Réglage pour éviter que le slot finisse après la fin de l'après-midi
   

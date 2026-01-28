@@ -173,14 +173,15 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
             
           // Rafraîchir les données du store après la création
           this.dataStore.refreshKeys(["soutenances"]);
+          this.isValidating = false;
 
-          this.router.navigate(["/schedule"]);
+          this.exit();
         },
         error: (err) => {
+          this.isValidating = false;
           console.error("Erreur lors de la création", err);
         },
       });
-      this.isValidating = false;
     } else {
       //CREATE
       const { idPlanning, ...plannToCreate } = this.planning as Planning;
@@ -221,14 +222,15 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
             
             // Rafraîchir les données du store après la création
             this.dataStore.refreshKeys(["plannings", "soutenances"]);
+            this.isValidating = false;
             
-            this.router.navigate(["/schedule"]);
+            this.exit();
           },
           error: (err) => {
+            this.isValidating = false;
             console.error("Erreur lors de la création", err);
           },
         });
-        this.isValidating = false;
     }
   }
 

@@ -107,7 +107,7 @@ export class SoutenanceService {
       headers: new HttpHeaders({ "Content-type": "application/json" }),
     };
     const payload = { soutenances: soutenances };
-    console.log(JSON.stringify(payload, null, 2));
+    // console.log(JSON.stringify(payload, null, 2));
     return this.http
       .put(
         `${this.apiUrl}/api/soutenances/update-many`,
