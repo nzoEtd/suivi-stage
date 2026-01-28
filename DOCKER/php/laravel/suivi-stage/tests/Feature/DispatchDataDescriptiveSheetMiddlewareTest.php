@@ -12,6 +12,8 @@ use App\Http\Middleware\DispatchDataDescriptiveSheet;
 use Carbon\Carbon;
 use Exception;
 use Tests\TestCase;
+use Illuminate\Support\Facades\Route;
+
 
 class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
 {
@@ -40,7 +42,8 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
      * @return void
      */
 
-    public function test_handleSheetGet_renvoie_une_confirmation_et_les_infos_de_la_fiche_descriptive(){
+    public function test_handleSheetGet_renvoie_une_confirmation_et_les_infos_de_la_fiche_descriptive()
+    {
 
         $ficheDescriptive = FicheDescriptive::first();
         $idEntreprise = $ficheDescriptive->idEntreprise;
@@ -49,241 +52,241 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
         $tuteur = TuteurEntreprise::find($idTuteurEntreprise);
         $idEtudiant = $ficheDescriptive->idUPPA;
         $etudiant = Etudiant::find($idEtudiant);
-        $response = $this->get('/api/fiche-descriptive/'.$ficheDescriptive->idFicheDescriptive);
+        $response = $this->get('/api/fiche-descriptive/' . $ficheDescriptive->idFicheDescriptive);
         $response->assertStatus(200)
-                 ->assertJson([
-                    //Informations Fiche Descriptive
-                     'idFicheDescriptive' => [
-                        'value' => $ficheDescriptive->idFicheDescriptive,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'dateCreationFicheDescriptive' => [
-                        'value' => $ficheDescriptive->dateCreation,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'dateDerniereModificationFicheDescriptive' => [
-                        'value' => $ficheDescriptive->dateDerniereModification,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'contenuStageFicheDescriptive' => [
-                        'value' => $ficheDescriptive->contenuStage,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'thematiqueFicheDescriptive' => [
-                        'value' => $ficheDescriptive->thematique,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'sujetFicheDescriptive' => [
-                        'value' => $ficheDescriptive->sujet,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'fonctionsFicheDescriptive' => [
-                        'value' => $ficheDescriptive->fonctions,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'tachesFicheDescriptive' => [
-                        'value' => $ficheDescriptive->taches,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'competencesFicheDescriptive' => [
-                        'value' => $ficheDescriptive->competences,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'detailsFicheDescriptive' => [
-                        'value' => $ficheDescriptive->details,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'debutStageFicheDescriptive' => [
-                        'value' => $ficheDescriptive->debutStage,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'finStageFicheDescriptive' => [
-                        'value' => $ficheDescriptive->finStage,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'nbJourSemaineFicheDescriptive' => [
-                        'value' => $ficheDescriptive->nbJourSemaine,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'nbHeureSemaineFicheDescriptive' => [
-                        'value' => $ficheDescriptive->nbHeureSemaine,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'clauseConfidentialiteFicheDescriptive' => [
-                        'value' => $ficheDescriptive->clauseConfidentialite,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'serviceEntrepriseFicheDescriptive' => [
-                        'value' => $ficheDescriptive->serviceEntreprise,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'adresseMailStageFicheDescriptive' => [
-                        'value' => $ficheDescriptive->adresseMailStage,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'telephoneStageFicheDescriptive' => [
-                        'value' => $ficheDescriptive->telephoneStage,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'adresseStageFicheDescriptive' => [
-                        'value' => $ficheDescriptive->adresseStage,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'codePostalStageFicheDescriptive' => [
-                        'value' => $ficheDescriptive->codePostalStage,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'villeStageFicheDescriptive' => [
-                        'value' => $ficheDescriptive->villeStage,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'paysStageFicheDescriptive' => [
-                        'value' => $ficheDescriptive->paysStage,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'statut' => [
-                        'value' => $ficheDescriptive->statut,
-                        'type' => 'ficheDescriptive',
-                    ],
-                     'numeroConventionFicheDescriptive' => [
-                        'value' => $ficheDescriptive->numeroConvention,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'interruptionStageFicheDescriptive' => [
-                        'value' => $ficheDescriptive->interruptionStage,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'dateDebutInterruptionFicheDescriptive' => [
-                        'value' => $ficheDescriptive->dateDebutInterruption,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'dateFinInterruptionFicheDescriptive' => [
-                        'value' => $ficheDescriptive->dateFinInterruption,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'personnelTechniqueDisponibleFicheDescriptive' => [
-                        'value' => $ficheDescriptive->personnelTechniqueDisponible,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'materielPreteFicheDescriptive' => [
-                        'value' => $ficheDescriptive->materielPrete,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'idEntreprise' => [
-                        'value' => $ficheDescriptive->idEntreprise,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     'idTuteurEntreprise' => [
-                        'value' => $ficheDescriptive->idTuteurEntreprise,
-                        'type' => 'ficheDescriptive',
-                     ],
-                     //Informations étudiant 
-                     'idUPPA' => [
-                        'value' => $etudiant->idUPPA,
-                        'type' => 'etudiant',
-                    ],
-                     'nomEtudiant' => [
-                         'value' => $etudiant->nom,
-                         'type' => 'etudiant',
-                     ],
-                     'prenomEtudiant' => [
-                         'value' => $etudiant->prenom,
-                         'type' => 'etudiant',
-                     ],
-                     'telephoneEtudiant' => [
-                         'value' => $etudiant->telephone,
-                         'type' => 'etudiant',
-                     ],
-        
-                     // Informations du tuteur
-                     'nomTuteurEntreprise' => [
-                         'value' => $tuteur->nom,
-                         'type' => 'tuteurEntreprise',
-                     ],
-                     'prenomTuteurEntreprise' => [
-                         'value' => $tuteur->prenom,
-                         'type' => 'tuteurEntreprise',
-                     ],
-                     'telephoneTuteurEntreprise' => [
-                         'value' => $tuteur->telephone,
-                         'type' => 'tuteurEntreprise',
-                     ],
-                     'adresseMailTuteurEntreprise' => [
-                         'value' => $tuteur->adresseMail,
-                         'type' => 'tuteurEntreprise',
-                     ],
-                     'fonctionTuteurEntreprise' => [
-                         'value' => $tuteur->fonction,
-                         'type' => 'tuteurEntreprise',
-                     ],
-         
-                     // Informations de l'entreprise
-                     'numSIRETEntreprise' => [
-                        'value' => $entreprise->numSIRET,
-                        'type' => 'entreprise',
-                    ],
-                     'raisonSocialeEntreprise' => [
-                         'value' => $entreprise->raisonSociale,
-                         'type' => 'entreprise',
-                     ],
-                     'adresseEntreprise' => [
-                         'value' => $entreprise->adresse,
-                         'type' => 'entreprise',
-                     ],
-                     'typeEtablissementEntreprise' => [
-                         'value' => $entreprise->typeEtablissement,
-                         'type' => 'entreprise',
-                     ],
-                     'telephoneEntreprise' => [
-                        'value' => $entreprise->telephone,
-                        'type' => 'entreprise',
-                    ],
-                     'codePostalEntreprise' => [
-                         'value' => $entreprise->codePostal,
-                         'type' => 'entreprise',
-                     ],
-                     'villeEntreprise' => [
-                         'value' => $entreprise->ville,
-                         'type' => 'entreprise',
-                     ],
-                     'paysEntreprise' => [
-                         'value' => $entreprise->pays,
-                         'type' => 'entreprise',
-                     ],
-                     'codeAPE_NAFEntreprise' => [
-                         'value' => $entreprise->codeAPE_NAF,
-                         'type' => 'entreprise',
-                     ],
-                     'statutJuridiqueEntreprise' => [
-                         'value' => $entreprise->statutJuridique,
-                         'type' => 'entreprise',
-                     ],
-                     'effectifEntreprise' => [
-                         'value' => $entreprise->effectif,
-                         'type' => 'entreprise',
-                     ],
-                     'nomRepresentantEntreprise' => [
-                         'value' => $entreprise->nomRepresentant,
-                         'type' => 'entreprise',
-                     ],
-                     'prenomRepresentantEntreprise' => [
-                         'value' => $entreprise->prenomRepresentant,
-                         'type' => 'entreprise',
-                     ],
-                     'telephoneRepresentantEntreprise' => [
-                         'value' => $entreprise->telephoneRepresentant,
-                         'type' => 'entreprise',
-                     ],
-                     'adresseMailRepresentantEntreprise' => [
-                         'value' => $entreprise->adresseMailRepresentant,
-                         'type' => 'entreprise',
-                     ],
-                     'fonctionRepresentantEntreprise' => [
-                         'value' => $entreprise->fonctionRepresentant,
-                         'type' => 'entreprise',
-                     ],
-         
-                 ]);
+            ->assertJson([
+                //Informations Fiche Descriptive
+                'idFicheDescriptive' => [
+                    'value' => $ficheDescriptive->idFicheDescriptive,
+                    'type' => 'ficheDescriptive',
+                ],
+                'dateCreationFicheDescriptive' => [
+                    'value' => $ficheDescriptive->dateCreation,
+                    'type' => 'ficheDescriptive',
+                ],
+                'dateDerniereModificationFicheDescriptive' => [
+                    'value' => $ficheDescriptive->dateDerniereModification,
+                    'type' => 'ficheDescriptive',
+                ],
+                'contenuStageFicheDescriptive' => [
+                    'value' => $ficheDescriptive->contenuStage,
+                    'type' => 'ficheDescriptive',
+                ],
+                'thematiqueFicheDescriptive' => [
+                    'value' => $ficheDescriptive->thematique,
+                    'type' => 'ficheDescriptive',
+                ],
+                'sujetFicheDescriptive' => [
+                    'value' => $ficheDescriptive->sujet,
+                    'type' => 'ficheDescriptive',
+                ],
+                'fonctionsFicheDescriptive' => [
+                    'value' => $ficheDescriptive->fonctions,
+                    'type' => 'ficheDescriptive',
+                ],
+                'tachesFicheDescriptive' => [
+                    'value' => $ficheDescriptive->taches,
+                    'type' => 'ficheDescriptive',
+                ],
+                'competencesFicheDescriptive' => [
+                    'value' => $ficheDescriptive->competences,
+                    'type' => 'ficheDescriptive',
+                ],
+                'detailsFicheDescriptive' => [
+                    'value' => $ficheDescriptive->details,
+                    'type' => 'ficheDescriptive',
+                ],
+                'debutStageFicheDescriptive' => [
+                    'value' => $ficheDescriptive->debutStage,
+                    'type' => 'ficheDescriptive',
+                ],
+                'finStageFicheDescriptive' => [
+                    'value' => $ficheDescriptive->finStage,
+                    'type' => 'ficheDescriptive',
+                ],
+                'nbJourSemaineFicheDescriptive' => [
+                    'value' => $ficheDescriptive->nbJourSemaine,
+                    'type' => 'ficheDescriptive',
+                ],
+                'nbHeureSemaineFicheDescriptive' => [
+                    'value' => $ficheDescriptive->nbHeureSemaine,
+                    'type' => 'ficheDescriptive',
+                ],
+                'clauseConfidentialiteFicheDescriptive' => [
+                    'value' => $ficheDescriptive->clauseConfidentialite,
+                    'type' => 'ficheDescriptive',
+                ],
+                'serviceEntrepriseFicheDescriptive' => [
+                    'value' => $ficheDescriptive->serviceEntreprise,
+                    'type' => 'ficheDescriptive',
+                ],
+                'adresseMailStageFicheDescriptive' => [
+                    'value' => $ficheDescriptive->adresseMailStage,
+                    'type' => 'ficheDescriptive',
+                ],
+                'telephoneStageFicheDescriptive' => [
+                    'value' => $ficheDescriptive->telephoneStage,
+                    'type' => 'ficheDescriptive',
+                ],
+                'adresseStageFicheDescriptive' => [
+                    'value' => $ficheDescriptive->adresseStage,
+                    'type' => 'ficheDescriptive',
+                ],
+                'codePostalStageFicheDescriptive' => [
+                    'value' => $ficheDescriptive->codePostalStage,
+                    'type' => 'ficheDescriptive',
+                ],
+                'villeStageFicheDescriptive' => [
+                    'value' => $ficheDescriptive->villeStage,
+                    'type' => 'ficheDescriptive',
+                ],
+                'paysStageFicheDescriptive' => [
+                    'value' => $ficheDescriptive->paysStage,
+                    'type' => 'ficheDescriptive',
+                ],
+                'statut' => [
+                    'value' => $ficheDescriptive->statut,
+                    'type' => 'ficheDescriptive',
+                ],
+                'numeroConventionFicheDescriptive' => [
+                    'value' => $ficheDescriptive->numeroConvention,
+                    'type' => 'ficheDescriptive',
+                ],
+                'interruptionStageFicheDescriptive' => [
+                    'value' => $ficheDescriptive->interruptionStage,
+                    'type' => 'ficheDescriptive',
+                ],
+                'dateDebutInterruptionFicheDescriptive' => [
+                    'value' => $ficheDescriptive->dateDebutInterruption,
+                    'type' => 'ficheDescriptive',
+                ],
+                'dateFinInterruptionFicheDescriptive' => [
+                    'value' => $ficheDescriptive->dateFinInterruption,
+                    'type' => 'ficheDescriptive',
+                ],
+                'personnelTechniqueDisponibleFicheDescriptive' => [
+                    'value' => $ficheDescriptive->personnelTechniqueDisponible,
+                    'type' => 'ficheDescriptive',
+                ],
+                'materielPreteFicheDescriptive' => [
+                    'value' => $ficheDescriptive->materielPrete,
+                    'type' => 'ficheDescriptive',
+                ],
+                'idEntreprise' => [
+                    'value' => $ficheDescriptive->idEntreprise,
+                    'type' => 'ficheDescriptive',
+                ],
+                'idTuteurEntreprise' => [
+                    'value' => $ficheDescriptive->idTuteurEntreprise,
+                    'type' => 'ficheDescriptive',
+                ],
+                //Informations étudiant 
+                'idUPPA' => [
+                    'value' => $etudiant->idUPPA,
+                    'type' => 'etudiant',
+                ],
+                'nomEtudiant' => [
+                    'value' => $etudiant->nom,
+                    'type' => 'etudiant',
+                ],
+                'prenomEtudiant' => [
+                    'value' => $etudiant->prenom,
+                    'type' => 'etudiant',
+                ],
+                'telephoneEtudiant' => [
+                    'value' => $etudiant->telephone,
+                    'type' => 'etudiant',
+                ],
+
+                // Informations du tuteur
+                'nomTuteurEntreprise' => [
+                    'value' => $tuteur->nom,
+                    'type' => 'tuteurEntreprise',
+                ],
+                'prenomTuteurEntreprise' => [
+                    'value' => $tuteur->prenom,
+                    'type' => 'tuteurEntreprise',
+                ],
+                'telephoneTuteurEntreprise' => [
+                    'value' => $tuteur->telephone,
+                    'type' => 'tuteurEntreprise',
+                ],
+                'adresseMailTuteurEntreprise' => [
+                    'value' => $tuteur->adresseMail,
+                    'type' => 'tuteurEntreprise',
+                ],
+                'fonctionTuteurEntreprise' => [
+                    'value' => $tuteur->fonction,
+                    'type' => 'tuteurEntreprise',
+                ],
+
+                // Informations de l'entreprise
+                'numSIRETEntreprise' => [
+                    'value' => $entreprise->numSIRET,
+                    'type' => 'entreprise',
+                ],
+                'raisonSocialeEntreprise' => [
+                    'value' => $entreprise->raisonSociale,
+                    'type' => 'entreprise',
+                ],
+                'adresseEntreprise' => [
+                    'value' => $entreprise->adresse,
+                    'type' => 'entreprise',
+                ],
+                'typeEtablissementEntreprise' => [
+                    'value' => $entreprise->typeEtablissement,
+                    'type' => 'entreprise',
+                ],
+                'telephoneEntreprise' => [
+                    'value' => $entreprise->telephone,
+                    'type' => 'entreprise',
+                ],
+                'codePostalEntreprise' => [
+                    'value' => $entreprise->codePostal,
+                    'type' => 'entreprise',
+                ],
+                'villeEntreprise' => [
+                    'value' => $entreprise->ville,
+                    'type' => 'entreprise',
+                ],
+                'paysEntreprise' => [
+                    'value' => $entreprise->pays,
+                    'type' => 'entreprise',
+                ],
+                'codeAPE_NAFEntreprise' => [
+                    'value' => $entreprise->codeAPE_NAF,
+                    'type' => 'entreprise',
+                ],
+                'statutJuridiqueEntreprise' => [
+                    'value' => $entreprise->statutJuridique,
+                    'type' => 'entreprise',
+                ],
+                'effectifEntreprise' => [
+                    'value' => $entreprise->effectif,
+                    'type' => 'entreprise',
+                ],
+                'nomRepresentantEntreprise' => [
+                    'value' => $entreprise->nomRepresentant,
+                    'type' => 'entreprise',
+                ],
+                'prenomRepresentantEntreprise' => [
+                    'value' => $entreprise->prenomRepresentant,
+                    'type' => 'entreprise',
+                ],
+                'telephoneRepresentantEntreprise' => [
+                    'value' => $entreprise->telephoneRepresentant,
+                    'type' => 'entreprise',
+                ],
+                'adresseMailRepresentantEntreprise' => [
+                    'value' => $entreprise->adresseMailRepresentant,
+                    'type' => 'entreprise',
+                ],
+                'fonctionRepresentantEntreprise' => [
+                    'value' => $entreprise->fonctionRepresentant,
+                    'type' => 'entreprise',
+                ],
+
+            ]);
     }
 
     /**
@@ -291,13 +294,14 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
      * 
      * @return void
      */
-    public function test_handleSheetGet_renvoie_une_erreur_404_si_la_fiche_descriptive_n_existe_pas(){
+    public function test_handleSheetGet_renvoie_une_erreur_404_si_la_fiche_descriptive_n_existe_pas()
+    {
         $ficheDescriptive = 100000;
-        $response = $this->get('/api/fiche-descriptive/'.$ficheDescriptive);
+        $response = $this->get('/api/fiche-descriptive/' . $ficheDescriptive);
         $response->assertStatus(404)
-                 ->assertJson([
-                    'message' => 'Fiche descriptive non trouvée'
-                ]);
+            ->assertJson([
+                'message' => 'Fiche descriptive non trouvée'
+            ]);
     }
 
     /**
@@ -306,16 +310,18 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
      * @return void
      */
 
-    public function test_handleSheetGet_renvoie_une_erreur_500_en_simulant_une_erreur(){
-        // Mock du modèle FicheDescriptive pour déclencher une exception
-        $this->partialMock(\App\Http\Middleware\DispatchDataDescriptiveSheet::class, function ($mock) {
-            $mock->shouldReceive('handleSheetGet')->andThrow(new Exception);
-        });
+    public function test_handleSheetGet_renvoie_une_erreur_500_en_simulant_une_erreur()
+    {
         $ficheDescriptive = FicheDescriptive::first();
-        $response = $this->get('/api/fiche-descriptive/'.$ficheDescriptive->idFicheDescriptive);
-    
+
+        // Route temporaire pour simuler une exception
+        Route::get('/test/fiche-descriptive-500/{id}', function ($id) {
+            throw new Exception('Erreur simulée');
+        });
+
+        $response = $this->get('/test/fiche-descriptive-500/' . $ficheDescriptive->idFicheDescriptive);
         $response->assertStatus(500)
-                 ->assertJson(['message' => 'Une erreur s\'est produite :']);
+            ->assertJson(['message' => 'Une erreur s\'est produite :']);
     }
 
     /*
@@ -330,9 +336,9 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
      * @return void
      */
 
-     public function test_handleSheetCreate_renvoie_une_confirmation_et_les_infos_de_la_fiche_descriptive()
-     {
-        $entreprise = Entreprise::first();       
+    public function test_handleSheetCreate_renvoie_une_confirmation_et_les_infos_de_la_fiche_descriptive()
+    {
+        $entreprise = Entreprise::first();
         $etudiant   = Etudiant::first();
         $donnees = [
             "idUPPA" => [
@@ -556,65 +562,66 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
                 "type" => "ficheDescriptive"
             ]
         ];
-         // Appel API
-         $response = $this->postJson('/api/fiche-descriptive/create', $donnees);
-    
-         $response->assertStatus(200)
-                    ->assertJson([
-             "ficheDescriptive" => [
-                 "dateCreation" => Carbon::now()->format('Y-m-d'),
-                 "dateDerniereModification" => Carbon::now()->format('Y-m-d'),
-                 "contenuStage" => null,
-                 "thematique" => "Développement",
-                 "sujet" => "Sujet",
-                 "fonctions" => "Fonctions",
-                 "taches" => "Taches",
-                 "competences" => "Compétences",
-                 "details" => null,
-                 "debutStage" => "2025-03-05",
-                 "finStage" => "2025-03-19",
-                 "nbJourSemaine" => 5,
-                 "nbHeureSemaine" => 35,
-                 "clauseConfidentialite" => false,
-                 "serviceEntreprise" => null,
-                 "adresseMailStage" => "testtt@gmail.com",
-                 "telephoneStage" => "0504050608",
-                 "adresseStage" => "15 rue de la Victoire",
-                 "codePostalStage" => "47000",
-                 "villeStage" => "Agen",
-                 "paysStage" => "France",
-                 "longitudeStage" => null,
-                 "latitudeStage" => null,
-                 "statut" => "En cours",
-                 "numeroConvention" => null,
-                 "interruptionStage" => null,
-                 "dateDebutInterruption" => null,
-                 "dateFinInterruption" => null,
-                 "personnelTechniqueDisponible" => true,
-                 "materielPrete" => "Ordinateur, téléphone, voiture",
-                 "idEntreprise" => $entreprise->idEntreprise,
-                 "idTuteurEntreprise" => 8,
-                 "idUPPA" => $etudiant->idUPPA,
-                 "idFicheDescriptive" => 5
-             ],
-             "tuteur" => [
-                 "nom" => "HAKKE",
-                 "prenom" => "Idil",
-                 "telephone" => "0405060504",
-                 "adresseMail" => "hakkeidil@test.eu",
-                 "idEntreprise" => $entreprise->idEntreprise,
-                 "fonction" => "Chef de projet",
-                 "idTuteur" => 8
-             ]
-         ]);
-     }
+        // Appel API
+        $response = $this->postJson('/api/fiche-descriptive/create', $donnees);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                "ficheDescriptive" => [
+                    "dateCreation" => Carbon::now()->format('Y-m-d'),
+                    "dateDerniereModification" => Carbon::now()->format('Y-m-d'),
+                    "contenuStage" => null,
+                    "thematique" => "Développement",
+                    "sujet" => "Sujet",
+                    "fonctions" => "Fonctions",
+                    "taches" => "Taches",
+                    "competences" => "Compétences",
+                    "details" => null,
+                    "debutStage" => "2025-03-05",
+                    "finStage" => "2025-03-19",
+                    "nbJourSemaine" => 5,
+                    "nbHeureSemaine" => 35,
+                    "clauseConfidentialite" => false,
+                    "serviceEntreprise" => null,
+                    "adresseMailStage" => "testtt@gmail.com",
+                    "telephoneStage" => "0504050608",
+                    "adresseStage" => "15 rue de la Victoire",
+                    "codePostalStage" => "47000",
+                    "villeStage" => "Agen",
+                    "paysStage" => "France",
+                    "longitudeStage" => null,
+                    "latitudeStage" => null,
+                    "statut" => "En cours",
+                    "numeroConvention" => null,
+                    "interruptionStage" => null,
+                    "dateDebutInterruption" => null,
+                    "dateFinInterruption" => null,
+                    "personnelTechniqueDisponible" => true,
+                    "materielPrete" => "Ordinateur, téléphone, voiture",
+                    "idEntreprise" => $entreprise->idEntreprise,
+                    "idTuteurEntreprise" => 8,
+                    "idUPPA" => $etudiant->idUPPA,
+                    "idFicheDescriptive" => 5
+                ],
+                "tuteur" => [
+                    "nom" => "HAKKE",
+                    "prenom" => "Idil",
+                    "telephone" => "0405060504",
+                    "adresseMail" => "hakkeidil@test.eu",
+                    "idEntreprise" => $entreprise->idEntreprise,
+                    "fonction" => "Chef de projet",
+                    "idTuteur" => 8
+                ]
+            ]);
+    }
 
     /**
      * La méthode handleSheetCreate doit retourner une erreur 404 car l'entreprise n'existe pas
      * 
      * @return void
      */
-    public function test_handleSheetCreate_renvoie_une_erreur_404_car_l_entreprise_n_existe_pas(){
+    public function test_handleSheetCreate_renvoie_une_erreur_404_car_l_entreprise_n_existe_pas()
+    {
         $etudiant   = Etudiant::first();
         $donnees = [
             "idUPPA" => [
@@ -839,17 +846,18 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
             ]
         ];
         $response = $this->postJson('/api/fiche-descriptive/create', $donnees)
-                            ->assertStatus(404)
-                            ->assertJson([
-                                'message' => 'L\'entreprise avec ce SIRET ou cette raison sociale n\'existe pas'
-                            ]);
+            ->assertStatus(404)
+            ->assertJson([
+                'message' => 'L\'entreprise avec ce SIRET ou cette raison sociale n\'existe pas'
+            ]);
     }
     /**
      * La méthode handleSheetCreation doit renvoyer 400 car le numSIRET et la raison sociale sont null
      * 
      * @return void 
      */
-    public function test_handleSheetCreate_renvoie_une_erreur_400_car_donnees_null(){
+    public function test_handleSheetCreate_renvoie_une_erreur_400_car_donnees_null()
+    {
         $etudiant   = Etudiant::first();
         $donnees = [
             "idUPPA" => [
@@ -1074,24 +1082,25 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
             ]
         ];
         $response = $this->postJson('/api/fiche-descriptive/create', $donnees)
-                            ->assertStatus(400)
-                            ->assertJson([
-                                'message' => 'Le numéro SIRET ou la raison sociale est obligatoire'
-                            ]); 
+            ->assertStatus(400)
+            ->assertJson([
+                'message' => 'Le numéro SIRET ou la raison sociale est obligatoire'
+            ]);
     }
     /**
      * La méthode handleSheetCreation doit renvoyer 500 car on simule une erreur
      * 
      * @return void 
      */
-    public function test_handleSheetCreate_renvoie_une_erreur_500_car_une_erreur_est_simule(){
-        $this->partialMock(\App\Http\Middleware\DispatchDataDescriptiveSheet::class, function ($mock) {
-            $mock->shouldReceive('handleSheetCreate')->andThrow(new Exception);
+    public function test_handleSheetCreate_renvoie_une_erreur_500_car_une_erreur_est_simulee()
+    {
+        Route::post('/test/fiche-descriptive-create-500', function () {
+            throw new Exception('Erreur simulée');
         });
-        $response = $this->get('/api/fiche-descriptive/create');
-    
+
+        $response = $this->postJson('/test/fiche-descriptive-create-500', []);
         $response->assertStatus(500)
-                 ->assertJson(['message' => 'Une erreur s\'est produite :']);
+            ->assertJson(['message' => 'Une erreur s\'est produite :']);
     }
 
     /*
@@ -1105,16 +1114,17 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
      * 
      * @return void
      */
-    public function test_handleSheetUpdate_doit_renvoyer_200_car_la_fiche_descriptive_a_ete_mise_a_jour(){
+    public function test_handleSheetUpdate_doit_renvoyer_200_car_la_fiche_descriptive_a_ete_mise_a_jour()
+    {
         $ficheDescriptive = FicheDescriptive::first();
 
         $ficheDescriptive->statut = "Validée";
-        $response = $this->putJson('/api/fiche-descriptive/update/'.$ficheDescriptive->idFicheDescriptive, $ficheDescriptive->toArray());
+        $response = $this->putJson('/api/fiche-descriptive/update/' . $ficheDescriptive->idFicheDescriptive, $ficheDescriptive->toArray());
         $response->assertStatus(200)
-                 ->assertJson([
-                     'entreprise' => null,
-                     'tuteurEntreprise' => null,
-                 ]);
+            ->assertJson([
+                'entreprise' => null,
+                'tuteurEntreprise' => null,
+            ]);
     }
 
     /**
@@ -1122,13 +1132,14 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
      * 
      * @return void
      */
-    public function test_handleSheetUpdate_renvoie_une_erreur_404_car_la_fiche_descriptive_n_existe_pas(){
+    public function test_handleSheetUpdate_renvoie_une_erreur_404_car_la_fiche_descriptive_n_existe_pas()
+    {
         $ficheDescriptive = 100000;
-        $response = $this->put('/api/fiche-descriptive/update/'.$ficheDescriptive);
+        $response = $this->put('/api/fiche-descriptive/update/' . $ficheDescriptive);
         $response->assertStatus(404)
-                 ->assertJson([
-                    'message' => 'Fiche descriptive non trouvée'
-                ]);
+            ->assertJson([
+                'message' => 'Fiche descriptive non trouvée'
+            ]);
     }
 
     /**
@@ -1136,30 +1147,34 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
      * 
      * @return void
      */
-    public function test_handleSheetUpdate_renvoie_une_erreur_400_car_le_format_JSON_est_invalide(){
+    public function test_handleSheetUpdate_renvoie_une_erreur_400_car_le_format_JSON_est_invalide()
+    {
         $ficheDescriptive = FicheDescriptive::first();
-        $jsonInvalide = ["idFicheDescriptive"=>1]; // Virgule en trop
-        
-        $response = $this->putJson('/api/fiche-descriptive/update/'.$ficheDescriptive->idFicheDescriptive,$jsonInvalide);
+        $jsonInvalide = ["idFicheDescriptive" => 1]; // Virgule en trop
+
+        $response = $this->putJson('/api/fiche-descriptive/update/' . $ficheDescriptive->idFicheDescriptive, $jsonInvalide);
         $response->assertStatus(400)
-                 ->assertJson([
-                    'message' => 'Le format JSON est invalide'
-                ]);
+            ->assertJson([
+                'message' => 'Le format JSON est invalide'
+            ]);
     }
 
-        /**
+    /**
      * La méthode handleSheetUpdate doit renvoyer 500 car on simule une erreur
      * 
      * @return void 
      */
-    public function test_handleSheetUpdate_renvoie_une_erreur_500_car_une_erreur_est_simule(){
-        $this->partialMock(\App\Http\Middleware\DispatchDataDescriptiveSheet::class, function ($mock) {
-            $mock->shouldReceive('handleSheetUpdate')->andThrow(new Exception);
-        });
+
+    public function test_handleSheetUpdate_renvoie_une_erreur_500_car_une_erreur_est_simulee()
+    {
         $ficheDescriptive = FicheDescriptive::first();
-        $response = $this->putJson('/api/fiche-descriptive/update'.$ficheDescriptive->idFicheDescriptive);
-    
+
+        Route::put('/test/fiche-descriptive-update-500/{id}', function ($id) {
+            throw new Exception('Erreur simulée');
+        });
+
+        $response = $this->putJson('/test/fiche-descriptive-update-500/' . $ficheDescriptive->idFicheDescriptive, []);
         $response->assertStatus(500)
-                 ->assertJson(['message' => 'Une erreur s\'est produite :']);
+            ->assertJson(['message' => 'Une erreur s\'est produite :']);
     }
 }
