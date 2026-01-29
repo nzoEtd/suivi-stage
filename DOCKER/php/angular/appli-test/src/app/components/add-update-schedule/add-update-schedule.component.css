@@ -57,9 +57,13 @@
 
 .header-schedule-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     height: 50px;
     /* margin-bottom: 15px; */
+}
+
+h4{
+    color: #a40a0a;
 }
 
 .schedule-content {

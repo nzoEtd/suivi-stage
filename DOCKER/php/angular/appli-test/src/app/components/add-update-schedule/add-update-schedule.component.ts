@@ -184,12 +184,14 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
           // Rafraîchir les données du store après la création
           this.dataStore.refreshKeys(["soutenances"]);
           this.isValidating = false;
+          this.toastr.success("Les modifications ont bien été prises en comptes.", "Planning enregistré.");
 
           this.exit();
         },
         error: (err) => {
           this.isValidating = false;
           console.error("Erreur lors de la création", err);
+          this.toastr.error(err, "Impossible d'enregistrer le planning.");
         },
       });
     } else {
@@ -233,12 +235,14 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
             // Rafraîchir les données du store après la création
             this.dataStore.refreshKeys(["plannings", "soutenances"]);
             this.isValidating = false;
+            this.toastr.success("L'ajout a bien été prises en comptes.", "Planning enregistré.");
             
             this.exit();
           },
           error: (err) => {
             this.isValidating = false;
             console.error("Erreur lors de la création", err);
+            this.toastr.error(err, "Impossible d'enregistrer le planning.");
           },
         });
     }

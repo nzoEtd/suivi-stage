@@ -349,7 +349,7 @@ export class ScheduleBoardComponent implements OnInit {
   ): boolean {
     this.dropError = [];
     const hasOverlap = existingSlots.some(s => this.overlaps(start, end, salle, s.dateDebut!, s.dateFin!, s.etudiant, s.salle!));
-    console.log("slot plaçable ?",hasOverlap)
+    console.log("slot plaçable ?",!hasOverlap)
     if(hasOverlap){
       return false;
     }
@@ -387,12 +387,12 @@ export class ScheduleBoardComponent implements OnInit {
     console.log("heure fin: ", h*60, h, h*60+duree, (h*60+duree)/60)
 
     // Vérifications que les slots sont bien dans les bons blocs et ne dépasse pas
-    // Réglage du matin pour éviter avant début
+    // Réglage du matin pour éviter avant début (sécurité mais pas forcément utile)
     if(h < start && bloc == "morning"){
       console.log("hour dépasse le début du bloc morning")
       h = start;
+      m = 0;
     }
-    // Réglage pour éviter que le slot finisse après la fin du matin
     // Passage du matin à l'après-midi
     else if(h >= end && bloc == "morning"){
       console.log("hour dépasse la fin du bloc morning")
@@ -406,12 +406,20 @@ export class ScheduleBoardComponent implements OnInit {
       console.log("new hour : ", h)
       timeBloc = this.blocks.find(b => b.type == "morning");
     }
-    // Réglage de l'après-midi pour éviter après fin
-    else if((h >= end || (h*60+duree)/60 > end) && bloc == "afternoon"){
-      console.log("hour dépasse la fin du bloc afternoon")
-      h = end - duree;
+    // Réglage pour éviter que le slot commence avant et finisse après la fin d'un bloc
+    else if(h < end && h*60+duree+m > end*60){
+      console.log("la fin du créneau dépasse la fin de son bloc : ", h*60+duree, end*60, (end*60-duree)/60)
+      const hour = (end*60-duree)/60;
+      h = Math.floor(hour);
+      m = (Math.round((hour - h) * 60 / 5) * 5) % 60;
     }
-    // Réglage pour éviter que le slot finisse après la fin de l'après-midi
+    // Réglage de l'après-midi pour éviter qu'il commence après la fin du bloc (sécurité mais pas forcément utile)
+    else if(h >= end && bloc == "afternoon"){
+      console.log("hour dépasse la fin du bloc afternoon")
+      const hour = (end*60-duree)/60;
+      h = Math.floor(hour);
+      m = (Math.round((hour - h) * 60 / 5) * 5) % 60;
+    }
   
     const d = new Date(day);
     d.setHours(h, m, 0, 0);

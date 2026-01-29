@@ -66,6 +66,7 @@ export async function convertSoutenancesToSlots(soutenances: Soutenance[], allSt
         dateFin: getDateHeure(s.date!, s.heureFin!),
         idUPPA: s.idUPPA ? s.idUPPA : "Numéro étudiant inconnu",
         etudiant: student ? `${student.nom} ${student.prenom}` : "Étudiant inconnu",
+        tierTemps: student?.tierTemps ? student.tierTemps : false,
         referent: referent ? `${referent.prenomPersonnel![0]}. ${referent.nomPersonnel}` : "Pas de référent",
         idLecteur: s.idLecteur ? s.idLecteur : 0,
         lecteur: lecteur ? `${lecteur.prenom![0]}. ${lecteur.nom}` : "Lecteur inconnu",
