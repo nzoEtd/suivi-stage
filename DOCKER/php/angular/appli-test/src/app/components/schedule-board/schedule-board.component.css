@@ -112,17 +112,9 @@
 
 .salle-cell {
     background: #f5f5f5;
-      /*repeating-linear-gradient(
-        to bottom,
-        transparent,
-        transparent calc(25% - 0.5px),
-        #d0d0d0 calc(25% - 0.5px),
-        #d0d0d0 calc(25% + 0.5px)
-      );*/
     position: relative;
     display: flex; 
     align-items: flex-start;
-    /* justify-content: center; */
     flex: 1 1 auto;
     min-width: 210px;
     width: 100%;
@@ -194,6 +186,7 @@
 
 .item {
   border-radius: 8px;
+  margin-bottom: 5px;
   width: 100%;
   cursor: move;
   transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);

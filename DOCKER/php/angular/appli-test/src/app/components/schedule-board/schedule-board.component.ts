@@ -8,6 +8,7 @@ import { isSameDay } from "../../utils/timeManagement";
 import { ToastrService } from 'ngx-toastr';
 import { inject } from '@angular/core';
 import { CdkDrag,   CdkDragDrop,   CdkDragPlaceholder, CdkDropList, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: "app-schedule-board",
@@ -37,6 +38,9 @@ export class ScheduleBoardComponent implements OnInit {
   private slotsCache = new Map<TimeBlock, SlotItem[]>();
   items: SlotItem[] = [];
   dropError: string[] = [];
+  isRendering: boolean = true;
+
+  constructor(private cdRef: ChangeDetectorRef) {}
 
   async ngOnInit() {
     console.log("planningbyday au tt début ds schedule-board", this.planningByDay)
@@ -185,6 +189,7 @@ export class ScheduleBoardComponent implements OnInit {
         console.log("new planning by day: ",this.planningByDay)
 
         this.rebuildSlotsCache();
+        this.cdRef.detectChanges();
       }
       else{
         // S'il y a une salle le slot est droppé dans la salle au bon endroit
@@ -234,7 +239,15 @@ export class ScheduleBoardComponent implements OnInit {
           draggedSlot.topPercent = prevState.topPercent;
           draggedSlot.heightPercent = prevState.heightPercent;
 
-          this.rebuildSlotsCache();
+          this.isRendering = false;
+          this.cdRef.detectChanges();
+          
+          // ça détruit et refait le planning donc c'est pas beau, chercher mieux
+          setTimeout(() => {
+            this.isRendering = true;
+            this.rebuildSlotsCache();
+            this.cdRef.detectChanges();
+          }, 0);
           return;
         }
 
@@ -257,6 +270,7 @@ export class ScheduleBoardComponent implements OnInit {
           this.planningByDay[dayKey].push(draggedSlot);
         }
         this.rebuildSlotsCache();
+        this.cdRef.detectChanges();
       }
     }
     console.log("liste d'items",this.items)
