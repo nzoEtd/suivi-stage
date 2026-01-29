@@ -88,7 +88,8 @@ class TuteurEntrepriseControllerTest extends TestCase
     {
         // Mock du modèle TuteurEntreprise pour déclencher une exception
         $this->mock(TuteurEntreprise::class, function ($mock) {
-            $mock->shouldReceive('show')->andThrow(new \Exception('Erreur simulée'));
+            $mock->shouldReceive('findOrFail')
+                ->andThrow(new \Exception('Erreur simulée'));
         });
 
         $unTuteur = TuteurEntreprise::first();
@@ -157,7 +158,7 @@ class TuteurEntrepriseControllerTest extends TestCase
     {
         // Mock du modèle TuteurEntreprise pour déclencher une exception
         $this->mock(TuteurEntreprise::class, function ($mock) {
-            $mock->shouldReceive('store')->andThrow(new \Exception('Erreur simulée'));
+            $mock->shouldReceive('create')->andThrow(new \Exception('Erreur simulée'));
         });
 
         $data = [
@@ -233,8 +234,11 @@ class TuteurEntrepriseControllerTest extends TestCase
     {
         // Mock du modèle TuteurEntreprise pour déclencher une exception
         $this->mock(TuteurEntreprise::class, function ($mock) {
-            $mock->shouldReceive('update')->andThrow(new \Exception('Erreur simulée'));
-        });
+        $mock->shouldReceive('findOrFail')
+             ->andReturn($mock)
+             ->shouldReceive('update')
+             ->andThrow(new \Exception('Erreur simulée'));
+    });
 
         $unTuteurEntreprise = TuteurEntreprise::first();
 
