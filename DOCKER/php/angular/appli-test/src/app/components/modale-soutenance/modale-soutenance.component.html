@@ -69,18 +69,42 @@
         <div class="line-wrapper">
           <div class="input-wrapper">
             <label for="heureDebut">Heure début :</label>
-            <input type="time" name="heureDebut" id="heureDebut" [(ngModel)]="newSoutenance.heureDebut" [disabled]="!editMode" [value]="heureDebut">
+            <input type="time" name="heureDebut" id="heureDebut" [(ngModel)]="newSoutenance.heureDebut" [disabled]="!editMode" [value]="heureDebutS">
           </div>
           <div class="input-wrapper">
             <label for="heureFin">Heure fin :</label>
-            <input type="time" name="heureFin" id="heureFin" [(ngModel)]="newSoutenance.heureFin" [disabled]="!editMode" [value]="heureFin">
+            <input type="time" name="heureFin" id="heureFin" [(ngModel)]="newSoutenance.heureFin" [disabled]="!editMode" [value]="heureFinS">
           </div>
         </div>
         <!--Jour et salle-->
         <div class="line-wrapper">
           <div class="input-wrapper">
             <label for="jour">Jour :</label>
-            <input type="date" name="jour" id="jour" [(ngModel)]="newDate" (ngModelChange)="onJourChange($event)" [disabled]="!editMode" [value]="dateSoutenance">
+            @if (editMode) {
+              <select
+                name="jour"
+                id="jour"
+                [(ngModel)]="newDate"
+                (ngModelChange)="onJourChange($event)"
+                [disabled]="!editMode"
+                placeholder="vvv"
+                [value]="dateSoutenance"
+              >
+                <option [value]="dateSoutenance" selected [disabled]="!editMode">
+                  {{ formatStringDate(dateSoutenance) }}
+                </option>
+                <option
+                  *ngFor="let dateAcceptee of datesAcceptees"
+                  [value]="dateAcceptee"
+                  [disabled]="!editMode"
+                >
+                  {{ formatStringDate(dateAcceptee) }}
+                </option>
+              </select>
+            }
+            @else {
+              <input type="date" name="jour" id="jour" [(ngModel)]="newDate" (ngModelChange)="onJourChange($event)" [disabled]="!editMode" [value]="dateSoutenance">
+            }
           </div>
           <div class="input-wrapper">
             <label for="salle">Salle :</label>
