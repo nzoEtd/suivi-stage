@@ -225,3 +225,31 @@
     0 8px 10px 1px rgba(0, 0, 0, 0.14),
     0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
+
+.drag-guide-line {
+  position: fixed;
+  left: 260px;
+  right: 107px;
+  height: 2px;
+  background-color: #a40a0a;
+  border-top: 2px dashed #a40a0a;
+  z-index: 9999;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 0 8px rgba(164, 10, 10, 0.5);
+}
+
+.guide-time {
+  position: absolute;
+  left: 10px;
+  background-color: #a40a0a;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 14px;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transform: translateY(-50%);
+}

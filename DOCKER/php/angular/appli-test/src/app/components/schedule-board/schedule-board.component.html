@@ -12,7 +12,10 @@
         @for (item of items; track item) {
             <div class="item"
             cdkDrag 
-            [cdkDragData]="item">
+            [cdkDragData]="item"
+            (cdkDragStarted)="onDragStarted($event)"
+            (cdkDragMoved)="onDragMoved($event)"
+            (cdkDragEnded)="onDragEnded($event)">
                 <app-slot 
                     [slot]="item"
                     (editSlot)="onEditSlot($event)">
@@ -28,6 +31,12 @@
     [cdkDropListSortingDisabled]="true"
     [cdkDropListData]="[]"
     [cdkDropListEnterPredicate]="neverEnter">
+        <div class="drag-guide-line" 
+            *ngIf="isDragging && currentBlock"
+            [style.top.px]="guideLineY">
+            <span class="guide-time">{{ guideLineTime }}</span>
+        </div>
+
         <div class="header-planning">
             <div class="hours-header"></div>
             @for(salle of sallesDispo; track salle){
@@ -65,7 +74,10 @@
                                 [style.height.%]="slot.heightPercent"
                                 cdkDrag 
                                 [cdkDragDisabled]="onlyDisplay"
-                                [cdkDragData]="slot">
+                                [cdkDragData]="slot"
+                                (cdkDragStarted)="onDragStarted($event)"
+                                (cdkDragMoved)="onDragMoved($event)"
+                                (cdkDragEnded)="onDragEnded($event)">
                                     <ng-template cdkDragPlaceholder>
                                         <div class="waiting-placeholder"></div>
                                     </ng-template>

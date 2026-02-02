@@ -40,6 +40,12 @@ export class ScheduleBoardComponent implements OnInit {
   dropError: string[] = [];
   isRendering: boolean = true;
 
+  // Ligne guide des heures
+  isDragging: boolean = false;
+  guideLineY: number = 0;
+  guideLineTime: string = '';
+  currentBlock: TimeBlock | null = null;
+
   constructor(private cdRef: ChangeDetectorRef) {}
 
   async ngOnInit() {
@@ -468,4 +474,64 @@ export class ScheduleBoardComponent implements OnInit {
   }
 
   neverEnter = () => false;
+
+  // Ligne guide des heures
+  onDragStarted(event: any) {
+    console.log("test drag started")
+    this.isDragging = true; // Activer la ligne guide
+  }
+  
+  onDragMoved(event: any) {
+    if (!this.isDragging) return;
+    console.log("test drag moved")
+    
+    const mouseY = event.pointerPosition.y;
+    
+    // Trouver le bloc (matin/après-midi) sous la souris
+    const result = this.findBlockAndRowFromY(mouseY);
+    
+    if (!result) {
+      this.currentBlock = null;
+      return;
+    }
+    
+    const { block, timeRow } = result;
+    this.currentBlock = block;
+    
+    const rowRect = timeRow.getBoundingClientRect();
+    
+    // Position Y relative dans la time-row
+    const relativeY = mouseY - rowRect.top;
+    const ratio = relativeY / rowRect.height;
+    
+    // Calculer l'heure
+    const startH = block.startMin / 60;
+    const endH = block.endMin / 60;
+    const hour = startH + ratio * (endH - startH);
+    
+    let h = Math.floor(hour);
+    let m = (Math.round((hour - h) * 60 / 5) * 5) % 60; // Arrondi à 5 min
+    
+    // Ajuster si dépasse les limites
+    if (h < startH) {
+      h = startH;
+      m = 0;
+    } else if (h >= endH - 1) {
+      h = endH - 1;
+      m = 0;
+    }
+    
+    // Position Y de la ligne (relative au viewport)
+    this.guideLineY = mouseY;
+    
+    // Formater l'heure
+    this.guideLineTime = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+  }
+  
+  onDragEnded(event: any) {
+    // Cacher la ligne guide
+    console.log("test drag ended")
+    this.isDragging = false;
+    this.currentBlock = null;
+  }
 }
