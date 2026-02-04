@@ -786,6 +786,10 @@ export class ModaleSoutenanceComponent implements OnInit {
     this.isDataLoaded = true;
   }
 
+  toggleEditMode() {
+    this.editMode ? this.soutenanceForm.enable() : this.soutenanceForm.disable();
+  }
+
   initForm() {
     this.newSoutenance = this.convertSlotToSoutenanceData(this.soutenance);
 
@@ -793,7 +797,7 @@ export class ModaleSoutenanceComponent implements OnInit {
     
     this.soutenanceForm = this.fb.group(
       {
-        lecteur: [this.newSoutenance.idLecteur, Validators.required],
+        lecteur: [this.editMode ? this.newSoutenance.idLecteur : this.soutenance.lecteur, Validators.required],
         heureDebut: [this.newSoutenance.heureDebut, Validators.required],
         heureFin: [this.newSoutenance.heureFin, Validators.required],
         jour: [this.dateSoutenance, Validators.required],
@@ -805,6 +809,8 @@ export class ModaleSoutenanceComponent implements OnInit {
         ]
       }
     );
+
+    this.toggleEditMode();
   }
 
   hourOrderValidator: ValidatorFn = (form: AbstractControl) => {
@@ -951,10 +957,6 @@ export class ModaleSoutenanceComponent implements OnInit {
       let newSoutenanceDate = this.formatDate(this.newSoutenance.date!, 'Date');
 
       if (this.newSoutenance.idSoutenance === this.soutenance.id) {
-
-        console.log("Comparaison : ", this.newSoutenance.heureDebut, this.formatDate(this.soutenance.dateDebut, 'Heure'));
-        console.log("Comparaison : ", this.newSoutenance.heureFin, this.formatDate(this.soutenance.dateFin, 'Heure'));
-
         //heureDebut, heureFin & jour
         if (this.newSoutenance.heureDebut !== this.formatDate(this.soutenance.dateDebut, 'Heure') || 
             this.newSoutenance.heureFin !== this.formatDate(this.soutenance.dateFin, 'Heure'))
@@ -963,8 +965,6 @@ export class ModaleSoutenanceComponent implements OnInit {
           let dateFin = this.formatDate(this.newSoutenance.date!, 'Date') + " " + this.newSoutenance.heureFin;
           this.soutenance.dateDebut = new Date(dateDebut);
           this.soutenance.dateFin = new Date(dateFin);
-
-          console.log("Comparaison : ", currentSoutenanceDate, newSoutenanceDate);
 
           if (currentSoutenanceDate !== newSoutenanceDate)
           {

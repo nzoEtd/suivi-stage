@@ -39,36 +39,38 @@
 
         <!--Modifiables en tant que responsable des stages-->
         <!--Enseignant lecteur-->
-        <div class="input-wrapper">
-          <label for="lecteur">Enseignant lecteur :</label>
-          @if (editMode) {
-            <select
-              name="lecteur"
-              id="lecteur"
-              formControlName="lecteur"
-            >
-              <option [value]="soutenance.idLecteur" selected>
-                {{ soutenance.lecteur }}
-              </option>
-              @if (enseignantsLecteurs.length > 0) {
-                <option
-                  *ngFor="let enseignantLecteur of enseignantsLecteurs"
-                  [value]="enseignantLecteur.idPersonnel"
-                >
-                  {{ enseignantLecteur.prenom?.[0] }}. {{ enseignantLecteur.nom }}
+        <div>
+          <div class="input-wrapper">
+            <label for="lecteur">Enseignant lecteur :</label>
+            @if (editMode) {
+              <select
+                name="lecteur"
+                id="lecteur"
+                formControlName="lecteur"
+              >
+                <option [value]="soutenance.idLecteur" selected>
+                  {{ soutenance.lecteur }}
                 </option>
-              }
-            </select>
+                @if (enseignantsLecteurs.length > 0) {
+                  <option
+                    *ngFor="let enseignantLecteur of enseignantsLecteurs"
+                    [value]="enseignantLecteur.idPersonnel"
+                  >
+                    {{ enseignantLecteur.prenom?.[0] }}. {{ enseignantLecteur.nom }}
+                  </option>
+                }
+              </select>
+            }
+            @else {
+              <input type="text" name="lecteur" id="lecteur" formControlName="lecteur" [value]="soutenance.lecteur">
+            }
+          </div>
           <div
             class="error-message"
             *ngIf="submitted && soutenanceForm.get('lecteur')?.hasError('required')"
           >
             Veuillez sélectionner un enseignant lecteur.
           </div>
-          }
-          @if (!editMode) {
-            <input type="text" name="lecteur" id="lecteur" [value]="soutenance.lecteur" [disabled]="!editMode">
-          }
         </div>
         <!--Heure de début et de fin-->
         <div class="line-wrapper">
@@ -79,14 +81,9 @@
                     name="heureDebut"
                     id="heureDebut"
                     formControlName="heureDebut"
-                    [disabled]="!editMode"            >
-              <div
-                class="error-message"
-                *ngIf="submitted && soutenanceForm.get('heureDebut')?.hasError('required')"
               >
-                Veuillez sélectionner une heure de début.
-              </div>
             </div>
+
           </div>
           <div class="input-wrapper">
             <label for="heureFin">Heure fin :</label>
@@ -94,76 +91,83 @@
                    name="heureFin"
                    id="heureFin"
                    formControlName="heureFin"
-                   [disabled]="!editMode"
             >
           </div>
-          <div
-            class="error-message"
-            *ngIf="submitted && soutenanceForm.get('heureFin')?.hasError('required')"
-          >
-            Veuillez sélectionner une heure de fin.
-          </div>
-          <div class="error-message" *ngIf="soutenanceForm.hasError('hourOrder')">
-            L'heure de fin doit être postérieure à l'heure de début.
-          </div>
+        </div>
+        <div
+          class="error-message"
+          *ngIf="submitted && soutenanceForm.get('heureDebut')?.hasError('required')"
+        >
+          Veuillez sélectionner une heure de début.
+        </div>
+        <div
+          class="error-message"
+          *ngIf="submitted && soutenanceForm.get('heureFin')?.hasError('required')"
+        >
+          Veuillez sélectionner une heure de fin.
+        </div>
+        <div class="error-message" *ngIf="soutenanceForm.hasError('hourOrder')">
+          L'heure de fin doit être postérieure à l'heure de début.
         </div>
         <!--Jour et salle-->
         <div class="line-wrapper">
-          <div class="input-wrapper">
-            <label for="jour">Jour :</label>
-            @if (editMode) {
-              <select
-                name="jour"
-                id="jour"
-                formControlName="jour"
-                [disabled]="!editMode"
-              >
-                <option
-                  *ngFor="let dateAcceptee of datesAcceptees"
-                  [value]="dateAcceptee"
-                  [disabled]="!editMode"
+          <div>
+            <div class="input-wrapper">
+              <label for="jour">Jour :</label>
+              @if (editMode) {
+                <select
+                  name="jour"
+                  id="jour"
+                  formControlName="jour"
                 >
-                  {{ formatStringDate(dateAcceptee) }}
-                </option>
-              </select>
+                  <option
+                    *ngFor="let dateAcceptee of datesAcceptees"
+                    [value]="dateAcceptee"
+                  >
+                    {{ formatStringDate(dateAcceptee) }}
+                  </option>
+                </select>
+              }
+              @else {
+                <input type="date" name="jour" id="jour" formControlName="jour" [value]="dateSoutenance">
+              }
+            </div>
+          </div>
+          <div>
+            <div>
+              <div class="input-wrapper">
+                <label for="salle">Salle :</label>
+                @if (editMode) {
+                  <select
+                    name="salle"
+                    id="salle"
+                    formControlName="salle"
+                  >
+                    <option
+                      *ngFor="let salle of sallesDispo"
+                      [value]="salle"
+                    >
+                      {{ salle }}
+                    </option>
+                  </select>
+                }
+                @else {
+                  <input type="text" name="salle" id="salle" formControlName="salle" [value]="soutenance.salle">
+                }
+              </div>
               <div
                 class="error-message"
                 *ngIf="submitted && soutenanceForm.get('jour')?.hasError('required')"
               >
                 Veuillez sélectionner un jour.
               </div>
-            }
-            @else {
-              <input type="date" name="jour" id="jour" [disabled]="!editMode" [value]="dateSoutenance">
-            }
-          </div>
-          <div class="input-wrapper">
-            <label for="salle">Salle :</label>
-            @if (editMode) {
-              <select
-                name="salle"
-                id="salle"
-                formControlName="salle"
-                [disabled]="!editMode"
-              >
-                <option
-                  *ngFor="let salle of sallesDispo"
-                  [value]="salle"
-                  [disabled]="!editMode"
-                >
-                  {{ salle }}
-                </option>
-              </select>
               <div
                 class="error-message"
                 *ngIf="submitted && soutenanceForm.get('salle')?.hasError('required')"
               >
                 Veuillez sélectionner une salle.
               </div>
-            }
-            @else {
-              <input type="text" name="salle" id="salle" [value]="soutenance.salle" [disabled]="!editMode">
-            }
+            </div>
           </div>
         </div>
         <!-- Boutons (mode édition) -->
