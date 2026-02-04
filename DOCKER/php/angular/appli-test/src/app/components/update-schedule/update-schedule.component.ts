@@ -110,22 +110,18 @@ export class UpdateScheduleComponent implements AfterViewInit {
         this.allTrainingAcademicYears = result.trainingAcademicYears;
         this.allAcademicYears = result.academicYear;
         this.allReferents = result.referent;
-        console.log("le planning",this.planning)
         this.jours = getDatesBetween(
           this.planning.dateDebut!, 
           this.planning.dateFin!
         );
         console.log("les jours",this.jours)
         this.allSoutenances = (result.soutenance.filter(s => s.idPlanning == this.planning.idPlanning));
-        console.log("les soutenances",this.allSoutenances)
 
         this.sallesDispo = (result.salles.filter(s => s.estDisponible).map(s => s.nomSalle));
         this.allStudents = result.students;
         this.allStaff = result.staff;
         this.allCompanies =result.companies;
-        console.log("les soutenances avant slot",this.allSoutenances)
         this.slots = await convertSoutenancesToSlots(this.allSoutenances, this.allStudents, this.allStaff, this.allCompanies,this.allTutors, this.allReferents, this.allTrainingAcademicYears, this.planning.idAnneeUniversitaire);
-        console.log("les slots",this.slots)
         
         this.allDataLoaded = true;
         this.cdRef.detectChanges(); 

@@ -49,8 +49,6 @@ export class ScheduleBoardComponent implements OnInit {
   constructor(private cdRef: ChangeDetectorRef) {}
 
   async ngOnInit() {
-    console.log("planningbyday au tt début ds schedule-board", this.planningByDay)
-      console.log("RECUP",this.slots,this.sallesDispo)
       // Toujours commencer les blocs à une heure 'pile' donc sans minutes
       const converted = this.timeBlocks.map((b: TimeBlockConfig) => {
       const startMin = this.toMinutes(b.start);
@@ -77,12 +75,10 @@ export class ScheduleBoardComponent implements OnInit {
       ...b,
       heightPercent: (b.duration / totalMinutes) * 100,
     }));
-    console.log("les blocs:",this.blocks)
 
     this.blocks.forEach((block) => {
       this.slotsCache.set(block, this.calculateSlotsInBlock(block, this.planningByDay[this.jourActuel.toISOString().slice(0,10)]));
     });
-    console.log("planningbyday au début ds schedule-board", this.planningByDay)
   }
 
   toMinutes(str: string): number {
@@ -139,7 +135,6 @@ export class ScheduleBoardComponent implements OnInit {
   }
 
   onEditSlot(slot: SlotItem) {
-    console.log("slot cliqué, dans schedule board", slot);
     this.editSlot.emit(slot);
   }
 
@@ -154,8 +149,6 @@ export class ScheduleBoardComponent implements OnInit {
     const draggedSlot = event.item.data as SlotItem;
     const dayKey = targetDay.toISOString().slice(0,10);
     this.planningByDay[dayKey] ??= [];
-    console.log("slot dragué",draggedSlot)
-    console.log("jour droppé ? ", targetDay)
 
     const prevState = {
       dateDebut: draggedSlot.dateDebut,
@@ -170,15 +163,12 @@ export class ScheduleBoardComponent implements OnInit {
 
     if (container && targetDay && block) {
       const rect = container.getBoundingClientRect();
-      console.log("rect ?", rect)
 
       // Recherche de la salle choisie (retourne null si le slot a été laché en dehors du planning)
       const newRoom = this.xToRoom(event.dropPoint.x);
-      console.log("nouvelle salle ? ", newRoom)
 
       if(newRoom === null){
         //Le slot est drag dans la zone d'attente s'il n'y a aucune salle
-        console.log("transfert dans zone attente")
         if(!this.items.find(i => i.id === draggedSlot.id)){
           draggedSlot.duree = duration;
           draggedSlot.dateDebut = null;
@@ -191,15 +181,12 @@ export class ScheduleBoardComponent implements OnInit {
             this.planningByDay[key] = this.planningByDay[key].filter(s => s.id !== draggedSlot.id);
           }
         }
-        console.log("zone attente : ", this.items)
-        console.log("new planning by day: ",this.planningByDay)
 
         this.rebuildSlotsCache();
         this.cdRef.detectChanges();
       }
       else{
         // S'il y a une salle le slot est droppé dans la salle au bon endroit
-        console.log("transfert dans zone planning")
         duration == null ? duration = draggedSlot.duree : duration = duration;
         
         const containerTop = rect.top;
@@ -214,25 +201,21 @@ export class ScheduleBoardComponent implements OnInit {
           this.jourActuel, 
           duration! / 60000 //durée de la soutenance en minutes
         );
-        console.log("new heure deb et new bloc",newStart, newBloc)
       
         const newEnd = new Date(newStart.getTime() + duration!);
 
         // Nouvelle position du slot (topPercent)
         const top = (newStart.getHours() * 60 + newStart.getMinutes()) - newBloc.startMin;
         const newTop = (top / newBloc.duration) * 100;
-        console.log("newTop : ",newTop)
 
         const existingSlots = this.planningByDay[dayKey].filter(s =>
           s.id !== draggedSlot.id &&
           (s.salle === newRoom ||
           (s.dateDebut! < newEnd && s.dateFin! > newStart))
         );
-        console.log("slots existants : ", existingSlots)
       
         // Vérification de la disponibilité du créneau choisit et de la disponibilité des profs
         if (!this.canPlaceSlot(newStart, newEnd, draggedSlot.referent, draggedSlot.lecteur, newRoom, existingSlots)) {
-          console.log("erreur de drop ?", this.dropError)
           // Le slot revient à sa place
           this.dropError.forEach(e => {
             this.toastr.error(e, 'Impossible de placer la soutenance.');
@@ -265,7 +248,6 @@ export class ScheduleBoardComponent implements OnInit {
         draggedSlot.dateFin = newEnd;
         draggedSlot.salle = newRoom;
         draggedSlot.topPercent = newTop;
-        console.log("le slot drag droppé",draggedSlot)
         // Si le slot a changé de date on le supprime de l'ancienne dans planningByDay
         if(lastDate != null && dayKey !== lastDate){
           this.planningByDay[lastDate] = this.planningByDay[lastDate].filter(s => s.id !== draggedSlot.id)
@@ -279,8 +261,6 @@ export class ScheduleBoardComponent implements OnInit {
         this.cdRef.detectChanges();
       }
     }
-    console.log("liste d'items",this.items)
-    console.log("liste planning by day",this.planningByDay)
 
     this.slotUpdated.emit({
       planningByDay: this.planningByDay, 
@@ -288,12 +268,10 @@ export class ScheduleBoardComponent implements OnInit {
   }
 
   onPlanningDrop(event: CdkDragDrop<any>) {
-    console.log('DROP DANS PLANNING');
   
     const planningEl = document.querySelector('.planning') as HTMLElement;
   
     if (!planningEl) {
-      console.warn('planning introuvable');
       return;
     }
   
@@ -301,7 +279,6 @@ export class ScheduleBoardComponent implements OnInit {
     const result = this.findBlockAndRowFromY(event.dropPoint.y);
 
     if (!result) {
-      console.warn('bloc ou row introuvable');
       return;
     }
 
@@ -369,12 +346,10 @@ export class ScheduleBoardComponent implements OnInit {
   ): boolean {
     this.dropError = [];
     const hasOverlap = existingSlots.some(s => this.overlaps(start, end, salle, s.dateDebut!, s.dateFin!, s.etudiant, s.salle!));
-    console.log("slot plaçable ?",!hasOverlap)
     if(hasOverlap){
       return false;
     }
     const teacherAvailable = existingSlots.every(s => this.teachersOk(referent, lecteur, salle, s.referent, s.lecteur, s.salle!));
-    console.log(" profs bons ?", teacherAvailable)
     return teacherAvailable;
   }
   
@@ -394,48 +369,37 @@ export class ScheduleBoardComponent implements OnInit {
     const { start, end } = blocConfig[bloc];
     let timeBloc = this.blocks.find(b => b.type == bloc);
     const relativeY = mouseY - containerTop;
-    console.log("le timeblock, le top et height container et la souris : ", timeBloc, containerTop, containerHeight, mouseY, relativeY)
     const ratio = relativeY / containerHeight;
     const hour = start! + ratio * (end! - start!);
   
     let h = Math.floor(hour);
-    console.log("h: ", h, hour)
     // Arrondissement à 5min (drop possible toutes les 5 minutes)
     let m = (Math.round((hour - h) * 60 / 5) * 5) % 60;
-    console.log("debut fin  ytodate: ", start, end)
-    console.log("heure ytodate: ", h, m, duree)
-    console.log("heure fin: ", h*60, h, h*60+duree, (h*60+duree)/60)
 
     // Vérifications que les slots sont bien dans les bons blocs et ne dépasse pas
     // Réglage du matin pour éviter avant début (sécurité mais pas forcément utile)
     if(h < start && bloc == "morning"){
-      console.log("hour dépasse le début du bloc morning")
       h = start;
       m = 0;
     }
     // Passage du matin à l'après-midi
     else if(h >= end && bloc == "morning"){
-      console.log("hour dépasse la fin du bloc morning")
       h = h + (blocConfig["afternoon"].start - end);
       timeBloc = this.blocks.find(b => b.type == "afternoon");
     }
     // Passage de l'après-midi au matin
     else if(h < start && bloc == "afternoon"){
-      console.log("hour dépasse le début du bloc afternoon")
       h = h - (start - blocConfig["morning"].end);
-      console.log("new hour : ", h)
       timeBloc = this.blocks.find(b => b.type == "morning");
     }
     // Réglage pour éviter que le slot commence avant et finisse après la fin d'un bloc
     else if(h < end && h*60+duree+m > end*60){
-      console.log("la fin du créneau dépasse la fin de son bloc : ", h*60+duree, end*60, (end*60-duree)/60)
       const hour = (end*60-duree)/60;
       h = Math.floor(hour);
       m = (Math.round((hour - h) * 60 / 5) * 5) % 60;
     }
     // Réglage de l'après-midi pour éviter qu'il commence après la fin du bloc (sécurité mais pas forcément utile)
     else if(h >= end && bloc == "afternoon"){
-      console.log("hour dépasse la fin du bloc afternoon")
       const hour = (end*60-duree)/60;
       h = Math.floor(hour);
       m = (Math.round((hour - h) * 60 / 5) * 5) % 60;
@@ -477,13 +441,11 @@ export class ScheduleBoardComponent implements OnInit {
 
   // Ligne guide des heures
   onDragStarted(event: any) {
-    console.log("test drag started")
     this.isDragging = true; // Activer la ligne guide
   }
   
   onDragMoved(event: any) {
     if (!this.isDragging) return;
-    console.log("test drag moved")
     
     const mouseY = event.pointerPosition.y;
     
@@ -530,7 +492,6 @@ export class ScheduleBoardComponent implements OnInit {
   
   onDragEnded(event: any) {
     // Cacher la ligne guide
-    console.log("test drag ended")
     this.isDragging = false;
     this.currentBlock = null;
   }

@@ -129,9 +129,6 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
       this.allReferents = data.referents;
       this.allSalles = data.salles;
 
-      console.log("les referents et autre :", this.allReferents);
-      console.log("les academic year et autre :", this.allAcademicYears);
-
       this.sallesDispo = data.salles
         .filter((s) => s.estDisponible)
         .map((s) => s.nomSalle);
@@ -279,7 +276,6 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
   }
 
   openModal(slot: SlotItem) {
-    console.log("le slot sélectionné : ", slot);
     this.selectedSoutenance = slot!;
     this.idSoutenance = this.selectedSoutenance!.id;
     this.isModalSoutenanceOpen = true;
@@ -341,7 +337,6 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
         this.allAcademicYears,
         this.cdRef,
       );
-      console.log("les slots ?", this.slots);
       this.slots.forEach(slot => {
         const dayKey = slot.dateDebut ? slot.dateDebut.toISOString().slice(0,10) : "attente"; // "YYYY-MM-DD"
         if (!this.planningByDay[dayKey]) this.planningByDay[dayKey] = [];
