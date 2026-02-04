@@ -22,7 +22,7 @@ class AnneeUniversitaireControllerTest extends TestCase
         $this->artisan('db:seed');
     }
 
-        /*
+    /*
     ================================
         TEST DE LA METHODE INDEX
     ================================
@@ -34,7 +34,7 @@ class AnneeUniversitaireControllerTest extends TestCase
         $response = $this->get('/api/annee-universitaire');
 
         $response->assertStatus(200)
-                 ->assertJson($anneesUniversitaires->toArray());
+            ->assertJson($anneesUniversitaires->toArray());
     }
 
     /*
@@ -49,7 +49,7 @@ class AnneeUniversitaireControllerTest extends TestCase
         $response = $this->post('/api/annee-universitaire/create', $donnees);
 
         $response->assertStatus(201)
-                 ->assertJson($donnees);
+            ->assertJson($donnees);
     }
 
     public function test_store_renvoie_une_erreur_de_validation()
@@ -59,22 +59,23 @@ class AnneeUniversitaireControllerTest extends TestCase
         $response = $this->post('/api/annee-universitaire/create', $donnees);
 
         $response->assertStatus(422)
-                 ->assertJson(['message' => 'Erreur de validation des données']);
+            ->assertJson(['message' => 'Erreur de validation des données']);
     }
 
     public function test_store_renvoie_une_erreur_generique_en_cas_d_exception()
     {
         // Mock du modèle pour forcer une exception lors de create()
-        $this->mock(AnneeUniversitaire::class, function ($mock) {
-            $mock->shouldReceive('create')->andThrow(new \Exception('Erreur simulée'));
-        });
+
+        Mockery::mock('alias:App\Models\AnneeUniversitaire')
+            ->shouldReceive('create')
+            ->andThrow(new \Exception('Erreur simulée'));
 
         $donnees = ['libelle' => '2025-2026'];
 
         $response = $this->post('/api/annee-universitaire/create', $donnees);
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => "Une erreur s'est produite :"]);
+            ->assertJson(['message' => "Une erreur s'est produite :"]);
     }
 
     /*
@@ -86,20 +87,20 @@ class AnneeUniversitaireControllerTest extends TestCase
     {
         $anneeUniversitaire = AnneeUniversitaire::first();
 
-        $response = $this->get('/api/annee-universitaire/'.$anneeUniversitaire->idAnneeUniversitaire);
+        $response = $this->get('/api/annee-universitaire/' . $anneeUniversitaire->idAnneeUniversitaire);
 
         $response->assertStatus(200)
-                 ->assertJson($anneeUniversitaire->toArray());
+            ->assertJson($anneeUniversitaire->toArray());
     }
 
     public function test_show_renvoie_une_erreur_non_trouvee_en_cas_d_annee_universitaire_non_trouvee()
     {
         $id = PHP_INT_MAX;
 
-        $response = $this->get('/api/annee-universitaire/'.$id);
+        $response = $this->get('/api/annee-universitaire/' . $id);
 
         $response->assertStatus(404)
-                 ->assertJson(['message' => 'Aucune année universitaire trouvée']);
+            ->assertJson(['message' => 'Aucune année universitaire trouvée']);
     }
 
     public function test_show_renvoie_une_erreur_generique_en_cas_d_exception()
@@ -111,10 +112,10 @@ class AnneeUniversitaireControllerTest extends TestCase
 
         $uneAnnee = AnneeUniversitaire::first();
 
-        $response = $this->get('/api/annee-universitaire/'.$uneAnnee->idAnneeUniversitaire);
+        $response = $this->get('/api/annee-universitaire/' . $uneAnnee->idAnneeUniversitaire);
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => "Une erreur s'est produite :"]);
+            ->assertJson(['message' => "Une erreur s'est produite :"]);
     }
 
     /*
@@ -127,10 +128,10 @@ class AnneeUniversitaireControllerTest extends TestCase
         $donnees = ['libelle' => '2000-2001'];
         $uneAnnee = AnneeUniversitaire::first();
 
-        $response = $this->putJson('/api/annee-universitaire/update/'.$uneAnnee->idAnneeUniversitaire, $donnees);
+        $response = $this->putJson('/api/annee-universitaire/update/' . $uneAnnee->idAnneeUniversitaire, $donnees);
 
         $response->assertStatus(200)
-                 ->assertJson($donnees);
+            ->assertJson($donnees);
     }
 
     public function test_update_renvoie_une_erreur_de_validation_en_cas_de_donnees_invalides()
@@ -138,10 +139,10 @@ class AnneeUniversitaireControllerTest extends TestCase
         $donnees = ['libelle' => null];
         $uneAnnee = AnneeUniversitaire::first();
 
-        $response = $this->putJson('/api/annee-universitaire/update/'.$uneAnnee->idAnneeUniversitaire, $donnees);
+        $response = $this->putJson('/api/annee-universitaire/update/' . $uneAnnee->idAnneeUniversitaire, $donnees);
 
         $response->assertStatus(422)
-                 ->assertJson(['message' => 'Erreur de validation dans les données']);
+            ->assertJson(['message' => 'Erreur de validation dans les données']);
     }
 
     public function test_update_renvoie_une_erreur_non_trouvee_en_cas_d_annee_universitaire_non_trouvee()
@@ -149,10 +150,10 @@ class AnneeUniversitaireControllerTest extends TestCase
         $id = PHP_INT_MAX;
         $donnees = ['libelle' => '2000-2001'];
 
-        $response = $this->putJson('/api/annee-universitaire/update/'.$id, $donnees);
+        $response = $this->putJson('/api/annee-universitaire/update/' . $id, $donnees);
 
         $response->assertStatus(404)
-                 ->assertJson(['message' => 'Aucune année universitaire trouvée']);
+            ->assertJson(['message' => 'Aucune année universitaire trouvée']);
     }
 
     public function test_update_renvoie_une_erreur_generique_en_cas_d_exception()
@@ -165,10 +166,10 @@ class AnneeUniversitaireControllerTest extends TestCase
         $donnees = ['libelle' => '2000-2001'];
         $uneAnnee = AnneeUniversitaire::first();
 
-        $response = $this->putJson('/api/annee-universitaire/update/'.$uneAnnee->idAnneeUniversitaire, $donnees);
+        $response = $this->putJson('/api/annee-universitaire/update/' . $uneAnnee->idAnneeUniversitaire, $donnees);
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => "Une erreur s'est produite :"]);
+            ->assertJson(['message' => "Une erreur s'est produite :"]);
     }
 
     /*
@@ -180,20 +181,20 @@ class AnneeUniversitaireControllerTest extends TestCase
     {
         $uneAnnee = AnneeUniversitaire::orderBy('idAnneeUniversitaire', 'desc')->first();
 
-        $response = $this->delete('/api/annee-universitaire/delete/'.$uneAnnee->idAnneeUniversitaire);
+        $response = $this->delete('/api/annee-universitaire/delete/' . $uneAnnee->idAnneeUniversitaire);
 
         $response->assertStatus(200)
-                 ->assertJson(['message' => 'L\'année universitaire a bien été supprimée']);
+            ->assertJson(['message' => 'L\'année universitaire a bien été supprimée']);
     }
 
     public function test_destroy_renvoie_une_erreur_non_trouvee_en_cas_d_annee_universitaire_non_trouvee()
     {
         $id = PHP_INT_MAX;
 
-        $response = $this->delete('/api/annee-universitaire/delete/'.$id);
+        $response = $this->delete('/api/annee-universitaire/delete/' . $id);
 
         $response->assertStatus(404)
-                 ->assertJson(['message' => 'Aucune année universitaire trouvée']);
+            ->assertJson(['message' => 'Aucune année universitaire trouvée']);
     }
 
     public function test_destroy_renvoie_une_erreur_generique_en_cas_d_exception()
@@ -205,10 +206,10 @@ class AnneeUniversitaireControllerTest extends TestCase
 
         $uneAnnee = AnneeUniversitaire::first();
 
-        $response = $this->delete('/api/annee-universitaire/delete/'.$uneAnnee->idAnneeUniversitaire);
+        $response = $this->delete('/api/annee-universitaire/delete/' . $uneAnnee->idAnneeUniversitaire);
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => "Une erreur s'est produite :"]);
+            ->assertJson(['message' => "Une erreur s'est produite :"]);
     }
 
     protected function tearDown(): void
