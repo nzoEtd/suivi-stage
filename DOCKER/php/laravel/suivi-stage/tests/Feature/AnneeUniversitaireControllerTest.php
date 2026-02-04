@@ -103,16 +103,15 @@ class AnneeUniversitaireControllerTest extends TestCase
             ->assertJson(['message' => 'Aucune année universitaire trouvée']);
     }
 
+
+
     public function test_show_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        // Mock findOrFail pour forcer une exception
-        $this->mock(AnneeUniversitaire::class, function ($mock) {
-            $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
-        });
+        Mockery::mock('alias:App\Models\AnneeUniversitaire')
+            ->shouldReceive('findOrFail')
+            ->andThrow(new \Exception('Erreur simulée'));
 
-        $uneAnnee = AnneeUniversitaire::first();
-
-        $response = $this->get('/api/annee-universitaire/' . $uneAnnee->idAnneeUniversitaire);
+        $response = $this->get('/api/annee-universitaire/1');
 
         $response->assertStatus(500)
             ->assertJson(['message' => "Une erreur s'est produite :"]);
@@ -158,19 +157,18 @@ class AnneeUniversitaireControllerTest extends TestCase
 
     public function test_update_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        // Mock findOrFail pour forcer une exception lors de update
-        $this->mock(AnneeUniversitaire::class, function ($mock) {
-            $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
-        });
+        Mockery::mock('alias:App\Models\AnneeUniversitaire')
+            ->shouldReceive('findOrFail')
+            ->andThrow(new \Exception('Erreur simulée'));
 
         $donnees = ['libelle' => '2000-2001'];
-        $uneAnnee = AnneeUniversitaire::first();
 
-        $response = $this->putJson('/api/annee-universitaire/update/' . $uneAnnee->idAnneeUniversitaire, $donnees);
+        $response = $this->putJson('/api/annee-universitaire/update/1', $donnees);
 
         $response->assertStatus(500)
             ->assertJson(['message' => "Une erreur s'est produite :"]);
     }
+
 
     /*
     ================================
@@ -199,18 +197,16 @@ class AnneeUniversitaireControllerTest extends TestCase
 
     public function test_destroy_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        // Mock findOrFail pour forcer une exception lors du delete
-        $this->mock(AnneeUniversitaire::class, function ($mock) {
-            $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
-        });
+        Mockery::mock('alias:App\Models\AnneeUniversitaire')
+            ->shouldReceive('findOrFail')
+            ->andThrow(new \Exception('Erreur simulée'));
 
-        $uneAnnee = AnneeUniversitaire::first();
-
-        $response = $this->delete('/api/annee-universitaire/delete/' . $uneAnnee->idAnneeUniversitaire);
+        $response = $this->delete('/api/annee-universitaire/delete/1');
 
         $response->assertStatus(500)
             ->assertJson(['message' => "Une erreur s'est produite :"]);
     }
+
 
     protected function tearDown(): void
     {
