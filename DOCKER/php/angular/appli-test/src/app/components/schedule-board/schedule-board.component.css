@@ -38,6 +38,7 @@
   align-items: center;
   flex-shrink: 0;
   padding-left: 35px;
+ 
 }
 
 .hours-header {
@@ -167,6 +168,7 @@
 .slot{
   margin-left: 4%;
   width: 90%;
+  margin-top: 1px;
   border-radius: 8px;
   max-width: 400px;
   position: absolute;
