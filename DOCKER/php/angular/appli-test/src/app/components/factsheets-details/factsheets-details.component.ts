@@ -325,7 +325,8 @@ export class SheetDetailsComponent implements OnInit {
                         adresseMail: '',
                         longitudeAdresse: '0',
                         latitudeAdresse: '0',
-                        quotaEtudiant: 0
+                        quotaEtudiant: 0,
+                        estTechnique: 0
                     };
                 },
                 error: (error) => {

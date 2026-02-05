@@ -14,6 +14,7 @@ export class Staff {
   longitudeAdresse: string | null;
   latitudeAdresse: string | null;
   quotaEtudiant: number | null;
+  estTechnique: number | null;
 
   constructor(
     idPersonnel: number,
@@ -27,7 +28,8 @@ export class Staff {
     adresseMail: string,
     longitudeAdresse: string,
     latitudeAdresse: string,
-    quotaEtudiant: number
+    quotaEtudiant: number,
+    estTechnique: number
   ) {
     this.idPersonnel = idPersonnel;
     this.role = role;
@@ -41,6 +43,7 @@ export class Staff {
     this.longitudeAdresse = longitudeAdresse;
     this.latitudeAdresse = latitudeAdresse;
     this.quotaEtudiant = quotaEtudiant;
+    this.estTechnique = estTechnique;
   }
 }
 

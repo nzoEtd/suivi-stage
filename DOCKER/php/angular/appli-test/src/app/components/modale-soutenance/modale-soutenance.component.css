@@ -17,7 +17,7 @@
   background: #EFF6FF;
   border-radius: 12px;
   padding: 25px 30px;
-  width: 500px; 
+  width: 520px; 
   max-width: 90%; 
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   position: relative;
@@ -47,14 +47,18 @@
   color: #666;
 }
 
+.loading-overlay {
+  margin-top: 100px;
+}
+
 .form {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-span {
-  font-weight: 700;
+input[disabled] {
+  background-color: #d6d6d6 !important;
 }
 
 /* Input wrapper */
@@ -89,7 +93,6 @@ span {
   display: flex;
   gap: 20px;
   width: 100%;
-  flex-wrap: wrap;
 }
 
 .line-wrapper .input-wrapper {
@@ -214,3 +217,11 @@ span {
   color: #fff;
 }
 
+.error-message {
+  color: #d32f2f;
+  background-color: #fdecea;
+  padding: 6px 10px;
+  border-radius: 4px;
+  margin-top: 8px;
+  font-size: 0.9rem;
+}

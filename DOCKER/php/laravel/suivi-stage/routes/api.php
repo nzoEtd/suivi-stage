@@ -130,6 +130,7 @@ Route::resource('salle', SalleController::class);
 Route::resource('planning', PlanningController::class);
 
 // Route pour le Controller Soutenance
+Route::put('/soutenance/update/{idSoutenance}', [SoutenanceController::class, 'update'])->name('soutenance.update');
 Route::resource('soutenance', SoutenanceController::class);
 Route::post('soutenance/create-many', [SoutenanceController::class, 'storeMany']);
 
