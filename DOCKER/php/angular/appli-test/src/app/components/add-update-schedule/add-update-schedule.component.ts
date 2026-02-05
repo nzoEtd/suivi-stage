@@ -16,11 +16,14 @@ import { TimeBlockConfig } from "../../models/timeBlock.model";
 import { ModaleSoutenanceComponent } from "../modale-soutenance/modale-soutenance.component";
 import { getAllSallesUsed } from "../../utils/fonctions";
 import { PlanningService } from "../../services/planning.service";
-import { Soutenance } from "../../models/soutenance.model";
+import { Soutenance, SoutenanceUpdate } from "../../models/soutenance.model";
 import { Subject, switchMap, takeUntil } from "rxjs";
 import { SoutenanceService } from "../../services/soutenance.service";
 import { formatDateToYYYYMMDD } from "../../utils/timeManagement";
 import { DataStoreService } from "../../services/data.service";
+import { ToastrService } from 'ngx-toastr';
+import { inject } from '@angular/core';
+import { CdkDrag, CdkDropList, CdkDropListGroup, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: "app-add-update-schedule",
@@ -35,6 +38,7 @@ import { DataStoreService } from "../../services/data.service";
 })
 export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   private destroy$ = new Subject<void>();
+  toastr = inject(ToastrService);
 
   @Input() isEditMode!: Boolean;
   @Input() planning: Planning | PlanningCreate | undefined;
@@ -50,7 +54,13 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   selectedSoutenance?: SlotItem;
   idSoutenance?: number;
   sallesAffiches: number[] = [];
+  finalSlots: SoutenanceUpdate[] = [];
+  isValidating: boolean = false;
 
+  //Variables drag and drop
+  planningByDay: Record<string, SlotItem[]> = {};
+  items: SlotItem[] = [];
+  
   constructor(
     private readonly planningService: PlanningService,
     private readonly soutenanceService: SoutenanceService,
@@ -98,6 +108,14 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
           this.selectedJour,
           this.slots
         );
+        let idSlotTemp = 0;
+        this.slots.forEach(slot => {
+          idSlotTemp++;
+          slot.id == -1 ? slot.id = idSlotTemp: slot.id = slot.id;
+          const dayKey = slot.dateDebut ? slot.dateDebut.toISOString().slice(0,10) : "attente"; // "YYYY-MM-DD"
+          if (!this.planningByDay[dayKey]) this.planningByDay[dayKey] = [];
+          this.planningByDay[dayKey].push(slot);
+        });
         this.allDataLoaded = true;
         this.cdRef.detectChanges();
       } else {
@@ -117,6 +135,9 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
 
   updateJour(jour: Date) {
     this.selectedJour = jour;
+    const dayKey = this.selectedJour.toISOString().slice(0,10);
+    const slotsDuJour = this.planningByDay[dayKey] || [];
+
     this.sallesAffiches = getAllSallesUsed(
       this.salles,
       this.selectedJour,
@@ -124,29 +145,49 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     );
   }
 
-  openModal(): void {
-    this.isModalOpen = true;
-  }
-
   exit() {
     this.router.navigate(["/schedule"]);
   }
 
   openEditModal(slot: SlotItem) {
-    console.log("le slot sélectionné : ", slot);
     this.selectedSoutenance = slot;
     this.idSoutenance = this.selectedSoutenance!.id;
     this.isModalOpen = true;
   }
 
-  onSoutenanceSaved(updatedSoutenance: any) {
+  updateSoutenance(updatedSoutenance: any){
     this.isModalOpen = false;
   }
 
   onValidate() {
-    console.log("Validation du planning");
+    this.isValidating = true;
+    this.finalSlots = this.convertSlotsToSoutenances();
+    if(this.finalSlots.length == 0) {
+      this.toastr.error("Toutes les soutenances ne sont pas placées", "Impossible d'enregistrer le planning.");
+      this.isValidating = false;
+      return;
+    }
     if (this.isEditMode) {
       // UPDATE
+      console.log("UPDATING Planning:", this.planning);
+      console.log("UPDATING Soutenances:", this.finalSlots);
+      this.soutenanceService.updateManySoutenance(
+        this.finalSlots
+      )
+      .subscribe({
+        next: () => {
+          // Rafraîchir les données du store après la création
+          this.dataStore.refreshKeys(["soutenances"]);
+          this.isValidating = false;
+          this.toastr.success("Les modifications ont bien été prises en comptes.", "Planning enregistré.");
+
+          this.exit();
+        },
+        error: (err) => {
+          this.isValidating = false;
+          this.toastr.error(err, "Impossible d'enregistrer le planning.");
+        },
+      });
     } else {
       //CREATE
       const { idPlanning, ...plannToCreate } = this.planning as Planning;
@@ -167,7 +208,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
             const planningId = createdPlanning.idPlanning;
             console.log("Planning créé avec id:", planningId);
 
-            const soutenancesToCreate = this.soutenances.map(
+            const soutenancesToCreate = this.finalSlots.map(
               ({ idSoutenance, date, ...soutenance }) => ({
                 ...soutenance,
                 date: formatDateToYYYYMMDD(date),
@@ -183,17 +224,53 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
         )
         .subscribe({
           next: () => {
-            console.log("Planning + soutenances créés");
-            
             // Rafraîchir les données du store après la création
             this.dataStore.refreshKeys(["plannings", "soutenances"]);
+            this.isValidating = false;
+            this.toastr.success("L'ajout a bien été prises en comptes.", "Planning enregistré.");
             
-            this.router.navigate(["/schedule"]);
+            this.exit();
           },
           error: (err) => {
-            console.error("Erreur lors de la création", err);
+            this.isValidating = false;
+            this.toastr.error(err, "Impossible d'enregistrer le planning.");
           },
         });
     }
+  }
+
+  //Fonctions drag and drop
+  onSlotUpdated(event: {planningByDay: Record<string, SlotItem[]>, items: SlotItem[]}) {
+    this.items = event.items;
+    this.planningByDay = event.planningByDay;
+  }
+  
+  getAllSlots(): SlotItem[] {
+    return Object.values(this.planningByDay).flat();
+  }
+
+  convertSlotsToSoutenances(): SoutenanceUpdate[] {
+    let soutenances: SoutenanceUpdate[] = [];
+    const slots = this.getAllSlots();
+    const planning = this.planning as Planning;
+    const idPlanning = planning.idPlanning;
+
+    if(this.items.length == 0){
+      slots.forEach(s => {
+        soutenances.push({
+          idSoutenance: s.id,
+          date: s.dateDebut!.toISOString().slice(0, 10),
+          nomSalle: s.salle,
+          heureDebut: s.dateDebut!.getHours().toString().padStart(2, '0') + ":" + s.dateDebut!.getMinutes().toString().padStart(2, '0'),
+          heureFin: s.dateFin!.getHours().toString().padStart(2, '0') + ":" + s.dateFin!.getMinutes().toString().padStart(2, '0'),
+          idUPPA: s.idUPPA,
+          idLecteur: s.idLecteur,
+          idPlanning: idPlanning
+        });
+      })
+
+      return soutenances;
+    }
+    return [];
   }
 }

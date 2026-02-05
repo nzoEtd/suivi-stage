@@ -57,7 +57,7 @@ class SoutenanceController extends Controller
                 'heureFin' => 'required|date_format:H:i|after:heureDebut',
                 'nomSalle' => 'required|integer',
                 'idPlanning' => 'required|integer',
-                'idUPPA' => 'required|integer',
+                'idUPPA' => 'required|string',
                 'idLecteur' => 'required|integer',
             ]);
 
@@ -103,7 +103,7 @@ class SoutenanceController extends Controller
                     'heureFin' => 'required|date_format:H:i|after:heureDebut',
                     'nomSalle' => 'required|integer',
                     'idPlanning' => 'required|integer',
-                    'idUPPA' => 'required|integer',
+                    'idUPPA' => 'required|string',
                     'idLecteur' => 'required|integer',
                 ])->validate();
 
@@ -185,7 +185,7 @@ class SoutenanceController extends Controller
                 'heureFin' => 'required|date_format:H:i|after:heureDebut',
                 'nomSalle' => 'required|integer',
                 'idPlanning' => 'required|integer',
-                'idUPPA' => 'required|integer',
+                'idUPPA' => 'required|string',
                 'idLecteur' => 'required|integer',
             ]);
 
@@ -200,6 +200,116 @@ class SoutenanceController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => 'Une erreur s\'est produite', 'exception' => $e->getMessage()], 500);
         }
+    }
+
+    /**
+     * Modifie plusieurs soutenances en une seule requête
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     * Code HTTP retourné :
+     *      - Code 200 : si la soutenance a bien été modifiée
+     *      - Code 404 : si la soutenance n'a pas été trouvée
+     *      - Code 422 : s'il y a eu une erreur de validation des données
+     *      - Code 500 : s'il y a eu une erreur
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \Exception
+     */
+    public function updateMany(Request $request)
+    {
+        try {
+            // Vérifier que les données sont bien reçues
+            if (!$request->has('soutenances') || !is_array($request->input('soutenances'))) {
+                return response()->json([
+                    'message' => 'Le champ soutenances est manquant ou invalide',
+                    'received' => $request->all()
+                ], 400);
+            }
+    
+            $donneesValidees = $request->validate([
+                'soutenances' => 'required|array',
+                'soutenances.*.idSoutenance' => 'required|integer',
+                'soutenances.*.date' => 'required|date',
+                'soutenances.*.heureDebut' => 'required|string',
+                'soutenances.*.heureFin' => 'required|string',
+                'soutenances.*.nomSalle' => 'required|integer',
+                'soutenances.*.idPlanning' => 'required|integer',
+                'soutenances.*.idUPPA' => 'required|string',
+                'soutenances.*.idLecteur' => 'required|integer',
+            ]);
+    
+            $updatedCount = 0;
+            $errors = [];
+    
+            foreach ($donneesValidees['soutenances'] as $item) {
+                try {
+                    $soutenance = Soutenance::find($item['idSoutenance']);
+                    
+                    if ($soutenance) {
+                        $soutenance->update([
+                            'date' => $item['date'],
+                            'heureDebut' => $item['heureDebut'],
+                            'heureFin' => $item['heureFin'],
+                            'nomSalle' => $item['nomSalle'],
+                            'idPlanning' => $item['idPlanning'],
+                            'idUPPA' => $item['idUPPA'],
+                            'idLecteur' => $item['idLecteur'],
+                        ]);
+                        $updatedCount++;
+                    } else {
+                        $errors[] = "Soutenance {$item['idSoutenance']} non trouvée";
+                    }
+                } catch (\Exception $e) {
+                    $errors[] = "Erreur sur soutenance {$item['idSoutenance']}: " . $e->getMessage();
+                }
+            }
+    
+            return response()->json([
+                'message' => 'Mise à jour terminée',
+                'updated' => $updatedCount,
+                'total' => count($donneesValidees['soutenances']),
+                'errors' => $errors
+            ], 200);
+    
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Erreur de validation',
+                'erreurs' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Une erreur s\'est produite',
+                'exception' => $e->getMessage()
+            ], 500);
+        }
+        // try {
+        //     $updatedSoutenances = [];            
+
+        //     $donneesValidees = $request->validate([
+        //         'soutenances.*.idSoutenance' => 'required|integer',
+        //         'soutenances.*.date' => 'required|date',
+        //         'soutenances.*.heureDebut' => 'required|date_format:H:i',
+        //         'soutenances.*.heureFin' => 'required|date_format:H:i|after:heureDebut',
+        //         'soutenances.*.nomSalle' => 'required|integer',
+        //         'soutenances.*.idPlanning' => 'required|integer',
+        //         'soutenances.*.idUPPA' => 'required|string',
+        //         'soutenances.*.idLecteur' => 'required|integer',
+        //     ]);
+
+        //     foreach ($donneesValidees['soutenances'] as $item) {
+
+        //         $updatedSoutenances[] = Soutenance::where('idSoutenance', $item['idSoutenance'])->update($item);
+        //     }
+
+        //     return response()->json($updatedSoutenances, 200);
+        // } catch (\Illuminate\Validation\ValidationException $e) {
+        //     return response()->json(['message' => 'Erreur de validation', 'erreurs' => $e->errors()], 422);
+        // } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        //     return response()->json(['message' => 'Soutenance non trouvée'], 404);
+        // } catch (\Exception $e) {
+        //     return response()->json(['message' => 'Une erreur s\'est produite', 'exception' => $e->getMessage()], 500);
+        // }
     }
 
     /**

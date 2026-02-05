@@ -64,12 +64,16 @@ export async function convertSoutenancesToSlots(soutenances: Soutenance[], allSt
         heightPercent: 0,
         dateDebut: getDateHeure(s.date!, s.heureDebut!),
         dateFin: getDateHeure(s.date!, s.heureFin!),
+        idUPPA: s.idUPPA ? s.idUPPA : "Numéro étudiant inconnu",
         etudiant: student ? `${student.nom} ${student.prenom}` : "Étudiant inconnu",
+        tierTemps: student?.tierTemps ? student.tierTemps : false,
         referent: referent ? `${referent.prenomPersonnel![0]}. ${referent.nomPersonnel}` : "Pas de référent",
+        idLecteur: s.idLecteur ? s.idLecteur : 0,
         lecteur: lecteur ? `${lecteur.prenom![0]}. ${lecteur.nom}` : "Lecteur inconnu",
         entreprise: company ? company.raisonSociale! : "Pas d'entreprise",
         tuteur: tutor ? `${tutor.nom} ${tutor.prenom}` : "Tuteur d'entreprise inconnu",
         salle: s.nomSalle!,
+        duree: null,
       } ;
   });
 }
@@ -79,7 +83,7 @@ export function getAllSallesUsed(sallesDispo: number[], jour:Date, slots: SlotIt
   const salles: number[] = [];
   slots.forEach(slot => {
     sallesDispo.forEach(salle => {
-      if(salle === slot.salle && !salles.includes(salle) && isSameDay(slot.dateDebut, jour)){
+      if(salle === slot.salle && !salles.includes(salle) && isSameDay(slot.dateDebut!, jour)){
         salles.push(salle);
       }
     });

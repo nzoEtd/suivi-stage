@@ -1,63 +1,64 @@
-<div class="add-update-schedule">
-    <div class="slot-box"></div>
-    <div class="schedule">
-        @if (!allDataLoaded) {
+<div class="schedule">
+        @if (!allDataLoaded || isValidating) {
             <app-loading/>
         }
-        @else{
-            @if(!planning || planning === undefined || planning === null) {
-                @if(isEditMode){
-                    <h1 class="warning"><b>Le planning demandé n'existe pas.</b></h1>
-                }
-                @else{
-                    <h1 class="warning"><b>Une erreur est survenue avec les données du nouveau planning.</b></h1>
-                }
+        @if(!planning || planning === undefined || planning === null) {
+            @if(isEditMode){
+                <h1 class="warning"><b>Le planning demandé n'existe pas.</b></h1>
             }
             @else{
-                <div class="content">
-                    <div class="header-schedule-content">
-                        <div>
-                            <h3>{{planning.nom}}</h3>
-                        </div>
-                    <h3 class="title">{{selectedJour | date:'EEEE dd MMMM yyyy':'':'fr'}}</h3>
-                    <span style="width: 25%;"></span>
-                    </div>
-                    <div>
-                        <div class="schedule-content">
-                            <div class="planning-scroll">
-                                <app-schedule-board
-                                *ngIf="selectedJour"
-                                [jourActuel]="selectedJour"
-                                [slots]="slots"
-                                [sallesDispo]="sallesAffiches"
-                                [timeBlocks]="timeBlocks"
-                                (editSlot)="openEditModal($event)"></app-schedule-board>
-                            </div>
-                            <div class="scroll-day">
-                                <div *ngFor="let jour of jours">
-                                    @if(selectedJour === jour){
-                                        <span class="selectedJour">{{jour | date:'EEE d':'':'fr'}}</span>
-                                    }
-                                    @else {
-                                        <span class="jour" (click)="updateJour(jour)">{{jour | date:'EEE d':'':'fr'}}</span>
-                                    }
-                                </div>
-                            </div>
-                        </div>            
-                    </div>
-                    <div class="footer">
-                        <button class="btn secondary" (click)="exit()"><b>Annuler</b></button>
-                        @if (isEditMode){
-                            <button class="btn primary" (click)="onValidate()"><b>Valider</b></button>
-                        }
-                        @else {
-                            <button class="btn primary" (click)="onValidate()"><b>Ajouter</b></button>
-                        }
-                    </div>
-                </div>
+                <h1 class="warning"><b>Une erreur est survenue avec les données du nouveau planning.</b></h1>
             }
         }
-    </div>
+        @else{
+            <div class="content" [hidden]="!allDataLoaded || isValidating">
+                <div class="header-schedule-content">
+                    <div>
+                        <h3>{{planning.nom}}</h3>
+                    </div>
+                    <span style="width: 2%;"></span>
+                    <h3 class="title">{{selectedJour | date:'EEEE dd MMMM yyyy':'':'fr'}}</h3>
+                    <h4>&#x26A0; Planning non enregistré</h4>
+                </div>
+                <div>
+                    <div class="schedule-content">
+                        <div class="planning-scroll">
+                            <app-schedule-board
+                            *ngIf="selectedJour"
+                            [jourActuel]="selectedJour"
+                            [slots]="slots"
+                            [sallesDispo]="sallesAffiches"
+                            [timeBlocks]="timeBlocks"
+                            [onlyDisplay]="false"
+                            [planningByDay]="planningByDay"
+                            (editSlot)="openEditModal($event)"
+                            (slotUpdated)="onSlotUpdated($event)"></app-schedule-board>
+                        </div>
+                        <div class="scroll-day">
+                            <div *ngFor="let jour of jours">
+                                @if(selectedJour === jour){
+                                    <span class="selectedJour">{{jour | date:'EEE d':'':'fr'}}</span>
+                                }
+                                @else {
+                                    <span class="jour" (click)="updateJour(jour)">{{jour | date:'EEE d':'':'fr'}}</span>
+                                }
+                            </div>
+                        </div>
+                    </div>            
+                </div>
+                <div class="footer">
+                    <button class="btn secondary" (click)="exit()"><b>Annuler</b></button>
+                        <button class="btn primary" (click)="onValidate()"><b>
+                            @if (isEditMode){
+                                Valider
+                            }
+                            @else {
+                                Ajouter
+                            }
+                        </b></button>
+                </div>
+            </div>
+        }
 </div>
 
 <app-modale-soutenance

@@ -3,13 +3,15 @@
     @if (!currentUser || !allDataLoaded) {
     <app-loading />
     }
-    <app-add-update-schedule
-      [isEditMode]="false"
-      [planning]="planning"
-      [slots]="slots"
-      [salles]="sallesDispo"
-      [jours]="jours"
-      [soutenances]="soutenance$"
-    ></app-add-update-schedule>
+    @else{
+      <app-add-update-schedule
+        [isEditMode]="false"
+        [planning]="planning"
+        [slots]="slots"
+        [salles]="sallesDispo"
+        [jours]="jours"
+        [soutenances]="soutenance$"
+      ></app-add-update-schedule>
+    }
   </div>
 </div>

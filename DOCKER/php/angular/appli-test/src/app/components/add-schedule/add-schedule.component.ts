@@ -17,7 +17,7 @@ import { StudentService } from "../../services/student.service";
 import { CompanyService } from "../../services/company.service";
 import { Staff } from "../../models/staff.model";
 import { Company } from "../../models/company.model";
-import { getDatesBetween } from "../../utils/timeManagement";
+import { getDatesBetween, passWeekends } from "../../utils/timeManagement";
 import { SalleService } from "../../services/salle.service";
 import { CompanyTutorService } from "../../services/company-tutor.service";
 import { StudentTrainingYearAcademicYearService } from "../../services/student-trainingYear-academicYear.service";
@@ -44,6 +44,8 @@ export class AddScheduleComponent implements OnInit {
   id!: number;
   jours: Date[] = [];
   sallesDispo: number[] = [];
+  daysToPass: number = 0;
+  lastWeekend: Date = new Date(NaN);
 
   constructor(
     private readonly authService: AuthService,
@@ -88,14 +90,22 @@ export class AddScheduleComponent implements OnInit {
     }).subscribe(async (result) => {
       this.soutenance$ = result.soutenances;
       this.planning = state?.newPlanning;
+      console.log("dates avant : ", this.soutenance$)
 
       if (this.soutenance$.length > 0) {
         const dates = this.soutenance$
-          .map((s) => new Date(s.date || ""))
-          .filter((d) => !isNaN(d.getTime()));
+          .sort((a, b) => a.date!.getTime() - b.date!.getTime())
+          .map((s) => { [s.date, this.daysToPass, this.lastWeekend] = passWeekends(s.date, this.daysToPass, this.lastWeekend);
+
+          return {
+            ...s,
+            date: s.date
+          };})
+          .filter((d) => !isNaN(d.date.getTime()));
+          console.log("les dates du planning : ",dates)
 
         this.planning.dateFin = new Date(
-          Math.max(...dates.map((d) => d.getTime()))
+          Math.max(...dates.map((d) => d.date.getTime()))
         );
       }
 
