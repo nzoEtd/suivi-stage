@@ -251,7 +251,7 @@
 
 .guide-time {
   position: absolute;
-  left: 10px;
+  left: -40px;
   background-color: #a40a0a;
   color: white;
   padding: 4px 12px;
