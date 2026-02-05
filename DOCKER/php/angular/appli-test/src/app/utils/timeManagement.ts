@@ -56,3 +56,32 @@ export function formatDateToYYYYMMDD(date: Date | string | null): string | null 
   const dd = String(d.getDate()).padStart(2, "0");
   return `${yyyy}-${mm}-${dd}`;
 }
+
+export function passWeekends(date: Date | null, daysToPass: number, lastWeekend: Date): [Date, number, Date] {
+  if(date){
+    console.log("avant passWeekends : ", date, daysToPass)
+    let newDate = addDays(date, daysToPass);
+    console.log("premier ajout de jour : ", newDate, daysToPass)
+    if(newDate.getDay() == 6 && daysToPass == 0) {
+      lastWeekend = date;
+      console.log("premier samedi : ", lastWeekend)
+      daysToPass = 2;
+      newDate = addDays(date, daysToPass);
+    }
+    else if(newDate.getDay() == 0 && daysToPass == 0) {
+      daysToPass = 1;
+      newDate = addDays(date, daysToPass);
+    }
+    else if(newDate.getDay() == 6 && daysToPass != 0 && daysToPass != 1 && lastWeekend) {
+      console.log("samedi suivant : ", lastWeekend)
+      if(formatDateToYYYYMMDD(newDate) != formatDateToYYYYMMDD(lastWeekend)){
+        daysToPass += 2;
+        newDate = addDays(date, daysToPass);
+      }
+    }
+    console.log("après passWeekends : ", newDate, daysToPass, lastWeekend)
+
+    return [newDate, daysToPass, lastWeekend];
+  }
+  return [new Date(NaN), daysToPass,lastWeekend]
+}
