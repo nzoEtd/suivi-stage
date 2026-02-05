@@ -10,7 +10,6 @@ class AnneeFormation extends Model
     use HasFactory;
     // Définit les attributs pouvant être remplis
     protected $fillable = [
-        'idAnneeFormation',
         'libelle',
     ];
     // Définit l'attribut de la clé primaire
