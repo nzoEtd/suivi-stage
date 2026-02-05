@@ -9,10 +9,9 @@ class TD extends Model
 {
     use HasFactory;
     // Définit le nom de la table dans la base de données
-    protected $table = 'TDs';
+    protected $table = 't_d_s';
     // Définit les attributs pouvant être remplis
     protected $fillable = [
-        'idTD',
         'libelle',
     ];
     // Définit l'attribut de la clé primaire
