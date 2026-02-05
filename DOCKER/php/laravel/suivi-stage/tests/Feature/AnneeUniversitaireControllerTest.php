@@ -7,9 +7,13 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\AnneeUniversitaire;
 use Mockery;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 class AnneeUniversitaireControllerTest extends TestCase
 {
+
+    use MockeryPHPUnitIntegration;
+
     /**
      * Recréer les tables avec ces seeders
      * 
@@ -21,7 +25,6 @@ class AnneeUniversitaireControllerTest extends TestCase
         parent::setUp();
         $this->artisan('migrate:fresh');
         $this->artisan('db:seed');
-        Mockery::resetContainer();
     }
 
 
@@ -69,9 +72,9 @@ class AnneeUniversitaireControllerTest extends TestCase
     {
         // Mock du modèle pour forcer une exception lors de create()
 
-        Mockery::mock('overload:App\Models\AnneeUniversitaire')
-            ->shouldReceive('create')
-            ->andThrow(new \Exception('Erreur simulée'));
+        $mock = Mockery::mock('overload:App\Models\AnneeUniversitaire');
+        $mock->shouldReceive('create')
+             ->andThrow(new \Exception('Erreur simulée'));
 
         $donnees = ['libelle' => '2025-2026'];
 
@@ -110,9 +113,9 @@ class AnneeUniversitaireControllerTest extends TestCase
 
     public function test_show_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        Mockery::mock('overload:App\Models\AnneeUniversitaire')
-            ->shouldReceive('findOrFail')
-            ->andThrow(new \Exception('Erreur simulée'));
+        $mock = Mockery::mock('overload:App\Models\AnneeUniversitaire');
+        $mock->shouldReceive('findOrFail')
+             ->andThrow(new \Exception('Erreur simulée'));
 
         $response = $this->get('/api/annee-universitaire/1');
 
@@ -160,9 +163,10 @@ class AnneeUniversitaireControllerTest extends TestCase
 
     public function test_update_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        Mockery::mock('overload:App\Models\AnneeUniversitaire')
-            ->shouldReceive('findOrFail')
-            ->andThrow(new \Exception('Erreur simulée'));
+
+        $mock = Mockery::mock('overload:App\Models\AnneeUniversitaire');
+        $mock->shouldReceive('findOrFail')
+             ->andThrow(new \Exception('Erreur simulée'));
 
         $donnees = ['libelle' => '2000-2001'];
 
@@ -200,9 +204,9 @@ class AnneeUniversitaireControllerTest extends TestCase
 
     public function test_destroy_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        Mockery::mock('overload:App\Models\AnneeUniversitaire')
-            ->shouldReceive('findOrFail')
-            ->andThrow(new \Exception('Erreur simulée'));
+        $mock = Mockery::mock('overload:App\Models\AnneeUniversitaire');
+        $mock->shouldReceive('findOrFail')
+             ->andThrow(new \Exception('Erreur simulée'));
 
         $response = $this->delete('/api/annee-universitaire/delete/1');
 
