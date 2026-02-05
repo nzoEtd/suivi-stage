@@ -15,12 +15,15 @@ class AnneeUniversitaireControllerTest extends TestCase
      * 
      * @return void
      */
+
     public function setUp(): void
     {
         parent::setUp();
         $this->artisan('migrate:fresh');
         $this->artisan('db:seed');
+        Mockery::resetContainer();
     }
+
 
     /*
     ================================
@@ -66,7 +69,7 @@ class AnneeUniversitaireControllerTest extends TestCase
     {
         // Mock du modèle pour forcer une exception lors de create()
 
-        Mockery::mock('alias:App\Models\AnneeUniversitaire')
+        Mockery::mock('overload:App\Models\AnneeUniversitaire')
             ->shouldReceive('create')
             ->andThrow(new \Exception('Erreur simulée'));
 
@@ -107,7 +110,7 @@ class AnneeUniversitaireControllerTest extends TestCase
 
     public function test_show_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        Mockery::mock('alias:App\Models\AnneeUniversitaire')
+        Mockery::mock('overload:App\Models\AnneeUniversitaire')
             ->shouldReceive('findOrFail')
             ->andThrow(new \Exception('Erreur simulée'));
 
@@ -157,7 +160,7 @@ class AnneeUniversitaireControllerTest extends TestCase
 
     public function test_update_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        Mockery::mock('alias:App\Models\AnneeUniversitaire')
+        Mockery::mock('overload:App\Models\AnneeUniversitaire')
             ->shouldReceive('findOrFail')
             ->andThrow(new \Exception('Erreur simulée'));
 
@@ -197,7 +200,7 @@ class AnneeUniversitaireControllerTest extends TestCase
 
     public function test_destroy_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        Mockery::mock('alias:App\Models\AnneeUniversitaire')
+        Mockery::mock('overload:App\Models\AnneeUniversitaire')
             ->shouldReceive('findOrFail')
             ->andThrow(new \Exception('Erreur simulée'));
 
@@ -206,7 +209,6 @@ class AnneeUniversitaireControllerTest extends TestCase
         $response->assertStatus(500)
             ->assertJson(['message' => "Une erreur s'est produite :"]);
     }
-
 
     protected function tearDown(): void
     {
