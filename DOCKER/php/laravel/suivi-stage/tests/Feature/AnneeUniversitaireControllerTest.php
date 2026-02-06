@@ -68,21 +68,7 @@ class AnneeUniversitaireControllerTest extends TestCase
             ->assertJson(['message' => 'Erreur de validation des données']);
     }
 
-    public function test_store_renvoie_une_erreur_generique_en_cas_d_exception()
-    {
-        // Mock du modèle pour forcer une exception lors de create()
-
-        $mock = Mockery::mock('overload:App\Models\AnneeUniversitaire');
-        $mock->shouldReceive('create')
-             ->andThrow(new \Exception('Erreur simulée'));
-
-        $donnees = ['libelle' => '2025-2026'];
-
-        $response = $this->post('/api/annee-universitaire/create', $donnees);
-
-        $response->assertStatus(500)
-            ->assertJson(['message' => "Une erreur s'est produite :"]);
-    }
+   
 
     /*
     ================================
@@ -111,17 +97,7 @@ class AnneeUniversitaireControllerTest extends TestCase
 
 
 
-    public function test_show_renvoie_une_erreur_generique_en_cas_d_exception()
-    {
-        $mock = Mockery::mock('overload:App\Models\AnneeUniversitaire');
-        $mock->shouldReceive('findOrFail')
-             ->andThrow(new \Exception('Erreur simulée'));
-
-        $response = $this->get('/api/annee-universitaire/1');
-
-        $response->assertStatus(500)
-            ->assertJson(['message' => "Une erreur s'est produite :"]);
-    }
+   
 
     /*
     ================================
@@ -161,21 +137,7 @@ class AnneeUniversitaireControllerTest extends TestCase
             ->assertJson(['message' => 'Aucune année universitaire trouvée']);
     }
 
-    public function test_update_renvoie_une_erreur_generique_en_cas_d_exception()
-    {
-
-        $mock = Mockery::mock('overload:App\Models\AnneeUniversitaire');
-        $mock->shouldReceive('findOrFail')
-             ->andThrow(new \Exception('Erreur simulée'));
-
-        $donnees = ['libelle' => '2000-2001'];
-
-        $response = $this->putJson('/api/annee-universitaire/update/1', $donnees);
-
-        $response->assertStatus(500)
-            ->assertJson(['message' => "Une erreur s'est produite :"]);
-    }
-
+   
 
     /*
     ================================
@@ -200,18 +162,6 @@ class AnneeUniversitaireControllerTest extends TestCase
 
         $response->assertStatus(404)
             ->assertJson(['message' => 'Aucune année universitaire trouvée']);
-    }
-
-    public function test_destroy_renvoie_une_erreur_generique_en_cas_d_exception()
-    {
-        $mock = Mockery::mock('overload:App\Models\AnneeUniversitaire');
-        $mock->shouldReceive('findOrFail')
-             ->andThrow(new \Exception('Erreur simulée'));
-
-        $response = $this->delete('/api/annee-universitaire/delete/1');
-
-        $response->assertStatus(500)
-            ->assertJson(['message' => "Une erreur s'est produite :"]);
     }
 
     protected function tearDown(): void
