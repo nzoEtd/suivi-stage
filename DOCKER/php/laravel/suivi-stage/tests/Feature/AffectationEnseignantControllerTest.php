@@ -34,11 +34,11 @@ class AffectationEnseignantControllerTest extends TestCase
     public function test_index_renvoie_une_confirmation_et_la_liste_des_affectations()
     {
         $response = $this->getJson('/api/affectation');
-        
+
         $response->assertStatus(200);
-        
+
         $responseData = $response->json();
-        
+
         $this->assertArrayHasKey('anneeUniversitaire', $responseData[0]);
         $this->assertArrayHasKey('nomPersonnel', $responseData[0]);
         $this->assertArrayHasKey('prenomPersonnel', $responseData[0]);
@@ -63,30 +63,30 @@ class AffectationEnseignantControllerTest extends TestCase
         $personnel = \DB::table('personnels')->first();
         $etudiant = \DB::table('etudiants')->first();
         $anneeUniv = \DB::table('annee_universitaires')->first();
-        
+
         // Supprimer l'affectation si elle existe déjà pour éviter les erreurs d'unicité
         \DB::table('table_personnel_etudiant_anneeuniv')
             ->where('idPersonnel', $personnel->idPersonnel)
             ->where('idUPPA', $etudiant->idUPPA)
             ->where('idAnneeUniversitaire', $anneeUniv->idAnneeUniversitaire)
             ->delete();
-        
+
         // Données à envoyer
         $donnees = [
             'idPersonnel' => $personnel->idPersonnel,
             'idUPPA' => $etudiant->idUPPA,
             'idAnneeUniversitaire' => $anneeUniv->idAnneeUniversitaire
         ];
-        
+
         // Appel de la route store
         $response = $this->postJson('/api/affectation/create', $donnees);
-        
+
         $response->assertStatus(201)
-                 ->assertJson([
-                    'idPersonnel' => $donnees['idPersonnel'],
-                    'idUPPA' => $donnees['idUPPA'],
-                    'idAnneeUniversitaire' => $donnees['idAnneeUniversitaire']
-        ]);
+            ->assertJson([
+                'idPersonnel' => $donnees['idPersonnel'],
+                'idUPPA' => $donnees['idUPPA'],
+                'idAnneeUniversitaire' => $donnees['idAnneeUniversitaire']
+            ]);
     }
 
     /**
@@ -101,11 +101,11 @@ class AffectationEnseignantControllerTest extends TestCase
             'idPersonnel' => 1,
             'idAnneeUniversitaire' => 1
         ];
-        
+
         $response = $this->postJson('/api/affectation/create', $donnees);
 
         $response->assertStatus(422)
-                 ->assertJson(['message' => 'Erreur de validation dans les données']);
+            ->assertJson(['message' => 'Erreur de validation dans les données']);
     }
 
     /**
@@ -125,7 +125,7 @@ class AffectationEnseignantControllerTest extends TestCase
         $response = $this->postJson('/api/affectation/create', $donnees);
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => 'Erreur dans la base de données :']);
+            ->assertJson(['message' => 'Erreur dans la base de données :']);
     }
 
     /**
@@ -139,7 +139,7 @@ class AffectationEnseignantControllerTest extends TestCase
         $personnel = \DB::table('personnels')->first();
         $etudiant = \DB::table('etudiants')->first();
         $anneeUniv = \DB::table('annee_universitaires')->first();
-                
+
         // Données à envoyer
         $donnees = [
             'idPersonnel' => $personnel->idPersonnel,
@@ -155,7 +155,7 @@ class AffectationEnseignantControllerTest extends TestCase
         $response = $this->postJson('/api/affectation/create', $donnees);
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => 'Server Error']);
+            ->assertJson(['message' => 'Server Error']);
     }
 
     /*
@@ -164,6 +164,7 @@ class AffectationEnseignantControllerTest extends TestCase
     ================================
     */
 
+
     /**
      * La méthode show va retourner une confirmation 200 et les informations de l'affectation
      * 
@@ -171,21 +172,32 @@ class AffectationEnseignantControllerTest extends TestCase
      */
     public function test_show_renvoie_une_confirmation_et_les_informations_de_l_affectation()
     {
-        // Récupération des ID existants pour le test
-        $personnel = \DB::table('personnels')->first();
-        $etudiant = \DB::table('etudiants')->first();
-        $anneeUniv = \DB::table('annee_universitaires')->first();
+        // Récupérer une affectation EXISTANTE dans la table de liaison
+        $affectation = \DB::table('table_personnel_etudiant_anneeuniv')->first();
 
-        $response = $this->getJson("/api/affectation/{$personnel->idPersonnel}-{$etudiant->idUPPA}-{$anneeUniv->idAnneeUniversitaire}");
-        
+        // Récupérer les détails depuis les tables liées
+        $personnel = \DB::table('personnels')
+            ->where('idPersonnel', $affectation->idPersonnel)
+            ->first();
+
+        $etudiant = \DB::table('etudiants')
+            ->where('idUPPA', $affectation->idUPPA)
+            ->first();
+
+        $anneeUniv = \DB::table('annee_universitaires')
+            ->where('idAnneeUniversitaire', $affectation->idAnneeUniversitaire)
+            ->first();
+
+        $response = $this->getJson("/api/affectation/{$affectation->idPersonnel}-{$affectation->idUPPA}-{$affectation->idAnneeUniversitaire}");
+
         $response->assertStatus(200)
-                 ->assertJson([
-                    'anneeUniversitaire' => $anneeUniv->libelle,
-                    'nomPersonnel' => $personnel->nom,
-                    'prenomPersonnel' => $personnel->prenom,
-                    'nomEtudiant' => $etudiant->nom,
-                    'prenomEtudiant' => $etudiant->prenom
-        ]);
+            ->assertJson([
+                'anneeUniversitaire' => $anneeUniv->libelle,
+                'nomPersonnel' => $personnel->nom,
+                'prenomPersonnel' => $personnel->prenom,
+                'nomEtudiant' => $etudiant->nom,
+                'prenomEtudiant' => $etudiant->prenom
+            ]);
     }
 
     /**
@@ -203,7 +215,7 @@ class AffectationEnseignantControllerTest extends TestCase
         $response = $this->getJson("/api/affectation/{$idPersonnel}-{$idUPPA}-{$idAnneeUniv}");
 
         $response->assertStatus(404)
-                 ->assertJson(['message' => 'Aucune affectation trouvée']);
+            ->assertJson(['message' => 'Aucune affectation trouvée']);
     }
 
     /*
@@ -232,11 +244,11 @@ class AffectationEnseignantControllerTest extends TestCase
         $response = $this->putJson("/api/affectation/update/{$affectation->idPersonnel}-{$affectation->idUPPA}-{$affectation->idAnneeUniversitaire}", $donnees);
 
         $response->assertStatus(200)
-                ->assertJson([
-                    'idPersonnel' => $donnees['idPersonnel'],
-                    'idUPPA' => $affectation->idUPPA,
-                    'idAnneeUniversitaire' => $affectation->idAnneeUniversitaire
-                ]);
+            ->assertJson([
+                'idPersonnel' => $donnees['idPersonnel'],
+                'idUPPA' => $affectation->idUPPA,
+                'idAnneeUniversitaire' => $affectation->idAnneeUniversitaire
+            ]);
     }
 
     /**
@@ -258,7 +270,7 @@ class AffectationEnseignantControllerTest extends TestCase
         $response = $this->putJson("/api/affectation/update/{$idPersonnel}-{$idUPPA}-{$idAnneeUniv}", $donnees);
 
         $response->assertStatus(404)
-                 ->assertJson(['message' => 'Aucune affectation trouvée']);
+            ->assertJson(['message' => 'Aucune affectation trouvée']);
     }
 
     /**
@@ -278,7 +290,7 @@ class AffectationEnseignantControllerTest extends TestCase
         $response = $this->putJson("/api/affectation/update/{$affectation->idPersonnel}-{$affectation->idUPPA}-{$affectation->idAnneeUniversitaire}", $donnees);
 
         $response->assertStatus(422)
-                 ->assertJson(['message' => 'Erreur de validation dans les données']);
+            ->assertJson(['message' => 'Erreur de validation dans les données']);
     }
 
     /**
@@ -298,7 +310,7 @@ class AffectationEnseignantControllerTest extends TestCase
         $response = $this->putJson("/api/affectation/update/{$affectation->idPersonnel}-{$affectation->idUPPA}-{$affectation->idAnneeUniversitaire}", $donnees);
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => 'Erreur dans la base de données :']);
+            ->assertJson(['message' => 'Erreur dans la base de données :']);
     }
 
     /**
@@ -326,7 +338,7 @@ class AffectationEnseignantControllerTest extends TestCase
         $response = $this->putJson("/api/affectation/update/{$affectation->idPersonnel}-{$affectation->idUPPA}-{$affectation->idAnneeUniversitaire}", $donnees);
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => 'Server Error']);
+            ->assertJson(['message' => 'Server Error']);
     }
 
     /*
@@ -347,7 +359,7 @@ class AffectationEnseignantControllerTest extends TestCase
         $response = $this->deleteJson("/api/affectation/delete/{$affectation->idPersonnel}-{$affectation->idUPPA}-{$affectation->idAnneeUniversitaire}");
 
         $response->assertStatus(200)
-                 ->assertJson(['message' => 'L\'affectation a bien été supprimée']);
+            ->assertJson(['message' => 'L\'affectation a bien été supprimée']);
     }
 
     /**
@@ -364,7 +376,7 @@ class AffectationEnseignantControllerTest extends TestCase
         $response = $this->deleteJson("/api/affectation/delete/{$idPersonnel}-{$idUPPA}-{$idAnneeUniv}");
 
         $response->assertStatus(404)
-                 ->assertJson(['message' => 'Aucune affectation trouvée']);
+            ->assertJson(['message' => 'Aucune affectation trouvée']);
     }
 
     /**
@@ -378,12 +390,12 @@ class AffectationEnseignantControllerTest extends TestCase
         $this->mock(\App\Http\Controllers\AffectationEnseignantController::class, function ($mock) {
             $mock->shouldReceive('destroy')->andThrow(new \Exception('Erreur simulée'));
         });
-        
+
         $affectation = \DB::table('table_personnel_etudiant_anneeuniv')->first();
 
         $response = $this->deleteJson("/api/affectation/delete/{$affectation->idPersonnel}-{$affectation->idUPPA}-{$affectation->idAnneeUniversitaire}");
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => 'Server Error']);
+            ->assertJson(['message' => 'Server Error']);
     }
 }
