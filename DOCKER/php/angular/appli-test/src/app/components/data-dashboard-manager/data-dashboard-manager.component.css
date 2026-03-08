@@ -1,0 +1,93 @@
+.data-dashboard
+{
+    margin: 50px 0 30px 0;
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.data-dashboard--top-container
+{
+    display: grid;
+    align-items: start;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.data-dashboard--title
+{
+    margin-bottom: 50px;
+    font-size: 2rem;
+    justify-self: center;
+    font-weight: 700;
+}
+
+.data-dashboard--reset-btn
+{
+    border: 1px solid #a40a0a;
+    background-color: #a40a0a;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 16px;
+    justify-self: right;
+}
+
+.data-dashboard--reset-btn:hover
+{
+    border: 1px solid #a40a0a;
+    background-color: white;
+    color: #a40a0a;
+}
+
+.categories-gestion
+{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+}
+
+.categories-gestion--list-item
+{
+    width: 100%;
+    align-self: center;
+}
+
+.categories-gestion--btn
+{
+    border: 1px solid #0A63A4;
+    background-color: #0A63A4;
+    color: white;
+    padding: 30px;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 18px;
+    display: block;
+    justify-items: center;
+    max-width: 250px;
+    width: 100%;
+    justify-self: center;
+    text-align: center;
+}
+
+.categories-gestion--btn:hover
+{
+    border: 1px solid #0A63A4;
+    background-color: white;
+    color: #0A63A4;
+}
+
+.categories-gestion--btn:hover .categories-gestion--btn__icon
+{
+    fill: #0A63A4;
+}
+
+.categories-gestion--btn__icon
+{
+    fill: white;
+    height: 50px;
+    width: 50px;
+    margin-bottom: 15px;
+}

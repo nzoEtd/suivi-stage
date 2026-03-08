@@ -52,6 +52,17 @@
                             </a>
                         </li>
                     }
+                    @if(currentUserRole === 'INTERNSHIP_MANAGER') {
+                        <li>
+                            <a
+                                routerLink="/data-management"
+                                routerLinkActive="active-link"
+                                class="nav-link"
+                            >
+                                Gestion des données
+                            </a>
+                        </li>
+                    }
                 </ul>
             </nav>
 
