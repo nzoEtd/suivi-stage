@@ -64,7 +64,7 @@ export class ModalePlanningComponent implements OnInit {
     this.initForm();
 
     forkJoin({
-      promos: this.trainingYearService.getTrainingYears(["libelle"]),
+      promos: this.trainingYearService.getTrainingYears(),
       salles: this.salleService.getSalles(),
       academicYear: this.academicYearService.getCurrentAcademicYear(),
     }).subscribe(({ promos, salles, academicYear }) => {
@@ -144,6 +144,9 @@ export class ModalePlanningComponent implements OnInit {
 
   // Soumission du formulaire
   async onSubmit() {
+    console.log(this.promos)
+console.log(this.planningForm.get('idAnneeFormation')?.value);
+console.log(this.planningForm.get('idAnneeFormation')?.errors);
     this.submitted = true;
 
     if (this.planningForm.invalid) return;
