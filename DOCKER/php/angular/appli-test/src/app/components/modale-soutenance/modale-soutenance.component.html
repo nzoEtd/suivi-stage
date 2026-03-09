@@ -1,5 +1,5 @@
-<div class="modal-overlay">
-    <div class="modal">
+<div class="modal-overlay" (click)="onCancel($event)">
+    <div class="modal" (click)="$event.stopPropagation()">
         <div class="modal-topbar">
             <button type="button" (click)="onCancel()" class="close-button">
                 x

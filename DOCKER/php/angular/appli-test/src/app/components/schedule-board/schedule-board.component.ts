@@ -40,11 +40,17 @@ export class ScheduleBoardComponent implements OnInit {
   dropError: string[] = [];
   isRendering: boolean = true;
 
+  private pointerDown = false;
+  private startX = 0;
+  private startY = 0;
+
   // Ligne guide des heures
   isDragging: boolean = false;
   guideLineY: number = 0;
   guideLineTime: string = '';
   currentBlock: TimeBlock | null = null;
+
+  teacherInSlot: number[] = [];
 
   constructor(private cdRef: ChangeDetectorRef) {}
 
@@ -135,6 +141,7 @@ export class ScheduleBoardComponent implements OnInit {
   }
 
   onEditSlot(slot: SlotItem) {
+    this.pointerDown = false;
     this.editSlot.emit(slot);
   }
 
@@ -215,7 +222,8 @@ export class ScheduleBoardComponent implements OnInit {
         );
       
         // Vérification de la disponibilité du créneau choisit et de la disponibilité des profs
-        if (!this.canPlaceSlot(newStart, newEnd, draggedSlot.referent, draggedSlot.lecteur, newRoom, existingSlots)) {
+        if (!this.canPlaceSlot(newStart, newEnd, draggedSlot.referent, draggedSlot.lecteur, newRoom, existingSlots) ||
+            (prevState.dateDebut!.getHours() * 60 + prevState.dateDebut!.getMinutes()) == (newStart.getHours() * 60 + newStart.getMinutes())) {
           // Le slot revient à sa place
           this.dropError.forEach(e => {
             this.toastr.error(e, 'Impossible de placer la soutenance.');
@@ -439,9 +447,34 @@ export class ScheduleBoardComponent implements OnInit {
 
   neverEnter = () => false;
 
-  // Ligne guide des heures
-  onDragStarted(event: any) {
+  onPointerDown(event: PointerEvent) {
+    this.pointerDown = true;
+    this.startX = event.clientX;
+    this.startY = event.clientY;
+  }
+  
+  onPointerMove(event: PointerEvent) {
+    if (!this.pointerDown || !this.onlyDisplay) return;
+  
+    const dx = Math.abs(event.clientX - this.startX);
+    const dy = Math.abs(event.clientY - this.startY);
+  
+    // seuil pour considérer que c'est un drag
+    if (dx > 5 || dy > 5) {
+      this.pointerDown = false;
+      this.toastr.error("Veuillez cliquer sur le bouton modifier.", "Le drag and drop n'est pas utilisable en mode affichage.");
+    }
+  }
+
+  // Ligne guide des heures et enseignants du slot sélectionné
+  onDragStarted(event: any, slot: SlotItem) {
     this.isDragging = true; // Activer la ligne guide
+    if(slot.idLecteur){
+      this.teacherInSlot.push(slot.idLecteur);
+    }
+    if(slot.idReferent){
+      this.teacherInSlot.push(slot.idReferent);
+    }
   }
   
   onDragMoved(event: any) {
@@ -494,5 +527,6 @@ export class ScheduleBoardComponent implements OnInit {
     // Cacher la ligne guide
     this.isDragging = false;
     this.currentBlock = null;
+    this.teacherInSlot = [];
   }
 }

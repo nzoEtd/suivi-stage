@@ -40,7 +40,7 @@ export class ModaleSoutenanceComponent {
         }
     }
 
-    onCancel() {
+    onCancel(event?: MouseEvent) {
         this.cancel.emit(); 
     }
 

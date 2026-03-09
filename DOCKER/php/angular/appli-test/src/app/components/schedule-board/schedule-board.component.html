@@ -13,11 +13,12 @@
             <div class="item"
             cdkDrag 
             [cdkDragData]="item"
-            (cdkDragStarted)="onDragStarted($event)"
+            (cdkDragStarted)="onDragStarted($event, item)"
             (cdkDragMoved)="onDragMoved($event)"
             (cdkDragEnded)="onDragEnded($event)">
                 <app-slot 
                     [slot]="item"
+                    [teacherInSlot]="teacherInSlot"
                     (editSlot)="onEditSlot($event)">
                 </app-slot>
             </div>
@@ -76,14 +77,17 @@
                                 cdkDrag 
                                 [cdkDragDisabled]="onlyDisplay"
                                 [cdkDragData]="slot"
-                                (cdkDragStarted)="onDragStarted($event)"
+                                (cdkDragStarted)="onDragStarted($event, slot)"
                                 (cdkDragMoved)="onDragMoved($event)"
-                                (cdkDragEnded)="onDragEnded($event)">
+                                (cdkDragEnded)="onDragEnded($event)"
+                                (pointerdown)="onPointerDown($event)"
+                                (pointermove)="onPointerMove($event)">
                                     <ng-template cdkDragPlaceholder>
                                         <div class="waiting-placeholder"></div>
                                     </ng-template>
                                     <app-slot 
                                         [slot]="slot"
+                                        [teacherInSlot]="teacherInSlot"
                                         (editSlot)="onEditSlot($event)">
                                     </app-slot>
                                 </div>

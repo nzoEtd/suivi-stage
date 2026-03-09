@@ -8,6 +8,7 @@ export interface SlotItem {
     idUPPA: string;
     etudiant: string;
     tierTemps: boolean;
+    idReferent: number;
     referent: string;
     idLecteur: number;
     lecteur: string;
