@@ -144,9 +144,6 @@ export class ModalePlanningComponent implements OnInit {
 
   // Soumission du formulaire
   async onSubmit() {
-    console.log(this.promos)
-console.log(this.planningForm.get('idAnneeFormation')?.value);
-console.log(this.planningForm.get('idAnneeFormation')?.errors);
     this.submitted = true;
 
     if (this.planningForm.invalid) return;
