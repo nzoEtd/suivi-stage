@@ -10,3 +10,9 @@ export class TrainingYear {
       this.libelle = libelle;
     }
 }
+
+
+
+export interface TrainingYearCreate {
+  libelle: string | null;
+}

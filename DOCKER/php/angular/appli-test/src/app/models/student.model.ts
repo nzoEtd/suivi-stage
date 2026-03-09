@@ -11,6 +11,7 @@ export class Student {
   idDepartement: number | null;
   idEntreprise: number | null;
   idTuteur: number | null;
+  tierTemps: boolean | null;
 
   constructor(
     idUPPA: string,
@@ -24,7 +25,8 @@ export class Student {
     idParcours: number | null,
     idDepartement: number | null,
     idEntreprise: number | null,
-    idTuteur: number | null
+    idTuteur: number | null,
+    tierTemps: boolean | null
   ) {
     this.idUPPA = idUPPA;
     this.nom = nom;
@@ -38,5 +40,6 @@ export class Student {
     this.idDepartement = idDepartement;
     this.idEntreprise = idEntreprise;
     this.idTuteur = idTuteur;
+    this.tierTemps = tierTemps;
   }
 }

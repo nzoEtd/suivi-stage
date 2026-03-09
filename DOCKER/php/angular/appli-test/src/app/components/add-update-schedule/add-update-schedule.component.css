@@ -1,18 +1,3 @@
-.add-update-schedule{
-    display: flex;
-    margin: 0 auto;
-    gap: 15px;
-    padding-left: 4px;
-}
-
-.slot-box {
-    border: 2px dashed #0A63A4;
-    border-radius: 15px;
-    width: 200px; 
-    flex-shrink: 0; 
-    margin-left: 4px;
-}
-
 .schedule {
     flex: 1;
     min-width: 0; 
@@ -72,9 +57,13 @@
 
 .header-schedule-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     height: 50px;
     /* margin-bottom: 15px; */
+}
+
+h4{
+    color: #a40a0a;
 }
 
 .schedule-content {

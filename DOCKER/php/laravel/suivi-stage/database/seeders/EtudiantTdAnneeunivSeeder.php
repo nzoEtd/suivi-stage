@@ -14,67 +14,20 @@ class EtudiantTdAnneeunivSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('table_etudiant_td_anneeuniv')->insert([
-            [
-                'idUPPA' => '610000',
-                'idTD' => 2,
-                'idAnneeUniversitaire' => 1,
-            ],
-            [
-                'idUPPA' => '610001',
-                'idTD' => 2,
-                'idAnneeUniversitaire' => 1,
-            ],
-            [
-                'idUPPA' => '611000',
-                'idTD' => 1,
-                'idAnneeUniversitaire' => 1,
-            ],
-            [
-                'idUPPA' => '611082',
-                'idTD' => 2,
-                'idAnneeUniversitaire' => 1,
-            ],
-            [
-                'idUPPA' => '610459',
-                'idTD' => 2,
-                'idAnneeUniversitaire' => 1,
-            ],
-            [
-                'idUPPA' => '613453',
-                'idTD' => 2,
-                'idAnneeUniversitaire' => 1,
-            ],
-            [
-                'idUPPA' => '610000',
-                'idTD' => 2,
-                'idAnneeUniversitaire' => 2,
-            ],
-            [
-                'idUPPA' => '610001',
-                'idTD' => 2,
-                'idAnneeUniversitaire' => 2,
-            ],
-            [
-                'idUPPA' => '611000',
-                'idTD' => 1,
-                'idAnneeUniversitaire' => 2,
-            ],
-            [
-                'idUPPA' => '611082',
-                'idTD' => 2,
-                'idAnneeUniversitaire' => 2,
-            ],
-            [
-                'idUPPA' => '610459',
-                'idTD' => 2,
-                'idAnneeUniversitaire' => 2,
-            ],
-            [
-                'idUPPA' => '613453',
-                'idTD' => 2,
-                'idAnneeUniversitaire' => 2,
-            ]
-        ]);
+
+        $etudiants = DB::table('etudiants')->pluck('idUPPA');
+
+        $insertData = [];
+
+        foreach ($etudiants as $idUPPA) {
+            $insertData[] = [
+                'idUPPA' => $idUPPA,
+                'idAnneeUniversitaire' => 3,
+                'idTD' => rand(1, 3), 
+            ];
+        }
+
+        DB::table('table_etudiant_td_anneeuniv')->insert($insertData);
     }
+    
 }

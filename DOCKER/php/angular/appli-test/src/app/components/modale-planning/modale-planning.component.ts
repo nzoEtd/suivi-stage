@@ -10,6 +10,8 @@ import { Router } from "@angular/router";
 import { forkJoin } from "rxjs";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { ToastrService } from 'ngx-toastr';
+import { inject } from '@angular/core';
 
 import { PlanningService } from "../../services/planning.service";
 import { TrainingYearService } from "../../services/training-year.service";
@@ -36,6 +38,7 @@ import { Planning } from "../../models/planning.model";
 })
 export class ModalePlanningComponent implements OnInit {
   @Output() cancel = new EventEmitter<void>();
+  toastr = inject(ToastrService);
 
   planningForm!: FormGroup;
   submitted = false;
@@ -204,15 +207,15 @@ export class ModalePlanningComponent implements OnInit {
             }
           },
           error: (error) => {
-            console.error("Erreur lors de la génération du planning", error);
+            this.toastr.error(error, "Erreur lors de la génération du planning.");
             this.isSubmitting = false;
           },
           complete: () => {
             this.isSubmitting = false;
           },
         });
-    } catch (error) {
-      console.error("Erreur lors de la création du planning :", error);
+    } catch (error: any) {
+      this.toastr.error(error, "Erreur lors de la création du planning.");
       this.isSubmitting = false;
     }
   }

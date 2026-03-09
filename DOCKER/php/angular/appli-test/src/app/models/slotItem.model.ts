@@ -6,15 +6,16 @@ export interface SlotItem {
     heightPercent: number;
     dateDebut: Date;
     dateFin: Date;
-    idEtudiant: string;
+    idUPPA: string;
     etudiant: string;
-    idReferent: number;
+    tierTemps: boolean;
     referent: string;
     idLecteur: number;
     lecteur: string;
     entreprise: string;
     tuteur: string;
-    salle: number;
     idPlanning: number;
     allStaff: Staff[];
+    salle: number | null;
+    duree: number | null;
 }

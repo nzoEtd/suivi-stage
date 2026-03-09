@@ -34,6 +34,8 @@ import { ModaleSoutenanceComponent } from "../modale-soutenance/modale-soutenanc
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { DataStoreService } from "../../services/data.service";
+// import { ToastrService } from 'ngx-toastr';
+// import { inject } from '@angular/core';
 
 @Component({
   selector: "app-schedule",
@@ -52,6 +54,7 @@ import { DataStoreService } from "../../services/data.service";
 })
 export class ScheduleComponent implements AfterViewInit, OnDestroy {
   private destroy$ = new Subject<void>();
+  // toastr = inject(ToastrService);
 
   currentUser?: any;
   currentUserRole?: string;
@@ -82,6 +85,7 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
   idSoutenance?: number;
   slots: SlotItem[] = [];
   timeBlocks: TimeBlockConfig[] = [];
+  planningByDay: Record<string, SlotItem[]> = {};
 
   isExporting: boolean = false;
 
@@ -124,9 +128,6 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
       this.allAcademicYears = data.academicYears;
       this.allReferents = data.referents;
       this.allSalles = data.salles;
-
-      console.log("les referents et autre :", this.allReferents);
-      console.log("les academic year et autre :", this.allAcademicYears);
 
       this.sallesDispo = data.salles
         .filter((s) => s.estDisponible)
@@ -171,6 +172,7 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
       this.slots,
     );
   }
+  
   async export() {
     if (!this.selectedPlanning || !this.jours.length) return;
 
@@ -274,7 +276,6 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
   }
 
   openModal(slot: SlotItem) {
-    console.log("le slot sélectionné : ", slot);
     this.selectedSoutenance = slot!;
     this.idSoutenance = this.selectedSoutenance!.id;
     this.isModalSoutenanceOpen = true;
@@ -336,7 +337,11 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
         this.allAcademicYears,
         this.cdRef,
       );
-      console.log("les slots ?", this.slots);
+      this.slots.forEach(slot => {
+        const dayKey = slot.dateDebut ? slot.dateDebut.toISOString().slice(0,10) : "attente"; // "YYYY-MM-DD"
+        if (!this.planningByDay[dayKey]) this.planningByDay[dayKey] = [];
+        this.planningByDay[dayKey].push(slot);
+      });
       //Recherche de toutes les salles réellement utilisées
       this.sallesAffiches = getAllSallesUsed(
         this.sallesDispo,
