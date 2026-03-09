@@ -77,7 +77,7 @@ export async function convertSoutenancesToSlots(soutenances: Soutenance[], allSt
         duree: null,
         idPlanning: s.idPlanning!,
         allStaff: allStaff,
-        tierTemps: student ? student.tierTemps : 'Tier-temps inconnu'
+        tierTemps: student ? student.tierTemps : false
       } ;
   });
 }
