@@ -40,8 +40,11 @@
 
         <div class="header-planning">
             <div class="hours-header"></div>
-            @for(salle of sallesDispo; track salle){
+            @for(salle of sallesDispo; track salle; let last = $last){
                 <span class="salle-header">Salle {{salle}}</span>
+                @if(last){
+                    <span class="addRoom" title="Ajouter une salle" (click)="addRoom()"><b>+</b></span>
+                }
             }
         </div>
 
@@ -93,10 +96,6 @@
                                 </div>
                             }
                             <div class="time-grid">
-                                <!-- pause compressée uniquement si ce bloc le nécessite -->
-                                <!-- <div *ngIf="block.type === 'afternoon'" 
-                                    class="pause" 
-                                    [style.height.px]="PAUSE_HEIGHT"></div> -->
                                 @for(mark of [].constructor(getQuarterHourMarks(block)); track $index){
                                     <div class="quarter-mark" 
                                         [style.top.%]="($index / getQuarterHourMarks(block)) * 100">

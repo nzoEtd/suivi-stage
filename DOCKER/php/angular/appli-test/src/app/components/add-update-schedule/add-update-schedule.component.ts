@@ -23,7 +23,6 @@ import { formatDateToYYYYMMDD } from "../../utils/timeManagement";
 import { DataStoreService } from "../../services/data.service";
 import { ToastrService } from 'ngx-toastr';
 import { inject } from '@angular/core';
-import { CdkDrag, CdkDropList, CdkDropListGroup, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: "app-add-update-schedule",
@@ -157,6 +156,14 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
 
   updateSoutenance(updatedSoutenance: any){
     this.isModalOpen = false;
+  }
+
+  addJour(){
+    
+  }
+
+  addStudent(){
+
   }
 
   onValidate() {

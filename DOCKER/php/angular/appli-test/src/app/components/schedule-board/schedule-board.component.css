@@ -253,3 +253,19 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transform: translateY(-50%);
 }
+
+.addRoom:last-child{
+    display: block;
+    position: absolute;
+    right: 112px;
+    justify-self: center;
+    text-align: center;
+    padding: 5px;
+    padding-top: 0;
+    padding-bottom: 1px;
+    border-radius: 25px;
+    background-color: white;
+    border: 1px solid #3a3a3a;
+    cursor: pointer;
+    z-index: 1000;
+}

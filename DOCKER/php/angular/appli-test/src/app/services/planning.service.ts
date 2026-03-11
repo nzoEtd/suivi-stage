@@ -24,7 +24,6 @@ export class PlanningService {
     return this.http
       .get<Planning[]>(`${this.apiUrl}/api/planning`, { params })
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, undefined))
       );
   }
@@ -43,7 +42,6 @@ export class PlanningService {
     return this.http
       .get<Planning>(`${this.apiUrl}/api/planning/${id}`, { params })
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, undefined))
       );
   }
@@ -88,7 +86,6 @@ export class PlanningService {
         httpOptions
       )
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, null))
       );
   }
@@ -106,7 +103,6 @@ export class PlanningService {
         httpOptions
       )
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, null))
       );
   }
@@ -116,14 +112,8 @@ export class PlanningService {
     return this.http
       .delete(`${this.apiUrl}/api/planning/delete/${planning.idPlanning}`)
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, null))
       );
-  }
-
-  //Log la réponse de l'API
-  private log(response: any) {
-    console.table(response);
   }
 
   //Retourne l'erreur en cas de problème avec l'API

@@ -145,6 +145,10 @@ export class ScheduleBoardComponent implements OnInit {
     this.editSlot.emit(slot);
   }
 
+  addRoom(){
+
+  }
+
   //Fonctions pour drag and drop
   //Fonctions principales
   onDrop(

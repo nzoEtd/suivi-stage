@@ -26,7 +26,6 @@ export class StudentTrainingYearAcademicYearService {
         { params }
       )
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, []))
       );
   }
@@ -49,7 +48,6 @@ export class StudentTrainingYearAcademicYearService {
         { params }
       )
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, []))
       );
   }
@@ -69,7 +67,6 @@ export class StudentTrainingYearAcademicYearService {
         httpOptions
       )
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, null))
       );
   }
@@ -86,14 +83,8 @@ export class StudentTrainingYearAcademicYearService {
     return this.http
       .delete<null>(`${this.apiUrl}/api/etudiants-annee-formation`, httpOptions)
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, null))
       );
-  }
-
-  // Log la réponse de l'API
-  private log(response: any) {
-    console.table(response);
   }
 
   // Retourne l'erreur en cas de problème avec l'API

@@ -32,7 +32,9 @@
 .jour{
     display: block;
     justify-self: center;
+    text-align: center;
     padding: 5px;
+    min-width: 60px;
     margin-bottom: 15px;
     border-radius: 25px;
     background-color: white;
@@ -88,6 +90,17 @@ h4{
     padding-right: 40px;
     border-radius: 30px;
     cursor: pointer;
+}
+
+.little-btn {
+    font-size: small;
+    height: 35px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 30px;
+    cursor: pointer;
+    left: 20px;
+    position: absolute;
 }
 
 .primary {

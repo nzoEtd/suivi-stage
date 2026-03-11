@@ -20,7 +20,6 @@ export class StudentService {
     }
 
     return this.http.get<Student[]>(`${this.apiUrl}/api/etudiants`, {params}).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );
   }
@@ -33,14 +32,8 @@ export class StudentService {
     }
 
     return this.http.get<Student>(`${this.apiUrl}/api/etudiants/${studentId}`, {params}).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );
-  }
-
-  //Log la réponse de l'API
-  private log(response: any) {
-    console.table(response);
   }
 
   //Retourne l'erreur en cas de problème avec l'API

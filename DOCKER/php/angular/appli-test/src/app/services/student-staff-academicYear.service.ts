@@ -28,7 +28,6 @@ export class StudentStaffAcademicYearService {
     }
 
     return this.http.get<Student_Staff_AcademicYear>(`${this.apiUrl}/api/affectation`, {params}).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );
   }
@@ -41,7 +40,6 @@ export class StudentStaffAcademicYearService {
     }
 
     return this.http.get<Student_Staff_AcademicYear>(`${this.apiUrl}/api/affectation/${studentId}-${idAnneeUniversitaire}`, {params}).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );
   }
@@ -52,7 +50,6 @@ export class StudentStaffAcademicYearService {
     };
 
     return this.http.post<Student_Staff_AcademicYear>(`http://localhost:8000/api/affectation/create`, affectation, httpOptions).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, undefined))
     );
   }
@@ -63,7 +60,6 @@ export class StudentStaffAcademicYearService {
     };
 
     return this.http.put<Student_Staff_AcademicYear>(`http://localhost:8000/api/affectation/update/${affectation.idPersonnel}-${affectation.idUPPA}-${affectation.idAnneeUniversitaire}`, affectation, httpOptions).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, undefined))
     );
   }
@@ -74,14 +70,8 @@ export class StudentStaffAcademicYearService {
 
   extractStudentTeacherAssignments(): Observable<ExcelResponse> {
       return this.http.get<ExcelResponse>(`${this.apiUrl}/api/affectation/extraction-affectations-etudiants-enseignants`).pipe(
-          tap(response => this.log(response)),
           catchError(error => this.handleError(error, null))
       );
-  }
-
-  //Log la réponse de l'API
-  private log(response: any) {
-  console.table(response);
   }
 
   //Retourne l'erreur en cas de problème avec l'API
