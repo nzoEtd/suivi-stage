@@ -84,7 +84,7 @@ export class SoutenanceService {
   }
 
   //Mise à jour d'une soutenance
-  updateSoutenance(soutenance: Soutenance): Observable<null> {
+  updateSoutenance(soutenance: Soutenance): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({ "Content-type": "application/json" }),
     };

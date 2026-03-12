@@ -41,7 +41,8 @@ export async function convertSoutenancesToSlots(soutenances: Soutenance[], allSt
         s.idLecteur !== null &&
         s.idUPPA != null &&
         s.nomSalle !== null &&
-        s.idSoutenance
+        s.idSoutenance &&
+        s.idPlanning
     );
      return validSoutenances.map(s => {
     const student = allStudents.find(st => st.idUPPA === s.idUPPA);
@@ -66,7 +67,7 @@ export async function convertSoutenancesToSlots(soutenances: Soutenance[], allSt
         dateFin: getDateHeure(s.date!, s.heureFin!),
         idUPPA: s.idUPPA ? s.idUPPA : "Numéro étudiant inconnu",
         etudiant: student ? `${student.nom} ${student.prenom}` : "Étudiant inconnu",
-        tierTemps: student?.tierTemps ? student.tierTemps : false,
+        idReferent: referent ? referent.idPersonnel : -1,
         referent: referent ? `${referent.prenomPersonnel![0]}. ${referent.nomPersonnel}` : "Pas de référent",
         idLecteur: s.idLecteur ? s.idLecteur : 0,
         lecteur: lecteur ? `${lecteur.prenom![0]}. ${lecteur.nom}` : "Lecteur inconnu",
@@ -74,10 +75,12 @@ export async function convertSoutenancesToSlots(soutenances: Soutenance[], allSt
         tuteur: tutor ? `${tutor.nom} ${tutor.prenom}` : "Tuteur d'entreprise inconnu",
         salle: s.nomSalle!,
         duree: null,
+        idPlanning: s.idPlanning!,
+        allStaff: allStaff,
+        tierTemps: student ? student.tierTemps : false
       } ;
   });
 }
-
 
 export function getAllSallesUsed(sallesDispo: number[], jour:Date, slots: SlotItem[]): number[] {
   const salles: number[] = [];

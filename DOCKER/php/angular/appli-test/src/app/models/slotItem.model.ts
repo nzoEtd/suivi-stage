@@ -1,10 +1,11 @@
+import { Staff } from "./staff.model";
 
 export interface SlotItem {
     id: number;
     topPercent: number;
     heightPercent: number;
-    dateDebut: Date | null;
-    dateFin: Date | null;
+    dateDebut: Date;
+    dateFin: Date;
     idUPPA: string;
     etudiant: string;
     tierTemps: boolean;
@@ -13,6 +14,8 @@ export interface SlotItem {
     lecteur: string;
     entreprise: string;
     tuteur: string;
+    idPlanning: number;
+    allStaff: Staff[];
     salle: number | null;
     duree: number | null;
 }
