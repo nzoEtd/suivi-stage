@@ -19,6 +19,8 @@
     font-size: 2rem;
     justify-self: center;
     font-weight: 700;
+    display: flex;
+    gap: 15px;
 }
 
 .data-dashboard--reset-btn

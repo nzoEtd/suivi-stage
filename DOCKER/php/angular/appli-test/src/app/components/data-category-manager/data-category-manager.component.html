@@ -1,0 +1,43 @@
+<div class="data-category">
+  <app-loading *ngIf="loading" />
+  <div *ngIf="!loading">
+    <nav aria-label="breadcrumb">
+        <ol class="data-category--title">
+          <li>
+            <a routerLink="/data-management">Gestion des données</a>
+          </li>
+          <li>/</li>
+          <li class="active">{{ categorie.charAt(0).toUpperCase() + categorie.slice(1) }}</li>
+        </ol>
+      </nav>
+
+    <!-- Vue tableau pour desktop -->
+    <div class="table-view">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              @for (col of cols_labels; track col) {
+                <th>{{ col }}</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of data; track $index) {
+              <tr>
+                @for (col of cols; track col; let isFirst = $first; let isLast = $last) {
+                  <td [class.firstTd]="isFirst" 
+                      [class.lastTd]="isLast">
+                    
+                    <!--Gestion des différents types de valeurs-->
+                    {{ $any(item)[col] }}
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,212 @@
+.data-category
+{
+    margin: 50px auto 30px auto;
+    max-width: 90%;
+}
+
+.data-category--title
+{
+    margin-bottom: 50px;
+    font-size: 2rem;
+    justify-self: center;
+    font-weight: 700; 
+    color: grey;
+    display: flex;
+    gap: 10px; 
+}
+
+.data-category--title a:hover
+{
+    text-decoration: underline;
+}
+
+.data-category--title .active {
+  color: #a40a0a;
+}
+
+/* Barre de recherche et filtres */
+.searchBarAndfilters {
+    padding: 0 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.search-container {
+    position: relative;
+    margin-bottom: 16px;
+    min-width: 200px;
+    flex: 1;
+    max-width: 300px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px 12px;
+    padding-right: 40px;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+}
+
+.clear-button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+
+/* Boutons de filtres */
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    flex: 2;
+}
+
+.filter-button {
+    padding: 8px 16px;
+    border: 1px solid #E5E7EB;
+    border-radius: 9999px;
+    background: white;
+    min-width: 100px;
+    max-width: 210px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    flex: 1;
+    appearance: none;
+    -webkit-appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 1em;
+    padding-right: 32px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Styles spécifiques pour le bouton de tri par date */
+.filter-button.date_asc,
+.filter-button.nb_asc {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+.filter-button.date_desc,
+.filter-button.nb_desc {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='18 15 12 9 6 15'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+.filter-button.nb_asc,
+.filter-button.nb_desc,
+.filter-button.date_asc,
+.filter-button.date_desc {
+    border: 2px solid black;
+}
+
+.filter-button.default {
+    background-image: none;
+}
+
+select.filter-button {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+select.filter-button:not(:focus) {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='9 18 15 12 9 6'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+/* Tableau */
+.table-container {
+    overflow-x: auto;
+    margin: 0 5px;
+    width: 100%;
+    background-color: #f7f7f7;
+    padding: 15px 30px;
+    border-radius: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 5px;
+    min-width: 800px;
+}
+
+th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+tbody td {
+    background-clip: padding-box;
+    padding: 15px;
+}
+
+.firstTd {
+    border-radius: 16px 0 0 16px;
+}
+
+.lastTd {
+    padding-left: 1rem !important;
+    text-align: left;
+    border-radius: 0 16px 16px 0;
+}
+
+tbody tr {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+/* Couleurs de base */
+tbody tr:nth-child(odd) td {
+    background-color: #eee4ff;
+}
+
+tbody tr:nth-child(even) td {
+    background-color: #d7ebff;
+}
+
+/* Couleurs au survol pour les lignes impaires */
+tbody tr:nth-child(odd):hover td {
+    background-color: #dcc6ff !important;
+}
+
+tbody tr:nth-child(odd):hover::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid #c094ff;
+    border-radius: 16px;
+    pointer-events: none;
+}
+
+/* Couleurs au survol pour les lignes paires */
+tbody tr:nth-child(even):hover td {
+    background-color: #b8dcff !important;
+}
+
+tbody tr:nth-child(even):hover::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid #4a8fd0;
+    border-radius: 16px;
+    pointer-events: none;
+}

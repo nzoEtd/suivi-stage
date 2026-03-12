@@ -91,6 +91,7 @@ export class BreadcrumbComponent implements OnInit, OnDestroy {
    * @returns Formatted and translated label
    */
   private formatLabel(path: string): string {
+    console.log(this.currentUserRole);
     const translations: { [key: string]: { [key: string]: string } } = {
       'STUDENT': {
         'dashboard': 'journal de bord',
@@ -113,6 +114,7 @@ export class BreadcrumbComponent implements OnInit, OnDestroy {
           ? `Fiches descriptives de ${this.selectedStudent.prenom} ${this.selectedStudent.nom}`
           : 'Fiches descriptives de l\'étudiant',
         'sheet-details': 'détails fiche descriptive',
+        'data-management': 'gestion des données'
       }
     };
     
