@@ -11,7 +11,6 @@
         </ol>
       </nav>
 
-    <!-- Vue tableau pour desktop -->
     <div class="table-view">
       <div class="table-container">
         <table>
@@ -26,12 +25,50 @@
             @for (item of data; track $index) {
               <tr>
                 @for (col of cols; track col; let isFirst = $first; let isLast = $last) {
-                  <td [class.firstTd]="isFirst" 
-                      [class.lastTd]="isLast">
-                    
-                    <!--Gestion des différents types de valeurs-->
-                    {{ $any(item)[col] }}
-                  </td>
+                  @if (col !== "longitudeAdresse" && col !== "latitudeAdresse")
+                  {
+                    @if (col === "tierTemps" || col === "estTechnique" || col === "estDisponible") {
+                    <td [class.firstTd]="isFirst" 
+                        [class.lastTd]="isLast">
+                      
+                      {{ $any(item)[col] === 1 ? "Oui" : "Non" }}
+                    </td>                    
+                    }
+                    @else if (col === "idDepartement") {
+                      <td [class.firstTd]="isFirst" 
+                          [class.lastTd]="isLast">
+                        
+                        {{ getLibelleByIdAndData($any(item)[col], this.departments) }}
+                      </td>                     
+                    }
+                    @else if (col === "idEntreprise") {
+                      <td [class.firstTd]="isFirst" 
+                          [class.lastTd]="isLast">
+                        
+                        {{ getLibelleByIdAndData($any(item)[col], this.companies) }}
+                      </td>                     
+                    }
+                    @else if (col === "idTuteur") {
+                      <td [class.firstTd]="isFirst" 
+                          [class.lastTd]="isLast">
+                        
+                        {{ getLibelleByIdAndData($any(item)[col], this.tutors) }}
+                      </td>                     
+                    }
+                    @else {
+                      <td [class.firstTd]="isFirst" 
+                          [class.lastTd]="isLast">
+                        
+                        <!--$any permet une gestion des différents types de valeurs-->
+                        @if ($any(item)[col] === null) {
+                          <span>Non renseigné</span>
+                        }
+                        @else {
+                          {{ $any(item)[col] }}
+                        }
+                      </td>
+                    }
+                  }
                 }
               </tr>
             }

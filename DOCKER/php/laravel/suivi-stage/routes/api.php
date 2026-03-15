@@ -9,6 +9,7 @@ use App\Http\Controllers\EntrepriseController;
 use App\Http\Controllers\FicheDescriptiveController;
 use App\Http\Controllers\EtudiantController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DepartementController;
 
 // Import du middleware du CAS
 use App\Http\Middleware\CasAuthMiddleware;
@@ -152,3 +153,6 @@ Route::resource('tds', TDController::class);
 
 // Routes pour le Controller TDController
 Route::resource('annee-form', AnneeFormationController::class);
+
+// Routes pour le Controller DepartementController
+Route::resource('departements', DepartementController::class);

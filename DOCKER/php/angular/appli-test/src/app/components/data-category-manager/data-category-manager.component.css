@@ -210,3 +210,7 @@ tbody tr:nth-child(even):hover::after {
     border-radius: 16px;
     pointer-events: none;
 }
+
+span {
+    font-style: italic;
+}

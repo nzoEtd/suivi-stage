@@ -11,7 +11,7 @@ export class Student {
   idDepartement: number | null;
   idEntreprise: number | null;
   idTuteur: number | null;
-  tierTemps: boolean | null;
+  tierTemps: number | null;
 
   constructor(
     idUPPA: string,
@@ -26,7 +26,7 @@ export class Student {
     idDepartement: number | null,
     idEntreprise: number | null,
     idTuteur: number | null,
-    tierTemps: boolean | null
+    tierTemps: number | null
   ) {
     this.idUPPA = idUPPA;
     this.nom = nom;

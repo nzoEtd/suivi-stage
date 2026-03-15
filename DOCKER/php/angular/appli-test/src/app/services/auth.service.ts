@@ -42,7 +42,8 @@ export class AuthService {
       adresseMail: "philippe.lopisteguy@iutbayonne.univ-pau.fr",
       longitudeAdresse: "-1.5",
       latitudeAdresse: "43.5",
-      quotaEtudiant: 16
+      quotaEtudiant: 16,
+      estTechnique: 1
     }
 
     sessionStorage.setItem('currentUser', JSON.stringify(currentUser));

@@ -7,7 +7,7 @@ export interface SlotItem {
     dateFin: Date | null;
     idUPPA: string;
     etudiant: string;
-    tierTemps: boolean;
+    tierTemps: number;
     referent: string;
     idLecteur: number;
     lecteur: string;
