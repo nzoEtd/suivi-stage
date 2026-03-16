@@ -14,23 +14,26 @@ import { CompanyService } from '../../services/company.service';
 import { CompanyTutorService } from '../../services/company-tutor.service';
 import { Company } from '../../models/company.model';
 import { CompanyTutor } from '../../models/company-tutor.model';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-data-category-manager',
-  imports: [RouterLink, CommonModule, LoadingComponent],
+  imports: [RouterLink, CommonModule, LoadingComponent, FormsModule],
   templateUrl: './data-category-manager.component.html',
   styleUrl: './data-category-manager.component.css'
 })
 export class DataCategoryManagerComponent {
-  categorie: string = '';
-  data: Student[] | Staff[] | Salle[] = [];
+  categorie!: Category;
+  fullData: any[] = [];
+  data: any[] = [];
   cols: string[] = [];
   cols_labels: string[] = [];
   departments: Department[] = [];
   companies: Company[] = [];
   tutors: CompanyTutor[] = [];
-
+  searchTerm: string = '';
   loading: boolean = true;
+
   constructor(
     private route: ActivatedRoute,
     private studentService: StudentService,
@@ -50,6 +53,9 @@ export class DataCategoryManagerComponent {
     });
   }
 
+  /**
+   * Load data needed for the component to work properly
+   */
   async loadData() {
     this.loading = true;
     
@@ -91,10 +97,11 @@ export class DataCategoryManagerComponent {
         this.studentService.getStudents().subscribe({
           next: (data) => {
             this.data = data;
+            this.fullData = data;
             
             if (this.data.length > 0) {
               this.cols = Object.keys(this.data[0]);
-              this.cols_labels = [" ", "Login", "Nom", "Prénom", "Adresse", "Ville", "Code postal", "Téléphone", "Adresse mail", "Tier-temps", "Département", "Entreprise", "Tuteur"];
+              this.cols_labels = ["ID UPPA", "Login", "Nom", "Prénom", "Adresse", "Ville", "Code postal", "Téléphone", "Adresse mail", "Tier-temps", "Département", "Entreprise", "Tuteur"];
             }
 
             this.loading = false;
@@ -112,6 +119,7 @@ export class DataCategoryManagerComponent {
         this.staffService.getStaffs().subscribe({
           next: (data) => {
             this.data = data;
+            this.fullData = data;
 
             if (this.data.length > 0) {
               this.cols = Object.keys(this.data[0]);
@@ -126,16 +134,18 @@ export class DataCategoryManagerComponent {
             this.loading = false;
           }
         });
+
         break;
         
       case 'salles':
         this.salleService.getSalles().subscribe({
           next: (data) => {
             this.data = data;
+            this.fullData = data;
 
             if (this.data.length > 0) {
               this.cols = Object.keys(this.data[0]);
-              this.cols_labels = ["Numéro", "Est disponible"];
+              this.cols_labels = [" ", "Est disponible"];
             }
 
             this.loading = false;
@@ -146,6 +156,7 @@ export class DataCategoryManagerComponent {
             this.loading = false;
           }
         });
+
         break;
     }
   }
@@ -159,10 +170,98 @@ export class DataCategoryManagerComponent {
   getLibelleByIdAndData(id: number, data: any[]): string {
     let found_data = data.find((line) => Object.values(line)[0] === id);
 
-    console.log(found_data);
-
     if (found_data) return found_data.libelle || found_data.nom || found_data.raisonSociale;
 
     return id.toString();
   }
+
+  /**
+   * Handles search input changes
+   * Triggers debounced search term subject
+   * @param event Input event containing the search term
+   */
+  onSearchTermChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+
+    if (target) {
+      this.searchTerm = target.value;
+      this.applyFilters();
+    }
+  }
+
+  /**
+   * Resets the search term and triggers a new search
+   */
+  clearSearchTerm() {
+    this.data = this.fullData;
+
+    this.searchTerm = '';
+  }
+
+  tableConfigs: {
+  etudiants: { searchFields: string[]; relations: string[] };
+  personnel: { searchFields: string[]; relations: string[] };
+  salles: { searchFields: string[]; relations: string[] };
+  } = {
+    etudiants: {
+      searchFields: ["idUPPA", "login", "nom", "prenom", "adresse", "ville", "codePostal", "telephone", "adresseMail"],
+      relations: ["departement", "entreprise", "tuteur"]
+    },
+    personnel: {
+      searchFields: ["login", "nom", "prenom", "adresse", "ville", "codePostal", "telephone", "adresseMail", "quotaEtudiant"],
+      relations: []
+    },
+    salles: {
+      searchFields: ["nomSalle"],
+      relations: []
+    }
+  };
+
+  applyFilters() {
+    const term = this.searchTerm.toLowerCase().trim();
+
+    if (!term) {
+      this.data = this.fullData;
+      return;
+    }
+
+    const config = this.tableConfigs[this.categorie];
+
+    const deptMap = config.relations.includes("departement")
+      ? new Map(this.departments.map(d => [d.idDepartement, d.libelle.toLowerCase()]))
+      : new Map();
+
+    const compMap = config.relations.includes("entreprise")
+      ? new Map(this.companies.map(c => [c.idEntreprise, c.raisonSociale!.toLowerCase()]))
+      : new Map();
+
+    const tutorMap = config.relations.includes("tuteur")
+      ? new Map(this.tutors.map(t => [t.idTuteur, t.nom.toLowerCase()]))
+      : new Map();
+
+    this.data = this.fullData.filter(item => {
+
+      const fieldValMatch = config.searchFields.some(field => {
+        const value = item[field];
+        return value?.toString().toLowerCase().includes(term);
+      });
+
+      const relationValMatch = config.relations.some(rel => {
+        switch (rel) {
+          case "departement":
+            return deptMap.get(item.idDepartement)?.includes(term);
+          case "entreprise":
+            return compMap.get(item.idEntreprise)?.includes(term);
+          case "tuteur":
+            return tutorMap.get(item.idTuteur)?.includes(term);
+          default:
+            return false;
+        }
+      });
+
+      return fieldValMatch || relationValMatch;
+    });
+  }
 }
+
+type Category = "etudiants" | "personnel" | "salles";

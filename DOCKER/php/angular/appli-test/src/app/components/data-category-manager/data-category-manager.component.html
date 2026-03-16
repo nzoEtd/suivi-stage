@@ -11,6 +11,38 @@
         </ol>
       </nav>
 
+    <div class="searchBarAndfilters">
+        <div class="search-container">
+          <input 
+            type="text"
+            [(ngModel)]="searchTerm"
+            (input)="onSearchTermChange($event)"
+            placeholder="Rechercher..." 
+            class="search-input"
+          />
+          <button 
+            (click)="clearSearchTerm()"
+            class="clear-button"
+          >
+            X
+          </button>
+        </div>
+
+        <div class="filter-buttons">
+          <!-- <select 
+            #promoSelect
+            [(ngModel)]="currentStudyYearFilter"
+            (change)="setStudyYearFilter(currentStudyYearFilter, promoSelect)"
+            class="filter-button"
+          >
+            <option value="all">Toutes les promos</option>
+            <option value="BUT 1">BUT 1</option>
+            <option value="BUT 2">BUT 2</option>
+            <option value="BUT 3">BUT 3</option>
+          </select> -->
+        </div>
+      </div>
+
     <div class="table-view">
       <div class="table-container">
         <table>
