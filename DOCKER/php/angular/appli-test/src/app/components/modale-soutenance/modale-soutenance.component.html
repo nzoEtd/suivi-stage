@@ -1,12 +1,13 @@
 <div class="modal-overlay">
   <div class="modal">
     <div class="modal-topbar">
-        <button type="button" (click)="onCancel()" class="close-button">
-          x
-        </button>
-        <h1 class="modal-title">
-          Soutenance {{ formatDate(soutenance.dateDebut, 'HeureToStr') }}-{{ formatDate(soutenance.dateFin, 'HeureToStr') }} S{{ soutenance.salle }}
-        </h1>
+      <button type="button" (click)="onCancel()" class="close-button">x</button>
+      <h1 class="modal-title">
+        Soutenance {{ formatDate(soutenance.dateDebut!, "HeureToStr") }}-{{
+          formatDate(soutenance.dateFin!, "HeureToStr")
+        }}
+        S{{ soutenance.salle }}
+      </h1>
     </div>
     @if (isSubmitting || !isDataLoaded) {
       <div class="loading-overlay">
@@ -14,7 +15,8 @@
       </div>
     }
     @if (!isSubmitting && isDataLoaded) {
-      <form (ngSubmit)="onSubmit()"
+      <form
+        (ngSubmit)="onSubmit()"
         [formGroup]="soutenanceForm"
         [class.disabled-form]="isSubmitting"
         class="form"
@@ -22,19 +24,43 @@
         <!--Non modifiables-->
         <div class="input-wrapper">
           <label for="etudiant">Etudiant :</label>
-          <input type="text" name="etudiant" id="etudiant" [value]="soutenance.etudiant" [disabled]="true">
+          <input
+            type="text"
+            name="etudiant"
+            id="etudiant"
+            [value]="soutenance.etudiant"
+            [disabled]="true"
+          />
         </div>
         <div class="input-wrapper">
           <label for="referent">Enseignant référent :</label>
-          <input type="text" name="referent" id="referent" [value]="soutenance.referent" [disabled]="true">
+          <input
+            type="text"
+            name="referent"
+            id="referent"
+            [value]="soutenance.referent"
+            [disabled]="true"
+          />
         </div>
         <div class="input-wrapper">
           <label for="entreprise">Entreprise :</label>
-          <input type="text" name="entreprise" id="entreprise" [value]="soutenance.entreprise" [disabled]="true">
+          <input
+            type="text"
+            name="entreprise"
+            id="entreprise"
+            [value]="soutenance.entreprise"
+            [disabled]="true"
+          />
         </div>
         <div class="input-wrapper">
           <label for="tuteur">Tuteur d'entreprise :</label>
-          <input type="text" name="tuteur" id="tuteur" [value]="soutenance.tuteur" [disabled]="true">
+          <input
+            type="text"
+            name="tuteur"
+            id="tuteur"
+            [value]="soutenance.tuteur"
+            [disabled]="true"
+          />
         </div>
 
         <!--Modifiables en tant que responsable des stages-->
@@ -43,11 +69,7 @@
           <div class="input-wrapper">
             <label for="lecteur">Enseignant lecteur :</label>
             @if (editMode) {
-              <select
-                name="lecteur"
-                id="lecteur"
-                formControlName="lecteur"
-              >
+              <select name="lecteur" id="lecteur" formControlName="lecteur">
                 <option [value]="soutenance.idLecteur" selected>
                   {{ soutenance.lecteur }}
                 </option>
@@ -56,18 +78,26 @@
                     *ngFor="let enseignantLecteur of enseignantsLecteurs"
                     [value]="enseignantLecteur.idPersonnel"
                   >
-                    {{ enseignantLecteur.prenom?.[0] }}. {{ enseignantLecteur.nom }}
+                    {{ enseignantLecteur.prenom?.[0] }}.
+                    {{ enseignantLecteur.nom }}
                   </option>
                 }
               </select>
-            }
-            @else {
-              <input type="text" name="lecteur" id="lecteur" formControlName="lecteur" [value]="soutenance.lecteur">
+            } @else {
+              <input
+                type="text"
+                name="lecteur"
+                id="lecteur"
+                formControlName="lecteur"
+                [value]="soutenance.lecteur"
+              />
             }
           </div>
           <div
             class="error-message"
-            *ngIf="submitted && soutenanceForm.get('lecteur')?.hasError('required')"
+            *ngIf="
+              submitted && soutenanceForm.get('lecteur')?.hasError('required')
+            "
           >
             Veuillez sélectionner un enseignant lecteur.
           </div>
@@ -77,32 +107,37 @@
           <div>
             <div class="input-wrapper">
               <label for="heureDebut">Heure début :</label>
-              <input type="time" 
-                    name="heureDebut"
-                    id="heureDebut"
-                    formControlName="heureDebut"
-              >
+              <input
+                type="time"
+                name="heureDebut"
+                id="heureDebut"
+                formControlName="heureDebut"
+              />
             </div>
-
           </div>
           <div class="input-wrapper">
             <label for="heureFin">Heure fin :</label>
-            <input type="time"
-                   name="heureFin"
-                   id="heureFin"
-                   formControlName="heureFin"
-            >
+            <input
+              type="time"
+              name="heureFin"
+              id="heureFin"
+              formControlName="heureFin"
+            />
           </div>
         </div>
         <div
           class="error-message"
-          *ngIf="submitted && soutenanceForm.get('heureDebut')?.hasError('required')"
+          *ngIf="
+            submitted && soutenanceForm.get('heureDebut')?.hasError('required')
+          "
         >
           Veuillez sélectionner une heure de début.
         </div>
         <div
           class="error-message"
-          *ngIf="submitted && soutenanceForm.get('heureFin')?.hasError('required')"
+          *ngIf="
+            submitted && soutenanceForm.get('heureFin')?.hasError('required')
+          "
         >
           Veuillez sélectionner une heure de fin.
         </div>
@@ -115,11 +150,7 @@
             <div class="input-wrapper">
               <label for="jour">Jour :</label>
               @if (editMode) {
-                <select
-                  name="jour"
-                  id="jour"
-                  formControlName="jour"
-                >
+                <select name="jour" id="jour" formControlName="jour">
                   <option
                     *ngFor="let dateAcceptee of datesAcceptees"
                     [value]="dateAcceptee"
@@ -127,9 +158,14 @@
                     {{ formatStringDate(dateAcceptee) }}
                   </option>
                 </select>
-              }
-              @else {
-                <input type="date" name="jour" id="jour" formControlName="jour" [value]="dateSoutenance">
+              } @else {
+                <input
+                  type="date"
+                  name="jour"
+                  id="jour"
+                  formControlName="jour"
+                  [value]="dateSoutenance"
+                />
               }
             </div>
           </div>
@@ -138,32 +174,34 @@
               <div class="input-wrapper">
                 <label for="salle">Salle :</label>
                 @if (editMode) {
-                  <select
-                    name="salle"
-                    id="salle"
-                    formControlName="salle"
-                  >
-                    <option
-                      *ngFor="let salle of sallesDispo"
-                      [value]="salle"
-                    >
+                  <select name="salle" id="salle" formControlName="salle">
+                    <option *ngFor="let salle of sallesDispo" [value]="salle">
                       {{ salle }}
                     </option>
                   </select>
-                }
-                @else {
-                  <input type="text" name="salle" id="salle" formControlName="salle" [value]="soutenance.salle">
+                } @else {
+                  <input
+                    type="text"
+                    name="salle"
+                    id="salle"
+                    formControlName="salle"
+                    [value]="soutenance.salle"
+                  />
                 }
               </div>
               <div
                 class="error-message"
-                *ngIf="submitted && soutenanceForm.get('jour')?.hasError('required')"
+                *ngIf="
+                  submitted && soutenanceForm.get('jour')?.hasError('required')
+                "
               >
                 Veuillez sélectionner un jour.
               </div>
               <div
                 class="error-message"
-                *ngIf="submitted && soutenanceForm.get('salle')?.hasError('required')"
+                *ngIf="
+                  submitted && soutenanceForm.get('salle')?.hasError('required')
+                "
               >
                 Veuillez sélectionner une salle.
               </div>
@@ -171,15 +209,12 @@
           </div>
         </div>
         <!-- Boutons (mode édition) -->
-        @if (editMode)
-        {
+        @if (editMode) {
           <div class="modal-buttons">
             <button type="button" (click)="onCancel()" class="cancel-button">
-                Annuler
+              Annuler
             </button>
-            <button type="submit" class="validate-button">
-              Valider
-            </button>
+            <button type="submit" class="validate-button">Valider</button>
           </div>
         }
       </form>
