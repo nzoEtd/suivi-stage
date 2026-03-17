@@ -22,49 +22,25 @@
       >
         <!--Non modifiables-->
         <div class="input-wrapper">
-          <label for="etudiant">Etudiant :</label>
-          <input
-            type="text"
-            name="etudiant"
-            id="etudiant"
-            [value]="soutenance.etudiant"
-            [disabled]="true"
-          />
+          <label for="etudiant"><strong>Etudiant :</strong></label>
+          <p class="readonly-text">{{ soutenance.etudiant }}</p>
         </div>
         <div class="input-wrapper">
-          <label for="referent">Enseignant référent :</label>
-          <input
-            type="text"
-            name="referent"
-            id="referent"
-            [value]="soutenance.referent"
-            [disabled]="true"
-          />
+          <label for="referent"><strong>Enseignant référent :</strong></label>
+          <p class="readonly-text">{{ soutenance.referent }}</p>
         </div>
         <div class="input-wrapper">
-          <label for="entreprise">Entreprise :</label>
-          <input
-            type="text"
-            name="entreprise"
-            id="entreprise"
-            [value]="soutenance.entreprise"
-            [disabled]="true"
-          />
+          <label for="entreprise"><strong>Entreprise :</strong></label>
+          <p class="readonly-text">{{ soutenance.entreprise }}</p>
         </div>
         <div class="input-wrapper">
-          <label for="tuteur">Tuteur d'entreprise :</label>
-          <input
-            type="text"
-            name="tuteur"
-            id="tuteur"
-            [value]="soutenance.tuteur"
-            [disabled]="true"
-          />
+          <label for="tuteur"><strong>Tuteur d'entreprise :</strong></label>
+          <p class="readonly-text">{{ soutenance.tuteur }}</p>
         </div>
 
         <!-- Créneau disponible -->
         <div class="input-wrapper">
-          <label for="creneau">Créneau disponible :</label>
+          <label for="creneau"><strong>Créneau disponible :</strong></label>
           @if (editMode) {
             <select id="creneau" formControlName="creneau">
               <option
@@ -86,26 +62,24 @@
               Veuillez sélectionner un créneau.
             </div>
           } @else {
-            <input
-              type="text"
-              [value]="
+            <p class="readonly-text">
+              {{
                 formatStringDate(formatDateToYYYYMMDD(soutenance.dateDebut!)) +
-                ' – Salle ' +
-                soutenance.salle +
-                ' (' +
-                formatDate(soutenance.dateDebut!, 'Heure') +
-                ' à ' +
-                formatDate(soutenance.dateFin!, 'Heure') +
-                ')'
-              "
-              disabled
-            />
+                  " – Salle " +
+                  soutenance.salle +
+                  " (" +
+                  formatDate(soutenance.dateDebut!, "Heure") +
+                  " à " +
+                  formatDate(soutenance.dateFin!, "Heure") +
+                  ")"
+              }}
+            </p>
           }
         </div>
 
         <!-- Enseignant lecteur -->
         <div class="input-wrapper">
-          <label for="lecteur">Enseignant lecteur :</label>
+          <label for="lecteur"><strong>Enseignant lecteur :</strong></label>
 
           @if (editMode) {
             <select id="lecteur" formControlName="lecteur">
@@ -126,7 +100,9 @@
               Veuillez sélectionner un enseignant lecteur.
             </div>
           } @else {
-            <input type="text" [value]="soutenance.lecteur" disabled />
+            <p class="readonly-text">
+              {{ soutenance.lecteur }}
+            </p>
           }
         </div>
 
