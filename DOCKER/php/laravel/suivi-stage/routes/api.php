@@ -91,6 +91,7 @@ Route::get('/etudiants/{id}/fiches-descriptives', [EtudiantController::class, 'i
 Route::get('/etudiants', [EtudiantController::class, 'index'])->name('etudiants.index');
 Route::get('/etudiants/{id}', [EtudiantController::class, 'show'])->name('etudiants.show');
 Route::get('/etudiants/{id}/parcours', [EtudiantController::class, 'indexParcours'])->name('etudiants.indexParcours');
+Route::get('/etudiants/promos/{idPromo}', [EtudiantController::class, 'indexPromo'])->name('etudiants.indexPromo');
 
 // Route pour le Controller Parcours
 Route::get('/parcours', [ParcoursController::class, 'index'])->name('parcours.index');

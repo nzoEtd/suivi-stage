@@ -2,7 +2,7 @@ import { ChangeDetectorRef } from "@angular/core";
 import { Company } from "../models/company.model";
 import { Planning } from "../models/planning.model";
 import { SlotItem } from "../models/slotItem.model";
-import { Soutenance } from "../models/soutenance.model";
+import { Soutenance, SoutenanceCreate } from "../models/soutenance.model";
 import { Staff } from "../models/staff.model";
 import { Student } from "../models/student.model";
 import { getDateHeure, isSameDay } from "./timeManagement";
@@ -90,4 +90,38 @@ export function getAllSallesUsed(sallesDispo: number[], jour:Date, slots: SlotIt
     });
   });
   return salles;
+}
+
+export function createSlotsFromStudents(allStudents: Student[], allCompanies: Company[], allTutors: CompanyTutor[], referents: Student_Staff_AcademicYear_String[], academicYearId: number|null): SlotItem[] {
+  const slots: SlotItem[] = [];
+  allStudents.forEach(student => {
+    const referent = academicYearId? referents.find(r => r.idUPPA === student?.idUPPA && r.idAnneeUniversitaire === academicYearId): undefined;
+    const company = student?.idEntreprise 
+      ? allCompanies.find(c => c.idEntreprise === student.idEntreprise)
+      : null;
+    const tutor = student?.idTuteur 
+    ? allTutors.find(f => f.idTuteur === student.idTuteur)
+    : null;
+    
+    const slot = {
+      id: 0,
+      topPercent: 0,
+      heightPercent: 0,
+      dateDebut: null,
+      dateFin: null,
+      idUPPA: student ? student.idUPPA : "Numéro étudiant inconnu",
+      etudiant: student ? `${student.nom} ${student.prenom}` : "Étudiant inconnu",
+      tierTemps: student?.tierTemps ? student.tierTemps : false,
+      idReferent: referent ? referent?.idPersonnel : 0,
+      referent: referent ? `${referent.prenomPersonnel![0]}. ${referent.nomPersonnel}` : "Pas de référent",
+      idLecteur: 0,
+      lecteur: "Pas de lecteur",
+      entreprise: company ? company.raisonSociale! : "Pas d'entreprise",
+      tuteur: tutor ? `${tutor.nom} ${tutor.prenom}` : "Tuteur d'entreprise inconnu",
+      salle: null,
+      duree: null,
+    };
+    slots.push(slot);
+  })
+  return slots;
 }

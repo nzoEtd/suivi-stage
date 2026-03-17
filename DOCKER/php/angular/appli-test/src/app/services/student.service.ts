@@ -36,6 +36,18 @@ export class StudentService {
     );
   }
 
+  getStudentsByPromo(promoId: number, fields?: string[]): Observable<Student[]>{
+    let params = new HttpParams();
+
+    if (fields && fields.length > 0) {
+      params = params.set('fields', fields.join(','));
+    }
+
+    return this.http.get<Student[]>(`${this.apiUrl}/api/etudiants/promos/${promoId}`, {params}).pipe(
+      catchError(error => this.handleError(error, null))
+    );
+  }
+
   //Retourne l'erreur en cas de problème avec l'API
   private handleError(error: Error, errorValue: any) {
     console.error(error);

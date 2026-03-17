@@ -6,6 +6,15 @@ import {
   ChangeDetectorRef,
   OnDestroy,
 } from "@angular/core";
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ValidatorFn,
+  AbstractControl,
+  FormsModule, 
+  ReactiveFormsModule
+} from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { Planning, PlanningCreate } from "../../models/planning.model";
 import { ScheduleBoardComponent } from "../schedule-board/schedule-board.component";
@@ -14,15 +23,28 @@ import { Router } from "@angular/router";
 import { SlotItem } from "../../models/slotItem.model";
 import { TimeBlockConfig } from "../../models/timeBlock.model";
 import { ModaleSoutenanceComponent } from "../modale-soutenance/modale-soutenance.component";
-import { getAllSallesUsed } from "../../utils/fonctions";
+import { ModaleComponent } from "../modale/modale.component";
+import { createSlotsFromStudents, getAllSallesUsed } from "../../utils/fonctions";
 import { PlanningService } from "../../services/planning.service";
-import { Soutenance, SoutenanceUpdate } from "../../models/soutenance.model";
-import { Subject, switchMap, takeUntil } from "rxjs";
+import { Soutenance, SoutenanceCreate, SoutenanceUpdate } from "../../models/soutenance.model";
+import { Subject, forkJoin, switchMap, takeUntil } from "rxjs";
 import { SoutenanceService } from "../../services/soutenance.service";
 import { formatDateToYYYYMMDD } from "../../utils/timeManagement";
 import { DataStoreService } from "../../services/data.service";
 import { ToastrService } from 'ngx-toastr';
 import { inject } from '@angular/core';
+import { OverlayModule } from "@angular/cdk/overlay";
+import { TrainingYear } from "../../models/training-year.model";
+import { Student } from "../../models/student.model";
+import { TrainingYearService } from "../../services/training-year.service";
+import { StudentService } from "../../services/student.service";
+import { AcademicYearService } from "../../services/academic-year.service";
+import { Company } from "../../models/company.model";
+import { CompanyTutor } from "../../models/company-tutor.model";
+import { Student_Staff_AcademicYear_String } from "../../models/student-staff-academicYear-string.model";
+import { CompanyService } from "../../services/company.service";
+import { CompanyTutorService } from "../../services/company-tutor.service";
+import { StudentStaffAcademicYearService } from "../../services/student-staff-academicYear.service";
 
 @Component({
   selector: "app-add-update-schedule",
@@ -31,6 +53,10 @@ import { inject } from '@angular/core';
     CommonModule,
     LoadingComponent,
     ModaleSoutenanceComponent,
+    ModaleComponent,
+    OverlayModule,
+    FormsModule, 
+    ReactiveFormsModule
   ],
   templateUrl: "./add-update-schedule.component.html",
   styleUrls: ["./add-update-schedule.component.css"],
@@ -50,11 +76,29 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   timeBlocks: TimeBlockConfig[] = [];
   allDataLoaded: boolean = false;
   isModalOpen: boolean = false;
+  modalOpen: boolean = false;
+  modalStudent: boolean = true;
+  title: string = "";
   selectedSoutenance?: SlotItem;
   idSoutenance?: number;
   sallesAffiches: number[] = [];
   finalSlots: SoutenanceUpdate[] = [];
   isValidating: boolean = false;
+
+  //Variables pour les modales
+  dropdownOpen: boolean = false;
+  submitted: boolean = false;
+  isSubmitting: boolean = false;
+  newItems: SlotItem[] = [];
+  newDay: { date: string } | null = null;
+  promos: TrainingYear[] = [];
+  students: Student[] = [];
+  selectedStudents: Student[] = [];
+  planningForm!: FormGroup;
+  currentAcademicYearId!: number;
+  allCompanies: Company[] = [];
+  allTutors: CompanyTutor[] = [];
+  referents: Student_Staff_AcademicYear_String[] = [];
 
   //Variables drag and drop
   planningByDay: Record<string, SlotItem[]> = {};
@@ -65,7 +109,14 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     private readonly soutenanceService: SoutenanceService,
     private readonly dataStore: DataStoreService,
     private readonly cdRef: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private trainingYearService: TrainingYearService,
+    private studentService: StudentService,
+    private fb: FormBuilder,
+    private academicYearService: AcademicYearService,
+    private companiesService: CompanyService,
+    private tutorService: CompanyTutorService,
+    private studentStaffService: StudentStaffAcademicYearService,
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
@@ -75,6 +126,20 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
       console.log("soutenances finales : ", this.slots);
 
       this.timeBlocks = [];
+
+      forkJoin({
+        promos: this.trainingYearService.getTrainingYears(),
+        academicYear: this.academicYearService.getCurrentAcademicYear(),
+        allCompanies: this.companiesService.getCompanies(),
+        allTutors: this.tutorService.getCompanyTutors(),
+        referents: this.studentStaffService.getAllStudentTeachers(),
+      }).subscribe(({ promos, academicYear, allCompanies, allTutors, referents }) => {
+        this.promos = promos;
+        this.currentAcademicYearId = academicYear?.idAnneeUniversitaire || 0;
+        this.allCompanies = allCompanies;
+        this.allTutors = allTutors;
+        this.referents = referents;
+      });
 
       if (
         this.planning &&
@@ -127,6 +192,42 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     }
   }
 
+  initFormStudent() {
+    this.planningForm = this.fb.group(
+      {
+        idAnneeFormation: [null, Validators.required],
+        // etudiants: [[], Validators.required]
+      },
+    );
+  }
+
+  initFormDay() {
+    this.planningForm = this.fb.group(
+      {
+        date: [null, Validators.required],
+      },
+    );
+  }
+
+  onStudentToggle(event: Event, student: Student) {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
+      this.selectedStudents.push(student);
+    } else {
+      this.selectedStudents = this.selectedStudents.filter((s) => s !== student);
+    }
+  }
+
+  get selectedStudentsText(): string {
+    return this.selectedStudents.length
+      ? this.selectedStudents.map((s) => s.nom + " " + s.prenom).join(", ")
+      : "-- Sélectionner --";
+  }
+
+  get promoSelected(): boolean {
+    return this.planningForm.get('idAnneeFormation')?.value != null;
+  }
+
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
@@ -134,8 +235,6 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
 
   updateJour(jour: Date) {
     this.selectedJour = jour;
-    const dayKey = this.selectedJour.toISOString().slice(0,10);
-    const slotsDuJour = this.planningByDay[dayKey] || [];
 
     this.sallesAffiches = getAllSallesUsed(
       this.salles,
@@ -158,12 +257,75 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     this.isModalOpen = false;
   }
 
+  onSubmit(){
+    this.submitted = true;
+    console.log("?????", this.planningForm.invalid, this.planningForm, this.selectedStudents, this.planningForm.value)
+    if (this.planningForm.invalid) return;
+    this.isSubmitting = true;
+    this.modalStudent ? this.addStudent() : this.addJour();
+    this.isSubmitting = false;
+  }
+
+  openModalJour(){
+    this.initFormDay();
+    this.title = "Ajouter un jour";
+    this.modalStudent = false;
+    this.modalOpen = true;
+  }
+
   addJour(){
-    
+    this.newDay = this.planningForm.value;
+    console.log("test newDay :", this.newDay)
+    if(this.newDay) {
+      const date = new Date(this.newDay.date)
+      this.planningByDay[date.toLocaleDateString('fr-CA')] = [];
+      console.log(this.planningByDay)
+      this.cdRef.detectChanges();
+    }
+  }
+
+  openModalStudent(){
+    this.initFormStudent();
+    this.listenPromoChange();
+
+    this.title = "Ajouter un étudiant";
+    this.modalStudent = true;
+    this.modalOpen = true;
+  }
+
+  listenPromoChange() {
+    this.planningForm.get('idAnneeFormation')!
+      .valueChanges
+      .subscribe(idPromo => {
+  
+        if (idPromo) {
+          this.loadStudents(idPromo);
+          console.log("des étudiants ?", this.students);
+          this.planningForm.get('etudiants')?.setValue(this.students);
+        } else {
+          this.students = [];
+          this.planningForm.get('etudiants')?.setValue([]);
+        }
+  
+      });
+  }
+
+  loadStudents(idPromo: number) {
+    this.studentService.getStudentsByPromo(idPromo)
+      .subscribe(students => {
+        this.students = students;
+      });
   }
 
   addStudent(){
-
+    this.newItems = [];
+    const newSlots: SlotItem[] = createSlotsFromStudents(this.selectedStudents, this.allCompanies, this.allTutors, this.referents, this.currentAcademicYearId);
+    console.log("les nouveaux slots :",newSlots);
+    newSlots.forEach(slot => {
+      this.newItems.push(slot);
+    })
+    this.items = [...this.items, ...this.newItems];
+    this.modalOpen = false;
   }
 
   onValidate() {

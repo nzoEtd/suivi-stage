@@ -20,7 +20,7 @@
                     <h3 class="title">{{selectedJour | date:'EEEE dd MMMM yyyy':'':'fr'}}</h3>
                     <h4>&#x26A0; Planning non enregistré</h4>
                 </div>
-                <button class="little-btn primary" (click)="addStudent()"><b>
+                <button class="little-btn primary" (click)="openModalStudent()"><b>
                     Ajouter un étudiant
                 </b></button>
                 <div>
@@ -46,7 +46,7 @@
                                     <span class="jour" (click)="updateJour(jour)">{{jour | date:'EEE d':'':'fr'}}</span>
                                 }
                             </div>
-                              <span class="jour" title="Ajouter un jour" (click)="addJour()"><b>+</b></span>
+                              <span class="jour" title="Ajouter un jour" (click)="openModalJour()"><b>+</b></span>
                         </div>
                     </div>            
                 </div>
@@ -69,5 +69,93 @@
   *ngIf="isModalOpen"
   (cancel)="isModalOpen = false"
   [soutenance]="selectedSoutenance!"/>
-  <!-- idSoutenance="idSoutenance" -->
-  <!-- (save)="onSoutenanceSaved($event)" -->
+
+<app-modale
+  *ngIf="modalOpen"
+  [title]="title"
+  (submit)="onSubmit()"
+  (cancel)="modalOpen = false"
+>
+    <form
+        class="form"
+        [formGroup]="planningForm"
+        (ngSubmit)="onSubmit()"
+        [class.disabled-form]="isSubmitting"
+      >
+    @if (modalStudent){
+
+        <!-- Promo -->
+        <div class="input-wrapper">
+          <label>Promo étudiants* :</label>
+          <select formControlName="idAnneeFormation">
+            <option [ngValue]="null" selected>-- Sélectionner --</option>
+            <option
+              *ngFor="let promo of promos"
+              [ngValue]="promo.idAnneeFormation"
+            >
+              {{ promo.libelle }}
+            </option>
+          </select>
+        </div>
+        <div
+          class="error-message"
+          *ngIf="
+            submitted &&
+            planningForm.get('idAnneeFormation')?.hasError('required')
+          "
+        > 
+          La promo est obligatoire.
+        </div>
+
+
+        <!-- Etudiants -->
+        @if(promoSelected){
+            <div class="input-wrapper">
+                <label>Etudiants* :</label>
+
+                <div class="multi-select">
+                    <div
+                    class="select-box"
+                    cdkOverlayOrigin
+                    #origin="cdkOverlayOrigin"
+                    (click)="dropdownOpen = !dropdownOpen"
+                    >
+                    {{ selectedStudentsText }}
+                    <span class="arrow"></span>
+                    </div>
+
+                    <ng-template
+                    cdkConnectedOverlay
+                    [cdkConnectedOverlayOrigin]="origin"
+                    [cdkConnectedOverlayOpen]="dropdownOpen"
+                    [cdkConnectedOverlayHasBackdrop]="true"
+                    [cdkConnectedOverlayBackdropClass]="'transparent-backdrop'"
+                    (backdropClick)="dropdownOpen = false"
+                    >
+                    <div class="options">
+                        <label *ngFor="let student of students" class="option">
+                        <input
+                            type="checkbox"
+                            [checked]="selectedStudents.includes(student)"
+                            (change)="onStudentToggle($event, student)"
+                        />
+                        {{ student.nom }} {{ student.prenom }}
+                        </label>
+                    </div>
+                    </ng-template>
+                </div>
+            </div>
+        }
+    }
+    @else {
+        <!-- Date -->
+        <div class="line-wrapper">
+            <div class="input-wrapper">
+              <label>Date* :</label>
+              <input type="date" formControlName="date" />
+            </div>
+        </div>
+    }
+      </form>
+
+</app-modale>

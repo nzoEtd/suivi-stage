@@ -114,3 +114,117 @@ h4{
     color: white;
     border: 1px solid #A2A2A2;
 }
+
+/* MODALE */
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+  
+  .input-wrapper label {
+    font-weight: normal;
+    text-align: left;
+    flex-shrink: 0;
+  }
+  
+  .input-wrapper input,
+  .input-wrapper select {
+    flex: 1;
+    min-width: 0;
+    padding: 6px 10px;
+    border: 1px solid #60a5fa;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    background: white;
+    box-sizing: border-box;
+  }
+  
+  .line-wrapper {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .line-wrapper .input-wrapper {
+    flex: 1;
+  }
+  
+  .time-section {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 5px;
+  }
+  
+  .multi-select {
+    position: relative;
+    flex: 1;
+  }
+  
+  .select-box {
+    border: 1px solid #60a5fa;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    font-size: 0.95rem;
+  }
+  
+  .select-box .arrow {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 6px solid #666;
+    transition: transform 0.2s ease;
+  }
+  
+  .options {
+    min-width: 300px;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #60a5fa;
+    background: white;
+    z-index: 10000;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .transparent-backdrop {
+    background: transparent;
+  }
+  
+  .option {
+    display: flex;
+    align-items: center;
+    padding: 6px 10px;
+    gap: 8px;
+    cursor: pointer;
+    min-height: 30px;
+  }
+  
+  .option-text {
+    flex: 1;
+    font-size: 0.88rem;
+    color: #333;
+  }
+  
+  .option:hover {
+    background-color: #f0f9ff;
+  }
+  
+  .option input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    cursor: pointer;
+  }

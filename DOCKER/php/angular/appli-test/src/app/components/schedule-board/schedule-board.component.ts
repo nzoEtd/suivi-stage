@@ -227,7 +227,8 @@ export class ScheduleBoardComponent implements OnInit {
       
         // Vérification de la disponibilité du créneau choisit et de la disponibilité des profs
         if (!this.canPlaceSlot(newStart, newEnd, draggedSlot.referent, draggedSlot.lecteur, newRoom, existingSlots) ||
-            (prevState.dateDebut!.getHours() * 60 + prevState.dateDebut!.getMinutes()) == (newStart.getHours() * 60 + newStart.getMinutes())) {
+            ((prevState.dateDebut!.getHours() * 60 + prevState.dateDebut!.getMinutes()) == (newStart.getHours() * 60 + newStart.getMinutes())
+              && prevState.salle == newRoom)) {
           // Le slot revient à sa place
           this.dropError.forEach(e => {
             this.toastr.error(e, 'Impossible de placer la soutenance.');

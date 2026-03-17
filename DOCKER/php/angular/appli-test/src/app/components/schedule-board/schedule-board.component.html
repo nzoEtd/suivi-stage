@@ -42,7 +42,7 @@
             <div class="hours-header"></div>
             @for(salle of sallesDispo; track salle; let last = $last){
                 <span class="salle-header">Salle {{salle}}</span>
-                @if(last){
+                @if(last && !onlyDisplay){
                     <span class="addRoom" title="Ajouter une salle" (click)="addRoom()"><b>+</b></span>
                 }
             }

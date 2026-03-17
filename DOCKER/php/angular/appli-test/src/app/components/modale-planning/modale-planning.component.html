@@ -1,5 +1,5 @@
-<div class="modal-overlay">
-  <div class="modal">
+<div class="modal-overlay" (click)="onCancel($event)">
+  <div class="modal" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h3 class="modal-title">Générer un planning</h3>
       <button type="button" class="close-button" (click)="onCancel()">✕</button>

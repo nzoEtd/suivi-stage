@@ -228,4 +228,37 @@ class EtudiantController extends Controller
             ],500);
         }
     }
+
+    /**
+     * Retourne toutes les informations du parcours de l'étudiant passé en paramètre
+     * Code HTTP retourné :
+     *     - Code 200 : si l'étudiant a été trouvé et qu'il a un parcours
+     *     - Code 404 : si l'étudiant a été trouvé mais qu'il n'a pas de parcours ou si l'étudiant n'a pas été trouvé
+     *     - Code 500 : s'il y a une erreur
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \Exception
+     */
+    public function indexPromo($idPromo){
+        try{
+            $infos = db::table('table_etudiant_anneeform_anneeuniv as tea')
+            ->join('etudiants as e', 'tea.idUPPA', '=', 'e.idUPPA')
+            ->where('tea.idAnneeFormation', $idPromo)
+            ->select('e.*')
+            ->get();
+            return response()->json($infos, 200);
+        }
+        catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+            return response()->json([
+                'message' => 'Aucun étudiant trouvé'
+            ],404);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'message' => 'Une erreur s\'est produite',
+                'erreurs' => $e->getMessage()
+            ],500);
+        }
+    }
 }
