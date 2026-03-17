@@ -21,9 +21,17 @@ import { Subject, switchMap, takeUntil } from "rxjs";
 import { SoutenanceService } from "../../services/soutenance.service";
 import { formatDateToYYYYMMDD } from "../../utils/timeManagement";
 import { DataStoreService } from "../../services/data.service";
-import { ToastrService } from 'ngx-toastr';
-import { inject } from '@angular/core';
-import { CdkDrag, CdkDropList, CdkDropListGroup, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { ToastrService } from "ngx-toastr";
+import { inject } from "@angular/core";
+import {
+  CdkDrag,
+  CdkDropList,
+  CdkDropListGroup,
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem,
+} from "@angular/cdk/drag-drop";
+import { Staff } from "../../models/staff.model";
 
 @Component({
   selector: "app-add-update-schedule",
@@ -56,18 +64,29 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   sallesAffiches: number[] = [];
   finalSlots: SoutenanceUpdate[] = [];
   isValidating: boolean = false;
+  allStaff: Staff[] = [];
 
   //Variables drag and drop
   planningByDay: Record<string, SlotItem[]> = {};
   items: SlotItem[] = [];
-  
+
   constructor(
     private readonly planningService: PlanningService,
     private readonly soutenanceService: SoutenanceService,
     private readonly dataStore: DataStoreService,
     private readonly cdRef: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
   ) {}
+
+  ngOnInit(): void {
+    this.dataStore.ensureDataLoaded(["staff"]);
+    this.dataStore
+      .staff$()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((s) => {
+        this.allStaff = s;
+      });
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes["planning"] || changes["jours"] || changes["soutenances"]) {
@@ -106,13 +125,15 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
         this.sallesAffiches = getAllSallesUsed(
           this.salles,
           this.selectedJour,
-          this.slots
+          this.slots,
         );
         let idSlotTemp = 0;
-        this.slots.forEach(slot => {
+        this.slots.forEach((slot) => {
           idSlotTemp++;
-          slot.id == -1 ? slot.id = idSlotTemp: slot.id = slot.id;
-          const dayKey = slot.dateDebut ? slot.dateDebut.toISOString().slice(0,10) : "attente"; // "YYYY-MM-DD"
+          slot.id == -1 ? (slot.id = idSlotTemp) : (slot.id = slot.id);
+          const dayKey = slot.dateDebut
+            ? slot.dateDebut.toISOString().slice(0, 10)
+            : "attente"; // "YYYY-MM-DD"
           if (!this.planningByDay[dayKey]) this.planningByDay[dayKey] = [];
           this.planningByDay[dayKey].push(slot);
         });
@@ -135,13 +156,10 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
 
   updateJour(jour: Date) {
     this.selectedJour = jour;
-    const dayKey = this.selectedJour.toISOString().slice(0,10);
-    const slotsDuJour = this.planningByDay[dayKey] || [];
-
     this.sallesAffiches = getAllSallesUsed(
       this.salles,
       this.selectedJour,
-      this.slots
+      this.slots,
     );
   }
 
@@ -155,15 +173,18 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     this.isModalOpen = true;
   }
 
-  updateSoutenance(updatedSoutenance: any){
+  updateSoutenance() {
     this.isModalOpen = false;
   }
 
   onValidate() {
     this.isValidating = true;
     this.finalSlots = this.convertSlotsToSoutenances();
-    if(this.finalSlots.length == 0) {
-      this.toastr.error("Toutes les soutenances ne sont pas placées", "Impossible d'enregistrer le planning.");
+    if (this.finalSlots.length == 0) {
+      this.toastr.error(
+        "Toutes les soutenances ne sont pas placées",
+        "Impossible d'enregistrer le planning.",
+      );
       this.isValidating = false;
       return;
     }
@@ -171,15 +192,15 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
       // UPDATE
       console.log("UPDATING Planning:", this.planning);
       console.log("UPDATING Soutenances:", this.finalSlots);
-      this.soutenanceService.updateManySoutenance(
-        this.finalSlots
-      )
-      .subscribe({
+      this.soutenanceService.updateManySoutenance(this.finalSlots).subscribe({
         next: () => {
           // Rafraîchir les données du store après la création
           this.dataStore.refreshKeys(["soutenances"]);
           this.isValidating = false;
-          this.toastr.success("Les modifications ont bien été prises en comptes.", "Planning enregistré.");
+          this.toastr.success(
+            "Les modifications ont bien été prises en comptes.",
+            "Planning enregistré.",
+          );
 
           this.exit();
         },
@@ -194,8 +215,8 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
 
       const planningToCreate: PlanningCreate = {
         ...plannToCreate,
-        dateDebut: formatDateToYYYYMMDD(plannToCreate.dateDebut),
-        dateFin: formatDateToYYYYMMDD(plannToCreate.dateFin),
+        dateDebut: formatDateToYYYYMMDD(plannToCreate.dateDebut!),
+        dateFin: formatDateToYYYYMMDD(plannToCreate.dateFin!!),
       };
 
       console.log("CREATING Planning:", planningToCreate);
@@ -211,24 +232,27 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
             const soutenancesToCreate = this.finalSlots.map(
               ({ idSoutenance, date, ...soutenance }) => ({
                 ...soutenance,
-                date: formatDateToYYYYMMDD(date),
+                date: formatDateToYYYYMMDD(date!),
                 idPlanning: planningId,
-              })
+              }),
             );
 
             console.log("CREATING Soutenances:", soutenancesToCreate);
             return this.soutenanceService.addManySoutenances(
-              soutenancesToCreate
+              soutenancesToCreate,
             );
-          })
+          }),
         )
         .subscribe({
           next: () => {
             // Rafraîchir les données du store après la création
             this.dataStore.refreshKeys(["plannings", "soutenances"]);
             this.isValidating = false;
-            this.toastr.success("L'ajout a bien été prises en comptes.", "Planning enregistré.");
-            
+            this.toastr.success(
+              "L'ajout a bien été prises en comptes.",
+              "Planning enregistré.",
+            );
+
             this.exit();
           },
           error: (err) => {
@@ -240,11 +264,14 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   }
 
   //Fonctions drag and drop
-  onSlotUpdated(event: {planningByDay: Record<string, SlotItem[]>, items: SlotItem[]}) {
+  onSlotUpdated(event: {
+    planningByDay: Record<string, SlotItem[]>;
+    items: SlotItem[];
+  }) {
     this.items = event.items;
     this.planningByDay = event.planningByDay;
   }
-  
+
   getAllSlots(): SlotItem[] {
     return Object.values(this.planningByDay).flat();
   }
@@ -255,19 +282,25 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     const planning = this.planning as Planning;
     const idPlanning = planning.idPlanning;
 
-    if(this.items.length == 0){
-      slots.forEach(s => {
+    if (this.items.length == 0) {
+      slots.forEach((s) => {
         soutenances.push({
           idSoutenance: s.id,
           date: s.dateDebut!.toISOString().slice(0, 10),
           nomSalle: s.salle,
-          heureDebut: s.dateDebut!.getHours().toString().padStart(2, '0') + ":" + s.dateDebut!.getMinutes().toString().padStart(2, '0'),
-          heureFin: s.dateFin!.getHours().toString().padStart(2, '0') + ":" + s.dateFin!.getMinutes().toString().padStart(2, '0'),
+          heureDebut:
+            s.dateDebut!.getHours().toString().padStart(2, "0") +
+            ":" +
+            s.dateDebut!.getMinutes().toString().padStart(2, "0"),
+          heureFin:
+            s.dateFin!.getHours().toString().padStart(2, "0") +
+            ":" +
+            s.dateFin!.getMinutes().toString().padStart(2, "0"),
           idUPPA: s.idUPPA,
           idLecteur: s.idLecteur,
-          idPlanning: idPlanning
+          idPlanning: idPlanning,
         });
-      })
+      });
 
       return soutenances;
     }

@@ -1,400 +1,308 @@
 import { Component, EventEmitter, Output, Input, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import {
-  AbstractControl,
   FormBuilder,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
-  ValidatorFn,
   Validators,
 } from "@angular/forms";
-import { Soutenance } from "../../models/soutenance.model";
-import { Staff } from "../../models/staff.model";
 import { SlotItem } from "../../models/slotItem.model";
+import { Staff } from "../../models/staff.model";
+import { Soutenance } from "../../models/soutenance.model";
 import { LoadingComponent } from "../loading/loading.component";
+import { TimeBlockConfig } from "../../models/timeBlock.model";
+import {
+  buildDate,
+  formatDate,
+  formatStringDate,
+  formatDateToYYYYMMDD,
+  minutesToHHMM,
+  timeStringToMinutes,
+} from "../../utils/timeManagement";
+
+type CreneauDisponible = {
+  date: string;
+  salle: number;
+  heureDebut: string;
+  heureFin: string;
+};
 
 @Component({
   selector: "app-modale-soutenance",
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, LoadingComponent],
+  imports: [CommonModule, ReactiveFormsModule, LoadingComponent],
   templateUrl: "./modale-soutenance.component.html",
-  styleUrl: "./modale-soutenance.component.css",
+  styleUrls: ["./modale-soutenance.component.css"],
 })
 export class ModaleSoutenanceComponent implements OnInit {
-  //Loading
-  isDataLoaded: boolean = false;
-  isSubmitting: boolean = false;
-  submitted: boolean = false;
-
-  //Paramètres de la modale
   @Input() soutenance!: SlotItem;
   @Input() editMode: boolean = false;
   @Input() sallesDispo!: number[];
   @Input() soutenancesJour!: Record<string, SlotItem[]>;
-  //Infos de la soutenance
-  soutenanceForm!: FormGroup;
-  newSoutenance: Soutenance = new Soutenance();
-  dateSoutenance: string = "";
-  heureDebutS: string = "";
-  heureFinS: string = "";
-  enseignantsLecteurs: Staff[] = [];
-  datesAcceptees: string[] = [];
-  newDate!: string;
-  allStaff: Staff[] = [];
+  @Input() allStaff: Staff[] = [];
+  @Input() timeBlocks: TimeBlockConfig[] = [];
 
-  //Ce que la modale renvoie
-  @Output() cancel = new EventEmitter<void>();
+  @Output() close = new EventEmitter<void>();
+
+  soutenanceForm!: FormGroup;
+  enseignantsLecteurs: Staff[] = [];
+  creneauxDisponibles: CreneauDisponible[] = [];
+  newSoutenance: Soutenance = new Soutenance();
+
+  isDataLoaded = false;
+  isSubmitting = false;
+  submitted = false;
+
+  formatDate = formatDate;
+  formatStringDate = formatStringDate;
+  formatDateToYYYYMMDD = formatDateToYYYYMMDD;
 
   constructor(private fb: FormBuilder) {}
 
-  async ngOnInit(): Promise<void> {
-    this.initForm();
+  ngOnInit(): void {
+    this.creneauxDisponibles = this.getCreneauxDisponibles();
 
-    this.allStaff = this.soutenance.allStaff;
+    const currentCreneauKey = this.getCurrentCreneauValue();
 
-    console.log(this);
-    this.datesAcceptees = Object.keys(this.soutenancesJour);
+    this.soutenanceForm = this.fb.group({
+      creneau: [currentCreneauKey, Validators.required],
+      lecteur: [this.soutenance.idLecteur, Validators.required],
+    });
 
-    this.heureDebutS = this.formatDate(this.soutenance.dateDebut!, "Heure");
-    this.heureFinS = this.formatDate(this.soutenance.dateFin!, "Heure");
+    this.soutenanceForm.get("creneau")?.valueChanges.subscribe((value) => {
+      this.updateLecteursDisponibles(value, false);
+    });
 
-    this.enseignantsLecteurs = this.getFreeLecteurs(
-      this.soutenance.idReferent,
-      this.dateSoutenance,
-    );
-
-    this.newDate = this.dateSoutenance;
-
+    this.updateLecteursDisponibles(currentCreneauKey, true);
     this.isDataLoaded = true;
   }
 
-  toggleEditMode() {
-    this.editMode
-      ? this.soutenanceForm.enable()
-      : this.soutenanceForm.disable();
+  getCurrentCreneauValue(): string {
+    return `${formatDateToYYYYMMDD(this.soutenance.dateDebut!)}|${this.soutenance.salle}|${formatDateToYYYYMMDD(this.soutenance.dateDebut!)}`;
   }
 
-  initForm() {
-    this.newSoutenance = this.convertSlotToSoutenanceData(this.soutenance);
+  getCreneauxDisponibles(): CreneauDisponible[] {
+    const dureeMs =
+      this.soutenance.dateFin!.getTime() - this.soutenance.dateDebut!.getTime();
+    const dureeMinutes = dureeMs / 60000;
 
-    this.dateSoutenance = this.formatDate(this.soutenance.dateDebut!, "Date");
+    const pas = 30;
+    const currentKey = this.getCurrentCreneauValue();
+    const creneaux: CreneauDisponible[] = [];
 
-    this.soutenanceForm = this.fb.group(
-      {
-        lecteur: [
-          this.editMode
-            ? this.newSoutenance.idLecteur
-            : this.soutenance.lecteur,
-          Validators.required,
-        ],
-        heureDebut: [this.newSoutenance.heureDebut, Validators.required],
-        heureFin: [this.newSoutenance.heureFin, Validators.required],
-        jour: [this.dateSoutenance, Validators.required],
-        salle: [this.newSoutenance.nomSalle, Validators.required],
-      },
-      {
-        validators: [this.hourOrderValidator],
-      },
-    );
-
-    this.toggleEditMode();
-  }
-
-  hourOrderValidator: ValidatorFn = (form: AbstractControl) => {
-    const debut = form.get("heureDebut")?.value;
-    const fin = form.get("heureFin")?.value;
-    if (!debut || !fin) return null;
-    return fin >= debut ? null : { hourOrder: true };
-  };
-
-  convertSlotToSoutenanceData(slot: SlotItem): Soutenance {
-    const soutenanceData: Soutenance = {
-      idSoutenance: slot.id,
-      date: new Date(this.formatDate(slot.dateFin!, "Date")),
-      nomSalle: slot.salle,
-      heureDebut: this.formatDate(slot.dateDebut!, "Heure"),
-      heureFin: this.formatDate(slot.dateFin!, "Heure"),
-      idUPPA: slot.idUPPA,
-      idLecteur: slot.idLecteur,
-      idPlanning: slot.idPlanning,
-    };
-
-    return soutenanceData;
-  }
-
-  convertFbToSoutenanceData(formGroup: FormGroup): Soutenance {
-    const form = formGroup.value;
-
-    const soutenanceData: Soutenance = {
-      idSoutenance: this.soutenance.id,
-      date: new Date(form.jour),
-      nomSalle: form.salle,
-      heureDebut: form.heureDebut,
-      heureFin: form.heureFin,
-      idUPPA: this.soutenance.idUPPA,
-      idLecteur: form.lecteur,
-      idPlanning: this.soutenance.idPlanning,
-    };
-
-    return soutenanceData;
-  }
-
-  /**
-   * Retourne une liste des enseignants qui peuvent remplacer l'enseignant lecteur actuel
-   * @param idEnseignantReferent
-   * @param dateSoutenance
-   * @returns Staff[]
-   */
-  getFreeLecteurs(
-    idEnseignantReferent: number,
-    dateSoutenance: string,
-  ): Staff[] {
-    /*
-     * Récupérer les soutenances pour le jour
-     * Faire une liste de lecteurs à ne pas inclure avec
-     * Faire une liste finale des enseignants qui peuvent remplacer
-     */
-    let soutenancesDuJour = this.soutenancesJour[dateSoutenance];
-
-    const idLecteursNonPotentiels = this.getLecteursNonDispo(soutenancesDuJour);
-
-    /**
-     * Récupérer l'enseignant référent pour savoir s'il est technique
-     * -> S'il est pas technique : l'enseignant lecteur doit être technique
-     * -> S'il est technique : l'enseignant lecteur doit pas être technique
-     * -> Chaque enseignant lecteur potentiel ne doit pas faire parti de la liste des lecteurs qui sont dans la même journée
-     */
-    const referentTechnique = this.referentEstTechnique(idEnseignantReferent);
-    var lecteursPotentiels: Staff[] = this.getAllPotentialLecteurs(
-      idLecteursNonPotentiels,
-    );
-
-    //Si le prof référent n'est pas technique, il faut absolument un enseignant lecteur technique
-    if (!referentTechnique) {
-      lecteursPotentiels = lecteursPotentiels.filter(
-        (l) => l.estTechnique === 1,
+    for (const [date, soutenances] of Object.entries(this.soutenancesJour)) {
+      const autresSoutenances = soutenances.filter(
+        (s) => s.id !== this.soutenance.id,
       );
-    }
 
-    lecteursPotentiels = lecteursPotentiels.filter(
-      (l) => this.soutenance.idReferent !== l.idPersonnel,
-    );
+      const sallesDuJour = [
+        ...new Set(
+          soutenances.map((s) => s.salle).filter((s): s is number => s != null),
+        ),
+      ];
 
-    return lecteursPotentiels;
-  }
+      for (const salle of sallesDuJour) {
+        for (const block of this.timeBlocks) {
+          const blockStart = timeStringToMinutes(block.start);
+          const blockEnd = timeStringToMinutes(block.end);
 
-  /**
-   * Retourne une liste d'identifiants d'enseignants qui ne peuvent pas remplacer le lecteur de la soutenance
-   * @param soutenances
-   * @returns number[]
-   */
-  getLecteursNonDispo(soutenances: SlotItem[]): number[] {
-    /**
-     * Pour qu'un enseignant ne soit pas en capacité d'en remplacer un autre,
-     * l'heure de fin de sa soutenance doit être inférieure ou égale à l'heure de fin de la soutenance
-     * et il ne doit pas être l'enseignant référent ou lecteur actuel de la soutenance
-     */
-    const heureFin = this.soutenance.dateFin;
-    const heureDebut = this.soutenance.dateDebut;
+          for (
+            let minutesDebut = blockStart;
+            minutesDebut + dureeMinutes <= blockEnd;
+            minutesDebut += pas
+          ) {
+            const heureDebutStr = minutesToHHMM(minutesDebut);
+            const heureFinStr = minutesToHHMM(minutesDebut + dureeMinutes);
 
-    var idEnseignants: number[] = [];
+            const heureDebut = buildDate(date, heureDebutStr);
+            const heureFin = buildDate(date, heureFinStr);
 
-    for (const s of soutenances) {
-      const finS = s.dateFin;
-      const debutS = s.dateDebut;
+            const soutenancesChevauchantes = autresSoutenances.filter((s) =>
+              this.isOverlap(heureDebut, heureFin, s.dateDebut!, s.dateFin!),
+            );
 
-      if (finS! >= heureDebut! && heureFin! >= debutS!) {
-        idEnseignants.push(s.idLecteur);
-        idEnseignants.push(s.idReferent);
+            // Salle occupée
+            if (soutenancesChevauchantes.some((s) => s.salle === salle))
+              continue;
+
+            // Enseignants occupés
+            const enseignantsOccupes = soutenancesChevauchantes.flatMap((s) => [
+              s.idLecteur,
+              s.idReferent,
+            ]);
+
+            if (enseignantsOccupes.includes(this.soutenance.idReferent))
+              continue;
+
+            creneaux.push({
+              date,
+              salle,
+              heureDebut: heureDebutStr,
+              heureFin: heureFinStr,
+            });
+          }
+        }
       }
     }
 
-    idEnseignants = idEnseignants.filter(
-      (id, index, tab) => tab.indexOf(id) === index,
-    ); //Supprime les doublons
+    // Mettre le créneau actuel en premier
+    creneaux.sort((a) =>
+      `${a.date}|${a.salle}|${a.heureDebut}` === currentKey ? -1 : 0,
+    );
 
-    return idEnseignants;
+    const alreadyInList = creneaux.some(
+      (c) => `${c.date}|${c.salle}|${c.heureDebut}` === currentKey,
+    );
+
+    if (!alreadyInList) {
+      creneaux.unshift({
+        date: formatDateToYYYYMMDD(this.soutenance.dateDebut!),
+        salle: this.soutenance.salle!,
+        heureDebut: formatDateToYYYYMMDD(this.soutenance.dateDebut!),
+        heureFin: formatDateToYYYYMMDD(this.soutenance.dateFin!),
+      });
+    }
+
+    return creneaux;
+  }
+
+  updateLecteursDisponibles(creneauValue: string, keepCurrentLecteur = false) {
+    const [date, salleStr, heureDebut] = creneauValue.split("|");
+    const salle = Number(salleStr);
+    const creneau = this.creneauxDisponibles.find(
+      (c) =>
+        c.date === date && c.salle === salle && c.heureDebut === heureDebut,
+    );
+    if (!creneau) return;
+
+    const heureDebutDate = buildDate(creneau.date, creneau.heureDebut);
+    const heureFinDate = buildDate(creneau.date, creneau.heureFin);
+
+    const soutenances = this.soutenancesJour[date] || [];
+
+    const idNonDisponibles = soutenances
+      .filter(
+        (s) =>
+          s.id !== this.soutenance.id &&
+          this.isOverlap(
+            heureDebutDate,
+            heureFinDate,
+            s.dateDebut!,
+            s.dateFin!,
+          ),
+      )
+      .flatMap((s) => [s.idLecteur, s.idReferent]);
+
+    const referentTechnique = this.referentEstTechnique(
+      this.soutenance.idReferent,
+    );
+
+    this.enseignantsLecteurs = this.allStaff.filter((s) => {
+      if (idNonDisponibles.includes(s.idPersonnel)) {
+        return false;
+      }
+      if (s.idPersonnel === this.soutenance.idReferent) {
+        return false;
+      }
+      if (!referentTechnique && !s.estTechnique) {
+        return false;
+      }
+      return true;
+    });
+
+    const lecteurCtrl = this.soutenanceForm?.get("lecteur");
+    if (!lecteurCtrl) return;
+
+    if (keepCurrentLecteur) {
+      const lecteurActuelDispo = this.enseignantsLecteurs.some(
+        (e) => e.idPersonnel === this.soutenance.idLecteur,
+      );
+      if (!lecteurActuelDispo) {
+        lecteurCtrl.setValue(this.enseignantsLecteurs[0]?.idPersonnel ?? null);
+      }
+    } else {
+      const currentLecteur = lecteurCtrl.value;
+      const toujoursDispo = this.enseignantsLecteurs.some(
+        (e) => e.idPersonnel === currentLecteur,
+      );
+      if (!toujoursDispo) {
+        lecteurCtrl.setValue(this.enseignantsLecteurs[0]?.idPersonnel ?? null);
+      }
+    }
   }
 
   referentEstTechnique(idReferent: number): boolean {
-    if (idReferent > -1) {
-      const enseignant = this.allStaff.find(
-        (s) => s.idPersonnel === idReferent,
-      );
-      return enseignant?.estTechnique === 1;
-    }
-    return true;
+    const enseignant = this.allStaff.find((s) => s.idPersonnel === idReferent);
+    return enseignant?.estTechnique || false;
   }
 
-  getAllPotentialLecteurs(idLecteursBlacklist: number[]): Staff[] {
-    if (idLecteursBlacklist.length === 0) return this.allStaff;
-
-    return this.allStaff.filter((t) =>
-      idLecteursBlacklist.every((lecteur) => lecteur !== t.idPersonnel),
-    );
+  isOverlap(start1: Date, end1: Date, start2: Date, end2: Date): boolean {
+    return start1 < end2 && end1 > start2;
   }
 
   onCancel() {
-    this.cancel.emit();
+    this.close.emit();
   }
 
-  /**
-   * Handles form submission by updating soutenancesJour
-   */
-  async onSubmit() {
-    if (this.soutenanceForm.valid) {
-      console.log(this.soutenanceForm.value);
-      this.newSoutenance = this.convertFbToSoutenanceData(this.soutenanceForm);
-      this.isSubmitting = true;
+  onSubmit() {
+    this.submitted = true;
+    if (!this.soutenanceForm.valid) return;
 
-      let dateChange = false;
-      let currentSoutenanceDate = this.formatDate(
-        this.soutenance.dateDebut!,
-        "Date",
-      );
-      let newSoutenanceDate = this.formatDate(this.newSoutenance.date!, "Date");
+    const form = this.soutenanceForm.value;
+    const [date, salleStr, heureDebut] = form.creneau.split("|");
+    const salle = Number(salleStr);
+    const creneau = this.creneauxDisponibles.find(
+      (c) =>
+        c.date === date && c.salle === salle && c.heureDebut === heureDebut,
+    );
+    if (!creneau) return;
 
-      if (this.newSoutenance.idSoutenance === this.soutenance.id) {
-        //heureDebut, heureFin & jour
-        if (
-          this.newSoutenance.heureDebut !==
-            this.formatDate(this.soutenance.dateDebut!, "Heure") ||
-          this.newSoutenance.heureFin !==
-            this.formatDate(this.soutenance.dateFin!, "Heure")
-        ) {
-          let dateDebut =
-            this.formatDate(this.newSoutenance.date!, "Date") +
-            " " +
-            this.newSoutenance.heureDebut;
-          let dateFin =
-            this.formatDate(this.newSoutenance.date!, "Date") +
-            " " +
-            this.newSoutenance.heureFin;
-          this.soutenance.dateDebut = new Date(dateDebut);
-          this.soutenance.dateFin = new Date(dateFin);
+    const dateChange =
+      formatDateToYYYYMMDD(this.soutenance.dateDebut!) !== date;
+    const currentDateStr = formatDateToYYYYMMDD(this.soutenance.dateDebut!);
 
-          if (currentSoutenanceDate !== newSoutenanceDate) {
-            dateChange = true;
-          }
-        }
-        //Lecteur
-        if (this.newSoutenance.idLecteur !== this.soutenance.idLecteur) {
-          this.soutenance.idLecteur = this.newSoutenance.idLecteur!;
-          this.soutenance.lecteur = this.getTeacherName(
-            this.newSoutenance.idLecteur!,
-          );
-        }
-        //Salle
-        if ((this.newSoutenance.nomSalle = this.soutenance.salle)) {
-          this.soutenance.salle = this.newSoutenance.nomSalle;
-        }
+    for (const slotsTab of Object.values(this.soutenancesJour)) {
+      const i = slotsTab.findIndex((s) => s.id === this.soutenance.id);
+      if (i === -1) continue;
 
-        for (var slotsTab of Object.values(this.soutenancesJour)) {
-          const i = slotsTab.findIndex(
-            (soutenance) => soutenance.id === this.soutenance.id,
-          );
-          //Si la date n'a pas changée, je mets à jour les infos de la soutenance dans le tableau
-          if (i !== -1 && !dateChange) {
-            const soutenanceAMaj = this.soutenancesJour[newSoutenanceDate].find(
-              (s) => s.id === this.soutenance.id,
-            );
-            if (soutenanceAMaj) {
-              Object.assign(soutenanceAMaj, this.soutenance);
-            }
-            break;
-          }
-          //Si la date a changé, on enlève la soutenance de la liste des soutenances du jour et on la met dans la liste des soutenances du nouveau jour
-          if (i !== -1 && dateChange) {
-            this.soutenancesJour[currentSoutenanceDate].splice(i, 1);
-            this.soutenancesJour[newSoutenanceDate].push(this.soutenance);
-            break;
-          }
-
-          console.log(this.soutenancesJour);
-        }
-
-        this.isSubmitting = false;
+      if (!dateChange) {
+        this.soutenancesJour[currentDateStr][i] = {
+          ...this.soutenancesJour[currentDateStr][i],
+          dateDebut: buildDate(date, creneau.heureDebut),
+          dateFin: buildDate(date, creneau.heureFin),
+          idLecteur: form.lecteur,
+          lecteur: this.getTeacherName(form.lecteur),
+          salle,
+        };
+      } else {
+        this.soutenancesJour[currentDateStr].splice(i, 1);
+        if (!this.soutenancesJour[date]) this.soutenancesJour[date] = [];
+        this.soutenancesJour[date].push({
+          ...this.soutenance,
+          dateDebut: buildDate(date, creneau.heureDebut),
+          dateFin: buildDate(date, creneau.heureFin),
+          idLecteur: form.lecteur,
+          lecteur: this.getTeacherName(form.lecteur),
+          salle,
+        });
       }
-
-      this.submitted = true;
+      break;
     }
+
+    this.soutenance.dateDebut = buildDate(date, creneau.heureDebut);
+    this.soutenance.dateFin = buildDate(date, creneau.heureFin);
+    this.soutenance.idLecteur = form.lecteur;
+    this.soutenance.lecteur = this.getTeacherName(form.lecteur);
+    this.soutenance.salle = salle;
+    this.close.emit();
   }
 
   getTeacherName(id: number): string {
-    const lecteur = this.allStaff.find((s) => s.idPersonnel == id);
-
+    const lecteur = this.allStaff.find((s) => s.idPersonnel === id);
     if (lecteur) {
       return lecteur.prenom![0] + ". " + lecteur.nom!;
     } else {
       throw new Error("Enseignant non trouvé.");
     }
   }
-
-  formatStringDate(pDate: string): string {
-    if (pDate === null) return "Erreur de récupération de la date";
-
-    const [annee, mois, jour] = pDate.split("-");
-
-    return `${jour}/${mois}/${annee}`;
-  }
-
-  formatDate(pDate: Date, modeAffichage: TypeAffichage): string {
-    if (pDate === null) return "Erreur de récupération de la date";
-
-    const [jourSemaine, mois, jour, annee, heure] = pDate
-      .toDateString()
-      .split(" ");
-    let date_locale_str = pDate.toLocaleString("fr-FR");
-
-    const [dateStr, heureStr] = date_locale_str.split(" ");
-    let moisNb = dateStr.split("/")[1];
-    let heure_formattee = heureStr.split(":")[0] + ":" + heureStr.split(":")[1];
-
-    let result;
-
-    switch (modeAffichage) {
-      case "Date":
-        result = `${annee}-${moisNb}-${jour}`;
-        break;
-
-      case "Heure":
-        result = heure_formattee;
-        break;
-
-      case "DateHeure":
-        result = `${annee}-${moisNb}-${jour} ${heure_formattee}`;
-        break;
-
-      case "DateToStr":
-        result = `${dateStr}`;
-        break;
-
-      case "HeureToStr":
-        result = heureStr.split(":")[0] + "h" + heureStr.split(":")[1];
-        break;
-
-      case "DateHeureToStr":
-        result =
-          `le ${dateStr} à ` +
-          heureStr.split(":")[0] +
-          "h" +
-          heureStr.split(":")[1];
-        break;
-
-      default:
-        result = date_locale_str;
-        break;
-    }
-
-    return result;
-  }
 }
-
-type TypeAffichage =
-  | "Date"
-  | "Heure"
-  | "DateHeure"
-  | "DateToStr"
-  | "HeureToStr"
-  | "DateHeureToStr";

@@ -14,7 +14,7 @@ export class Staff {
   longitudeAdresse: string | null;
   latitudeAdresse: string | null;
   quotaEtudiant: number | null;
-  estTechnique: number | null;
+  estTechnique: boolean | null;
 
   constructor(
     idPersonnel: number,
@@ -29,7 +29,7 @@ export class Staff {
     longitudeAdresse: string,
     latitudeAdresse: string,
     quotaEtudiant: number,
-    estTechnique: number
+    estTechnique: boolean,
   ) {
     this.idPersonnel = idPersonnel;
     this.role = role;
@@ -47,4 +47,10 @@ export class Staff {
   }
 }
 
-export type StaffRole = 'SUPERADMIN' | 'ADMIN' | 'STUDENT' | 'Enseignant' | 'INTERNSHIP_MANAGER' | 'MANAGER';
+export type StaffRole =
+  | "SUPERADMIN"
+  | "ADMIN"
+  | "STUDENT"
+  | "Enseignant"
+  | "INTERNSHIP_MANAGER"
+  | "MANAGER";

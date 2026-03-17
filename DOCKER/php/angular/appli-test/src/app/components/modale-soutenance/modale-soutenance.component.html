@@ -3,12 +3,11 @@
     <div class="modal-topbar">
       <button type="button" (click)="onCancel()" class="close-button">x</button>
       <h1 class="modal-title">
-        Soutenance {{ formatDate(soutenance.dateDebut!, "HeureToStr") }}-{{
-          formatDate(soutenance.dateFin!, "HeureToStr")
-        }}
-        S{{ soutenance.salle }}
+        Soutenance {{ formatDate(soutenance.dateDebut!, "Heure") }} -
+        {{ formatDate(soutenance.dateFin!, "Heure") }} S{{ soutenance.salle }}
       </h1>
     </div>
+
     @if (isSubmitting || !isDataLoaded) {
       <div class="loading-overlay">
         <app-loading></app-loading>
@@ -63,160 +62,81 @@
           />
         </div>
 
-        <!--Modifiables en tant que responsable des stages-->
-        <!--Enseignant lecteur-->
-        <div>
-          <div class="input-wrapper">
-            <label for="lecteur">Enseignant lecteur :</label>
-            @if (editMode) {
-              <select name="lecteur" id="lecteur" formControlName="lecteur">
-                <option [value]="soutenance.idLecteur" selected>
-                  {{ soutenance.lecteur }}
-                </option>
-                @if (enseignantsLecteurs.length > 0) {
-                  <option
-                    *ngFor="let enseignantLecteur of enseignantsLecteurs"
-                    [value]="enseignantLecteur.idPersonnel"
-                  >
-                    {{ enseignantLecteur.prenom?.[0] }}.
-                    {{ enseignantLecteur.nom }}
-                  </option>
-                }
-              </select>
-            } @else {
-              <input
-                type="text"
-                name="lecteur"
-                id="lecteur"
-                formControlName="lecteur"
-                [value]="soutenance.lecteur"
-              />
-            }
-          </div>
-          <div
-            class="error-message"
-            *ngIf="
-              submitted && soutenanceForm.get('lecteur')?.hasError('required')
-            "
-          >
-            Veuillez sélectionner un enseignant lecteur.
-          </div>
-        </div>
-        <!--Heure de début et de fin-->
-        <div class="line-wrapper">
-          <div>
-            <div class="input-wrapper">
-              <label for="heureDebut">Heure début :</label>
-              <input
-                type="time"
-                name="heureDebut"
-                id="heureDebut"
-                formControlName="heureDebut"
-              />
+        <!-- Créneau disponible -->
+        <div class="input-wrapper">
+          <label for="creneau">Créneau disponible :</label>
+          @if (editMode) {
+            <select id="creneau" formControlName="creneau">
+              <option
+                *ngFor="let c of creneauxDisponibles"
+                [value]="c.date + '|' + c.salle + '|' + c.heureDebut"
+              >
+                {{ formatStringDate(c.date) }} – Salle {{ c.salle }} ({{
+                  c.heureDebut
+                }}
+                à {{ c.heureFin }})
+              </option>
+            </select>
+            <div
+              class="error-message"
+              *ngIf="
+                submitted && soutenanceForm.get('creneau')?.hasError('required')
+              "
+            >
+              Veuillez sélectionner un créneau.
             </div>
-          </div>
-          <div class="input-wrapper">
-            <label for="heureFin">Heure fin :</label>
+          } @else {
             <input
-              type="time"
-              name="heureFin"
-              id="heureFin"
-              formControlName="heureFin"
+              type="text"
+              [value]="
+                formatStringDate(formatDateToYYYYMMDD(soutenance.dateDebut!)) +
+                ' – Salle ' +
+                soutenance.salle +
+                ' (' +
+                formatDate(soutenance.dateDebut!, 'Heure') +
+                ' à ' +
+                formatDate(soutenance.dateFin!, 'Heure') +
+                ')'
+              "
+              disabled
             />
-          </div>
+          }
         </div>
-        <div
-          class="error-message"
-          *ngIf="
-            submitted && soutenanceForm.get('heureDebut')?.hasError('required')
-          "
-        >
-          Veuillez sélectionner une heure de début.
-        </div>
-        <div
-          class="error-message"
-          *ngIf="
-            submitted && soutenanceForm.get('heureFin')?.hasError('required')
-          "
-        >
-          Veuillez sélectionner une heure de fin.
-        </div>
-        <div class="error-message" *ngIf="soutenanceForm.hasError('hourOrder')">
-          L'heure de fin doit être postérieure à l'heure de début.
-        </div>
-        <!--Jour et salle-->
-        <div class="line-wrapper">
-          <div>
-            <div class="input-wrapper">
-              <label for="jour">Jour :</label>
-              @if (editMode) {
-                <select name="jour" id="jour" formControlName="jour">
-                  <option
-                    *ngFor="let dateAcceptee of datesAcceptees"
-                    [value]="dateAcceptee"
-                  >
-                    {{ formatStringDate(dateAcceptee) }}
-                  </option>
-                </select>
-              } @else {
-                <input
-                  type="date"
-                  name="jour"
-                  id="jour"
-                  formControlName="jour"
-                  [value]="dateSoutenance"
-                />
-              }
-            </div>
-          </div>
-          <div>
-            <div>
-              <div class="input-wrapper">
-                <label for="salle">Salle :</label>
-                @if (editMode) {
-                  <select name="salle" id="salle" formControlName="salle">
-                    <option *ngFor="let salle of sallesDispo" [value]="salle">
-                      {{ salle }}
-                    </option>
-                  </select>
-                } @else {
-                  <input
-                    type="text"
-                    name="salle"
-                    id="salle"
-                    formControlName="salle"
-                    [value]="soutenance.salle"
-                  />
-                }
-              </div>
-              <div
-                class="error-message"
-                *ngIf="
-                  submitted && soutenanceForm.get('jour')?.hasError('required')
-                "
+
+        <!-- Enseignant lecteur -->
+        <div class="input-wrapper">
+          <label for="lecteur">Enseignant lecteur :</label>
+
+          @if (editMode) {
+            <select id="lecteur" formControlName="lecteur">
+              <option
+                *ngFor="let e of enseignantsLecteurs"
+                [value]="e.idPersonnel"
               >
-                Veuillez sélectionner un jour.
-              </div>
-              <div
-                class="error-message"
-                *ngIf="
-                  submitted && soutenanceForm.get('salle')?.hasError('required')
-                "
-              >
-                Veuillez sélectionner une salle.
-              </div>
+                {{ e.prenom?.[0] }}. {{ e.nom }}
+              </option>
+            </select>
+
+            <div
+              class="error-message"
+              *ngIf="
+                submitted && soutenanceForm.get('lecteur')?.hasError('required')
+              "
+            >
+              Veuillez sélectionner un enseignant lecteur.
             </div>
-          </div>
+          } @else {
+            <input type="text" [value]="soutenance.lecteur" disabled />
+          }
         </div>
-        <!-- Boutons (mode édition) -->
-        @if (editMode) {
-          <div class="modal-buttons">
-            <button type="button" (click)="onCancel()" class="cancel-button">
-              Annuler
-            </button>
-            <button type="submit" class="validate-button">Valider</button>
-          </div>
-        }
+
+        <!-- Boutons -->
+        <div *ngIf="editMode" class="modal-buttons">
+          <button type="button" (click)="onCancel()" class="cancel-button">
+            Annuler
+          </button>
+          <button type="submit" class="validate-button">Valider</button>
+        </div>
       </form>
     }
   </div>

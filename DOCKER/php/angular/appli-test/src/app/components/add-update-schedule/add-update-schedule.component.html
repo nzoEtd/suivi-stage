@@ -70,11 +70,13 @@
 
 <app-modale-soutenance
   *ngIf="isModalOpen"
-  (cancel)="isModalOpen = false"
+  (close)="isModalOpen = false"
   [soutenance]="selectedSoutenance!"
   [editMode]="true"
   [soutenancesJour]="planningByDay"
   [sallesDispo]="sallesAffiches"
+  [allStaff]="allStaff"
+  [timeBlocks]="timeBlocks"
 />
 <!-- idSoutenance="idSoutenance" -->
 <!-- (save)="onSoutenanceSaved($event)" -->
