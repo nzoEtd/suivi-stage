@@ -18,6 +18,7 @@ import {
   formatDateToYYYYMMDD,
   minutesToHHMM,
   timeStringToMinutes,
+  dateToHeureStr,
 } from "../../utils/timeManagement";
 
 type CreneauDisponible = {
@@ -78,7 +79,7 @@ export class ModaleSoutenanceComponent implements OnInit {
   }
 
   getCurrentCreneauValue(): string {
-    return `${formatDateToYYYYMMDD(this.soutenance.dateDebut!)}|${this.soutenance.salle}|${formatDateToYYYYMMDD(this.soutenance.dateDebut!)}`;
+    return `${formatDateToYYYYMMDD(this.soutenance.dateDebut!)}|${this.soutenance.salle}|${dateToHeureStr(this.soutenance.dateDebut!)}`;
   }
 
   getCreneauxDisponibles(): CreneauDisponible[] {
@@ -145,10 +146,17 @@ export class ModaleSoutenanceComponent implements OnInit {
       }
     }
 
-    // Mettre le créneau actuel en premier
-    creneaux.sort((a) =>
-      `${a.date}|${a.salle}|${a.heureDebut}` === currentKey ? -1 : 0,
-    );
+    // Tri par jour puis salle puis heure
+    creneaux.sort((a, b) => {
+      if (a.date !== b.date) {
+        return a.date.localeCompare(b.date);
+      }
+
+      if (a.salle !== b.salle) {
+        return a.salle - b.salle;
+      }
+      return a.heureDebut.localeCompare(b.heureDebut);
+    });
 
     const alreadyInList = creneaux.some(
       (c) => `${c.date}|${c.salle}|${c.heureDebut}` === currentKey,
@@ -158,8 +166,8 @@ export class ModaleSoutenanceComponent implements OnInit {
       creneaux.unshift({
         date: formatDateToYYYYMMDD(this.soutenance.dateDebut!),
         salle: this.soutenance.salle!,
-        heureDebut: formatDateToYYYYMMDD(this.soutenance.dateDebut!),
-        heureFin: formatDateToYYYYMMDD(this.soutenance.dateFin!),
+        heureDebut: dateToHeureStr(this.soutenance.dateDebut!),
+        heureFin: dateToHeureStr(this.soutenance.dateFin!),
       });
     }
 
