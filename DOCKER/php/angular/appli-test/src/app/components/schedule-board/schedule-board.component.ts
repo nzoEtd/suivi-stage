@@ -9,10 +9,15 @@ import { ToastrService } from 'ngx-toastr';
 import { inject } from '@angular/core';
 import { CdkDrag,   CdkDragDrop,   CdkDragPlaceholder, CdkDropList, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { ChangeDetectorRef } from '@angular/core';
+import { Salle } from "../../models/salle.model";
+import { SalleService } from "../../services/salle.service";
+import { forkJoin } from "rxjs";
+import { ModaleComponent } from "../modale/modale.component";
+import { OverlayModule } from "@angular/cdk/overlay";
 
 @Component({
   selector: "app-schedule-board",
-  imports: [CommonModule, SlotComponent, MatGridListModule, CdkDrag/*, CdkDragPlaceholder*/, CdkDropList],
+  imports: [CommonModule, SlotComponent, MatGridListModule, CdkDrag/*, CdkDragPlaceholder*/, CdkDropList, ModaleComponent, OverlayModule],
   standalone: true,
   templateUrl: "./schedule-board.component.html",
   styleUrls: ["./schedule-board.component.css"],
@@ -34,6 +39,15 @@ export class ScheduleBoardComponent implements OnInit {
   PAUSE_HEIGHT = 15;
   isModalOpen: boolean = false;
 
+  //Variables pour les modales
+  dropdownOpen: boolean = false;
+  submitted: boolean = false;
+  isSubmitting: boolean = false;
+  salles: Salle[] = [];
+  selectedSalles: Salle[] = [];
+  modalOpen: boolean = false;
+  title: string = "";
+
   // Variables for drag and drop
   private slotsCache = new Map<TimeBlock, SlotItem[]>();
   items: SlotItem[] = [];
@@ -52,7 +66,8 @@ export class ScheduleBoardComponent implements OnInit {
 
   teacherInSlot: number[] = [];
 
-  constructor(private cdRef: ChangeDetectorRef) {}
+  constructor(private cdRef: ChangeDetectorRef,
+    private salleService: SalleService,) {}
 
   async ngOnInit() {
       // Toujours commencer les blocs à une heure 'pile' donc sans minutes
@@ -145,8 +160,45 @@ export class ScheduleBoardComponent implements OnInit {
     this.editSlot.emit(slot);
   }
 
-  addRoom(){
+  openModalRoom(){
+    this.salles = [];
+    this.selectedSalles = [];
+    forkJoin({
+      salles: this.salleService.getSalles(),
+    }).subscribe(({ salles }) => {
+      this.salles = salles.filter((s) => s.estDisponible && !this.sallesDispo.some(salle => s.nomSalle == salle));
+      console.log("salles selectionnables :",this.selectedSalles)
+    });
+  
+    this.title = "Ajouter une salle pour ce jour";
+    this.modalOpen = true;
+  }
 
+  addRoom(){
+    console.log("salles sélectionnées fin : ",this.selectedSalles)
+    this.selectedSalles.forEach(salle => {
+      this.sallesDispo.push(salle.nomSalle);
+    });
+
+    this.rebuildSlotsCache();
+    this.cdRef.detectChanges();
+    this.modalOpen = false;
+    this.toastr.warning('Avant de changer de jour, veuillez ajouter un créneau dans la nouvelle salle pour la sauvegarder.');
+  }
+
+  onSalleToggle(event: Event, salle: Salle) {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
+      this.selectedSalles.push(salle);
+    } else {
+      this.selectedSalles = this.selectedSalles.filter((s) => s !== salle);
+    }
+  }
+
+  get selectedSallesText(): string {
+    return this.selectedSalles.length
+      ? this.selectedSalles.map((s) => s.nomSalle).join(", ")
+      : "-- Sélectionner --";
   }
 
   //Fonctions pour drag and drop
@@ -227,7 +279,7 @@ export class ScheduleBoardComponent implements OnInit {
       
         // Vérification de la disponibilité du créneau choisit et de la disponibilité des profs
         if (!this.canPlaceSlot(newStart, newEnd, draggedSlot.referent, draggedSlot.lecteur, newRoom, existingSlots) ||
-            ((prevState.dateDebut!.getHours() * 60 + prevState.dateDebut!.getMinutes()) == (newStart.getHours() * 60 + newStart.getMinutes())
+            (prevState.dateDebut != null && (prevState.dateDebut!.getHours() * 60 + prevState.dateDebut!.getMinutes()) == (newStart.getHours() * 60 + newStart.getMinutes())
               && prevState.salle == newRoom)) {
           // Le slot revient à sa place
           this.dropError.forEach(e => {

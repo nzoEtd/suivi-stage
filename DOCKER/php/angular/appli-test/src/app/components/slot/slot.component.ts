@@ -20,10 +20,10 @@ export class SlotComponent {
   }
 
   getBackgroundColor(slotId: number): string {
-    return this.teacherInSlot.some(s => s === slotId) ? '#801a1a' : '#CFE9FF';
+    return /*this.teacherInSlot.some(s => s === slotId) ? '#801a1a' :*/ '#CFE9FF';
   }
 
   getTextColor(slotId: number): string {
-    return this.teacherInSlot.some(s => s === slotId) ? '#ffffff' : '#000000';
+    return /*this.teacherInSlot.some(s => s === slotId) ? '#ffffff' :*/ '#000000';
   }
 }

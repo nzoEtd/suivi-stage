@@ -42,10 +42,8 @@
             <div class="hours-header"></div>
             @for(salle of sallesDispo; track salle; let last = $last){
                 <span class="salle-header">Salle {{salle}}</span>
-                @if(last && !onlyDisplay){
-                    <span class="addRoom" title="Ajouter une salle" (click)="addRoom()"><b>+</b></span>
-                }
             }
+            <span class="addRoom" title="Ajouter une salle" (click)="openModalRoom()"><b>+</b></span>
         </div>
 
         <div *ngFor="let block of blocks; let last = last"
@@ -110,3 +108,53 @@
         </div>
     </div>
 </div>
+
+<app-modale
+  *ngIf="modalOpen"
+  [title]="title"
+  (submit)="addRoom()"
+  (cancel)="modalOpen = false"
+>
+    <form
+        class="form"
+        (ngSubmit)="addRoom()"
+        [class.disabled-form]="isSubmitting"
+      >
+      <div class="input-wrapper">
+        <label>Salles disponibles* :</label>
+
+        <div class="multi-select">
+          <div
+            class="select-box"
+            cdkOverlayOrigin
+            #origin="cdkOverlayOrigin"
+            (click)="dropdownOpen = !dropdownOpen"
+          >
+            {{ selectedSallesText }}
+            <span class="arrow"></span>
+          </div>
+
+          <ng-template
+            cdkConnectedOverlay
+            [cdkConnectedOverlayOrigin]="origin"
+            [cdkConnectedOverlayOpen]="dropdownOpen"
+            [cdkConnectedOverlayHasBackdrop]="true"
+            [cdkConnectedOverlayBackdropClass]="'transparent-backdrop'"
+            (backdropClick)="dropdownOpen = false"
+          >
+            <div class="options">
+              <label *ngFor="let salle of salles" class="option">
+                <input
+                  type="checkbox"
+                  [checked]="selectedSalles.includes(salle)"
+                  (change)="onSalleToggle($event, salle)"
+                />
+                {{ salle.nomSalle }}
+              </label>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </form>
+
+</app-modale>
