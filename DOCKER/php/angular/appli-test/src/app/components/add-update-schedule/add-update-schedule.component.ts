@@ -45,6 +45,7 @@ import { Student_Staff_AcademicYear_String } from "../../models/student-staff-ac
 import { CompanyService } from "../../services/company.service";
 import { CompanyTutorService } from "../../services/company-tutor.service";
 import { StudentStaffAcademicYearService } from "../../services/student-staff-academicYear.service";
+import { PlanningItemsService } from "../../services/planning-items.service";
 
 @Component({
   selector: "app-add-update-schedule",
@@ -117,6 +118,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     private companiesService: CompanyService,
     private tutorService: CompanyTutorService,
     private studentStaffService: StudentStaffAcademicYearService,
+    private planningItemsService: PlanningItemsService,
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
@@ -140,6 +142,8 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
         this.allTutors = allTutors;
         this.referents = referents;
       });
+      this.planningItemsService.items$
+        .subscribe(items => this.items = items);
 
       if (
         this.planning &&
@@ -324,7 +328,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     newSlots.forEach(slot => {
       this.newItems.push(slot);
     })
-    this.items = [...this.items, ...this.newItems];
+    this.planningItemsService.addToWaiting(this.newItems);
     this.modalOpen = false;
   }
 
