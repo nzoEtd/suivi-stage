@@ -306,7 +306,7 @@ export class ModaleSoutenanceComponent implements OnInit {
   }
 
   getTeacherName(id: number): string {
-    const lecteur = this.allStaff.find((s) => s.idPersonnel === id);
+    const lecteur = this.allStaff.find((s) => s.idPersonnel === Number(id));
     if (lecteur) {
       return lecteur.prenom![0] + ". " + lecteur.nom!;
     } else {
