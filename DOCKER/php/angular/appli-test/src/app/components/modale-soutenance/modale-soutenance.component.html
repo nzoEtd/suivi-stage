@@ -85,7 +85,7 @@
             <select id="lecteur" formControlName="lecteur">
               <option
                 *ngFor="let e of enseignantsLecteurs"
-                [value]="e.idPersonnel"
+                [ngValue]="e.idPersonnel"
               >
                 {{ e.prenom?.[0] }}. {{ e.nom }}
               </option>

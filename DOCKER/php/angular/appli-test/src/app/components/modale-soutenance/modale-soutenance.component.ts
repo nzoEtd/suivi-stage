@@ -67,7 +67,7 @@ export class ModaleSoutenanceComponent implements OnInit {
 
     this.soutenanceForm = this.fb.group({
       creneau: [currentCreneauKey, Validators.required],
-      lecteur: [this.soutenance.idLecteur, Validators.required],
+      lecteur: [Number(this.soutenance.idLecteur), Validators.required],
     });
 
     this.soutenanceForm.get("creneau")?.valueChanges.subscribe((value) => {
@@ -229,7 +229,7 @@ export class ModaleSoutenanceComponent implements OnInit {
         lecteurCtrl.setValue(this.enseignantsLecteurs[0]?.idPersonnel ?? null);
       }
     } else {
-      const currentLecteur = lecteurCtrl.value;
+      const currentLecteur = Number(lecteurCtrl.value);
       const toujoursDispo = this.enseignantsLecteurs.some(
         (e) => e.idPersonnel === currentLecteur,
       );
