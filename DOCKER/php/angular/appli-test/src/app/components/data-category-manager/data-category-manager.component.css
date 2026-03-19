@@ -145,7 +145,19 @@ th {
     font-size: 12px;
     font-weight: 500;
     text-transform: uppercase;
+    cursor: pointer;
 }
+
+.col_labels {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+th:hover {
+    background-color: lightgray;
+}
+
 
 tbody td {
     background-clip: padding-box;

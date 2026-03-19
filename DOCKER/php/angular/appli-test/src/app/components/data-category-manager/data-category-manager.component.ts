@@ -1,7 +1,4 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { Salle } from '../../models/salle.model';
-import { Student } from '../../models/student.model';
-import { Staff } from '../../models/staff.model';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { StudentService } from '../../services/student.service';
 import { StaffService } from '../../services/staff.service';
@@ -26,13 +23,13 @@ export class DataCategoryManagerComponent {
   categorie!: Category;
   fullData: any[] = [];
   data: any[] = [];
-  cols: string[] = [];
-  cols_labels: string[] = [];
+  cols: {db_name: string, label: string}[] = [];
   departments: Department[] = [];
   companies: Company[] = [];
   tutors: CompanyTutor[] = [];
   searchTerm: string = '';
   loading: boolean = true;
+  sortedCols: { name: string; order: SortOrder}[] = []
 
   constructor(
     private route: ActivatedRoute,
@@ -51,6 +48,9 @@ export class DataCategoryManagerComponent {
 
       await this.loadData();
     });
+
+    //Loading sortedCols
+    this.sortedCols = this.cols.map(col => ({ name: col.db_name, order: ' ' }));
   }
 
   /**
@@ -58,6 +58,8 @@ export class DataCategoryManagerComponent {
    */
   async loadData() {
     this.loading = true;
+
+    let cols_labels: string[];
     
     switch(this.categorie) {
       case 'etudiants':
@@ -100,8 +102,8 @@ export class DataCategoryManagerComponent {
             this.fullData = data;
             
             if (this.data.length > 0) {
-              this.cols = Object.keys(this.data[0]);
-              this.cols_labels = ["ID UPPA", "Login", "Nom", "Prénom", "Adresse", "Ville", "Code postal", "Téléphone", "Adresse mail", "Tier-temps", "Département", "Entreprise", "Tuteur"];
+              cols_labels = ["ID UPPA", "Login", "Nom", "Prénom", "Adresse", "Ville", "Code postal", "Téléphone", "Adresse mail", "Tier-temps", "Département", "Entreprise", "Tuteur"];
+              this.initCols(cols_labels);
             }
 
             this.loading = false;
@@ -122,8 +124,8 @@ export class DataCategoryManagerComponent {
             this.fullData = data;
 
             if (this.data.length > 0) {
-              this.cols = Object.keys(this.data[0]);
-              this.cols_labels = [" ", "Login", "Rôle(s)", "Nom", "Prénom", "Adresse", "Ville", "Code postal", "Téléphone", "Adresse mail", "Quota étudiant", "Est informaticien"];
+              cols_labels = [" ", "Login", "Rôle(s)", "Nom", "Prénom", "Adresse", "Ville", "Code postal", "Téléphone", "Adresse mail", "Quota étudiant", "Est informaticien"];
+              this.initCols(cols_labels);
             }
 
             this.loading = false;
@@ -144,8 +146,8 @@ export class DataCategoryManagerComponent {
             this.fullData = data;
 
             if (this.data.length > 0) {
-              this.cols = Object.keys(this.data[0]);
-              this.cols_labels = [" ", "Est disponible"];
+              cols_labels = [" ", "Est disponible"];
+              this.initCols(cols_labels);
             }
 
             this.loading = false;
@@ -165,7 +167,7 @@ export class DataCategoryManagerComponent {
    * 
    * @param id Identifiant 
    * @param data Données fournies
-   * @returns 
+   * @returns Le libellé correspondant à id ou l'identifiant en string si le libellé n'a pas été trouvé
    */
   getLibelleByIdAndData(id: number, data: any[]): string {
     let found_data = data.find((line) => Object.values(line)[0] === id);
@@ -199,22 +201,22 @@ export class DataCategoryManagerComponent {
   }
 
   tableConfigs: {
-  etudiants: { searchFields: string[]; relations: string[] };
-  personnel: { searchFields: string[]; relations: string[] };
-  salles: { searchFields: string[]; relations: string[] };
-  } = {
-    etudiants: {
-      searchFields: ["idUPPA", "login", "nom", "prenom", "adresse", "ville", "codePostal", "telephone", "adresseMail"],
-      relations: ["departement", "entreprise", "tuteur"]
-    },
-    personnel: {
-      searchFields: ["login", "nom", "prenom", "adresse", "ville", "codePostal", "telephone", "adresseMail", "quotaEtudiant"],
-      relations: []
-    },
-    salles: {
-      searchFields: ["nomSalle"],
-      relations: []
-    }
+    etudiants: { searchFields: string[]; relations: string[] };
+    personnel: { searchFields: string[]; relations: string[] };
+    salles: { searchFields: string[]; relations: string[] };
+    } = {
+      etudiants: {
+        searchFields: ["idUPPA", "login", "nom", "prenom", "adresse", "ville", "codePostal", "telephone", "adresseMail"],
+        relations: ["departement", "entreprise", "tuteur"]
+      },
+      personnel: {
+        searchFields: ["login", "nom", "prenom", "adresse", "ville", "codePostal", "telephone", "adresseMail", "quotaEtudiant"],
+        relations: []
+      },
+      salles: {
+        searchFields: ["nomSalle"],
+        relations: []
+      }
   };
 
   applyFilters() {
@@ -262,6 +264,123 @@ export class DataCategoryManagerComponent {
       return fieldValMatch || relationValMatch;
     });
   }
+
+  applySort(col: string, newOrder: SortOrder) {
+    this.sortedCols.find(s => s.name === col);
+
+    this.sortedCols.map((sortedCol) => {
+      if (sortedCol.name === col) {
+        sortedCol.order = newOrder;
+      }
+    });
+
+    this.cdRef.detectChanges();
+
+    if (newOrder !== ' ')
+    {
+    this.data = [...this.data].sort((a, b) => {
+      let aVal = a[col];
+      let bVal = b[col];
+
+      if (col === "idDepartement") {
+        aVal = this.getLibelleByIdAndData(aVal, this.departments);
+        bVal = this.getLibelleByIdAndData(bVal, this.departments);
+      }
+      else if (col === "idEntreprise") {
+        aVal = this.getLibelleByIdAndData(aVal, this.companies);
+        bVal = this.getLibelleByIdAndData(bVal, this.companies);        
+      }
+      else if (col === "idTuteur") {
+        aVal = this.getLibelleByIdAndData(aVal, this.tutors);
+        bVal = this.getLibelleByIdAndData(bVal, this.tutors);        
+      }
+      else if (col === "tierTemps" || col === "estDisponible" || col === "estTechnique") {
+        aVal === 1 ? "Oui" : "Non";
+        bVal === 1 ? "Oui" : "Non";        
+      }
+      
+      let comparison = 0;
+      
+      //One or both compared values are false
+      if (aVal === null && bVal === null) return 0;
+      if (aVal === null) return 1;
+      if (bVal === null) return -1;
+      
+      /**
+       * Comparisons :
+       *  Number
+       *  String
+       *  //Date
+       *  Boolean
+       *  Default
+       */
+      if (typeof aVal === 'number' && typeof bVal === 'number') {
+        comparison = aVal - bVal;
+      }
+
+      else if (typeof aVal === 'string' && typeof bVal === 'string') {
+        comparison = aVal.localeCompare(bVal);
+      }
+
+      // else if (aVal instanceof Date && bVal instanceof Date) {
+      //   comparison = aVal.getTime() - bVal.getTime();
+      // }
+
+      else if (typeof aVal === 'boolean' && typeof bVal === 'boolean') {
+        comparison = (aVal === bVal) ? 0 : aVal ? 1 : -1;
+      }
+
+      else {
+        if (aVal < bVal) comparison = -1;
+        if (aVal > bVal) comparison = 1;
+      }
+      
+      return newOrder === 'asc' ? comparison : -comparison;
+      });
+    }
+    else {
+      this.data = this.fullData;
+    }
+
+  }
+
+  getSortIcon(col: string): string {
+    const sort = this.sortedCols.find(s => s.name === col);
+    if (!sort) return ' ';
+    if (sort.order === 'asc') return '▲';
+    if (sort.order === 'desc') return '▼';
+    else return ' ';
+  }
+
+  sortCol(col: {db_name: string, label: string}) {
+      const colFound = this.sortedCols.find(s => s.name === col.db_name);
+
+      const oldSort = colFound?.order;
+      let newOrder: SortOrder = ' ';
+        
+      if (oldSort === ' ') {
+        newOrder = 'asc';
+      }
+      else if (oldSort === 'asc') {
+        newOrder = 'desc';
+      }
+      else {
+        newOrder = ' ';
+      }
+      
+      this.applySort(col.db_name, newOrder);
+    }
+
+  initCols(labels: string[]) {
+    this.cols = Object.keys(this.data[0])
+    .filter(key => key !== 'longitudeAdresse' && key !== 'latitudeAdresse')
+    .map((key, i) => ({
+      db_name: key,
+      label: labels[i] ?? key
+    }));
+    this.cols.map((col) => {this.sortedCols.push({name: col.db_name, order: ' '})});
+  }
 }
 
 type Category = "etudiants" | "personnel" | "salles";
+type SortOrder = ' ' | 'asc' | 'desc';
