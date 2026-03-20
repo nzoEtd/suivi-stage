@@ -1,28 +1,120 @@
 <div class="modal-overlay" (click)="onCancel($event)">
-    <div class="modal" (click)="$event.stopPropagation()">
-        <div class="modal-topbar">
-            <button type="button" (click)="onCancel()" class="close-button">
-                x
-            </button>
-            <h1 class="modal-title">
-                Soutenance {{ soutenance.dateDebut ? formatDate(soutenance.dateDebut, false, true) : '.. : ..' }}-{{ soutenance.dateFin ? formatDate(soutenance.dateFin, false, true) : '.. : ..' }} S{{ soutenance.salle ? soutenance.salle : '...' }}
-            </h1>
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-topbar">
+      <button type="button" (click)="onCancel()" class="close-button">x</button>
+      <h1 class="modal-title">
+        Soutenance {{ formatDate(soutenance.dateDebut!, "Heure") }} -
+        {{ formatDate(soutenance.dateFin!, "Heure") }} S{{ soutenance.salle }}
+      </h1>
+    </div>
+
+    @if (isSubmitting || !isDataLoaded) {
+      <div class="loading-overlay">
+        <app-loading></app-loading>
+      </div>
+    }
+    @if (!isSubmitting && isDataLoaded) {
+      <form
+        (ngSubmit)="onSubmit()"
+        [formGroup]="soutenanceForm"
+        [class.disabled-form]="isSubmitting"
+        class="form"
+      >
+        <!--Non modifiables-->
+        <div class="input-wrapper">
+          <label for="etudiant"><strong>Etudiant :</strong></label>
+          <p class="readonly-text">{{ soutenance.etudiant }}</p>
+        </div>
+        <div class="input-wrapper">
+          <label for="referent"><strong>Enseignant référent :</strong></label>
+          <p class="readonly-text">{{ soutenance.referent }}</p>
+        </div>
+        <div class="input-wrapper">
+          <label for="entreprise"><strong>Entreprise :</strong></label>
+          <p class="readonly-text">{{ soutenance.entreprise }}</p>
+        </div>
+        <div class="input-wrapper">
+          <label for="tuteur"><strong>Tuteur d'entreprise :</strong></label>
+          <p class="readonly-text">{{ soutenance.tuteur }}</p>
         </div>
 
-        <div class="form">
-            <p><span>Etudiant :</span> {{ soutenance.etudiant }}</p>
-            <p><span>Enseignant référent :</span> {{ soutenance.referent }}</p>
-            <p><span>Entreprise :</span> {{ soutenance.entreprise }}</p>
-            <p><span>Tuteur d'entreprise :</span> {{ soutenance.tuteur }}</p>
-            <p><span>Enseignant lecteur :</span> {{ soutenance.lecteur }}</p>
-            <div class="line-wrapper">
-                <p><span>Heure début :</span> {{ soutenance.dateDebut ? formatDate(soutenance.dateDebut, false, true) : '.. : ..' }}</p>
-                <p><span>Heure fin :</span> {{ soutenance.dateFin ? formatDate(soutenance.dateFin, false, true) : '.. : ..' }}</p>
+        <!-- Créneau disponible -->
+        <div class="input-wrapper">
+          @if (editMode) {
+            <label for="creneau"><strong>Créneaux disponibles :</strong></label>
+            <select id="creneau" formControlName="creneau">
+              <option
+                *ngFor="let c of creneauxDisponibles"
+                [value]="c.date + '|' + c.salle + '|' + c.heureDebut"
+              >
+                {{ formatStringDate(c.date) }} – Salle {{ c.salle }} ({{
+                  c.heureDebut
+                }}
+                à {{ c.heureFin }})
+              </option>
+            </select>
+            <div
+              class="error-message"
+              *ngIf="
+                submitted && soutenanceForm.get('creneau')?.hasError('required')
+              "
+            >
+              Veuillez sélectionner un créneau.
             </div>
-            <div class="line-wrapper">
-                <p><span>Jour :</span> {{ soutenance.dateDebut ? formatDate(soutenance.dateDebut, true, false) : '.. / .. / ....' }}</p>
-                <p><span>Salle :</span> {{ soutenance.salle ? soutenance.salle : '...' }}</p>
-            </div>
+          } @else {
+            <label for="creneau"><strong>Créneau choisi :</strong></label>
+            <p class="readonly-text">
+              {{
+                formatStringDate(formatDateToYYYYMMDD(soutenance.dateDebut!)) +
+                  " – Salle " +
+                  soutenance.salle +
+                  " (" +
+                  formatDate(soutenance.dateDebut!, "Heure") +
+                  " à " +
+                  formatDate(soutenance.dateFin!, "Heure") +
+                  ")"
+              }}
+            </p>
+          }
         </div>
-    </div>
+
+        <!-- Enseignant lecteur -->
+        <div class="input-wrapper">
+          <label for="lecteur"><strong>Enseignant lecteur :</strong></label>
+
+          @if (editMode) {
+            <select id="lecteur" formControlName="lecteur">
+              <option
+                *ngFor="let e of enseignantsLecteurs"
+                [ngValue]="e.idPersonnel"
+              >
+                {{ e.prenom?.[0] }}. {{ e.nom }}
+              </option>
+            </select>
+
+            <div
+              class="error-message"
+              *ngIf="
+                submitted && soutenanceForm.get('lecteur')?.hasError('required')
+              "
+            >
+              Veuillez sélectionner un enseignant lecteur.
+            </div>
+          } @else {
+            <p class="readonly-text">
+              {{ soutenance.lecteur }}
+            </p>
+          }
+        </div>
+
+        <!-- Boutons -->
+        <div *ngIf="editMode" class="modal-buttons">
+          <button type="button" (click)="onCancel()" class="cancel-button">
+            Annuler
+          </button>
+          <button type="submit" class="validate-button">Valider</button>
+        </div>
+      </form>
+    }
+  </div>
 </div>

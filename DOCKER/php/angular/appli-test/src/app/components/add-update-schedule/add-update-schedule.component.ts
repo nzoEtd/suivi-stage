@@ -46,6 +46,7 @@ import { CompanyService } from "../../services/company.service";
 import { CompanyTutorService } from "../../services/company-tutor.service";
 import { StudentStaffAcademicYearService } from "../../services/student-staff-academicYear.service";
 import { PlanningItemsService } from "../../services/planning-items.service";
+import { Staff } from "../../models/staff.model";
 
 @Component({
   selector: "app-add-update-schedule",
@@ -84,6 +85,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   sallesAffiches: number[] = [];
   finalSlots: SoutenanceUpdate[] = [];
   isValidating: boolean = false;
+  allStaff: Staff[] = [];
 
   //Variables pour les modales
   dropdownOpen: boolean = false;
@@ -96,6 +98,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   planningByDay: Record<string, SlotItem[]> = {};
   items: SlotItem[] = [];
   itemsToAdd: SlotItem[] = [];
+
   
   constructor(
     private readonly planningService: PlanningService,
@@ -106,6 +109,16 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     private fb: FormBuilder,
     private planningItemsService: PlanningItemsService,
   ) {}
+
+  ngOnInit(): void {
+    this.dataStore.ensureDataLoaded(["staff"]);
+    this.dataStore
+      .staff$()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((s) => {
+        this.allStaff = s;
+      });
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes["planning"] || changes["jours"] || changes["soutenances"]) {
@@ -149,13 +162,15 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
         this.sallesAffiches = getAllSallesUsed(
           this.salles,
           this.selectedJour,
-          this.slots
+          this.slots,
         );
         let idSlotTemp = 0;
-        this.slots.forEach(slot => {
+        this.slots.forEach((slot) => {
           idSlotTemp++;
-          slot.id == -1 ? slot.id = idSlotTemp: slot.id = slot.id;
-          const dayKey = slot.dateDebut ? slot.dateDebut.toISOString().slice(0,10) : "attente"; // "YYYY-MM-DD"
+          slot.id == -1 ? (slot.id = idSlotTemp) : (slot.id = slot.id);
+          const dayKey = slot.dateDebut
+            ? slot.dateDebut.toISOString().slice(0, 10)
+            : "attente"; // "YYYY-MM-DD"
           if (!this.planningByDay[dayKey]) this.planningByDay[dayKey] = [];
           this.planningByDay[dayKey].push(slot);
         });
@@ -178,11 +193,10 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
 
   updateJour(jour: Date) {
     this.selectedJour = jour;
-
     this.sallesAffiches = getAllSallesUsed(
       this.salles,
       this.selectedJour,
-      this.slots
+      this.slots,
     );
   }
 
@@ -196,7 +210,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     this.isModalOpen = true;
   }
 
-  updateSoutenance(updatedSoutenance: any){
+  updateSoutenance() {
     this.isModalOpen = false;
   }
 
@@ -224,8 +238,11 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     this.isValidating = true;
     let slotToAdd: SoutenanceCreate[];
     [this.finalSlots, slotToAdd] = this.convertSlotsToSoutenances();
-    if(this.finalSlots.length == 0) {
-      this.toastr.error("Toutes les soutenances ne sont pas placées", "Impossible d'enregistrer le planning.");
+    if (this.finalSlots.length == 0) {
+      this.toastr.error(
+        "Toutes les soutenances ne sont pas placées",
+        "Impossible d'enregistrer le planning.",
+      );
       this.isValidating = false;
       return;
     }
@@ -235,7 +252,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
         const soutenancesToCreate = slotToAdd.map(
           ({ date, ...soutenance }) => ({
             ...soutenance,
-            date: formatDateToYYYYMMDD(date),
+            date: formatDateToYYYYMMDD(date!),
           })
         );
 
@@ -255,15 +272,15 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
       // UPDATE
       console.log("UPDATING Planning:", this.planning);
       console.log("UPDATING Soutenances:", this.finalSlots);
-      this.soutenanceService.updateManySoutenance(
-        this.finalSlots
-      )
-      .subscribe({
+      this.soutenanceService.updateManySoutenance(this.finalSlots).subscribe({
         next: () => {
           // Rafraîchir les données du store après la création
           this.dataStore.refreshKeys(["soutenances"]);
           this.isValidating = false;
-          this.toastr.success("Les modifications ont bien été prises en comptes.", "Planning enregistré.");
+          this.toastr.success(
+            "Les modifications ont bien été prises en comptes.",
+            "Planning enregistré.",
+          );
 
           this.exit();
         },
@@ -280,8 +297,8 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
 
       const planningToCreate: PlanningCreate = {
         ...plannToCreate,
-        dateDebut: formatDateToYYYYMMDD(plannToCreate.dateDebut),
-        dateFin: formatDateToYYYYMMDD(plannToCreate.dateFin),
+        dateDebut: formatDateToYYYYMMDD(plannToCreate.dateDebut!),
+        dateFin: formatDateToYYYYMMDD(plannToCreate.dateFin!!),
       };
 
       console.log("CREATING Planning:", planningToCreate);
@@ -297,24 +314,27 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
             const soutenancesToCreate = slotsToCreate.map(
               ({ date, ...soutenance }) => ({
                 ...soutenance,
-                date: formatDateToYYYYMMDD(date),
+                date: formatDateToYYYYMMDD(date!),
                 idPlanning: planningId,
-              })
+              }),
             );
 
             console.log("CREATING Soutenances:", soutenancesToCreate);
             return this.soutenanceService.addManySoutenances(
-              soutenancesToCreate
+              soutenancesToCreate,
             );
-          })
+          }),
         )
         .subscribe({
           next: () => {
             // Rafraîchir les données du store après la création
             this.dataStore.refreshKeys(["plannings", "soutenances"]);
             this.isValidating = false;
-            this.toastr.success("L'ajout a bien été prises en comptes.", "Planning enregistré.");
-            
+            this.toastr.success(
+              "L'ajout a bien été prises en comptes.",
+              "Planning enregistré.",
+            );
+
             this.exit();
           },
           error: (err) => {
@@ -332,7 +352,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     this.itemsToAdd = event.itemsToAdd;
     this.planningItemsService.setItems(this.items);
   }
-  
+
   getAllSlots(): SlotItem[] {
     return Object.values(this.planningByDay).flat();
   }

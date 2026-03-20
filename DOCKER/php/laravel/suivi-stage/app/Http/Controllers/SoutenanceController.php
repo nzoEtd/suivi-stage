@@ -176,7 +176,7 @@ class SoutenanceController extends Controller
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      * @throws \Exception
      */
-    public function update(Request $request, $idSoutenance)
+    public function update($idSoutenance, Request $request)
     {
         try {
             $donneesValidees = $request->validate([
@@ -188,6 +188,11 @@ class SoutenanceController extends Controller
                 'idUPPA' => 'required|string',
                 'idLecteur' => 'required|integer',
             ]);
+
+        // Convertir la date ISO envoyée en format Y-m-d pour la bd
+        if (isset($donneesValidees['date']) && is_string($donneesValidees['date'])) {
+            $donneesValidees['date'] = \Carbon\Carbon::parse($donneesValidees['date'])->format('Y-m-d');
+        }
 
             $soutenance = Soutenance::findOrFail($idSoutenance);
             $soutenance->update($donneesValidees);

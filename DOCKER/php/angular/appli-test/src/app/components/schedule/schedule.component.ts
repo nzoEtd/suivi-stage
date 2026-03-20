@@ -172,7 +172,7 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
       this.slots,
     );
   }
-  
+
   async export() {
     if (!this.selectedPlanning || !this.jours.length) return;
 
@@ -337,8 +337,10 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
         this.allAcademicYears,
         this.cdRef,
       );
-      this.slots.forEach(slot => {
-        const dayKey = slot.dateDebut ? slot.dateDebut.toISOString().slice(0,10) : "attente"; // "YYYY-MM-DD"
+      this.slots.forEach((slot) => {
+        const dayKey = slot.dateDebut
+          ? slot.dateDebut.toISOString().slice(0, 10)
+          : "attente"; // "YYYY-MM-DD"
         if (!this.planningByDay[dayKey]) this.planningByDay[dayKey] = [];
         this.planningByDay[dayKey].push(slot);
       });
