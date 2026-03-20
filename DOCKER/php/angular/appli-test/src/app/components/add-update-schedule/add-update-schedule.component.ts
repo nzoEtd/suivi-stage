@@ -12,8 +12,8 @@ import {
   Validators,
   ValidatorFn,
   AbstractControl,
-  FormsModule, 
-  ReactiveFormsModule
+  FormsModule,
+  ReactiveFormsModule,
 } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { Planning, PlanningCreate } from "../../models/planning.model";
@@ -24,15 +24,22 @@ import { SlotItem } from "../../models/slotItem.model";
 import { TimeBlockConfig } from "../../models/timeBlock.model";
 import { ModaleSoutenanceComponent } from "../modale-soutenance/modale-soutenance.component";
 import { ModaleComponent } from "../modale/modale.component";
-import { createSlotsFromStudents, getAllSallesUsed } from "../../utils/fonctions";
+import {
+  createSlotsFromStudents,
+  getAllSallesUsed,
+} from "../../utils/fonctions";
 import { PlanningService } from "../../services/planning.service";
-import { Soutenance, SoutenanceCreate, SoutenanceUpdate } from "../../models/soutenance.model";
+import {
+  Soutenance,
+  SoutenanceCreate,
+  SoutenanceUpdate,
+} from "../../models/soutenance.model";
 import { Subject, forkJoin, switchMap, takeUntil } from "rxjs";
 import { SoutenanceService } from "../../services/soutenance.service";
 import { formatDateToYYYYMMDD } from "../../utils/timeManagement";
 import { DataStoreService } from "../../services/data.service";
-import { ToastrService } from 'ngx-toastr';
-import { inject } from '@angular/core';
+import { ToastrService } from "ngx-toastr";
+import { inject } from "@angular/core";
 import { OverlayModule } from "@angular/cdk/overlay";
 import { TrainingYear } from "../../models/training-year.model";
 import { Student } from "../../models/student.model";
@@ -57,8 +64,8 @@ import { Staff } from "../../models/staff.model";
     ModaleSoutenanceComponent,
     ModaleComponent,
     OverlayModule,
-    FormsModule, 
-    ReactiveFormsModule
+    FormsModule,
+    ReactiveFormsModule,
   ],
   templateUrl: "./add-update-schedule.component.html",
   styleUrls: ["./add-update-schedule.component.css"],
@@ -99,7 +106,6 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   items: SlotItem[] = [];
   itemsToAdd: SlotItem[] = [];
 
-  
   constructor(
     private readonly planningService: PlanningService,
     private readonly soutenanceService: SoutenanceService,
@@ -127,11 +133,9 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
       console.log("soutenances finales : ", this.slots);
 
       this.timeBlocks = [];
-      this.planningForm = this.fb.group(
-        {
-          date: [null, Validators.required],
-        },
-      );
+      this.planningForm = this.fb.group({
+        date: [null, Validators.required],
+      });
 
       if (
         this.planning &&
@@ -205,6 +209,10 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   }
 
   openEditModal(slot: SlotItem) {
+    const isInWaitingList = this.items.some((i) => i.id === slot.id);
+    if (isInWaitingList) {
+      return;
+    }
     this.selectedSoutenance = slot;
     this.idSoutenance = this.selectedSoutenance!.id;
     this.isModalOpen = true;
@@ -214,21 +222,22 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     this.isModalOpen = false;
   }
 
-  openModalJour(){
+  openModalJour() {
     this.title = "Ajouter un jour";
     this.modalOpen = true;
   }
 
-  addJour(){
+  addJour() {
     this.newDay = this.planningForm.value;
-    console.log("test newDay :", this.newDay)
-    if(this.newDay) {
-      const date = new Date(this.newDay.date)
+    console.log("test newDay :", this.newDay);
+    if (this.newDay) {
+      const date = new Date(this.newDay.date);
       this.planningByDay = {
         ...this.planningByDay,
-        [date.toLocaleDateString('fr-CA')]: this.planningByDay[date.toLocaleDateString('fr-CA')] || []
+        [date.toLocaleDateString("fr-CA")]:
+          this.planningByDay[date.toLocaleDateString("fr-CA")] || [],
       };
-      console.log(this.planningByDay)
+      console.log(this.planningByDay);
       this.cdRef.detectChanges();
     }
     this.modalOpen = false;
@@ -248,26 +257,31 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     }
     if (this.isEditMode) {
       // AJOUT DES NOUVEAUX SLOTS
-      if(slotToAdd.length != 0){
+      if (slotToAdd.length != 0) {
         const soutenancesToCreate = slotToAdd.map(
           ({ date, ...soutenance }) => ({
             ...soutenance,
             date: formatDateToYYYYMMDD(date!),
-          })
+          }),
         );
 
         console.log("CREATING Soutenances:", soutenancesToCreate);
-        this.soutenanceService.addManySoutenances(
-          soutenancesToCreate
-        )
-        .subscribe({
-          next: () => {
-            this.toastr.success("L'ajout a bien été prises en comptes.", "Nouvelles soutenances enregistré.");
-          },
-          error: (err) => {
-            this.toastr.error(err, "Impossible d'enregistrer les nouvelles soutenances.");
-          },
-        });
+        this.soutenanceService
+          .addManySoutenances(soutenancesToCreate)
+          .subscribe({
+            next: () => {
+              this.toastr.success(
+                "L'ajout a bien été prises en comptes.",
+                "Nouvelles soutenances enregistré.",
+              );
+            },
+            error: (err) => {
+              this.toastr.error(
+                err,
+                "Impossible d'enregistrer les nouvelles soutenances.",
+              );
+            },
+          });
       }
       // UPDATE
       console.log("UPDATING Planning:", this.planning);
@@ -291,8 +305,11 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
       });
     } else {
       //CREATE
-      const slotsToCreate: SoutenanceCreate[] = [...this.finalSlots, ...slotToAdd];
-      console.log(slotsToCreate)
+      const slotsToCreate: SoutenanceCreate[] = [
+        ...this.finalSlots,
+        ...slotToAdd,
+      ];
+      console.log(slotsToCreate);
       const { idPlanning, ...plannToCreate } = this.planning as Planning;
 
       const planningToCreate: PlanningCreate = {
@@ -346,7 +363,11 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   }
 
   //Fonctions drag and drop
-  onSlotUpdated(event: {planningByDay: Record<string, SlotItem[]>, items: SlotItem[], itemsToAdd: SlotItem[]}) {
+  onSlotUpdated(event: {
+    planningByDay: Record<string, SlotItem[]>;
+    items: SlotItem[];
+    itemsToAdd: SlotItem[];
+  }) {
     this.items = event.items;
     this.planningByDay = event.planningByDay;
     this.itemsToAdd = event.itemsToAdd;
@@ -363,36 +384,48 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     const slots = this.getAllSlots();
     const planning = this.planning as Planning;
     const idPlanning = planning.idPlanning;
-    console.log("slots avant", slots)
+    console.log("slots avant", slots);
 
-    if(this.items.length == 0){
-      slots.forEach(s => {
-        if(!this.itemsToAdd.some(i => i.id == s.id)){
+    if (this.items.length == 0) {
+      slots.forEach((s) => {
+        if (!this.itemsToAdd.some((i) => i.id == s.id)) {
           soutenances.push({
             idSoutenance: s.id as number,
             date: s.dateDebut!.toISOString().slice(0, 10),
             nomSalle: s.salle,
-            heureDebut: s.dateDebut!.getHours().toString().padStart(2, '0') + ":" + s.dateDebut!.getMinutes().toString().padStart(2, '0'),
-            heureFin: s.dateFin!.getHours().toString().padStart(2, '0') + ":" + s.dateFin!.getMinutes().toString().padStart(2, '0'),
+            heureDebut:
+              s.dateDebut!.getHours().toString().padStart(2, "0") +
+              ":" +
+              s.dateDebut!.getMinutes().toString().padStart(2, "0"),
+            heureFin:
+              s.dateFin!.getHours().toString().padStart(2, "0") +
+              ":" +
+              s.dateFin!.getMinutes().toString().padStart(2, "0"),
             idUPPA: s.idUPPA,
             idLecteur: s.idLecteur,
-            idPlanning: idPlanning
+            idPlanning: idPlanning,
           });
         }
-      })
-      console.log("et après", soutenances)
-      if(this.itemsToAdd.length != 0){
-        this.itemsToAdd.forEach(i => {
+      });
+      console.log("et après", soutenances);
+      if (this.itemsToAdd.length != 0) {
+        this.itemsToAdd.forEach((i) => {
           soutenancesToAdd.push({
             date: i.dateDebut!.toISOString().slice(0, 10),
             nomSalle: i.salle,
-            heureDebut: i.dateDebut!.getHours().toString().padStart(2, '0') + ":" + i.dateDebut!.getMinutes().toString().padStart(2, '0'),
-            heureFin: i.dateFin!.getHours().toString().padStart(2, '0') + ":" + i.dateFin!.getMinutes().toString().padStart(2, '0'),
+            heureDebut:
+              i.dateDebut!.getHours().toString().padStart(2, "0") +
+              ":" +
+              i.dateDebut!.getMinutes().toString().padStart(2, "0"),
+            heureFin:
+              i.dateFin!.getHours().toString().padStart(2, "0") +
+              ":" +
+              i.dateFin!.getMinutes().toString().padStart(2, "0"),
             idUPPA: i.idUPPA,
             idLecteur: i.idLecteur,
-            idPlanning: idPlanning
-          })
-        })
+            idPlanning: idPlanning,
+          });
+        });
       }
 
       return [soutenances, soutenancesToAdd];
