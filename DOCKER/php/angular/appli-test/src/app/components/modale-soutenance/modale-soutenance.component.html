@@ -40,8 +40,8 @@
 
         <!-- Créneau disponible -->
         <div class="input-wrapper">
-          <label for="creneau"><strong>Créneau disponible :</strong></label>
           @if (editMode) {
+            <label for="creneau"><strong>Créneaux disponibles :</strong></label>
             <select id="creneau" formControlName="creneau">
               <option
                 *ngFor="let c of creneauxDisponibles"
@@ -62,6 +62,7 @@
               Veuillez sélectionner un créneau.
             </div>
           } @else {
+            <label for="creneau"><strong>Créneau choisi :</strong></label>
             <p class="readonly-text">
               {{
                 formatStringDate(formatDateToYYYYMMDD(soutenance.dateDebut!)) +
