@@ -1,6 +1,15 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { SlotComponent } from "../slot/slot.component";
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ValidatorFn,
+  AbstractControl,
+  FormsModule, 
+  ReactiveFormsModule
+} from "@angular/forms";
 import { MatGridListModule } from "@angular/material/grid-list";
 import { SlotItem } from "../../models/slotItem.model";
 import { TimeBlock, TimeBlockConfig } from "../../models/timeBlock.model";
@@ -14,10 +23,32 @@ import { SalleService } from "../../services/salle.service";
 import { forkJoin } from "rxjs";
 import { ModaleComponent } from "../modale/modale.component";
 import { OverlayModule } from "@angular/cdk/overlay";
+import { PlanningItemsService } from "../../services/planning-items.service";
+import { TrainingYear } from "../../models/training-year.model";
+import { Student } from "../../models/student.model";
+import { TrainingYearService } from "../../services/training-year.service";
+import { StudentService } from "../../services/student.service";
+import { AcademicYearService } from "../../services/academic-year.service";
+import { Company } from "../../models/company.model";
+import { CompanyTutor } from "../../models/company-tutor.model";
+import { Student_Staff_AcademicYear_String } from "../../models/student-staff-academicYear-string.model";
+import { CompanyService } from "../../services/company.service";
+import { CompanyTutorService } from "../../services/company-tutor.service";
+import { StudentStaffAcademicYearService } from "../../services/student-staff-academicYear.service";
+import { createSlotsFromStudents } from "../../utils/fonctions";
 
 @Component({
   selector: "app-schedule-board",
-  imports: [CommonModule, SlotComponent, MatGridListModule, CdkDrag/*, CdkDragPlaceholder*/, CdkDropList, ModaleComponent, OverlayModule],
+  imports: [CommonModule,
+    SlotComponent, 
+    MatGridListModule, 
+    CdkDrag/*, 
+    CdkDragPlaceholder*/, 
+    CdkDropList, 
+    ModaleComponent, 
+    OverlayModule,
+    FormsModule,
+    ReactiveFormsModule,],
   standalone: true,
   templateUrl: "./schedule-board.component.html",
   styleUrls: ["./schedule-board.component.css"],
@@ -31,15 +62,18 @@ export class ScheduleBoardComponent implements OnInit {
   @Input() planningByDay: Record<string, SlotItem[]> = {};
 
   @Output() editSlot = new EventEmitter<SlotItem>();
-  @Output() slotUpdated = new EventEmitter<{planningByDay:Record<string, SlotItem[]>, items:SlotItem[]}>();
+  @Output() slotUpdated = new EventEmitter<{planningByDay:Record<string, SlotItem[]>, items:SlotItem[], itemsToAdd:SlotItem[]}>();
 
   toastr = inject(ToastrService);
 
   blocks: TimeBlock[] = [];
   PAUSE_HEIGHT = 15;
-  isModalOpen: boolean = false;
+  slotDuration: number = 0;
+  slotDurationTierTemps: number = 0;
 
   //Variables pour les modales
+  isModalOpen: boolean = false;
+  modalStudent: boolean = true;
   dropdownOpen: boolean = false;
   submitted: boolean = false;
   isSubmitting: boolean = false;
@@ -47,6 +81,16 @@ export class ScheduleBoardComponent implements OnInit {
   selectedSalles: Salle[] = [];
   modalOpen: boolean = false;
   title: string = "";
+  newItems: SlotItem[] = [];
+  itemsToAdd: SlotItem[] = [];
+  promos: TrainingYear[] = [];
+  students: Student[] = [];
+  selectedStudents: Student[] = [];
+  planningForm!: FormGroup;
+  currentAcademicYearId!: number;
+  allCompanies: Company[] = [];
+  allTutors: CompanyTutor[] = [];
+  referents: Student_Staff_AcademicYear_String[] = [];
 
   // Variables for drag and drop
   private slotsCache = new Map<TimeBlock, SlotItem[]>();
@@ -67,9 +111,34 @@ export class ScheduleBoardComponent implements OnInit {
   teacherInSlot: number[] = [];
 
   constructor(private cdRef: ChangeDetectorRef,
-    private salleService: SalleService,) {}
+    private salleService: SalleService,
+    private planningItemsService: PlanningItemsService,
+    private trainingYearService: TrainingYearService,
+    private studentService: StudentService,
+    private fb: FormBuilder,
+    private academicYearService: AcademicYearService,
+    private companiesService: CompanyService,
+    private tutorService: CompanyTutorService,
+    private studentStaffService: StudentStaffAcademicYearService,) {}
 
   async ngOnInit() {
+      // this.planningItemsService.items$
+      // .subscribe(items => {
+      //   this.items = items;
+      // });
+      forkJoin({
+        promos: this.trainingYearService.getTrainingYears(),
+        academicYear: this.academicYearService.getCurrentAcademicYear(),
+        allCompanies: this.companiesService.getCompanies(),
+        allTutors: this.tutorService.getCompanyTutors(),
+        referents: this.studentStaffService.getAllStudentTeachers(),
+      }).subscribe(({ promos, academicYear, allCompanies, allTutors, referents }) => {
+        this.promos = promos;
+        this.currentAcademicYearId = academicYear?.idAnneeUniversitaire || 0;
+        this.allCompanies = allCompanies;
+        this.allTutors = allTutors;
+        this.referents = referents;
+      });
       // Toujours commencer les blocs à une heure 'pile' donc sans minutes
       const converted = this.timeBlocks.map((b: TimeBlockConfig) => {
       const startMin = this.toMinutes(b.start);
@@ -160,7 +229,43 @@ export class ScheduleBoardComponent implements OnInit {
     this.editSlot.emit(slot);
   }
 
+  initFormRoom() {
+    this.planningForm = this.fb.group(
+      {
+        salle: [null, Validators.required],
+      },
+    );
+  }
+
+  initFormStudent() {
+    this.planningForm = this.fb.group(
+      {
+        idAnneeFormation: [null, Validators.required],
+      },
+    );
+  }
+
+  onStudentToggle(event: Event, student: Student) {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
+      this.selectedStudents.push(student);
+    } else {
+      this.selectedStudents = this.selectedStudents.filter((s) => s !== student);
+    }
+  }
+
+  get selectedStudentsText(): string {
+    return this.selectedStudents.length
+      ? this.selectedStudents.map((s) => s.nom + " " + s.prenom).join(", ")
+      : "-- Sélectionner --";
+  }
+
+  get promoSelected(): boolean {
+    return this.planningForm.get('idAnneeFormation')?.value != null;
+  }
+
   openModalRoom(){
+    this.initFormRoom();
     this.salles = [];
     this.selectedSalles = [];
     forkJoin({
@@ -172,6 +277,7 @@ export class ScheduleBoardComponent implements OnInit {
   
     this.title = "Ajouter une salle pour ce jour";
     this.modalOpen = true;
+    this.modalStudent = false;
   }
 
   addRoom(){
@@ -183,6 +289,7 @@ export class ScheduleBoardComponent implements OnInit {
     this.rebuildSlotsCache();
     this.cdRef.detectChanges();
     this.modalOpen = false;
+    this.submitted = false;
     this.toastr.warning('Avant de changer de jour, veuillez ajouter un créneau dans la nouvelle salle pour la sauvegarder.');
   }
 
@@ -199,6 +306,76 @@ export class ScheduleBoardComponent implements OnInit {
     return this.selectedSalles.length
       ? this.selectedSalles.map((s) => s.nomSalle).join(", ")
       : "-- Sélectionner --";
+  }
+
+  onSubmit(){
+    this.submitted = true;
+    // console.log("?????", this.planningForm.invalid, this.planningForm, this.selectedStudents, this.planningForm.value)
+    if (this.modalStudent && this.planningForm.invalid) return;
+    this.isSubmitting = true;
+    this.modalStudent ? this.addStudent() : this.addRoom();
+    this.isSubmitting = false;
+  }
+
+  openModalStudent(){
+    this.initFormStudent();
+    this.listenPromoChange();
+
+    console.log("y a des slots au moins ?", this.slots)
+    const basicSlot = this.slots.find(s => s.tierTemps == false);
+    console.log("un slot basique ?", basicSlot)
+    const tierTempsSlot = this.slots.find(s => s.tierTemps == true);
+    console.log("un slot tier-temps ?", tierTempsSlot)
+    this.slotDuration = basicSlot && basicSlot.dateDebut && basicSlot.dateFin ? basicSlot.dateFin.getTime() - basicSlot.dateDebut.getTime() : 0;
+    this.slotDurationTierTemps = tierTempsSlot && tierTempsSlot.dateDebut && tierTempsSlot.dateFin ? tierTempsSlot.dateFin.getTime() - tierTempsSlot.dateDebut.getTime() : 0;
+    console.log("durée basique :", this.slotDuration, ", durée tier-temps :", this.slotDurationTierTemps)
+
+    this.title = "Ajouter un étudiant";
+    // this.modalStudent = true;
+    this.modalOpen = true;
+    this.modalStudent = true;
+    this.planningForm.get('idAnneeFormation')?.reset();
+    this.students = [];
+    this.selectedStudents = [];
+  }
+
+  listenPromoChange() {
+    this.planningForm.get('idAnneeFormation')!
+      .valueChanges
+      .subscribe(idPromo => {
+  
+        if (idPromo) {
+          this.loadStudents(idPromo);
+          console.log("des étudiants ?", this.students);
+          this.planningForm.get('etudiants')?.setValue(this.students);
+        } else {
+          this.students = [];
+          this.planningForm.get('etudiants')?.setValue([]);
+        }
+  
+      });
+  }
+
+  loadStudents(idPromo: number) {
+    this.studentService.getStudentsByPromo(idPromo)
+      .subscribe(students => {
+        this.students = students;
+      });
+  }
+
+  addStudent(){
+    this.newItems = [];
+    const newSlots: SlotItem[] = createSlotsFromStudents(this.selectedStudents, this.allCompanies, this.allTutors, this.referents, this.currentAcademicYearId, this.slotDuration, this.slotDurationTierTemps);
+    console.log("les nouveaux slots :",newSlots);
+    newSlots.forEach(slot => {
+      this.newItems.push(slot);
+    })
+    // this.planningItemsService.addToWaiting(this.newItems);
+    this.items = [...this.items, ...this.newItems]
+    this.itemsToAdd = [...this.itemsToAdd, ...this.newItems]
+    console.log("slot ajoutés à enregistrer : ",this.itemsToAdd)
+    this.modalOpen = false;
+    this.submitted = false;
   }
 
   //Fonctions pour drag and drop
@@ -329,7 +506,8 @@ export class ScheduleBoardComponent implements OnInit {
 
     this.slotUpdated.emit({
       planningByDay: this.planningByDay, 
-      items: this.items});
+      items: this.items,
+      itemsToAdd: this.itemsToAdd,});
   }
 
   onPlanningDrop(event: CdkDragDrop<any>) {

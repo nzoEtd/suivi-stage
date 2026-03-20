@@ -1,6 +1,6 @@
 
 export interface SlotItem {
-    id: number;
+    id: number | string;
     topPercent: number;
     heightPercent: number;
     dateDebut: Date | null;

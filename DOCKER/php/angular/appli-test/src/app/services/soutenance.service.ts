@@ -68,6 +68,8 @@ export class SoutenanceService {
       headers: new HttpHeaders({ "Content-Type": "application/json" }),
     };
 
+    console.log("soutenances ajoutées :", soutenances)
+
     return this.http
       .post<Soutenance[]>(
         `${this.apiUrl}/api/soutenance/create-many`,

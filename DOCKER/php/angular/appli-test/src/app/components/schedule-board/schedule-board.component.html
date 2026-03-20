@@ -1,28 +1,35 @@
 <div class="add-update-schedule" CdkDropListGroup>
-    <div class="slot-box"
-    [style.border-color]="onlyDisplay ? 'white' : '#0A63A4'"
-    [style.width]="onlyDisplay ? '0px' : '200px'"
-    cdkDropList
-    #waitingList="cdkDropList"
-    [cdkDropListData]="items"
-    cdkDropListSortingDisabled
-    [cdkDropListDisabled]="onlyDisplay"
-    [cdkDropListConnectedTo]="[scheduleList]"
-    (cdkDropListDropped)="onPlanningDrop($event)">
-        @for (item of items; track item) {
-            <div class="item"
-            cdkDrag 
-            [cdkDragData]="item"
-            (cdkDragStarted)="onDragStarted($event, item)"
-            (cdkDragMoved)="onDragMoved($event)"
-            (cdkDragEnded)="onDragEnded($event)">
-                <app-slot 
-                    [slot]="item"
-                    [teacherInSlot]="teacherInSlot"
-                    (editSlot)="onEditSlot($event)">
-                </app-slot>
-            </div>
+    <div>
+        @if(!onlyDisplay){
+            <button class="little-btn primary" (click)="openModalStudent()"><b>
+                Ajouter un étudiant
+            </b></button>
         }
+        <div class="slot-box"
+        [style.border-color]="onlyDisplay ? 'white' : '#0A63A4'"
+        [style.width]="onlyDisplay ? '0px' : '200px'"
+        cdkDropList
+        #waitingList="cdkDropList"
+        [cdkDropListData]="items"
+        cdkDropListSortingDisabled
+        [cdkDropListDisabled]="onlyDisplay"
+        [cdkDropListConnectedTo]="[scheduleList]"
+        (cdkDropListDropped)="onPlanningDrop($event)">
+            @for (item of items; track item) {
+                <div class="item"
+                cdkDrag 
+                [cdkDragData]="item"
+                (cdkDragStarted)="onDragStarted($event, item)"
+                (cdkDragMoved)="onDragMoved($event)"
+                (cdkDragEnded)="onDragEnded($event)">
+                    <app-slot 
+                        [slot]="item"
+                        [teacherInSlot]="teacherInSlot"
+                        (editSlot)="onEditSlot($event)">
+                    </app-slot>
+                </div>
+            }
+        </div>
     </div>
     <div class="planning"
     cdkDropList
@@ -43,7 +50,9 @@
             @for(salle of sallesDispo; track salle; let last = $last){
                 <span class="salle-header">Salle {{salle}}</span>
             }
-            <span class="addRoom" title="Ajouter une salle" (click)="openModalRoom()"><b>+</b></span>
+            @if(!onlyDisplay){
+                <span class="addRoom" title="Ajouter une salle" (click)="openModalRoom()"><b>+</b></span>
+            }
         </div>
 
         <div *ngFor="let block of blocks; let last = last"
@@ -112,14 +121,81 @@
 <app-modale
   *ngIf="modalOpen"
   [title]="title"
-  (submit)="addRoom()"
+  (submit)="onSubmit()"
   (cancel)="modalOpen = false"
 >
     <form
         class="form"
-        (ngSubmit)="addRoom()"
+        (ngSubmit)="onSubmit()"
+        [formGroup]="planningForm"
         [class.disabled-form]="isSubmitting"
       >
+      @if (modalStudent){
+  
+          <!-- Promo -->
+          <div class="input-wrapper">
+            <label>Promo étudiants* :</label>
+            <select formControlName="idAnneeFormation">
+              <option [ngValue]="null" selected>-- Sélectionner --</option>
+              <option
+                *ngFor="let promo of promos"
+                [ngValue]="promo.idAnneeFormation"
+              >
+                {{ promo.libelle }}
+              </option>
+            </select>
+          </div>
+          <div
+            class="error-message"
+            *ngIf="
+              submitted &&
+              planningForm.get('idAnneeFormation')?.hasError('required')
+            "
+          > 
+            La promo est obligatoire.
+          </div>
+  
+  
+          <!-- Etudiants -->
+          @if(promoSelected){
+              <div class="input-wrapper">
+                  <label>Etudiants* :</label>
+  
+                  <div class="multi-select">
+                      <div
+                      class="select-box"
+                      cdkOverlayOrigin
+                      #origin="cdkOverlayOrigin"
+                      (click)="dropdownOpen = !dropdownOpen"
+                      >
+                      {{ selectedStudentsText }}
+                      <span class="arrow"></span>
+                      </div>
+  
+                      <ng-template
+                      cdkConnectedOverlay
+                      [cdkConnectedOverlayOrigin]="origin"
+                      [cdkConnectedOverlayOpen]="dropdownOpen"
+                      [cdkConnectedOverlayHasBackdrop]="true"
+                      [cdkConnectedOverlayBackdropClass]="'transparent-backdrop'"
+                      (backdropClick)="dropdownOpen = false"
+                      >
+                      <div class="options">
+                          <label *ngFor="let student of students" class="option">
+                          <input
+                              type="checkbox"
+                              [checked]="selectedStudents.includes(student)"
+                              (change)="onStudentToggle($event, student)"
+                          />
+                          {{ student.nom }} {{ student.prenom }}
+                          </label>
+                      </div>
+                      </ng-template>
+                  </div>
+              </div>
+          }
+      }
+      @else {
       <div class="input-wrapper">
         <label>Salles disponibles* :</label>
 
@@ -145,6 +221,7 @@
             <div class="options">
               <label *ngFor="let salle of salles" class="option">
                 <input
+                  formControlName="salle"
                   type="checkbox"
                   [checked]="selectedSalles.includes(salle)"
                   (change)="onSalleToggle($event, salle)"
@@ -155,6 +232,7 @@
           </ng-template>
         </div>
       </div>
+    }
     </form>
 
 </app-modale>

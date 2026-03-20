@@ -92,7 +92,7 @@ export function getAllSallesUsed(sallesDispo: number[], jour:Date, slots: SlotIt
   return salles;
 }
 
-export function createSlotsFromStudents(allStudents: Student[], allCompanies: Company[], allTutors: CompanyTutor[], referents: Student_Staff_AcademicYear_String[], academicYearId: number|null): SlotItem[] {
+export function createSlotsFromStudents(allStudents: Student[], allCompanies: Company[], allTutors: CompanyTutor[], referents: Student_Staff_AcademicYear_String[], academicYearId: number|null, slotDuration: number, slotDurationTierTemps: number): SlotItem[] {
   const slots: SlotItem[] = [];
   allStudents.forEach(student => {
     const referent = academicYearId? referents.find(r => r.idUPPA === student?.idUPPA && r.idAnneeUniversitaire === academicYearId): undefined;
@@ -104,7 +104,7 @@ export function createSlotsFromStudents(allStudents: Student[], allCompanies: Co
     : null;
     
     const slot = {
-      id: 0,
+      id: crypto.randomUUID(),
       topPercent: 0,
       heightPercent: 0,
       dateDebut: null,
@@ -114,12 +114,12 @@ export function createSlotsFromStudents(allStudents: Student[], allCompanies: Co
       tierTemps: student?.tierTemps ? student.tierTemps : false,
       idReferent: referent ? referent?.idPersonnel : 0,
       referent: referent ? `${referent.prenomPersonnel![0]}. ${referent.nomPersonnel}` : "Pas de référent",
-      idLecteur: 0,
+      idLecteur: 1,
       lecteur: "Pas de lecteur",
       entreprise: company ? company.raisonSociale! : "Pas d'entreprise",
       tuteur: tutor ? `${tutor.nom} ${tutor.prenom}` : "Tuteur d'entreprise inconnu",
       salle: null,
-      duree: null,
+      duree: student?.tierTemps ? slotDurationTierTemps : slotDuration,
     };
     slots.push(slot);
   })

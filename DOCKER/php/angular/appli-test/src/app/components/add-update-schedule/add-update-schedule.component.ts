@@ -78,10 +78,9 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   allDataLoaded: boolean = false;
   isModalOpen: boolean = false;
   modalOpen: boolean = false;
-  modalStudent: boolean = true;
   title: string = "";
   selectedSoutenance?: SlotItem;
-  idSoutenance?: number;
+  idSoutenance?: number | string;
   sallesAffiches: number[] = [];
   finalSlots: SoutenanceUpdate[] = [];
   isValidating: boolean = false;
@@ -90,20 +89,13 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   dropdownOpen: boolean = false;
   submitted: boolean = false;
   isSubmitting: boolean = false;
-  newItems: SlotItem[] = [];
   newDay: { date: string } | null = null;
-  promos: TrainingYear[] = [];
-  students: Student[] = [];
-  selectedStudents: Student[] = [];
   planningForm!: FormGroup;
-  currentAcademicYearId!: number;
-  allCompanies: Company[] = [];
-  allTutors: CompanyTutor[] = [];
-  referents: Student_Staff_AcademicYear_String[] = [];
 
   //Variables drag and drop
   planningByDay: Record<string, SlotItem[]> = {};
   items: SlotItem[] = [];
+  itemsToAdd: SlotItem[] = [];
   
   constructor(
     private readonly planningService: PlanningService,
@@ -111,13 +103,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     private readonly dataStore: DataStoreService,
     private readonly cdRef: ChangeDetectorRef,
     private router: Router,
-    private trainingYearService: TrainingYearService,
-    private studentService: StudentService,
     private fb: FormBuilder,
-    private academicYearService: AcademicYearService,
-    private companiesService: CompanyService,
-    private tutorService: CompanyTutorService,
-    private studentStaffService: StudentStaffAcademicYearService,
     private planningItemsService: PlanningItemsService,
   ) {}
 
@@ -128,22 +114,11 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
       console.log("soutenances finales : ", this.slots);
 
       this.timeBlocks = [];
-
-      forkJoin({
-        promos: this.trainingYearService.getTrainingYears(),
-        academicYear: this.academicYearService.getCurrentAcademicYear(),
-        allCompanies: this.companiesService.getCompanies(),
-        allTutors: this.tutorService.getCompanyTutors(),
-        referents: this.studentStaffService.getAllStudentTeachers(),
-      }).subscribe(({ promos, academicYear, allCompanies, allTutors, referents }) => {
-        this.promos = promos;
-        this.currentAcademicYearId = academicYear?.idAnneeUniversitaire || 0;
-        this.allCompanies = allCompanies;
-        this.allTutors = allTutors;
-        this.referents = referents;
-      });
-      this.planningItemsService.items$
-        .subscribe(items => this.items = items);
+      this.planningForm = this.fb.group(
+        {
+          date: [null, Validators.required],
+        },
+      );
 
       if (
         this.planning &&
@@ -196,42 +171,6 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     }
   }
 
-  initFormStudent() {
-    this.planningForm = this.fb.group(
-      {
-        idAnneeFormation: [null, Validators.required],
-        // etudiants: [[], Validators.required]
-      },
-    );
-  }
-
-  initFormDay() {
-    this.planningForm = this.fb.group(
-      {
-        date: [null, Validators.required],
-      },
-    );
-  }
-
-  onStudentToggle(event: Event, student: Student) {
-    const checked = (event.target as HTMLInputElement).checked;
-    if (checked) {
-      this.selectedStudents.push(student);
-    } else {
-      this.selectedStudents = this.selectedStudents.filter((s) => s !== student);
-    }
-  }
-
-  get selectedStudentsText(): string {
-    return this.selectedStudents.length
-      ? this.selectedStudents.map((s) => s.nom + " " + s.prenom).join(", ")
-      : "-- Sélectionner --";
-  }
-
-  get promoSelected(): boolean {
-    return this.planningForm.get('idAnneeFormation')?.value != null;
-  }
-
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
@@ -261,19 +200,8 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     this.isModalOpen = false;
   }
 
-  onSubmit(){
-    this.submitted = true;
-    console.log("?????", this.planningForm.invalid, this.planningForm, this.selectedStudents, this.planningForm.value)
-    if (this.planningForm.invalid) return;
-    this.isSubmitting = true;
-    this.modalStudent ? this.addStudent() : this.addJour();
-    this.isSubmitting = false;
-  }
-
   openModalJour(){
-    this.initFormDay();
     this.title = "Ajouter un jour";
-    this.modalStudent = false;
     this.modalOpen = true;
   }
 
@@ -282,65 +210,48 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     console.log("test newDay :", this.newDay)
     if(this.newDay) {
       const date = new Date(this.newDay.date)
-      this.planningByDay[date.toLocaleDateString('fr-CA')] = [];
+      this.planningByDay = {
+        ...this.planningByDay,
+        [date.toLocaleDateString('fr-CA')]: this.planningByDay[date.toLocaleDateString('fr-CA')] || []
+      };
       console.log(this.planningByDay)
       this.cdRef.detectChanges();
     }
-  }
-
-  openModalStudent(){
-    this.initFormStudent();
-    this.listenPromoChange();
-
-    this.title = "Ajouter un étudiant";
-    this.modalStudent = true;
-    this.modalOpen = true;
-  }
-
-  listenPromoChange() {
-    this.planningForm.get('idAnneeFormation')!
-      .valueChanges
-      .subscribe(idPromo => {
-  
-        if (idPromo) {
-          this.loadStudents(idPromo);
-          console.log("des étudiants ?", this.students);
-          this.planningForm.get('etudiants')?.setValue(this.students);
-        } else {
-          this.students = [];
-          this.planningForm.get('etudiants')?.setValue([]);
-        }
-  
-      });
-  }
-
-  loadStudents(idPromo: number) {
-    this.studentService.getStudentsByPromo(idPromo)
-      .subscribe(students => {
-        this.students = students;
-      });
-  }
-
-  addStudent(){
-    this.newItems = [];
-    const newSlots: SlotItem[] = createSlotsFromStudents(this.selectedStudents, this.allCompanies, this.allTutors, this.referents, this.currentAcademicYearId);
-    console.log("les nouveaux slots :",newSlots);
-    newSlots.forEach(slot => {
-      this.newItems.push(slot);
-    })
-    this.planningItemsService.addToWaiting(this.newItems);
     this.modalOpen = false;
   }
 
   onValidate() {
     this.isValidating = true;
-    this.finalSlots = this.convertSlotsToSoutenances();
+    let slotToAdd: SoutenanceCreate[];
+    [this.finalSlots, slotToAdd] = this.convertSlotsToSoutenances();
     if(this.finalSlots.length == 0) {
       this.toastr.error("Toutes les soutenances ne sont pas placées", "Impossible d'enregistrer le planning.");
       this.isValidating = false;
       return;
     }
     if (this.isEditMode) {
+      // AJOUT DES NOUVEAUX SLOTS
+      if(slotToAdd.length != 0){
+        const soutenancesToCreate = slotToAdd.map(
+          ({ date, ...soutenance }) => ({
+            ...soutenance,
+            date: formatDateToYYYYMMDD(date),
+          })
+        );
+
+        console.log("CREATING Soutenances:", soutenancesToCreate);
+        this.soutenanceService.addManySoutenances(
+          soutenancesToCreate
+        )
+        .subscribe({
+          next: () => {
+            this.toastr.success("L'ajout a bien été prises en comptes.", "Nouvelles soutenances enregistré.");
+          },
+          error: (err) => {
+            this.toastr.error(err, "Impossible d'enregistrer les nouvelles soutenances.");
+          },
+        });
+      }
       // UPDATE
       console.log("UPDATING Planning:", this.planning);
       console.log("UPDATING Soutenances:", this.finalSlots);
@@ -363,6 +274,8 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
       });
     } else {
       //CREATE
+      const slotsToCreate: SoutenanceCreate[] = [...this.finalSlots, ...slotToAdd];
+      console.log(slotsToCreate)
       const { idPlanning, ...plannToCreate } = this.planning as Planning;
 
       const planningToCreate: PlanningCreate = {
@@ -381,8 +294,8 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
             const planningId = createdPlanning.idPlanning;
             console.log("Planning créé avec id:", planningId);
 
-            const soutenancesToCreate = this.finalSlots.map(
-              ({ idSoutenance, date, ...soutenance }) => ({
+            const soutenancesToCreate = slotsToCreate.map(
+              ({ date, ...soutenance }) => ({
                 ...soutenance,
                 date: formatDateToYYYYMMDD(date),
                 idPlanning: planningId,
@@ -413,37 +326,57 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   }
 
   //Fonctions drag and drop
-  onSlotUpdated(event: {planningByDay: Record<string, SlotItem[]>, items: SlotItem[]}) {
+  onSlotUpdated(event: {planningByDay: Record<string, SlotItem[]>, items: SlotItem[], itemsToAdd: SlotItem[]}) {
     this.items = event.items;
     this.planningByDay = event.planningByDay;
+    this.itemsToAdd = event.itemsToAdd;
+    this.planningItemsService.setItems(this.items);
   }
   
   getAllSlots(): SlotItem[] {
     return Object.values(this.planningByDay).flat();
   }
 
-  convertSlotsToSoutenances(): SoutenanceUpdate[] {
+  convertSlotsToSoutenances(): [SoutenanceUpdate[], SoutenanceCreate[]] {
     let soutenances: SoutenanceUpdate[] = [];
+    let soutenancesToAdd: SoutenanceCreate[] = [];
     const slots = this.getAllSlots();
     const planning = this.planning as Planning;
     const idPlanning = planning.idPlanning;
+    console.log("slots avant", slots)
 
     if(this.items.length == 0){
       slots.forEach(s => {
-        soutenances.push({
-          idSoutenance: s.id,
-          date: s.dateDebut!.toISOString().slice(0, 10),
-          nomSalle: s.salle,
-          heureDebut: s.dateDebut!.getHours().toString().padStart(2, '0') + ":" + s.dateDebut!.getMinutes().toString().padStart(2, '0'),
-          heureFin: s.dateFin!.getHours().toString().padStart(2, '0') + ":" + s.dateFin!.getMinutes().toString().padStart(2, '0'),
-          idUPPA: s.idUPPA,
-          idLecteur: s.idLecteur,
-          idPlanning: idPlanning
-        });
+        if(!this.itemsToAdd.some(i => i.id == s.id)){
+          soutenances.push({
+            idSoutenance: s.id as number,
+            date: s.dateDebut!.toISOString().slice(0, 10),
+            nomSalle: s.salle,
+            heureDebut: s.dateDebut!.getHours().toString().padStart(2, '0') + ":" + s.dateDebut!.getMinutes().toString().padStart(2, '0'),
+            heureFin: s.dateFin!.getHours().toString().padStart(2, '0') + ":" + s.dateFin!.getMinutes().toString().padStart(2, '0'),
+            idUPPA: s.idUPPA,
+            idLecteur: s.idLecteur,
+            idPlanning: idPlanning
+          });
+        }
       })
+      console.log("et après", soutenances)
+      if(this.itemsToAdd.length != 0){
+        this.itemsToAdd.forEach(i => {
+          soutenancesToAdd.push({
+            date: i.dateDebut!.toISOString().slice(0, 10),
+            nomSalle: i.salle,
+            heureDebut: i.dateDebut!.getHours().toString().padStart(2, '0') + ":" + i.dateDebut!.getMinutes().toString().padStart(2, '0'),
+            heureFin: i.dateFin!.getHours().toString().padStart(2, '0') + ":" + i.dateFin!.getMinutes().toString().padStart(2, '0'),
+            idUPPA: i.idUPPA,
+            idLecteur: i.idLecteur,
+            idPlanning: idPlanning
+          })
+        })
+      }
 
-      return soutenances;
+      return [soutenances, soutenancesToAdd];
     }
-    return [];
+    return [[], []];
   }
 }

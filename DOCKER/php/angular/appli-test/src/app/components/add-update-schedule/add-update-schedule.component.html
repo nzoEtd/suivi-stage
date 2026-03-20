@@ -20,9 +20,6 @@
                     <h3 class="title">{{selectedJour | date:'EEEE dd MMMM yyyy':'':'fr'}}</h3>
                     <h4>&#x26A0; Planning non enregistré</h4>
                 </div>
-                <button class="little-btn primary" (click)="openModalStudent()"><b>
-                    Ajouter un étudiant
-                </b></button>
                 <div>
                     <div class="schedule-content">
                         <div class="planning-scroll">
@@ -73,81 +70,15 @@
 <app-modale
   *ngIf="modalOpen"
   [title]="title"
-  (submit)="onSubmit()"
+  (submit)="addJour()"
   (cancel)="modalOpen = false"
 >
     <form
         class="form"
         [formGroup]="planningForm"
-        (ngSubmit)="onSubmit()"
+        (ngSubmit)="addJour()"
         [class.disabled-form]="isSubmitting"
       >
-    @if (modalStudent){
-
-        <!-- Promo -->
-        <div class="input-wrapper">
-          <label>Promo étudiants* :</label>
-          <select formControlName="idAnneeFormation">
-            <option [ngValue]="null" selected>-- Sélectionner --</option>
-            <option
-              *ngFor="let promo of promos"
-              [ngValue]="promo.idAnneeFormation"
-            >
-              {{ promo.libelle }}
-            </option>
-          </select>
-        </div>
-        <div
-          class="error-message"
-          *ngIf="
-            submitted &&
-            planningForm.get('idAnneeFormation')?.hasError('required')
-          "
-        > 
-          La promo est obligatoire.
-        </div>
-
-
-        <!-- Etudiants -->
-        @if(promoSelected){
-            <div class="input-wrapper">
-                <label>Etudiants* :</label>
-
-                <div class="multi-select">
-                    <div
-                    class="select-box"
-                    cdkOverlayOrigin
-                    #origin="cdkOverlayOrigin"
-                    (click)="dropdownOpen = !dropdownOpen"
-                    >
-                    {{ selectedStudentsText }}
-                    <span class="arrow"></span>
-                    </div>
-
-                    <ng-template
-                    cdkConnectedOverlay
-                    [cdkConnectedOverlayOrigin]="origin"
-                    [cdkConnectedOverlayOpen]="dropdownOpen"
-                    [cdkConnectedOverlayHasBackdrop]="true"
-                    [cdkConnectedOverlayBackdropClass]="'transparent-backdrop'"
-                    (backdropClick)="dropdownOpen = false"
-                    >
-                    <div class="options">
-                        <label *ngFor="let student of students" class="option">
-                        <input
-                            type="checkbox"
-                            [checked]="selectedStudents.includes(student)"
-                            (change)="onStudentToggle($event, student)"
-                        />
-                        {{ student.nom }} {{ student.prenom }}
-                        </label>
-                    </div>
-                    </ng-template>
-                </div>
-            </div>
-        }
-    }
-    @else {
         <!-- Date -->
         <div class="line-wrapper">
             <div class="input-wrapper">
@@ -155,7 +86,6 @@
               <input type="date" formControlName="date" />
             </div>
         </div>
-    }
-      </form>
+    </form>
 
 </app-modale>

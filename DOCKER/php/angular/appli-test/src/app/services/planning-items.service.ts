@@ -13,4 +13,7 @@ export class PlanningItemsService {
     this.itemsSubject.next([...current, ...newItems]);
   }
 
+  setItems(items: SlotItem[]) {
+    this.itemsSubject.next(items);
+  }
 }
