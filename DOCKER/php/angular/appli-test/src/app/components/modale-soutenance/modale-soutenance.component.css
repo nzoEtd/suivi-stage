@@ -14,12 +14,12 @@
 }
 
 .modal {
-  background: #EFF6FF;
+  background: #eff6ff;
   border-radius: 12px;
   padding: 25px 30px;
-  width: 520px; 
-  max-width: 90%; 
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  width: 560px;
+  max-width: 90%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   position: relative;
   box-sizing: border-box;
 }
@@ -70,7 +70,7 @@ input[disabled] {
 }
 
 .input-wrapper label {
-  width: auto; 
+  width: auto;
   font-weight: normal;
   text-align: left;
   flex-shrink: 0;
@@ -81,7 +81,7 @@ input[disabled] {
   flex: 1;
   min-width: 0;
   padding: 8px 12px;
-  border: 1px solid #60A5FA;
+  border: 1px solid #60a5fa;
   border-radius: 8px;
   font-size: 0.95rem;
   background: white;
@@ -115,7 +115,7 @@ input[disabled] {
 }
 
 .select-box {
-  border: 1px solid #60A5FA;
+  border: 1px solid #60a5fa;
   padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
@@ -141,11 +141,11 @@ input[disabled] {
   right: 0;
   max-height: 200px;
   overflow-y: auto;
-  border: 1px solid #60A5FA;
+  border: 1px solid #60a5fa;
   background: white;
   z-index: 1001;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .option {
@@ -167,7 +167,7 @@ input[disabled] {
 }
 
 .option:hover {
-  background-color: #F0F9FF;
+  background-color: #f0f9ff;
 }
 
 .option input[type="checkbox"] {
@@ -208,12 +208,12 @@ input[disabled] {
 }
 
 .cancel-button {
-  background: #A2A2A2;
+  background: #a2a2a2;
   color: #fff;
 }
 
 .validate-button {
-  background: #0A63A4;
+  background: #0a63a4;
   color: #fff;
 }
 
