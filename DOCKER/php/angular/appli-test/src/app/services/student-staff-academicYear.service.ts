@@ -82,7 +82,6 @@ export class StudentStaffAcademicYearService {
         httpOptions,
       )
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, undefined)),
       );
   }

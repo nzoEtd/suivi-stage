@@ -117,8 +117,6 @@ export async function convertSoutenancesToSlots(
         : "Tuteur d'entreprise inconnu",
       salle: s.nomSalle!,
       duree: null,
-      idPlanning: s.idPlanning!,
-      allStaff: allStaff,
       tierTemps: student ? student.tierTemps : false,
     };
   });
@@ -166,7 +164,7 @@ export function createSlotsFromStudents(allStudents: Student[], allCompanies: Co
       tierTemps: student?.tierTemps ? student.tierTemps : false,
       idReferent: referent ? referent?.idPersonnel : 0,
       referent: referent ? `${referent.prenomPersonnel![0]}. ${referent.nomPersonnel}` : "Pas de référent",
-      idLecteur: 1,
+      idLecteur: -1,
       lecteur: "Pas de lecteur",
       entreprise: company ? company.raisonSociale! : "Pas d'entreprise",
       tuteur: tutor ? `${tutor.nom} ${tutor.prenom}` : "Tuteur d'entreprise inconnu",

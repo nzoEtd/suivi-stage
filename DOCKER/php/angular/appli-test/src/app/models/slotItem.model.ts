@@ -1,5 +1,3 @@
-import { Staff } from "./staff.model";
-
 export interface SlotItem {
   id: number | string;
   topPercent: number;
@@ -14,8 +12,6 @@ export interface SlotItem {
   lecteur: string;
   entreprise: string;
   tuteur: string;
-  idPlanning: number;
-  allStaff: Staff[];
   salle: number | null;
   duree: number | null;
   idReferent: number;

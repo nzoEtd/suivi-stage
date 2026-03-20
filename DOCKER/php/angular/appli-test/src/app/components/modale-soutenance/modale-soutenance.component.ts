@@ -248,7 +248,7 @@ export class ModaleSoutenanceComponent implements OnInit {
     return start1 < end2 && end1 > start2;
   }
 
-  onCancel() {
+  onCancel(event?: MouseEvent) {
     this.close.emit();
   }
 
