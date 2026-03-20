@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Output, Input, OnInit } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Output,
+  Input,
+  OnInit,
+  inject,
+} from "@angular/core";
 import { CommonModule } from "@angular/common";
 import {
   FormBuilder,
@@ -20,6 +27,7 @@ import {
   timeStringToMinutes,
   dateToHeureStr,
 } from "../../utils/timeManagement";
+import { ToastrService } from "ngx-toastr";
 
 type CreneauDisponible = {
   date: string;
@@ -44,6 +52,8 @@ export class ModaleSoutenanceComponent implements OnInit {
   @Input() timeBlocks: TimeBlockConfig[] = [];
 
   @Output() close = new EventEmitter<void>();
+
+  toastr = inject(ToastrService);
 
   soutenanceForm!: FormGroup;
   enseignantsLecteurs: Staff[] = [];
@@ -235,6 +245,10 @@ export class ModaleSoutenanceComponent implements OnInit {
       );
       if (!toujoursDispo) {
         lecteurCtrl.setValue(this.enseignantsLecteurs[0]?.idPersonnel ?? null);
+        this.toastr.warning(
+          "L'enseignant lecteur précédent n'est pas disponible sur ce créneau\nUn autre lecteur a été sélectionné automatiquement.",
+          "Lecteur modifié",
+        );
       }
     }
   }
@@ -294,6 +308,7 @@ export class ModaleSoutenanceComponent implements OnInit {
           salle,
         });
       }
+      this.toastr.success("Les modifications ont bien été prises en comptes.");
       break;
     }
 

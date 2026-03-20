@@ -112,7 +112,13 @@
           <button type="button" (click)="onCancel()" class="cancel-button">
             Annuler
           </button>
-          <button type="submit" class="validate-button">Valider</button>
+          <button
+            type="submit"
+            class="validate-button"
+            [disabled]="soutenanceForm.pristine || soutenanceForm.invalid"
+          >
+            Valider
+          </button>
         </div>
       </form>
     }
