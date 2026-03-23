@@ -152,8 +152,8 @@ class AlgorithmeController extends Controller
 
         $returnStatus = proc_close($process);
 
-        Log::info($stdout);
-
+        Log::info("stdout " . $stdout);
+        Log::info("stderr " . $stderr);
 
         if ($returnStatus !== 0) {
             return response()->json([
