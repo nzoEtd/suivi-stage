@@ -135,11 +135,11 @@ export class ModaleSoutenanceComponent implements OnInit {
               this.isOverlap(heureDebut, heureFin, s.dateDebut!, s.dateFin!),
             );
 
-            // Salle occupée
+            // room available ?
             if (soutenancesChevauchantes.some((s) => s.salle === salle))
               continue;
 
-            // Enseignants occupés
+            // Referent teacher available
             const enseignantsOccupes = soutenancesChevauchantes.flatMap((s) => [
               s.idLecteur,
               s.idReferent,
@@ -147,6 +147,13 @@ export class ModaleSoutenanceComponent implements OnInit {
 
             if (enseignantsOccupes.includes(this.soutenance.idReferent))
               continue;
+
+            // Readers available ?
+            const lecteursDisponibles = this.getLecteursDisponibles(
+              soutenancesChevauchantes,
+            );
+
+            if (lecteursDisponibles.length === 0) continue;
 
             creneaux.push({
               date,
@@ -159,7 +166,7 @@ export class ModaleSoutenanceComponent implements OnInit {
       }
     }
 
-    // Tri par jour puis salle puis heure
+    // sort by day, then room, then hours
     creneaux.sort((a, b) => {
       if (a.date !== b.date) {
         return a.date.localeCompare(b.date);
@@ -187,6 +194,24 @@ export class ModaleSoutenanceComponent implements OnInit {
     return creneaux;
   }
 
+  getLecteursDisponibles(chevauchements: SlotItem[]): Staff[] {
+    const idNonDisponibles = chevauchements.flatMap((s) => [
+      s.idLecteur,
+      s.idReferent,
+    ]);
+
+    const referentTechnique = this.referentEstTechnique(
+      this.soutenance.idReferent,
+    );
+
+    return this.allStaff.filter((s) => {
+      if (idNonDisponibles.includes(s.idPersonnel)) return false;
+      if (s.idPersonnel === this.soutenance.idReferent) return false;
+      if (!referentTechnique && !s.estTechnique) return false;
+      return true;
+    });
+  }
+
   updateLecteursDisponibles(creneauValue: string, keepCurrentLecteur = false) {
     const [date, salleStr, heureDebut] = creneauValue.split("|");
     const salle = Number(salleStr);
@@ -201,35 +226,13 @@ export class ModaleSoutenanceComponent implements OnInit {
 
     const soutenances = this.soutenancesJour[date] || [];
 
-    const idNonDisponibles = soutenances
-      .filter(
-        (s) =>
-          s.id !== this.soutenance.id &&
-          this.isOverlap(
-            heureDebutDate,
-            heureFinDate,
-            s.dateDebut!,
-            s.dateFin!,
-          ),
-      )
-      .flatMap((s) => [s.idLecteur, s.idReferent]);
-
-    const referentTechnique = this.referentEstTechnique(
-      this.soutenance.idReferent,
+    const chevauchements = soutenances.filter(
+      (s) =>
+        s.id !== this.soutenance.id &&
+        this.isOverlap(heureDebutDate, heureFinDate, s.dateDebut!, s.dateFin!),
     );
 
-    this.enseignantsLecteurs = this.allStaff.filter((s) => {
-      if (idNonDisponibles.includes(s.idPersonnel)) {
-        return false;
-      }
-      if (s.idPersonnel === this.soutenance.idReferent) {
-        return false;
-      }
-      if (!referentTechnique && !s.estTechnique) {
-        return false;
-      }
-      return true;
-    });
+    this.enseignantsLecteurs = this.getLecteursDisponibles(chevauchements);
 
     const lecteurCtrl = this.soutenanceForm?.get("lecteur");
     if (!lecteurCtrl) return;
