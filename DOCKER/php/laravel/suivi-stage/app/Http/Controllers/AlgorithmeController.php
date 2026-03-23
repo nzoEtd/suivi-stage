@@ -38,10 +38,8 @@ class AlgorithmeController extends Controller
 
         return $teachers->map(function ($teacher, $index) {
             return [
-                'id' => $teacher->idPersonnel, 
-                'name' => $teacher->nom,
-                'isTechnical' => (bool)$teacher->estTechnique,
-                'weeklyRemainingMinutes' => 1200
+                'id' => $teacher->idPersonnel,
+                'isTechnical' => (bool)$teacher->estTechnique
             ];
         })->toArray();
     }
@@ -76,7 +74,6 @@ class AlgorithmeController extends Controller
 
             return [
                 'id' => (int) $student->idUPPA,
-                'name' => $student->nom,
                 'hasAccommodations' => (bool) $student->tierTemps,
                 'referentTeacherId' => $referents[$student->idUPPA] ?? null,
                 'tutorId' => $student->idTuteur
