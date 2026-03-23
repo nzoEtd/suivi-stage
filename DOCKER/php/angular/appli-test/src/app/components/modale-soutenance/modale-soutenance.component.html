@@ -115,7 +115,7 @@
           <button
             type="submit"
             class="validate-button"
-            [disabled]="soutenanceForm.pristine || soutenanceForm.invalid"
+            [disabled]="!isFormChanged() || soutenanceForm.invalid"
           >
             Valider
           </button>

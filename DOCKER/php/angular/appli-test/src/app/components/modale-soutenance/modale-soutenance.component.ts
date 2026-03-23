@@ -44,6 +44,8 @@ type CreneauDisponible = {
   styleUrls: ["./modale-soutenance.component.css"],
 })
 export class ModaleSoutenanceComponent implements OnInit {
+  initialFormValue: any;
+
   @Input() soutenance!: SlotItem;
   @Input() editMode: boolean = false;
   @Input() sallesDispo!: number[];
@@ -79,6 +81,7 @@ export class ModaleSoutenanceComponent implements OnInit {
       creneau: [currentCreneauKey, Validators.required],
       lecteur: [Number(this.soutenance.idLecteur), Validators.required],
     });
+    this.initialFormValue = this.soutenanceForm.value;
 
     this.soutenanceForm.get("creneau")?.valueChanges.subscribe((value) => {
       this.updateLecteursDisponibles(value, false);
@@ -327,5 +330,12 @@ export class ModaleSoutenanceComponent implements OnInit {
     } else {
       throw new Error("Enseignant non trouvé.");
     }
+  }
+
+  isFormChanged(): boolean {
+    return (
+      JSON.stringify(this.soutenanceForm.value) !==
+      JSON.stringify(this.initialFormValue)
+    );
   }
 }
