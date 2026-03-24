@@ -34,7 +34,7 @@ jobs:
       # Generate phpDocumentor docs
       - name: Generate Backend Docs
         run: |
-          phpdoc -d DOCKER/php/laravel/suivi-stage/app -t ../../../../../docs/backend
+          phpdoc -d DOCKER/php/laravel/suivi-stage/app -t ../../../../../docs/backend --ignore="__root__"
 
       # Set up Node for Angular
       - name: Set up Node.js
@@ -56,11 +56,3 @@ jobs:
       - name: Generate Frontend Docs
         run: |
           cd DOCKER/php/angular/appli-test
-          npx @compodoc/compodoc -p tsconfig.app.json -d ../../../../docs/frontend
-
-      # Deploy to GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4.0.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
