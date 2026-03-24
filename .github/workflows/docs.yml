@@ -24,7 +24,7 @@ jobs:
       # Install Composer dependencies for Laravel
       - name: Install Composer dependencies
         run: |
-          cd laravel
+          cd DOCKER/php/laravel/suivi-stage
           composer install --no-dev --optimize-autoloader
 
       # Install phpDocumentor globally
@@ -45,7 +45,7 @@ jobs:
       # Install Angular dependencies
       - name: Install Angular dependencies
         run: |
-          cd angular
+          cd DOCKER/php/angular/appli-test
           npm install
 
       # Install Compodoc
@@ -55,7 +55,7 @@ jobs:
       # Generate Frontend Docs
       - name: Generate Frontend Docs
         run: |
-          cd angular
+          cd DOCKER/php/angular/appli-test
           npx @compodoc/compodoc -p tsconfig.app.json -d ../docs/frontend
 
       # Deploy to GitHub Pages
