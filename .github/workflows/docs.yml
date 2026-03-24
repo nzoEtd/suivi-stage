@@ -1,0 +1,66 @@
+name: Generate Docs
+
+on:
+  push:
+    branches:
+      - feat/AddingLaravelAndAngularDocumentation
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up PHP for phpDocumentor
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+
+      # Install Composer dependencies for Laravel
+      - name: Install Composer dependencies
+        run: |
+          cd laravel
+          composer install --no-dev --optimize-autoloader
+
+      # Install phpDocumentor globally
+      - name: Install phpDocumentor
+        run: composer global require phpdocumentor/phpdocumentor
+
+      # Generate phpDocumentor docs
+      - name: Generate Backend Docs
+        run: |
+          phpdoc -d DOCKER/php/laravel/suivi-stage/app -t docs/backend
+
+      # Set up Node for Angular
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      # Install Angular dependencies
+      - name: Install Angular dependencies
+        run: |
+          cd angular
+          npm install
+
+      # Install Compodoc
+      - name: Install Compodoc
+        run: npm install -g @compodoc/compodoc
+
+      # Generate Frontend Docs
+      - name: Generate Frontend Docs
+        run: |
+          cd angular
+          npx @compodoc/compodoc -p tsconfig.app.json -d ../docs/frontend
+
+      # Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
