@@ -123,19 +123,18 @@ class EntrepriseControllerTest extends TestCase
      */
     public function test_store_renvoie_une_erreur_de_base_de_donnees()
     {
-        // On simule une QueryException avec les bons arguments
-        \Illuminate\Support\Facades\DB::shouldReceive('connection')->andThrow(
-            new \Illuminate\Database\QueryException(
-                'mysql',
-                'insert into entreprises...',
-                [],
-                new \Exception('Erreur SQL')
-            )
-        );
+        $this->mock(Entreprise::class, function ($mock) {
+            $mock->shouldReceive('create')->andThrow(
+                new \Illuminate\Database\QueryException(
+                    'mysql',
+                    'insert into entreprises...',
+                    [],
+                    new \Exception('Erreur SQL')
+                )
+            );
+        });
 
-        $donnees = [
-            'raisonSociale' => 'TEST API',
-        ];
+        $donnees = ['raisonSociale' => 'TEST API'];
 
         $response = $this->postJson('/api/entreprises/create', $donnees);
 
@@ -182,16 +181,17 @@ class EntrepriseControllerTest extends TestCase
      * 
      * @return void
      */
+
     public function test_show_retourne_une_erreur_en_cas_d_exception()
     {
-        // Mock du modèle ENTREPRISE pour déclencher une exception
-        $this->mock(Entreprise::class, function ($mock) {
-            $mock->shouldReceive('show')->andThrow(new \Exception('Erreur simulée'));
+        $entreprise = Entreprise::first();
+
+        $this->mock(Entreprise::class, function ($mock) use ($entreprise) {
+            $mock->shouldReceive('findOrFail')
+                ->andThrow(new \Exception('Erreur simulée'));
         });
 
-        $entreprise = Entreprise::firstOrFail();
-
-        $response = $this->get('/api/entreprises/' . $entreprise->id);
+        $response = $this->get('/api/entreprises/' . $entreprise->idEntreprise);
 
         $response->assertStatus(500);
     }
