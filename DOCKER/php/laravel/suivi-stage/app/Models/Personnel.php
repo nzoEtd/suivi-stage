@@ -10,7 +10,6 @@ class Personnel extends Model
     use HasFactory;
     // Définit les attributs pouvant être remplis
     protected $fillable = [
-        'idPersonnel',
         'login',
         'roles',
         'nom',
@@ -27,8 +26,10 @@ class Personnel extends Model
     ];
     // Définit l'attribut de la clé primaire
     protected $primaryKey = 'idPersonnel';
-    // Précise que la table ne contient pas de created_at et updated_at
     public $timestamps = false;
+
+    public $incrementing = true;
+    protected $keyType = 'int';
 
 
     // Relation N-N avec DepartementIUT
