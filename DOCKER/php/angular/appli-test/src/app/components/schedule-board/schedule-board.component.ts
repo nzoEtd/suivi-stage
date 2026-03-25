@@ -90,6 +90,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
   allCompanies: Company[] = [];
   allTutors: CompanyTutor[] = [];
   referents: Student_Staff_AcademicYear_String[] = [];
+  hasValue: boolean = false;
 
   // Variables for drag and drop
   private slotsCache = new Map<TimeBlock, SlotItem[]>();
@@ -254,6 +255,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
   }
 
   initFormRoom() {
+    this.hasValue = false;
     this.planningForm = this.fb.group(
       {
         salle: [null, Validators.required],
@@ -262,6 +264,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
   }
 
   initFormStudent() {
+    this.hasValue = false;
     this.planningForm = this.fb.group(
       {
         idAnneeFormation: [null, Validators.required],
@@ -276,6 +279,8 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     } else {
       this.selectedStudents = this.selectedStudents.filter((s) => s !== student);
     }
+    this.selectedStudents.length ?
+    this.hasValue = true : this.hasValue = false;
   }
 
   get selectedStudentsText(): string {
@@ -324,6 +329,8 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     } else {
       this.selectedSalles = this.selectedSalles.filter((s) => s !== salle);
     }
+    this.selectedSalles.length ?
+    this.hasValue = true : this.hasValue = false;
   }
 
   get selectedSallesText(): string {
