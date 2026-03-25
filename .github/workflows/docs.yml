@@ -31,8 +31,12 @@ jobs:
       - name: Install phpDocumentor
         run: composer global require phpdocumentor/phpdocumentor
 
-      - name: Debug composer.json
-        run: cat DOCKER/php/laravel/suivi-stage/composer.json
+      - name: Debug Laravel directory
+        run: |
+          cd DOCKER/php/laravel/suivi-stage
+          ls -la
+          cat composer.json
+          ls vendor/composer
 
       # Generate phpDocumentor docs
       - name: Generate Backend Docs
