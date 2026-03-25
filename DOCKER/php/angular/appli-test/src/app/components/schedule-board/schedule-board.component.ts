@@ -59,6 +59,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
   @Input() timeBlocks!: TimeBlockConfig[];
   @Input() onlyDisplay!: boolean;
   @Input() planningByDay: Record<string, SlotItem[]> = {};
+  @Input() idPromoActuelle: number | null = null;
 
   @Output() editSlot = new EventEmitter<SlotItem>();
   @Output() slotUpdated = new EventEmitter<{planningByDay:Record<string, SlotItem[]>, items:SlotItem[], itemsToAdd:SlotItem[]}>();
@@ -128,7 +129,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
         allTutors: this.tutorService.getCompanyTutors(),
         referents: this.studentStaffService.getAllStudentTeachers(),
       }).subscribe(({ promos, academicYear, allCompanies, allTutors, referents }) => {
-        this.promos = promos;
+        this.promos = promos.filter(p => p.idAnneeFormation != this.idPromoActuelle);
         this.currentAcademicYearId = academicYear?.idAnneeUniversitaire || 0;
         this.allCompanies = allCompanies;
         this.allTutors = allTutors;
@@ -390,7 +391,9 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
   loadStudents(idPromo: number) {
     this.studentService.getStudentsByPromo(idPromo)
       .subscribe(students => {
-        this.students = students;
+        this.students = students.filter(s => !this.itemsToAdd.some(i => s.idUPPA == i.idUPPA) &&
+                                      !this.items.some(i => s.idUPPA == i.idUPPA) &&
+                                      !this.slots.some(i => s.idUPPA == i.idUPPA));
       });
   }
 
