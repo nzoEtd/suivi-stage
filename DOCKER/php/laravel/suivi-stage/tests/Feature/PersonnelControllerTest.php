@@ -46,22 +46,16 @@ class PersonnelControllerTest extends TestCase
             'roles' => 'Enseignant',
             'nom' => 'Dupont',
             'prenom' => 'Jean',
-            'adresse' => null,
-            'ville' => null,
-            'codePostal' => null,
-            'telephone' => null,
             'adresseMail' => 'jdupont@univ-pau.fr',
-            'longitudeAdresse' => null,
-            'latitudeAdresse' => null,
             'quotaEtudiant' => 8,
+            'estTechnique' => true,
         ];
 
-        $response = $this->post('/api/personnel/create', $donnees);
+        $response = $this->postJson('/api/personnel/create', $donnees);
 
-        $response->assertStatus(201)
-            ->assertJson($donnees);
+        $response->assertStatus(201);
+        $response->assertJsonFragment(['login' => 'jdupont']);
     }
-
     public function test_store_renvoie_une_erreur_de_validation()
     {
         $donnees = [
@@ -139,13 +133,10 @@ class PersonnelControllerTest extends TestCase
 
     public function test_show_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        $this->mock(Personnel::class, function ($mock) {
-            $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
-        });
+        $mock = Mockery::mock('alias:App\Models\Personnel');
+        $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
 
-        $personnel = Personnel::first();
-
-        $response = $this->get('/api/personnel/' . $personnel->idPersonnel);
+        $response = $this->get('/api/personnel/1');
 
         $response->assertStatus(500)
             ->assertJson(['message' => "Une erreur s'est produite :"]);
@@ -233,28 +224,19 @@ class PersonnelControllerTest extends TestCase
 
     public function test_update_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        $this->mock(Personnel::class, function ($mock) {
-            $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
-        });
+        $mock = Mockery::mock('alias:App\Models\Personnel');
+        $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
 
         $donnees = [
             'login' => 'jdupont',
             'roles' => 'Enseignant',
             'nom' => 'Dupont',
             'prenom' => 'Jean',
-            'adresse' => null,
-            'ville' => null,
-            'codePostal' => null,
-            'telephone' => null,
             'adresseMail' => 'jdupont@univ-pau.fr',
-            'longitudeAdresse' => null,
-            'latitudeAdresse' => null,
-            'quotaEtudiant' => 8,
+            'quotaEtudiant' => 8
         ];
 
-        $personnel = Personnel::first();
-
-        $response = $this->putJson('/api/personnel/update/' . $personnel->idPersonnel, $donnees);
+        $response = $this->putJson('/api/personnel/update/1', $donnees);
 
         $response->assertStatus(500)
             ->assertJson(['message' => "Une erreur s'est produite :"]);
@@ -287,13 +269,10 @@ class PersonnelControllerTest extends TestCase
 
     public function test_destroy_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        $this->mock(Personnel::class, function ($mock) {
-            $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
-        });
+        $mock = Mockery::mock('alias:App\Models\Personnel');
+        $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
 
-        $personnel = Personnel::first();
-
-        $response = $this->delete('/api/personnel/delete/' . $personnel->idPersonnel);
+        $response = $this->deleteJson('/api/personnel/delete/1');
 
         $response->assertStatus(500)
             ->assertJson(['message' => "Une erreur s'est produite :"]);
