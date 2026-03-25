@@ -123,15 +123,16 @@ class EntrepriseControllerTest extends TestCase
      */
     public function test_store_renvoie_une_erreur_de_base_de_donnees()
     {
-        $this->mock(Entreprise::class, function ($mock) {
-            $mock->shouldReceive('create')->andThrow(
-                new \Illuminate\Database\QueryException(
+        // On utilise partialMock pour ne pas casser le reste du comportement
+        $this->partialMock(Entreprise::class, function ($mock) {
+            $mock->shouldReceive('create')
+                ->once() // On s'attend à ce qu'elle soit appelée une fois
+                ->andThrow(new \Illuminate\Database\QueryException(
                     'mysql',
                     'insert into entreprises...',
                     [],
                     new \Exception('Erreur SQL')
-                )
-            );
+                ));
         });
 
         $donnees = ['raisonSociale' => 'TEST API'];
@@ -184,16 +185,15 @@ class EntrepriseControllerTest extends TestCase
 
     public function test_show_retourne_une_erreur_en_cas_d_exception()
     {
-        $entreprise = Entreprise::first();
-
-        $this->mock(Entreprise::class, function ($mock) use ($entreprise) {
+        $this->partialMock(Entreprise::class, function ($mock) {
             $mock->shouldReceive('findOrFail')
                 ->andThrow(new \Exception('Erreur simulée'));
         });
 
-        $response = $this->get('/api/entreprises/' . $entreprise->idEntreprise);
+        $response = $this->get('/api/entreprises/1');
 
-        $response->assertStatus(500);
+        $response->assertStatus(500)
+            ->assertJsonFragment(['message' => 'Une erreur s\'est produite']);
     }
 
     /*
