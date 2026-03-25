@@ -39,7 +39,7 @@ class EntrepriseControllerTest extends TestCase
         $response = $this->get('/api/entreprises');
 
         $response->assertStatus(200)
-                 ->assertJsonCount($desEntreprises->count());
+            ->assertJsonCount($desEntreprises->count());
     }
 
     /*
@@ -79,7 +79,7 @@ class EntrepriseControllerTest extends TestCase
         $response = $this->postJson('/api/entreprises/create', $donnees);
 
         $response->assertStatus(201)
-                 ->assertJson($donnees);
+            ->assertJson($donnees);
     }
 
     /**
@@ -113,7 +113,7 @@ class EntrepriseControllerTest extends TestCase
         $response = $this->postJson('/api/entreprises/create', $donnees);
 
         $response->assertStatus(422)
-                 ->assertJson(['message' => 'Erreur de validation dans les données']);
+            ->assertJson(['message' => 'Erreur de validation dans les données']);
     }
 
     /**
@@ -123,37 +123,21 @@ class EntrepriseControllerTest extends TestCase
      */
     public function test_store_renvoie_une_erreur_de_base_de_donnees()
     {
-        // Mock du modèle RechercheStage pour déclencher une exception
-        $this->mock(Entreprise::class, function ($mock) {
-            $mock->shouldReceive('store')->andThrow(new \Exception('Erreur simulée'));
-        });
+        \Illuminate\Support\Facades\DB::shouldReceive('table')->andThrow(new \Illuminate\Database\QueryException(
+            'insert',
+            [],
+            new \Exception('Erreur de base de données simulée')
+        ));
 
         $donnees = [
-            'numSIRET' => null,
             'raisonSociale' => 'TEST API',
-            'typeEtablissement' => null,
-            'adresse' => null,
-            'ville' => null,
-            'codePostal' => null,
-            'pays' => null,
-            'telephone' => null,
-            'codeAPE_NAF' => null,
-            'statutJuridique' => null,
-            'effectif' => null,
-            'nomRepresentant' => null,
-            'prenomRepresentant' => null,
-            'adresseMailRepresentant' => null,
-            'telephoneRepresentant' => null,
-            'fonctionRepresentant' => null,
-            'longitudeAdresse' => null,
-            'latitudeAdresse' => null,
         ];
 
         $response = $this->postJson('/api/entreprises/create', $donnees);
 
-        $response->assertStatus(500);
+        $response->assertStatus(500)
+            ->assertJsonFragment(['message' => 'Erreur dans la base de données']);
     }
-
     /*
     ================================
         TEST DE LA METHODE SHOW
@@ -172,7 +156,7 @@ class EntrepriseControllerTest extends TestCase
         $response = $this->get('/api/entreprises/' . $entreprise->idEntreprise);
 
         $response->assertStatus(200)
-                 ->assertJson($entreprise->toArray());
+            ->assertJson($entreprise->toArray());
     }
 
     /**
