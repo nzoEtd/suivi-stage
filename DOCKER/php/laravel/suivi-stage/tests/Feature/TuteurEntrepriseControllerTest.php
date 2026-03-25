@@ -22,6 +22,13 @@ class TuteurEntrepriseControllerTest extends TestCase
         $this->artisan('db:seed');
     }
 
+
+    protected function tearDown(): void
+    {
+        \Mockery::close();
+        parent::tearDown();
+    }
+
     /*
     ================================
         TEST DE LA METHODE INDEX
@@ -86,15 +93,11 @@ class TuteurEntrepriseControllerTest extends TestCase
      */
     public function test_show_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        // Mock du modèle TuteurEntreprise pour déclencher une exception
-        $this->mock(TuteurEntreprise::class, function ($mock) {
-            $mock->shouldReceive('findOrFail')
-                ->andThrow(new \Exception('Erreur simulée'));
-        });
+        \Mockery::mock('alias:App\Models\TuteurEntreprise')
+            ->shouldReceive('findOrFail')
+            ->andThrow(new \Exception('Erreur simulée'));
 
-        $unTuteur = TuteurEntreprise::first();
-
-        $response = $this->get('/api/tuteur-entreprise/' . $unTuteur->idTuteur);
+        $response = $this->get('/api/tuteur-entreprise/1');
 
         $response->assertStatus(500)
             ->assertJson(['message' => 'Une erreur s\'est produite']);
@@ -156,10 +159,9 @@ class TuteurEntrepriseControllerTest extends TestCase
      */
     public function test_store_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        // Mock du modèle TuteurEntreprise pour déclencher une exception
-        $this->mock(TuteurEntreprise::class, function ($mock) {
-            $mock->shouldReceive('create')->andThrow(new \Exception('Erreur simulée'));
-        });
+        \Mockery::mock('alias:App\Models\TuteurEntreprise')
+            ->shouldReceive('create')
+            ->andThrow(new \Exception('Erreur simulée'));
 
         $data = [
             'nom' => 'Doe',
@@ -170,7 +172,7 @@ class TuteurEntrepriseControllerTest extends TestCase
             'idEntreprise' => 3
         ];
 
-        $response = $this->get('/api/tuteur-entreprise/create', $data);
+        $response = $this->postJson('/api/tuteur-entreprise/create', $data);
 
         $response->assertStatus(500)
             ->assertJson(['message' => 'Une erreur s\'est produite']);
@@ -234,11 +236,11 @@ class TuteurEntrepriseControllerTest extends TestCase
     {
         // Mock du modèle TuteurEntreprise pour déclencher une exception
         $this->mock(TuteurEntreprise::class, function ($mock) {
-        $mock->shouldReceive('findOrFail')
-             ->andReturn($mock)
-             ->shouldReceive('update')
-             ->andThrow(new \Exception('Erreur simulée'));
-    });
+            $mock->shouldReceive('findOrFail')
+                ->andReturn($mock)
+                ->shouldReceive('update')
+                ->andThrow(new \Exception('Erreur simulée'));
+        });
 
         $unTuteurEntreprise = TuteurEntreprise::first();
 
