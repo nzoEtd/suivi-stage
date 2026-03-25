@@ -176,8 +176,9 @@ class FicheDescriptiveControllerTest extends TestCase
      * La méthode store doit retourner une erreur 500 si une erreur survient lors de l'insertion
      * 
      * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
-
     public function test_store_methode_doit_retourner_une_erreur_500_car_un_probleme_est_survenue()
     {
         $mock = \Mockery::mock('alias:App\Models\FicheDescriptive');
@@ -194,6 +195,7 @@ class FicheDescriptiveControllerTest extends TestCase
 
         $response->assertStatus(500);
     }
+    
 
     /*
     ================================
