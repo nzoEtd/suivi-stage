@@ -35,7 +35,7 @@ jobs:
       - name: Generate Backend Docs
         run: |
           cd DOCKER/php/laravel/suivi-stage
-          phpdoc -c ../../../phpdoc.xml -t ../../../docs/backend
+          ./vendor/bin/phpdoc -c ../../../phpdoc.xml -t ../../../docs/backend
 
       # Set up Node.js
       - name: Set up Node.js
