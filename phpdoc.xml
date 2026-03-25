@@ -2,6 +2,6 @@
 <phpdocumentor>
   <title>Suivi Stage Documentation</title>
   <paths>
-    <directory>DOCKER/php/laravel/suivi-stage/app</directory>
+    <directory>app</directory>
   </paths>
 </phpdocumentor>

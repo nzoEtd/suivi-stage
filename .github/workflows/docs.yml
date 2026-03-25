@@ -37,7 +37,8 @@ jobs:
       # Generate phpDocumentor docs
       - name: Generate Backend Docs
         run: |
-          phpdoc -c phpdoc.xml -t docs/backend
+          cd DOCKER/php/laravel/suivi-stage
+          phpdoc -d app -t ../../../docs/backend
 
       # Set up Node for Angular
       - name: Set up Node.js
