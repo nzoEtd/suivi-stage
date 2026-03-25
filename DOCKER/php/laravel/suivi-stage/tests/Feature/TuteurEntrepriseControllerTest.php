@@ -235,8 +235,6 @@ class TuteurEntrepriseControllerTest extends TestCase
 
     public function test_update_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        // On crée un alias pour intercepter l'appel statique TuteurEntreprise::findOrFail
-        // IMPORTANT : L'alias doit être défini AVANT tout autre appel à TuteurEntreprise dans ce test
         $mock = \Mockery::mock('alias:App\Models\TuteurEntreprise');
 
         $mock->shouldReceive('findOrFail')
@@ -250,11 +248,9 @@ class TuteurEntrepriseControllerTest extends TestCase
             'fonction' => 'Responsable RH'
         ];
 
-        // On envoie un ID arbitraire (ex: 1) car findOrFail va de toute façon crash
         $response = $this->putJson('/api/tuteur-entreprise/update/1', $data);
 
         $response->assertStatus(500)
             ->assertJson(['message' => 'Une erreur s\'est produite :']);
-        // Note : J'ai ajouté l'espace et les deux points car c'est ce qu'il y a dans ton contrôleur
     }
 }

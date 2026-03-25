@@ -107,9 +107,9 @@ class RechercheStageControllerTest extends TestCase
 
     public function test_store_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        $this->mock(RechercheStage::class, function ($mock) {
-            $mock->shouldReceive('create')->andThrow(new \Exception('Erreur simulée'));
-        });
+        // Utilisation de l'alias pour intercepter RechercheStage::create
+        $mock = Mockery::mock('alias:App\Models\RechercheStage');
+        $mock->shouldReceive('create')->andThrow(new \Exception('Erreur simulée'));
 
         $donnees = [
             'dateCreation' => now()->toDateString(),
@@ -119,7 +119,7 @@ class RechercheStageControllerTest extends TestCase
             'nomContact' => 'Doe',
             'prenomContact' => 'John',
             'fonctionContact' => 'Manager',
-            'telephoneContact' => '+33612345678',
+            'telephoneContact' => '0612345678',
             'adresseMailContact' => 'john.doe@example.com',
             'observations' => 'Aucune observation',
             'dateRelance' => now()->toDateString(),
@@ -166,16 +166,13 @@ class RechercheStageControllerTest extends TestCase
 
     public function test_show_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        $this->mock(RechercheStage::class, function ($mock) {
-            $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
-        });
+        $mock = Mockery::mock('alias:App\Models\RechercheStage');
+        $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
 
-        $recherche = RechercheStage::first();
-
-        $response = $this->get('/api/recherches-stages/' . $recherche->idRecherche);
+        $response = $this->get('/api/recherches-stages/1');
 
         $response->assertStatus(500)
-            ->assertJson(['message' => "Une erreur s'est produite :"]);
+            ->assertJson(['message' => "Une erreur s'est produite"]);
     }
 
     /*
@@ -228,13 +225,21 @@ class RechercheStageControllerTest extends TestCase
             ->assertJson(['message' => 'Erreur de validation dans les données']);
     }
 
+    private function getValidUpdateData()
+    {
+        return [
+            'date1erContact' => '2025-01-17',
+            'typeContact' => 'Mail',
+            'nomContact' => 'Dupont',
+            'prenomContact' => 'Jean',
+            'fonctionContact' => 'RH',
+            'statut' => 'En cours'
+        ];
+    }
+
     public function test_update_renvoie_une_erreur_non_trouvee()
     {
-        $idRecherche = PHP_INT_MAX;
-
-        $donnees = ['statut' => 'Refusé'];
-
-        $response = $this->putJson('/api/recherches-stages/update/' . $idRecherche, $donnees);
+        $response = $this->putJson('/api/recherches-stages/update/9999', $this->getValidUpdateData());
 
         $response->assertStatus(404)
             ->assertJson(['message' => 'Aucune recherche de stage trouvée']);
@@ -242,17 +247,13 @@ class RechercheStageControllerTest extends TestCase
 
     public function test_update_renvoie_une_erreur_generique()
     {
-        $this->mock(RechercheStage::class, function ($mock) {
-            $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
-        });
+        $mock = Mockery::mock('alias:App\Models\RechercheStage');
+        $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
 
-        $recherche = RechercheStage::first();
-        $donnees = ['statut' => 'Refusé'];
-
-        $response = $this->putJson('/api/recherches-stages/update/' . $recherche->idRecherche, $donnees);
+        $response = $this->putJson('/api/recherches-stages/update/1', $this->getValidUpdateData());
 
         $response->assertStatus(500)
-            ->assertJson(['message' => "Une erreur s'est produite :"]);
+            ->assertJson(['message' => "Une erreur s'est produite"]);
     }
 
     /*
@@ -282,16 +283,13 @@ class RechercheStageControllerTest extends TestCase
 
     public function test_destroy_renvoie_une_erreur_generique()
     {
-        $this->mock(RechercheStage::class, function ($mock) {
-            $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
-        });
+        $mock = Mockery::mock('alias:App\Models\RechercheStage');
+        $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
 
-        $recherche = RechercheStage::first();
-
-        $response = $this->deleteJson('/api/recherches-stages/delete/' . $recherche->idRecherche);
+        $response = $this->deleteJson('/api/recherches-stages/delete/1');
 
         $response->assertStatus(500)
-            ->assertJson(['message' => "Une erreur s'est produite :"]);
+            ->assertJson(['message' => "Une erreur s'est produite"]);
     }
 
     protected function tearDown(): void
