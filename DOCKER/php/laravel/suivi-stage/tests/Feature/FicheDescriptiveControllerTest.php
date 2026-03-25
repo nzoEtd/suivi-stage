@@ -245,7 +245,9 @@ class FicheDescriptiveControllerTest extends TestCase
         $rechercheFirst = FicheDescriptive::first();
         $response = $this->putJson('/api/fiche-descriptive/update/' . $rechercheFirst->idFicheDescriptive, $donnees);
         $response->assertStatus(200)
-            ->assertJson($donnees);
+            ->assertJson([
+                'ficheDescriptive' => $donnees
+            ]);
     }
 
     /**
