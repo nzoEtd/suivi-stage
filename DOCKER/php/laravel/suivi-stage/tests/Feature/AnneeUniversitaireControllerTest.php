@@ -68,7 +68,7 @@ class AnneeUniversitaireControllerTest extends TestCase
             ->assertJson(['message' => 'Erreur de validation des données']);
     }
 
-   
+
 
     /*
     ================================
@@ -97,7 +97,7 @@ class AnneeUniversitaireControllerTest extends TestCase
 
 
 
-   
+
 
     /*
     ================================
@@ -137,16 +137,17 @@ class AnneeUniversitaireControllerTest extends TestCase
             ->assertJson(['message' => 'Aucune année universitaire trouvée']);
     }
 
-   
+
 
     /*
     ================================
         TEST DE LA METHODE DESTROY
     ================================
     */
+
     public function test_destroy_renvoie_une_confirmation_de_la_suppression_de_l_annee_universitaire()
     {
-        $uneAnnee = AnneeUniversitaire::orderBy('idAnneeUniversitaire', 'desc')->first();
+        $uneAnnee = AnneeUniversitaire::create(['libelle' => '9999-0000']);
 
         $response = $this->delete('/api/annee-universitaire/delete/' . $uneAnnee->idAnneeUniversitaire);
 
