@@ -41,6 +41,7 @@ class PersonnelControllerTest extends TestCase
     */
     public function test_store_renvoie_une_confirmation_et_le_membre_du_personnel_cree()
     {
+        $this->withoutExceptionHandling();
         $donnees = [
             'login' => 'jdupont',
             'roles' => 'Enseignant',

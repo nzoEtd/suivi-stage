@@ -30,17 +30,6 @@ class Personnel extends Model
     // Précise que la table ne contient pas de created_at et updated_at
     public $timestamps = false;
 
-    // Relation 1-N avec Admin
-    public function admins()
-    {
-        return $this->hasMany(Admin::class);
-    }
-
-    // Relation N-N avec Droit
-    public function droits()
-    {
-        return $this->belongsToMany(Droit::class);
-    }
 
     // Relation N-N avec DepartementIUT
     public function departementIUTs()
@@ -62,7 +51,7 @@ class Personnel extends Model
 
     // Relation 1-N avec Soutenance
     public function soutenances()
-{
-    return $this->hasMany(Soutenance::class);
-}
+    {
+        return $this->hasMany(Soutenance::class);
+    }
 }
