@@ -105,6 +105,13 @@ class RechercheStageControllerTest extends TestCase
             ->assertJson(['message' => 'Erreur de validation dans les données']);
     }
 
+    /**
+     * La méthode store va retourner une erreur 500 si une erreur survient
+     * 
+     * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function test_store_renvoie_une_erreur_generique_en_cas_d_exception()
     {
         // Utilisation de l'alias pour intercepter RechercheStage::create
@@ -164,6 +171,13 @@ class RechercheStageControllerTest extends TestCase
             ->assertJson(['message' => 'Aucune recherche de stage trouvée']);
     }
 
+    /**
+     * La méthode show va retourner une erreur 500 si une erreur survient
+     * 
+     * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function test_show_renvoie_une_erreur_generique_en_cas_d_exception()
     {
         $mock = Mockery::mock('alias:App\Models\RechercheStage');
@@ -245,6 +259,13 @@ class RechercheStageControllerTest extends TestCase
             ->assertJson(['message' => 'Aucune recherche de stage trouvée']);
     }
 
+    /**
+     * La méthode update va retourner une erreur 500 si une erreur survient
+     * 
+     * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function test_update_renvoie_une_erreur_generique()
     {
         $mock = Mockery::mock('alias:App\Models\RechercheStage');
@@ -281,6 +302,13 @@ class RechercheStageControllerTest extends TestCase
             ->assertJson(['message' => 'Aucune recherche de stage trouvée']);
     }
 
+    /**
+     * La méthode destroy va retourner une erreur 500 si une erreur survient
+     * 
+     * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function test_destroy_renvoie_une_erreur_generique()
     {
         $mock = Mockery::mock('alias:App\Models\RechercheStage');

@@ -90,6 +90,8 @@ class TuteurEntrepriseControllerTest extends TestCase
      * La méthode show va retourner une confirmation 500 si une erreur survient
      * 
      * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function test_show_renvoie_une_erreur_generique_en_cas_d_exception()
     {
@@ -156,6 +158,8 @@ class TuteurEntrepriseControllerTest extends TestCase
      * La méthode store va retourner une confirmation 500 si une erreur survient
      * 
      * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function test_store_renvoie_une_erreur_generique_en_cas_d_exception()
     {
@@ -231,6 +235,8 @@ class TuteurEntrepriseControllerTest extends TestCase
      * La méthode update va retourner une confirmation 500 si une erreur survient
      * 
      * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
 
     public function test_update_renvoie_une_erreur_generique_en_cas_d_exception()
