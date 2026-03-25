@@ -132,6 +132,13 @@ class PersonnelControllerTest extends TestCase
             ->assertJson(['message' => 'Aucun personnel trouvé']);
     }
 
+    /**
+     * La méthode show doit retourner une erreur 500 si une erreur générique survient
+     * 
+     * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function test_show_renvoie_une_erreur_generique_en_cas_d_exception()
     {
         $mock = Mockery::mock('alias:App\Models\Personnel');
@@ -223,6 +230,14 @@ class PersonnelControllerTest extends TestCase
             ->assertJson(['message' => 'Aucun personnel trouvé']);
     }
 
+
+    /**
+     * La méthode update doit retourner une erreur 500 si une erreur générique survient
+     * 
+     * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function test_update_renvoie_une_erreur_generique_en_cas_d_exception()
     {
         $mock = Mockery::mock('alias:App\Models\Personnel');
@@ -268,6 +283,13 @@ class PersonnelControllerTest extends TestCase
             ->assertJson(['message' => 'Aucun personnel trouvé']);
     }
 
+    /**
+     * La méthode store doit retourner une erreur 500 si une erreur générique survient
+     * 
+     * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function test_destroy_renvoie_une_erreur_generique_en_cas_d_exception()
     {
         $mock = Mockery::mock('alias:App\Models\Personnel');
