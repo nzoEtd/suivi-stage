@@ -28,15 +28,16 @@ jobs:
           cd DOCKER/php/laravel/suivi-stage
           composer install --no-dev --optimize-autoloader
 
-      # Install phpDocumentor globally (latest compatible)
-      - name: Install phpDocumentor
-        run: composer global require phpdocumentor/phpdocumentor
+      # Install phpDocumentor
+      - name: Install phpDocumentor locally
+        run: |
+          cd DOCKER/php/laravel/suivi-stage
+          composer require --dev phpdocumentor/phpdocumentor
 
-      # Generate Laravel backend docs
       - name: Generate Backend Docs
         run: |
-          export PATH="$HOME/.composer/vendor/bin:$PATH"
-          phpdoc -c DOCKER/php/laravel/suivi-stage/phpdoc.xml
+          cd DOCKER/php/laravel/suivi-stage
+          ./vendor/bin/phpdoc -d app -t ../../../docs/backend
 
       # Set up Node.js for Angular
       - name: Set up Node.js 20
