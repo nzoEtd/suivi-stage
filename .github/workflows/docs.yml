@@ -31,8 +31,10 @@ jobs:
       # Generate Laravel backend docs with Docker
       - name: Generate Backend Docs with Docker
         run: |
-          docker run --rm -v ${{ github.workspace }}/DOCKER/php/laravel/suivi-stage:/data phpdoc/phpdoc:latest \
-            -d /data/app -t /data/docs/backend
+          docker run --rm -v ${{ github.workspace }}/DOCKER/php/laravel/suivi-stage:/data \
+                        -v ${{ github.workspace }}/docs:/output \
+              phpdoc/phpdoc:latest \
+              -d /data/app -t /output/backend
 
       # Set up Node.js for Angular
       - name: Set up Node.js 20
