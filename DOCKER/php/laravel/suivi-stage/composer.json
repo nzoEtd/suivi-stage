@@ -1,7 +1,7 @@
 {
-    "name": "nzoetd/suivi-stage",
+    "name": "laravel/laravel",
     "type": "project",
-    "description": "Application de suivi des stages.",
+    "description": "The Laravel Framework.",
     "keywords": [
         "framework",
         "laravel"
