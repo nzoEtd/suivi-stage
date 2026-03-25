@@ -1095,6 +1095,7 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
      */
     public function test_handleSheetCreate_renvoie_une_erreur_500_car_une_erreur_est_simulee()
     {
+        $this->withoutExceptionHandling();
         Route::post('/test/fiche-descriptive-create-500', function () {
             throw new \Exception('Erreur simulée');
         })->middleware(\App\Http\Middleware\DispatchDataDescriptiveSheet::class);
@@ -1180,6 +1181,7 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
 
     public function test_handleSheetUpdate_renvoie_une_erreur_500_car_une_erreur_est_simulee()
     {
+        $this->withoutExceptionHandling();
         $ficheDescriptive = FicheDescriptive::first();
 
         // AJOUT : On attache le middleware à la route de test
