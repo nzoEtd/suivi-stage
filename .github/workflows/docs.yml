@@ -36,7 +36,7 @@ jobs:
       - name: Generate Backend Docs
         run: |
           export PATH="$HOME/.composer/vendor/bin:$PATH"
-          phpdoc -d DOCKER/php/laravel/suivi-stage/app -t docs/backend
+          phpdoc -c DOCKER/php/laravel/suivi-stage/phpdoc.xml
 
       # Set up Node.js for Angular
       - name: Set up Node.js 20
