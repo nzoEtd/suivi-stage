@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - feat/AddingLaravelAndAngularDocumentation
-  workflow_dispatch:
+  workflow_dispatch:  # allows manual trigger
 
 jobs:
   build-and-deploy-docs:
@@ -15,30 +15,31 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Set up PHP
-      - name: Set up PHP
+      # Set up PHP 8.3
+      - name: Set up PHP 8.3
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
+          extensions: mbstring, xml, curl
 
-      # Install Composer dependencies
+      # Install Composer dependencies for Laravel
       - name: Install Composer dependencies
         run: |
           cd DOCKER/php/laravel/suivi-stage
           composer install --no-dev --optimize-autoloader
 
-      # Install phpDocumentor
+      # Install phpDocumentor globally (latest compatible)
       - name: Install phpDocumentor
-        run: composer require --dev phpdocumentor/phpdocumentor
+        run: composer global require phpdocumentor/phpdocumentor
 
-      # Generate Backend Docs (using phpdoc.xml)
+      # Generate Laravel backend docs
       - name: Generate Backend Docs
         run: |
-          cd DOCKER/php/laravel/suivi-stage
-          ./vendor/bin/phpdoc -c ../../../phpdoc.xml -t ../../../docs/backend
+          export PATH="$HOME/.composer/vendor/bin:$PATH"
+          phpdoc -d DOCKER/php/laravel/suivi-stage/app -t docs/backend
 
-      # Set up Node.js
-      - name: Set up Node.js
+      # Set up Node.js for Angular
+      - name: Set up Node.js 20
         uses: actions/setup-node@v3
         with:
           node-version: '20'
@@ -49,15 +50,15 @@ jobs:
           cd DOCKER/php/angular/appli-test
           npm install
 
-      # Install Compodoc
+      # Install Compodoc globally
       - name: Install Compodoc
         run: npm install -g @compodoc/compodoc
 
-      # Generate Frontend Docs
+      # Generate Angular frontend docs
       - name: Generate Frontend Docs
         run: |
           cd DOCKER/php/angular/appli-test
-          npx @compodoc/compodoc -p tsconfig.app.json -d ../../../docs/frontend
+          npx @compodoc/compodoc -p tsconfig.app.json -d ../../../../docs/frontend
 
       # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
