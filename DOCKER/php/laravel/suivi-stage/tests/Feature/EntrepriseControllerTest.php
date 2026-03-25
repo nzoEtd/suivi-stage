@@ -120,20 +120,19 @@ class EntrepriseControllerTest extends TestCase
      * La méthode store va retourner une erreur 500 en cas de QueryException
      *
      * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function test_store_renvoie_une_erreur_de_base_de_donnees()
     {
-        // On utilise partialMock pour ne pas casser le reste du comportement
-        $this->partialMock(Entreprise::class, function ($mock) {
-            $mock->shouldReceive('create')
-                ->once() // On s'attend à ce qu'elle soit appelée une fois
-                ->andThrow(new \Illuminate\Database\QueryException(
-                    'mysql',
-                    'insert into entreprises...',
-                    [],
-                    new \Exception('Erreur SQL')
-                ));
-        });
+        \Mockery::mock('alias:App\Models\Entreprise')
+            ->shouldReceive('create')
+            ->andThrow(new \Illuminate\Database\QueryException(
+                'mysql',
+                'insert...',
+                [],
+                new \Exception('Erreur SQL')
+            ));
 
         $donnees = ['raisonSociale' => 'TEST API'];
 
@@ -142,6 +141,7 @@ class EntrepriseControllerTest extends TestCase
         $response->assertStatus(500)
             ->assertJsonFragment(['message' => 'Erreur dans la base de données']);
     }
+
     /*
     ================================
         TEST DE LA METHODE SHOW
@@ -181,14 +181,14 @@ class EntrepriseControllerTest extends TestCase
      * La méthode show va retourner une erreur 500 en cas d'exception
      * 
      * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
-
     public function test_show_retourne_une_erreur_en_cas_d_exception()
     {
-        $this->partialMock(Entreprise::class, function ($mock) {
-            $mock->shouldReceive('findOrFail')
-                ->andThrow(new \Exception('Erreur simulée'));
-        });
+        \Mockery::mock('alias:App\Models\Entreprise')
+            ->shouldReceive('findOrFail')
+            ->andThrow(new \Exception('Erreur simulée'));
 
         $response = $this->get('/api/entreprises/1');
 
