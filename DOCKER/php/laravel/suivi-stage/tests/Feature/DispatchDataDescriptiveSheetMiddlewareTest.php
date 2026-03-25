@@ -1104,6 +1104,8 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
             ->assertJson(['message' => 'Une erreur s\'est produite :']);
     }
 
+    
+
     /*
     =============================================
         TEST DE LA METHODE handleSheetUpdate
@@ -1151,9 +1153,18 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
     public function test_handleSheetUpdate_renvoie_une_erreur_400_car_le_format_JSON_est_invalide()
     {
         $ficheDescriptive = FicheDescriptive::first();
-        $jsonInvalide = ["idFicheDescriptive" => 1]; // Virgule en trop
+        $jsonInvalide = '{"idFicheDescriptive": 1';
 
-        $response = $this->putJson('/api/fiche-descriptive/update/' . $ficheDescriptive->idFicheDescriptive, $jsonInvalide);
+        $response = $this->call(
+            'PUT',
+            '/api/fiche-descriptive/update/' . $ficheDescriptive->idFicheDescriptive,
+            [],
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            $jsonInvalide
+        );
+
         $response->assertStatus(400)
             ->assertJson([
                 'message' => 'Le format JSON est invalide'
