@@ -1,0 +1,2196 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>stage-management-iut documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">stage-management-iut documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  AddUpdateScheduleComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/components/add-update-schedule/add-update-schedule.component.ts</code>
+</p>
+
+
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.io/api/core/OnChanges" target="_blank" >OnChanges</a></code>
+                    <code><a href="https://angular.io/api/core/OnDestroy" target="_blank" >OnDestroy</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-add-update-schedule</code></td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                                <code><a href="../components/ScheduleBoardComponent.html" target="_self" >ScheduleBoardComponent</a></code>
+                                <code><a href="https://angular.io/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                <code><a href="../components/LoadingComponent.html" target="_self" >LoadingComponent</a></code>
+                                <code><a href="../components/ModaleSoutenanceComponent.html" target="_self" >ModaleSoutenanceComponent</a></code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./add-update-schedule.component.css</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./add-update-schedule.component.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#allDataLoaded" >allDataLoaded</a>
+                            </li>
+                            <li>
+                                <a href="#allStaff" >allStaff</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#destroy$" >destroy$</a>
+                            </li>
+                            <li>
+                                <a href="#finalSlots" >finalSlots</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#idSoutenance" >idSoutenance</a>
+                            </li>
+                            <li>
+                                <a href="#isModalOpen" >isModalOpen</a>
+                            </li>
+                            <li>
+                                <a href="#isValidating" >isValidating</a>
+                            </li>
+                            <li>
+                                <a href="#items" >items</a>
+                            </li>
+                            <li>
+                                <a href="#planningByDay" >planningByDay</a>
+                            </li>
+                            <li>
+                                <a href="#sallesAffiches" >sallesAffiches</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#selectedJour" >selectedJour</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#selectedSoutenance" >selectedSoutenance</a>
+                            </li>
+                            <li>
+                                <a href="#timeBlocks" >timeBlocks</a>
+                            </li>
+                            <li>
+                                <a href="#toastr" >toastr</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#convertSlotsToSoutenances" >convertSlotsToSoutenances</a>
+                            </li>
+                            <li>
+                                <a href="#exit" >exit</a>
+                            </li>
+                            <li>
+                                <a href="#getAllSlots" >getAllSlots</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnChanges" >ngOnChanges</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnDestroy" >ngOnDestroy</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <a href="#onSlotUpdated" >onSlotUpdated</a>
+                            </li>
+                            <li>
+                                <a href="#onValidate" >onValidate</a>
+                            </li>
+                            <li>
+                                <a href="#openEditModal" >openEditModal</a>
+                            </li>
+                            <li>
+                                <a href="#updateJour" >updateJour</a>
+                            </li>
+                            <li>
+                                <a href="#updateSoutenance" >updateSoutenance</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Inputs</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#isEditMode" >isEditMode</a>
+                            </li>
+                            <li>
+                                <a href="#jours" >jours</a>
+                            </li>
+                            <li>
+                                <a href="#planning" >planning</a>
+                            </li>
+                            <li>
+                                <a href="#salles" >salles</a>
+                            </li>
+                            <li>
+                                <a href="#slots" >slots</a>
+                            </li>
+                            <li>
+                                <a href="#soutenances" >soutenances</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(planningService: <a href="../injectables/PlanningService.html" target="_self">PlanningService</a>, soutenanceService: <a href="../injectables/SoutenanceService.html" target="_self">SoutenanceService</a>, dataStore: <a href="../injectables/DataStoreService.html" target="_self">DataStoreService</a>, cdRef: <a href="https://angular.io/api/core/ChangeDetectorRef" target="_blank">ChangeDetectorRef</a>, router: <a href="https://angular.io/api/router/Router" target="_blank">Router</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="71" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:71</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>planningService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/PlanningService.html" target="_self" >PlanningService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>soutenanceService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SoutenanceService.html" target="_self" >SoutenanceService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>dataStore</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/DataStoreService.html" target="_self" >DataStoreService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>cdRef</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.io/api/core/ChangeDetectorRef" target="_blank" >ChangeDetectorRef</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>router</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.io/api/router/Router" target="_blank" >Router</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+    <section data-compodoc="block-inputs">
+    <h3 id="inputs">Inputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="isEditMode"></a>
+                        <b>isEditMode</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean" target="_blank" >Boolean</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="51" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:51</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="jours"></a>
+                        <b>jours</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Date[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="55" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:55</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="planning"></a>
+                        <b>planning</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/PlanningCreate.html" target="_self" >Planning | PlanningCreate | undefined</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:52</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="salles"></a>
+                        <b>salles</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>number[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="54" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:54</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="slots"></a>
+                        <b>slots</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/SlotItem.html" target="_self" >SlotItem[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="53" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:53</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="soutenances"></a>
+                        <b>soutenances</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/Soutenance.html" target="_self" >Soutenance[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="56" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:56</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="convertSlotsToSoutenances"></a>
+                    <span class="name">
+                        <span ><b>convertSlotsToSoutenances</b></span>
+                        <a href="#convertSlotsToSoutenances"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>convertSlotsToSoutenances()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="279"
+                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:279</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../interfaces/SoutenanceUpdate.html" target="_self" >SoutenanceUpdate[]</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="exit"></a>
+                    <span class="name">
+                        <span ><b>exit</b></span>
+                        <a href="#exit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>exit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="166"
+                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:166</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getAllSlots"></a>
+                    <span class="name">
+                        <span ><b>getAllSlots</b></span>
+                        <a href="#getAllSlots"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getAllSlots()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="275"
+                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:275</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../interfaces/SlotItem.html" target="_self" >SlotItem[]</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnChanges"></a>
+                    <span class="name">
+                        <span ><b>ngOnChanges</b></span>
+                        <a href="#ngOnChanges"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnChanges(changes: <a href="https://angular.io/api/core/SimpleChanges" target="_blank">SimpleChanges</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="91"
+                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:91</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>changes</td>
+                                            <td>
+                                                            <code><a href="https://angular.io/api/core/SimpleChanges" target="_blank" >SimpleChanges</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnDestroy"></a>
+                    <span class="name">
+                        <span ><b>ngOnDestroy</b></span>
+                        <a href="#ngOnDestroy"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnDestroy()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="152"
+                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:152</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="81"
+                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:81</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onSlotUpdated"></a>
+                    <span class="name">
+                        <span ><b>onSlotUpdated</b></span>
+                        <a href="#onSlotUpdated"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onSlotUpdated(event: literal type)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="267"
+                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:267</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                        <code>literal type</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onValidate"></a>
+                    <span class="name">
+                        <span ><b>onValidate</b></span>
+                        <a href="#onValidate"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onValidate()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="180"
+                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:180</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openEditModal"></a>
+                    <span class="name">
+                        <span ><b>openEditModal</b></span>
+                        <a href="#openEditModal"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>openEditModal(slot: <a href="../interfaces/SlotItem.html" target="_self">SlotItem</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="170"
+                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:170</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>slot</td>
+                                            <td>
+                                                            <code><a href="../interfaces/SlotItem.html" target="_self" >SlotItem</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateJour"></a>
+                    <span class="name">
+                        <span ><b>updateJour</b></span>
+                        <a href="#updateJour"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>updateJour(jour: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date" target="_blank">Date</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="157"
+                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:157</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>jour</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date" target="_blank" >Date</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateSoutenance"></a>
+                    <span class="name">
+                        <span ><b>updateSoutenance</b></span>
+                        <a href="#updateSoutenance"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>updateSoutenance()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="176"
+                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:176</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="allDataLoaded"></a>
+                    <span class="name">
+                        <span ><b>allDataLoaded</b></span>
+                        <a href="#allDataLoaded"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="60" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:60</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="allStaff"></a>
+                    <span class="name">
+                        <span ><b>allStaff</b></span>
+                        <a href="#allStaff"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/Staff.html" target="_self" >Staff[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="67" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:67</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="destroy$"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>destroy$</b></span>
+                        <a href="#destroy$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Subject&lt;void&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="48" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:48</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="finalSlots"></a>
+                    <span class="name">
+                        <span ><b>finalSlots</b></span>
+                        <a href="#finalSlots"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/SoutenanceUpdate.html" target="_self" >SoutenanceUpdate[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="65" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:65</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="idSoutenance"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>idSoutenance</b></span>
+                        <a href="#idSoutenance"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="63" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:63</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isModalOpen"></a>
+                    <span class="name">
+                        <span ><b>isModalOpen</b></span>
+                        <a href="#isModalOpen"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="61" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:61</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isValidating"></a>
+                    <span class="name">
+                        <span ><b>isValidating</b></span>
+                        <a href="#isValidating"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="66" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:66</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="items"></a>
+                    <span class="name">
+                        <span ><b>items</b></span>
+                        <a href="#items"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/SlotItem.html" target="_self" >SlotItem[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="71" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:71</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="planningByDay"></a>
+                    <span class="name">
+                        <span ><b>planningByDay</b></span>
+                        <a href="#planningByDay"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/SlotItem.html" target="_self" >Record&lt;string | SlotItem[]&gt;</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="70" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:70</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="sallesAffiches"></a>
+                    <span class="name">
+                        <span ><b>sallesAffiches</b></span>
+                        <a href="#sallesAffiches"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>number[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="64" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:64</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="selectedJour"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>selectedJour</b></span>
+                        <a href="#selectedJour"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date" target="_blank" >Date</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="58" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:58</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="selectedSoutenance"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>selectedSoutenance</b></span>
+                        <a href="#selectedSoutenance"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/SlotItem.html" target="_self" >SlotItem</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="62" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:62</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="timeBlocks"></a>
+                    <span class="name">
+                        <span ><b>timeBlocks</b></span>
+                        <a href="#timeBlocks"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>TimeBlockConfig[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="59" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:59</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="toastr"></a>
+                    <span class="name">
+                        <span ><b>toastr</b></span>
+                        <a href="#toastr"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(ToastrService)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="49" class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:49</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectorRef,
+  OnDestroy,
+} from &quot;@angular/core&quot;;
+import { CommonModule } from &quot;@angular/common&quot;;
+import { Planning, PlanningCreate } from &quot;../../models/planning.model&quot;;
+import { ScheduleBoardComponent } from &quot;../schedule-board/schedule-board.component&quot;;
+import { LoadingComponent } from &quot;../loading/loading.component&quot;;
+import { Router } from &quot;@angular/router&quot;;
+import { SlotItem } from &quot;../../models/slotItem.model&quot;;
+import { TimeBlockConfig } from &quot;../../models/timeBlock.model&quot;;
+import { ModaleSoutenanceComponent } from &quot;../modale-soutenance/modale-soutenance.component&quot;;
+import { getAllSallesUsed } from &quot;../../utils/fonctions&quot;;
+import { PlanningService } from &quot;../../services/planning.service&quot;;
+import { Soutenance, SoutenanceUpdate } from &quot;../../models/soutenance.model&quot;;
+import { Subject, switchMap, takeUntil } from &quot;rxjs&quot;;
+import { SoutenanceService } from &quot;../../services/soutenance.service&quot;;
+import { formatDateToYYYYMMDD } from &quot;../../utils/timeManagement&quot;;
+import { DataStoreService } from &quot;../../services/data.service&quot;;
+import { ToastrService } from &quot;ngx-toastr&quot;;
+import { inject } from &quot;@angular/core&quot;;
+import {
+  CdkDrag,
+  CdkDropList,
+  CdkDropListGroup,
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem,
+} from &quot;@angular/cdk/drag-drop&quot;;
+import { Staff } from &quot;../../models/staff.model&quot;;
+
+@Component({
+  selector: &quot;app-add-update-schedule&quot;,
+  imports: [
+    ScheduleBoardComponent,
+    CommonModule,
+    LoadingComponent,
+    ModaleSoutenanceComponent,
+  ],
+  templateUrl: &quot;./add-update-schedule.component.html&quot;,
+  styleUrls: [&quot;./add-update-schedule.component.css&quot;],
+})
+export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
+  private destroy$ &#x3D; new Subject&lt;void&gt;();
+  toastr &#x3D; inject(ToastrService);
+
+  @Input() isEditMode!: Boolean;
+  @Input() planning: Planning | PlanningCreate | undefined;
+  @Input() slots: SlotItem[] &#x3D; [];
+  @Input() salles: number[] &#x3D; [];
+  @Input() jours: Date[] &#x3D; [];
+  @Input() soutenances: Soutenance[] &#x3D; [];
+
+  selectedJour?: Date;
+  timeBlocks: TimeBlockConfig[] &#x3D; [];
+  allDataLoaded: boolean &#x3D; false;
+  isModalOpen: boolean &#x3D; false;
+  selectedSoutenance?: SlotItem;
+  idSoutenance?: number;
+  sallesAffiches: number[] &#x3D; [];
+  finalSlots: SoutenanceUpdate[] &#x3D; [];
+  isValidating: boolean &#x3D; false;
+  allStaff: Staff[] &#x3D; [];
+
+  //Variables drag and drop
+  planningByDay: Record&lt;string, SlotItem[]&gt; &#x3D; {};
+  items: SlotItem[] &#x3D; [];
+
+  constructor(
+    private readonly planningService: PlanningService,
+    private readonly soutenanceService: SoutenanceService,
+    private readonly dataStore: DataStoreService,
+    private readonly cdRef: ChangeDetectorRef,
+    private router: Router,
+  ) {}
+
+  ngOnInit(): void {
+    this.dataStore.ensureDataLoaded([&quot;staff&quot;]);
+    this.dataStore
+      .staff$()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((s) &#x3D;&gt; {
+        this.allStaff &#x3D; s;
+      });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes[&quot;planning&quot;] || changes[&quot;jours&quot;] || changes[&quot;soutenances&quot;]) {
+      console.log(&quot;planning : &quot;, this.planning);
+      console.log(&quot;jours : &quot;, this.jours);
+      console.log(&quot;soutenances finales : &quot;, this.slots);
+
+      this.timeBlocks &#x3D; [];
+
+      if (
+        this.planning &amp;&amp;
+        this.planning.dateDebut &amp;&amp;
+        this.planning.dateFin &amp;&amp;
+        this.planning.heureDebutMatin &amp;&amp;
+        this.planning.heureFinMatin &amp;&amp;
+        this.planning.heureDebutAprem &amp;&amp;
+        this.planning.heureFinAprem &amp;&amp;
+        this.jours.length &gt; 0
+      ) {
+        this.selectedJour &#x3D; this.jours[0];
+
+        const newTimeBlocks: TimeBlockConfig[] &#x3D; [
+          {
+            start: this.planning.heureDebutMatin,
+            end: this.planning.heureFinMatin,
+            type: &quot;morning&quot;,
+          },
+          {
+            start: this.planning.heureDebutAprem,
+            end: this.planning.heureFinAprem,
+            type: &quot;afternoon&quot;,
+          },
+        ];
+
+        this.timeBlocks.push(...newTimeBlocks);
+        this.sallesAffiches &#x3D; getAllSallesUsed(
+          this.salles,
+          this.selectedJour,
+          this.slots,
+        );
+        let idSlotTemp &#x3D; 0;
+        this.slots.forEach((slot) &#x3D;&gt; {
+          idSlotTemp++;
+          slot.id &#x3D;&#x3D; -1 ? (slot.id &#x3D; idSlotTemp) : (slot.id &#x3D; slot.id);
+          const dayKey &#x3D; slot.dateDebut
+            ? slot.dateDebut.toISOString().slice(0, 10)
+            : &quot;attente&quot;; // &quot;YYYY-MM-DD&quot;
+          if (!this.planningByDay[dayKey]) this.planningByDay[dayKey] &#x3D; [];
+          this.planningByDay[dayKey].push(slot);
+        });
+        this.allDataLoaded &#x3D; true;
+        this.cdRef.detectChanges();
+      } else {
+        this.selectedJour &#x3D; undefined;
+        this.allDataLoaded &#x3D; true;
+      }
+
+      this.allDataLoaded &#x3D; true;
+      this.cdRef.detectChanges();
+    }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  updateJour(jour: Date) {
+    this.selectedJour &#x3D; jour;
+    this.sallesAffiches &#x3D; getAllSallesUsed(
+      this.salles,
+      this.selectedJour,
+      this.slots,
+    );
+  }
+
+  exit() {
+    this.router.navigate([&quot;/schedule&quot;]);
+  }
+
+  openEditModal(slot: SlotItem) {
+    this.selectedSoutenance &#x3D; slot;
+    this.idSoutenance &#x3D; this.selectedSoutenance!.id;
+    this.isModalOpen &#x3D; true;
+  }
+
+  updateSoutenance() {
+    this.isModalOpen &#x3D; false;
+  }
+
+  onValidate() {
+    this.isValidating &#x3D; true;
+    this.finalSlots &#x3D; this.convertSlotsToSoutenances();
+    if (this.finalSlots.length &#x3D;&#x3D; 0) {
+      this.toastr.error(
+        &quot;Toutes les soutenances ne sont pas placées&quot;,
+        &quot;Impossible d&#x27;enregistrer le planning.&quot;,
+      );
+      this.isValidating &#x3D; false;
+      return;
+    }
+    if (this.isEditMode) {
+      // UPDATE
+      console.log(&quot;UPDATING Planning:&quot;, this.planning);
+      console.log(&quot;UPDATING Soutenances:&quot;, this.finalSlots);
+      this.soutenanceService.updateManySoutenance(this.finalSlots).subscribe({
+        next: () &#x3D;&gt; {
+          // Rafraîchir les données du store après la création
+          this.dataStore.refreshKeys([&quot;soutenances&quot;]);
+          this.isValidating &#x3D; false;
+          this.toastr.success(
+            &quot;Les modifications ont bien été prises en comptes.&quot;,
+            &quot;Planning enregistré.&quot;,
+          );
+
+          this.exit();
+        },
+        error: (err) &#x3D;&gt; {
+          this.isValidating &#x3D; false;
+          this.toastr.error(err, &quot;Impossible d&#x27;enregistrer le planning.&quot;);
+        },
+      });
+    } else {
+      //CREATE
+      const { idPlanning, ...plannToCreate } &#x3D; this.planning as Planning;
+
+      const planningToCreate: PlanningCreate &#x3D; {
+        ...plannToCreate,
+        dateDebut: formatDateToYYYYMMDD(plannToCreate.dateDebut!),
+        dateFin: formatDateToYYYYMMDD(plannToCreate.dateFin!!),
+      };
+
+      console.log(&quot;CREATING Planning:&quot;, planningToCreate);
+
+      this.planningService
+        .addPlanning(planningToCreate)
+        .pipe(
+          takeUntil(this.destroy$),
+          switchMap((createdPlanning) &#x3D;&gt; {
+            const planningId &#x3D; createdPlanning.idPlanning;
+            console.log(&quot;Planning créé avec id:&quot;, planningId);
+
+            const soutenancesToCreate &#x3D; this.finalSlots.map(
+              ({ idSoutenance, date, ...soutenance }) &#x3D;&gt; ({
+                ...soutenance,
+                date: formatDateToYYYYMMDD(date!),
+                idPlanning: planningId,
+              }),
+            );
+
+            console.log(&quot;CREATING Soutenances:&quot;, soutenancesToCreate);
+            return this.soutenanceService.addManySoutenances(
+              soutenancesToCreate,
+            );
+          }),
+        )
+        .subscribe({
+          next: () &#x3D;&gt; {
+            // Rafraîchir les données du store après la création
+            this.dataStore.refreshKeys([&quot;plannings&quot;, &quot;soutenances&quot;]);
+            this.isValidating &#x3D; false;
+            this.toastr.success(
+              &quot;L&#x27;ajout a bien été pris en comptes.&quot;,
+              &quot;Planning enregistré.&quot;,
+            );
+
+            this.exit();
+          },
+          error: (err) &#x3D;&gt; {
+            this.isValidating &#x3D; false;
+            this.toastr.error(err, &quot;Impossible d&#x27;enregistrer le planning.&quot;);
+          },
+        });
+    }
+  }
+
+  //Fonctions drag and drop
+  onSlotUpdated(event: {
+    planningByDay: Record&lt;string, SlotItem[]&gt;;
+    items: SlotItem[];
+  }) {
+    this.items &#x3D; event.items;
+    this.planningByDay &#x3D; event.planningByDay;
+  }
+
+  getAllSlots(): SlotItem[] {
+    return Object.values(this.planningByDay).flat();
+  }
+
+  convertSlotsToSoutenances(): SoutenanceUpdate[] {
+    let soutenances: SoutenanceUpdate[] &#x3D; [];
+    const slots &#x3D; this.getAllSlots();
+    const planning &#x3D; this.planning as Planning;
+    const idPlanning &#x3D; planning.idPlanning;
+
+    if (this.items.length &#x3D;&#x3D; 0) {
+      slots.forEach((s) &#x3D;&gt; {
+        soutenances.push({
+          idSoutenance: s.id,
+          date: s.dateDebut!.toISOString().slice(0, 10),
+          nomSalle: s.salle,
+          heureDebut:
+            s.dateDebut!.getHours().toString().padStart(2, &quot;0&quot;) +
+            &quot;:&quot; +
+            s.dateDebut!.getMinutes().toString().padStart(2, &quot;0&quot;),
+          heureFin:
+            s.dateFin!.getHours().toString().padStart(2, &quot;0&quot;) +
+            &quot;:&quot; +
+            s.dateFin!.getMinutes().toString().padStart(2, &quot;0&quot;),
+          idUPPA: s.idUPPA,
+          idLecteur: s.idLecteur,
+          idPlanning: idPlanning,
+        });
+      });
+
+      return soutenances;
+    }
+    return [];
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;schedule&quot;&gt;
+  @if (!allDataLoaded || isValidating) {
+    &lt;app-loading /&gt;
+  }
+  @if (!planning || planning &#x3D;&#x3D;&#x3D; undefined || planning &#x3D;&#x3D;&#x3D; null) {
+    @if (isEditMode) {
+      &lt;h1 class&#x3D;&quot;warning&quot;&gt;&lt;b&gt;Le planning demandé n&#x27;existe pas.&lt;/b&gt;&lt;/h1&gt;
+    } @else {
+      &lt;h1 class&#x3D;&quot;warning&quot;&gt;
+        &lt;b&gt;Une erreur est survenue avec les données du nouveau planning.&lt;/b&gt;
+      &lt;/h1&gt;
+    }
+  } @else {
+    &lt;div class&#x3D;&quot;content&quot; [hidden]&#x3D;&quot;!allDataLoaded || isValidating&quot;&gt;
+      &lt;div class&#x3D;&quot;header-schedule-content&quot;&gt;
+        &lt;div&gt;
+          &lt;h3&gt;{{ planning.nom }}&lt;/h3&gt;
+        &lt;/div&gt;
+        &lt;span style&#x3D;&quot;width: 2%&quot;&gt;&lt;/span&gt;
+        &lt;h3 class&#x3D;&quot;title&quot;&gt;
+          {{ selectedJour | date: &quot;EEEE dd MMMM yyyy&quot; : &quot;&quot; : &quot;fr&quot; }}
+        &lt;/h3&gt;
+        &lt;h4&gt;&amp;#x26A0; Planning non enregistré&lt;/h4&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;div class&#x3D;&quot;schedule-content&quot;&gt;
+          &lt;div class&#x3D;&quot;planning-scroll&quot;&gt;
+            &lt;app-schedule-board
+              *ngIf&#x3D;&quot;selectedJour&quot;
+              [jourActuel]&#x3D;&quot;selectedJour&quot;
+              [slots]&#x3D;&quot;slots&quot;
+              [sallesDispo]&#x3D;&quot;sallesAffiches&quot;
+              [timeBlocks]&#x3D;&quot;timeBlocks&quot;
+              [onlyDisplay]&#x3D;&quot;false&quot;
+              [planningByDay]&#x3D;&quot;planningByDay&quot;
+              (editSlot)&#x3D;&quot;openEditModal($event)&quot;
+              (slotUpdated)&#x3D;&quot;onSlotUpdated($event)&quot;
+            &gt;&lt;/app-schedule-board&gt;
+          &lt;/div&gt;
+          &lt;div class&#x3D;&quot;scroll-day&quot;&gt;
+            &lt;div *ngFor&#x3D;&quot;let jour of jours&quot;&gt;
+              @if (selectedJour &#x3D;&#x3D;&#x3D; jour) {
+                &lt;span class&#x3D;&quot;selectedJour&quot;&gt;{{
+                  jour | date: &quot;EEE d&quot; : &quot;&quot; : &quot;fr&quot;
+                }}&lt;/span&gt;
+              } @else {
+                &lt;span class&#x3D;&quot;jour&quot; (click)&#x3D;&quot;updateJour(jour)&quot;&gt;{{
+                  jour | date: &quot;EEE d&quot; : &quot;&quot; : &quot;fr&quot;
+                }}&lt;/span&gt;
+              }
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class&#x3D;&quot;footer&quot;&gt;
+        &lt;button class&#x3D;&quot;btn secondary&quot; (click)&#x3D;&quot;exit()&quot;&gt;&lt;b&gt;Annuler&lt;/b&gt;&lt;/button&gt;
+        &lt;button class&#x3D;&quot;btn primary&quot; (click)&#x3D;&quot;onValidate()&quot;&gt;
+          &lt;b&gt;
+            @if (isEditMode) {
+              Valider
+            } @else {
+              Ajouter
+            }
+          &lt;/b&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  }
+&lt;/div&gt;
+
+&lt;app-modale-soutenance
+  *ngIf&#x3D;&quot;isModalOpen&quot;
+  (close)&#x3D;&quot;isModalOpen &#x3D; false&quot;
+  [soutenance]&#x3D;&quot;selectedSoutenance!&quot;
+  [editMode]&#x3D;&quot;true&quot;
+  [soutenancesJour]&#x3D;&quot;planningByDay&quot;
+  [sallesDispo]&#x3D;&quot;sallesAffiches&quot;
+  [allStaff]&#x3D;&quot;allStaff&quot;
+  [timeBlocks]&#x3D;&quot;timeBlocks&quot;
+/&gt;
+&lt;!-- idSoutenance&#x3D;&quot;idSoutenance&quot; --&gt;
+&lt;!-- (save)&#x3D;&quot;onSoutenanceSaved($event)&quot; --&gt;
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./add-update-schedule.component.css</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">.schedule {
+    flex: 1;
+    min-width: 0; 
+    overflow: hidden; 
+}
+
+.content {
+    width: 100%; 
+    max-height: 100vh;
+}
+
+.planning-scroll {
+    overflow-y: auto;
+    overflow-x: auto;
+    display: flex;
+    flex-direction: column;
+    max-height: 70vh;
+    width: 100%;
+}
+
+.scroll-day{
+    background-color: #DEEDFF;
+    align-self: center;
+    padding-top: 50px;
+    padding-bottom: 35px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    width: 80px; 
+    flex-shrink: 0; 
+}
+
+.jour{
+    display: block;
+    justify-self: center;
+    padding: 5px;
+    margin-bottom: 15px;
+    border-radius: 25px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.selectedJour {
+    display: block;
+    justify-self: center;
+    padding: 5px;
+    margin-bottom: 15px;
+    border-radius: 25px;
+    background-color: #9FC8E9;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    justify-self: center;
+}
+
+.header-schedule-content {
+    display: flex;
+    justify-content: space-around;
+    height: 50px;
+    /* margin-bottom: 15px; */
+}
+
+h4{
+    color: #a40a0a;
+}
+
+.schedule-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; 
+    gap: 15px;
+    flex-wrap: nowrap;
+    overflow: hidden; 
+}
+
+.footer {
+    display: flex;
+    justify-content: center;
+    gap: 10%;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 7px;
+    padding-left: 40px;
+    padding-right: 40px;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+.primary {
+    background-color: #0A63A4;
+    color: white;
+    border: 1px solid #0A63A4;
+}
+
+.secondary {
+    background-color: #A2A2A2;
+    color: white;
+    border: 1px solid #A2A2A2;
+}</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="schedule">  @if (!allDataLoaded || isValidating) {    <app-loading />  }  @if (!planning || planning === undefined || planning === null) {    @if (isEditMode) {      <h1 class="warning"><b>Le planning demandé n\'existe pas.</b></h1>    } @else {      <h1 class="warning">        <b>Une erreur est survenue avec les données du nouveau planning.</b>      </h1>    }  } @else {    <div class="content" [hidden]="!allDataLoaded || isValidating">      <div class="header-schedule-content">        <div>          <h3>{{ planning.nom }}</h3>        </div>        <span style="width: 2%"></span>        <h3 class="title">          {{ selectedJour | date: "EEEE dd MMMM yyyy" : "" : "fr" }}        </h3>        <h4>&#x26A0; Planning non enregistré</h4>      </div>      <div>        <div class="schedule-content">          <div class="planning-scroll">            <app-schedule-board              *ngIf="selectedJour"              [jourActuel]="selectedJour"              [slots]="slots"              [sallesDispo]="sallesAffiches"              [timeBlocks]="timeBlocks"              [onlyDisplay]="false"              [planningByDay]="planningByDay"              (editSlot)="openEditModal($event)"              (slotUpdated)="onSlotUpdated($event)"            ></app-schedule-board>          </div>          <div class="scroll-day">            <div *ngFor="let jour of jours">              @if (selectedJour === jour) {                <span class="selectedJour">{{                  jour | date: "EEE d" : "" : "fr"                }}</span>              } @else {                <span class="jour" (click)="updateJour(jour)">{{                  jour | date: "EEE d" : "" : "fr"                }}</span>              }            </div>          </div>        </div>      </div>      <div class="footer">        <button class="btn secondary" (click)="exit()"><b>Annuler</b></button>        <button class="btn primary" (click)="onValidate()">          <b>            @if (isEditMode) {              Valider            } @else {              Ajouter            }          </b>        </button>      </div>    </div>  }</div><app-modale-soutenance  *ngIf="isModalOpen"  (close)="isModalOpen = false"  [soutenance]="selectedSoutenance!"  [editMode]="true"  [soutenancesJour]="planningByDay"  [sallesDispo]="sallesAffiches"  [allStaff]="allStaff"  [timeBlocks]="timeBlocks"/><!-- idSoutenance="idSoutenance" --><!-- (save)="onSoutenanceSaved($event)" --></div>'
+    var COMPONENTS = [{'name': 'AddFactsheetComponent', 'selector': 'app-add-factsheet'},{'name': 'AddFactsheets1Component', 'selector': 'app-add-factsheets-1'},{'name': 'AddFactsheets2Component', 'selector': 'app-add-factsheets-2'},{'name': 'AddFactsheets3Component', 'selector': 'app-add-factsheets-3'},{'name': 'AddFactsheets4Component', 'selector': 'app-add-factsheets-4'},{'name': 'AddFactsheets5Component', 'selector': 'app-add-factsheets-5'},{'name': 'AddFactsheets6Component', 'selector': 'app-add-factsheets-6'},{'name': 'AddFactsheets7Component', 'selector': 'app-add-factsheets-7'},{'name': 'AddFactsheets8Component', 'selector': 'app-add-factsheets-8'},{'name': 'AddFactsheets9Component', 'selector': 'app-add-factsheets-9'},{'name': 'AddScheduleComponent', 'selector': 'app-add-schedule'},{'name': 'AddSearchFormComponent', 'selector': 'app-add-search-form'},{'name': 'AddUpdateScheduleComponent', 'selector': 'app-add-update-schedule'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'BackConfirmationModalComponent', 'selector': 'app-back-confirmation-modal'},{'name': 'BreadcrumbComponent', 'selector': 'app-breadcrumb'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'DeleteConfirmationModalComponent', 'selector': 'app-delete-confirmation-modal'},{'name': 'FactsheetsComponent', 'selector': 'app-factsheets'},{'name': 'FactsheetsStudentTabComponent', 'selector': 'app-factsheets-student-tab'},{'name': 'HeaderComponent', 'selector': 'app-header'},{'name': 'ListStudentTabComponent', 'selector': 'app-list-student-tab'},{'name': 'LoadingComponent', 'selector': 'app-loading'},{'name': 'ModalePlanningComponent', 'selector': 'app-modale-planning'},{'name': 'ModaleSoutenanceComponent', 'selector': 'app-modale-soutenance'},{'name': 'NavigationTabsComponent', 'selector': 'app-navigation-tabs'},{'name': 'ScheduleBoardComponent', 'selector': 'app-schedule-board'},{'name': 'ScheduleComponent', 'selector': 'app-schedule'},{'name': 'SearchDetailsComponent', 'selector': 'app-search-details'},{'name': 'SearchesStudentTabComponent', 'selector': 'app-searches-student-tab'},{'name': 'SheetDetailsComponent', 'selector': 'app-sheet-details'},{'name': 'SlotComponent', 'selector': 'app-slot'},{'name': 'StatsCardsComponent', 'selector': 'app-stats-cards'},{'name': 'StudentDashboardManagerComponent', 'selector': 'app-student-dashboard-manager'},{'name': 'StudentFactsheetsManagerComponent', 'selector': 'app-student-factsheets-manager'},{'name': 'TutorAttributionModalComponent', 'selector': 'app-tutor-attribution-modal'},{'name': 'UnderDevelopmentComponent', 'selector': 'app-under-development'},{'name': 'UpdateFactsheet1Component', 'selector': 'app-update-factsheets-1'},{'name': 'UpdateFactsheetComponent', 'selector': 'app-update-factsheet'},{'name': 'UpdateFactsheets2Component', 'selector': 'app-update-factsheets-2'},{'name': 'UpdateFactsheets3Component', 'selector': 'app-update-factsheets-3'},{'name': 'UpdateFactsheets4Component', 'selector': 'app-update-factsheets-4'},{'name': 'UpdateFactsheets5Component', 'selector': 'app-update-factsheets-5'},{'name': 'UpdateFactsheets6Component', 'selector': 'app-update-factsheets-6'},{'name': 'UpdateFactsheets7Component', 'selector': 'app-update-factsheets-7'},{'name': 'UpdateFactsheets8Component', 'selector': 'app-update-factsheets-8'},{'name': 'UpdateFactsheets9Component', 'selector': 'app-update-factsheets-9'},{'name': 'UpdateScheduleComponent', 'selector': 'app-update-schedule'},{'name': 'UpdateSearchComponent', 'selector': 'app-update-search'},{'name': 'WelcomeComponent', 'selector': 'app-welcome-card'}];
+    var DIRECTIVES = [];
+    var ACTUAL_COMPONENT = {'name': 'AddUpdateScheduleComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'AddUpdateScheduleComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

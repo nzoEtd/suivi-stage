@@ -1,0 +1,1164 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>stage-management-iut documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">stage-management-iut documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  UpdateFactsheets4Component</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/components/update-factsheet/update-factsheets-4/update-factsheets-4.component.ts</code>
+</p>
+
+
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.io/api/core/OnInit" target="_blank" >OnInit</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-update-factsheets-4</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                                <code><a href="https://angular.io/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                <code><a href="https://angular.io/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+                                <code><a href="../components/NavigationTabsComponent.html" target="_self" >NavigationTabsComponent</a></code>
+                </td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./update-factsheets-4.component.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./update-factsheets-4.component.css</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#currentStep" >currentStep</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#initializeFormFields" >initializeFormFields</a>
+                            </li>
+                            <li>
+                                <a href="#isFormValid" >isFormValid</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <a href="#onNext" >onNext</a>
+                            </li>
+                            <li>
+                                <a href="#onPrevious" >onPrevious</a>
+                            </li>
+                            <li>
+                                <a href="#onStepChange" >onStepChange</a>
+                            </li>
+                            <li>
+                                <a href="#validateAPE_NAF" >validateAPE_NAF</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Outputs</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#next" >next</a>
+                            </li>
+                            <li>
+                                <a href="#previous" >previous</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Accessors</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                    <a href="#formData" >formData</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(navigationService: <a href="../injectables/NavigationService.html" target="_self">NavigationService</a>, formDataService: <a href="../injectables/FormDataService.html" target="_self">FormDataService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">src/app/components/update-factsheet/update-factsheets-4/update-factsheets-4.component.ts:25</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>navigationService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/NavigationService.html" target="_self" >NavigationService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>formDataService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/FormDataService.html" target="_self" >FormDataService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+    <section data-compodoc="block-outputs">
+    <h3 id="outputs">Outputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="next"></a>
+                        <b>next</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.io/api/core/EventEmitter" target="_blank" >EventEmitter</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">src/app/components/update-factsheet/update-factsheets-4/update-factsheets-4.component.ts:16</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="previous"></a>
+                        <b>previous</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.io/api/core/EventEmitter" target="_blank" >EventEmitter</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="17" class="link-to-prism">src/app/components/update-factsheet/update-factsheets-4/update-factsheets-4.component.ts:17</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="initializeFormFields"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>initializeFormFields</b></span>
+                        <a href="#initializeFormFields"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>initializeFormFields()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="61"
+                                    class="link-to-prism">src/app/components/update-factsheet/update-factsheets-4/update-factsheets-4.component.ts:61</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Initializes all form fields with default values
+Sets up enterprise-related fields and descriptive sheet fields</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isFormValid"></a>
+                    <span class="name">
+                        <span ><b>isFormValid</b></span>
+                        <a href="#isFormValid"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>isFormValid()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="46"
+                                    class="link-to-prism">src/app/components/update-factsheet/update-factsheets-4/update-factsheets-4.component.ts:46</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Validates if all required form fields are filled correctly
+Checks for non-empty values and valid APE/NAF code format</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                <p>boolean indicating if the form is valid</p>
+
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="37"
+                                    class="link-to-prism">src/app/components/update-factsheet/update-factsheets-4/update-factsheets-4.component.ts:37</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Initializes form fields when component is created</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onNext"></a>
+                    <span class="name">
+                        <span ><b>onNext</b></span>
+                        <a href="#onNext"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onNext()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="90"
+                                    class="link-to-prism">src/app/components/update-factsheet/update-factsheets-4/update-factsheets-4.component.ts:90</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Handles the next button click event
+Emits the current form data</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onPrevious"></a>
+                    <span class="name">
+                        <span ><b>onPrevious</b></span>
+                        <a href="#onPrevious"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onPrevious()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="106"
+                                    class="link-to-prism">src/app/components/update-factsheet/update-factsheets-4/update-factsheets-4.component.ts:106</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Handles the previous button click event
+Emits an event to navigate to the previous step</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onStepChange"></a>
+                    <span class="name">
+                        <span ><b>onStepChange</b></span>
+                        <a href="#onStepChange"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onStepChange(step: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="98"
+                                    class="link-to-prism">src/app/components/update-factsheet/update-factsheets-4/update-factsheets-4.component.ts:98</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Updates the current step in the navigation service</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>step</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>The new step number</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="validateAPE_NAF"></a>
+                    <span class="name">
+                        <span ><b>validateAPE_NAF</b></span>
+                        <a href="#validateAPE_NAF"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>validateAPE_NAF(code: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="81"
+                                    class="link-to-prism">src/app/components/update-factsheet/update-factsheets-4/update-factsheets-4.component.ts:81</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Validates if the provided APE/NAF code matches the required format (XX.XXA)</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>code</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>The APE/NAF code to validate</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                <p>boolean indicating if the code is valid</p>
+
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentStep"></a>
+                    <span class="name">
+                        <span ><b>currentStep</b></span>
+                        <a href="#currentStep"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="18" class="link-to-prism">src/app/components/update-factsheet/update-factsheets-4/update-factsheets-4.component.ts:18</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-accessors">
+    <h3 id="accessors">
+        Accessors
+    </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="formData"></a>
+                        <span class="name"><b>formData</b><a href="#formData"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>get</b><code>formData()</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="23" class="link-to-prism">src/app/components/update-factsheet/update-factsheets-4/update-factsheets-4.component.ts:23</a></div>
+                                </td>
+                            </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-description"><p>Getter that returns the current form data from the FormDataService</p>
+</div>
+
+                        </td>
+                    </tr>
+
+            </tbody>
+        </table>
+</section>
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, EventEmitter, Output, OnInit } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { FormsModule } from &#x27;@angular/forms&#x27;;
+import { NavigationTabsComponent } from &#x27;../../navigation-tabs/navigation-tabs.component&#x27;;
+import { NavigationService } from &#x27;../../../services/navigation.service&#x27;;
+import { FormDataService } from &#x27;../../../services/form-data.service&#x27;;
+
+@Component({
+  selector: &#x27;app-update-factsheets-4&#x27;,
+  standalone: true,
+  imports: [CommonModule, FormsModule, NavigationTabsComponent],
+  templateUrl: &#x27;./update-factsheets-4.component.html&#x27;,
+  styleUrl: &#x27;./update-factsheets-4.component.css&#x27;
+})
+export class UpdateFactsheets4Component implements OnInit {
+  @Output() next &#x3D; new EventEmitter&lt;any&gt;();
+  @Output() previous &#x3D; new EventEmitter&lt;void&gt;();
+  currentStep: number;
+
+  /**
+   * Getter that returns the current form data from the FormDataService
+   */
+  get formData() {
+    return this.formDataService.getFormData();
+  }
+
+  constructor(
+    private readonly navigationService: NavigationService,
+    private readonly formDataService: FormDataService
+  ) {
+    this.currentStep &#x3D; this.navigationService.getCurrentFactsheetStep();
+  }
+
+  /**
+   * Initializes form fields when component is created
+   */
+  ngOnInit() {
+    this.initializeFormFields();
+  }
+
+  /**
+   * Validates if all required form fields are filled correctly
+   * Checks for non-empty values and valid APE/NAF code format
+   * @returns boolean indicating if the form is valid
+   */
+  isFormValid(): boolean {
+    const apeNafRegex &#x3D; /^\d{2}\.\d{2}[A-Z]$/;
+    return !!(
+      this.formData.serviceEntrepriseFicheDescriptive?.value?.trim() &amp;&amp;
+      this.formData.numSIRETEntreprise?.value?.trim() &amp;&amp;
+      this.formData.codeAPE_NAFEntreprise?.value?.match(apeNafRegex) &amp;&amp;
+      this.formData.statutJuridiqueEntreprise?.value?.trim() &amp;&amp;
+      this.formData.effectifEntreprise?.value?.toString().trim()
+    );
+  }
+
+  /**
+   * Initializes all form fields with default values
+   * Sets up enterprise-related fields and descriptive sheet fields
+   */
+  private initializeFormFields() {
+    const fields &#x3D; {
+      serviceEntrepriseFicheDescriptive: { value: &#x27;&#x27;, type: &#x27;ficheDescriptive&#x27; },
+      typeEtablissementEntreprise: { value: &#x27;Administration&#x27;, type: &#x27;entreprise&#x27; },
+      numSIRETEntreprise: { value: &#x27;&#x27;, type: &#x27;entreprise&#x27; },
+      codeAPE_NAFEntreprise: { value: &#x27;&#x27;, type: &#x27;entreprise&#x27; },
+      statutJuridiqueEntreprise: { value: &#x27;SA&#x27;, type: &#x27;entreprise&#x27; },
+      effectifEntreprise: { value: &#x27;&#x27;, type: &#x27;entreprise&#x27; }
+    };
+
+    Object.entries(fields).forEach(([field, config]) &#x3D;&gt; {
+      this.formDataService.initializeField(field, config.value, config.type);
+    });
+  }
+
+  /**
+   * Validates if the provided APE/NAF code matches the required format (XX.XXA)
+   * @param code The APE/NAF code to validate
+   * @returns boolean indicating if the code is valid
+   */
+  validateAPE_NAF(code: string): boolean {
+    const apeNafRegex &#x3D; /^\d{2}\.\d{2}[A-Z]$/;
+    return apeNafRegex.test(code);
+  }
+
+  /**
+   * Handles the next button click event
+   * Emits the current form data
+   */
+  onNext() {
+    this.next.emit(this.formData);
+  }
+
+  /**
+   * Updates the current step in the navigation service
+   * @param step The new step number
+   */
+  onStepChange(step: number) {
+    this.navigationService.setFactsheetStep(step);
+  }
+
+  /**
+   * Handles the previous button click event
+   * Emits an event to navigate to the previous step
+   */
+  onPrevious() {
+    this.previous.emit();
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;container&quot;&gt;
+  &lt;app-navigation-tabs 
+    [currentStep]&#x3D;&quot;currentStep&quot;
+    (stepChange)&#x3D;&quot;onStepChange($event)&quot;&gt;
+  &lt;/app-navigation-tabs&gt;
+  
+  &lt;h2 class&#x3D;&quot;title&quot;&gt;Informations de l&#x27;entreprise&lt;/h2&gt;
+  &lt;p class&#x3D;&quot;warning&quot;&gt;Les informations pré-remplies sont à vérifier !&lt;/p&gt;
+  &lt;div class&#x3D;&quot;content&quot;&gt;
+    &lt;form (ngSubmit)&#x3D;&quot;onNext()&quot;&gt;
+      &lt;div class&#x3D;&quot;form-row&quot;&gt;
+        &lt;div class&#x3D;&quot;form-group&quot;&gt;
+          &lt;label for&#x3D;&quot;service&quot;&gt;Service/Division&lt;/label&gt;
+          &lt;input type&#x3D;&quot;text&quot; id&#x3D;&quot;service&quot; [(ngModel)]&#x3D;&quot;formData.serviceEntrepriseFicheDescriptive.value&quot; name&#x3D;&quot;service&quot; placeholder&#x3D;&#x27;Informatique&#x27;#service&#x3D;&quot;ngModel&quot; required&gt;
+          &lt;div class&#x3D;&quot;errorMessage&quot; *ngIf&#x3D;&quot;service.invalid &amp;&amp; service.errors &amp;&amp; (service.dirty || service.touched)&quot;&gt;
+            &lt;small *ngIf&#x3D;&quot;service.errors?.[&#x27;required&#x27;]&quot;&gt;&lt;b&gt;Le service est obligatoire&lt;/b&gt;&lt;/small&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class&#x3D;&quot;form-group&quot;&gt;
+          &lt;label for&#x3D;&quot;typeEtablissement&quot;&gt;Type d&#x27;établissement&lt;/label&gt;
+          &lt;select id&#x3D;&quot;typeEtablissement&quot; [(ngModel)]&#x3D;&quot;formData.typeEtablissementEntreprise.value&quot; name&#x3D;&quot;typeEtablissement&quot;&gt;
+            &lt;option value&#x3D;&quot;Administration&quot;&gt;Administration&lt;/option&gt;
+            &lt;option value&#x3D;&quot;Prive&quot;&gt;Privé&lt;/option&gt;
+          &lt;/select&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class&#x3D;&quot;form-row&quot;&gt;
+        &lt;!-- &lt;div class&#x3D;&quot;form-group&quot;&gt;
+          &lt;label for&#x3D;&quot;activitePrincipale&quot;&gt;Activité principale&lt;/label&gt;
+          &lt;input type&#x3D;&quot;text&quot; id&#x3D;&quot;activitePrincipale&quot; [(ngModel)]&#x3D;&quot;formData.activitePrincipaleEntreprise.value&quot; name&#x3D;&quot;activitePrincipale&quot;&gt;
+        &lt;/div&gt; --&gt;
+        &lt;div class&#x3D;&quot;form-group&quot;&gt;
+          &lt;label for&#x3D;&quot;effectif&quot;&gt;Effectif&lt;/label&gt;
+          &lt;!-- &lt;select id&#x3D;&quot;effectif&quot; [(ngModel)]&#x3D;&quot;formData.effectifEntreprise.value&quot; name&#x3D;&quot;effectif&quot;&gt;
+            &lt;option value&#x3D;&quot;Moins de 10&quot;&gt;Moins de 10&lt;/option&gt;
+            &lt;option value&#x3D;&quot;10-49&quot;&gt;10-49&lt;/option&gt;
+            &lt;option value&#x3D;&quot;50 et plus&quot;&gt;50 et plus&lt;/option&gt;
+          &lt;/select&gt; --&gt;
+          &lt;input type&#x3D;&quot;number&quot; id&#x3D;&quot;effectif&quot; [(ngModel)]&#x3D;&quot;formData.effectifEntreprise.value&quot; name&#x3D;&quot;effectif&quot; placeholder&#x3D;&#x27;10&#x27; #effectif&#x3D;&quot;ngModel&quot; required&gt;
+          &lt;div class&#x3D;&quot;errorMessage&quot; *ngIf&#x3D;&quot;effectif.invalid &amp;&amp; effectif.errors &amp;&amp; (effectif.dirty || effectif.touched)&quot;&gt;
+            &lt;small *ngIf&#x3D;&quot;effectif.errors?.[&#x27;required&#x27;]&quot;&gt;&lt;b&gt;L&#x27;effectif est obligatoire&lt;/b&gt;&lt;/small&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class&#x3D;&quot;form-group&quot;&gt;
+          &lt;label for&#x3D;&quot;numSiret&quot;&gt;Numéro SIRET&lt;/label&gt;
+          &lt;input type&#x3D;&quot;text&quot; id&#x3D;&quot;numSiret&quot; [(ngModel)]&#x3D;&quot;formData.numSIRETEntreprise.value&quot; name&#x3D;&quot;numSiret&quot; placeholder&#x3D;&#x27;12345678912345&#x27; pattern&#x3D;&quot;^\d{14}$&quot; title&#x3D;&quot;14 chiffres&quot; #numSiret&#x3D;&quot;ngModel&quot; maxlength&#x3D;&quot;14&quot; required&gt;
+          &lt;div class&#x3D;&quot;errorMessage&quot; *ngIf&#x3D;&quot;numSiret.invalid &amp;&amp; numSiret.errors &amp;&amp; (numSiret.dirty || numSiret.touched)&quot;&gt;
+            &lt;small *ngIf&#x3D;&quot;numSiret.errors?.[&#x27;required&#x27;]&quot;&gt;&lt;b&gt;Le numéro SIRET est obligatoire&lt;/b&gt;&lt;/small&gt;
+            &lt;small *ngIf&#x3D;&quot;numSiret.errors?.[&#x27;pattern&#x27;]&quot;&gt;&lt;b&gt;Le numéro SIRET doit contenir 14 chiffres&lt;/b&gt;&lt;/small&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class&#x3D;&quot;form-row&quot;&gt;
+        &lt;div class&#x3D;&quot;form-group&quot;&gt;
+          &lt;label for&#x3D;&quot;codeApeOrNaf&quot;&gt;Code APE/NAF&lt;/label&gt;
+          &lt;input 
+            type&#x3D;&quot;text&quot; 
+            id&#x3D;&quot;codeApeOrNaf&quot; 
+            [(ngModel)]&#x3D;&quot;formData.codeAPE_NAFEntreprise.value&quot; 
+            name&#x3D;&quot;codeApeOrNaf&quot; 
+            placeholder&#x3D;&#x27;01.23A&#x27;
+            pattern&#x3D;&quot;^\d{2}\.\d{2}[A-Z]$&quot;
+            title&#x3D;&quot;Format requis: 2 chiffres, point, 2 chiffres, 1 lettre majuscule (ex: 01.23A)&quot;
+            #codeApeOrNaf&#x3D;&quot;ngModel&quot;
+            required
+          &gt;
+          &lt;div class&#x3D;&quot;errorMessage&quot; *ngIf&#x3D;&quot;codeApeOrNaf.invalid &amp;&amp; codeApeOrNaf.errors &amp;&amp; (codeApeOrNaf.dirty || codeApeOrNaf.touched)&quot;&gt;
+            &lt;small *ngIf&#x3D;&quot;codeApeOrNaf.errors?.[&#x27;required&#x27;]&quot;&gt;&lt;b&gt;Le code APE/NAF est obligatoire&lt;/b&gt;&lt;/small&gt;
+            &lt;small *ngIf&#x3D;&quot;codeApeOrNaf.errors?.[&#x27;pattern&#x27;]&quot;&gt;&lt;b&gt;Le code APE/NAF doit être au format 01.23A&lt;/b&gt;&lt;/small&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class&#x3D;&quot;form-group&quot;&gt;
+          &lt;label for&#x3D;&quot;statutJuridique&quot;&gt;Statut juridique&lt;/label&gt;
+          &lt;select type&#x3D;&quot;text&quot; id&#x3D;&quot;statutJuridique&quot; [(ngModel)]&#x3D;&quot;formData.statutJuridiqueEntreprise.value&quot; name&#x3D;&quot;statutJuridique&quot;&gt;
+            &lt;option value&#x3D;&quot;SA&quot;&gt;SA&lt;/option&gt;
+          &lt;/select&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class&#x3D;&quot;buttons&quot;&gt;
+        &lt;button type&#x3D;&quot;button&quot; class&#x3D;&quot;btn-cancel&quot; (click)&#x3D;&quot;onPrevious()&quot;&gt;Précédent&lt;/button&gt;
+        &lt;button type&#x3D;&quot;submit&quot; class&#x3D;&quot;btn-submit&quot; [disabled]&#x3D;&#x27;!isFormValid()&#x27;&gt;Suivant&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/form&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+    </div>
+
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="container">  <app-navigation-tabs     [currentStep]="currentStep"    (stepChange)="onStepChange($event)">  </app-navigation-tabs>    <h2 class="title">Informations de l\'entreprise</h2>  <p class="warning">Les informations pré-remplies sont à vérifier !</p>  <div class="content">    <form (ngSubmit)="onNext()">      <div class="form-row">        <div class="form-group">          <label for="service">Service/Division</label>          <input type="text" id="service" [(ngModel)]="formData.serviceEntrepriseFicheDescriptive.value" name="service" placeholder=\'Informatique\'#service="ngModel" required>          <div class="errorMessage" *ngIf="service.invalid && service.errors && (service.dirty || service.touched)">            <small *ngIf="service.errors?.[\'required\']"><b>Le service est obligatoire</b></small>          </div>        </div>        <div class="form-group">          <label for="typeEtablissement">Type d\'établissement</label>          <select id="typeEtablissement" [(ngModel)]="formData.typeEtablissementEntreprise.value" name="typeEtablissement">            <option value="Administration">Administration</option>            <option value="Prive">Privé</option>          </select>        </div>      </div>      <div class="form-row">        <!-- <div class="form-group">          <label for="activitePrincipale">Activité principale</label>          <input type="text" id="activitePrincipale" [(ngModel)]="formData.activitePrincipaleEntreprise.value" name="activitePrincipale">        </div> -->        <div class="form-group">          <label for="effectif">Effectif</label>          <!-- <select id="effectif" [(ngModel)]="formData.effectifEntreprise.value" name="effectif">            <option value="Moins de 10">Moins de 10</option>            <option value="10-49">10-49</option>            <option value="50 et plus">50 et plus</option>          </select> -->          <input type="number" id="effectif" [(ngModel)]="formData.effectifEntreprise.value" name="effectif" placeholder=\'10\' #effectif="ngModel" required>          <div class="errorMessage" *ngIf="effectif.invalid && effectif.errors && (effectif.dirty || effectif.touched)">            <small *ngIf="effectif.errors?.[\'required\']"><b>L\'effectif est obligatoire</b></small>          </div>        </div>        <div class="form-group">          <label for="numSiret">Numéro SIRET</label>          <input type="text" id="numSiret" [(ngModel)]="formData.numSIRETEntreprise.value" name="numSiret" placeholder=\'12345678912345\' pattern="^\d{14}$" title="14 chiffres" #numSiret="ngModel" maxlength="14" required>          <div class="errorMessage" *ngIf="numSiret.invalid && numSiret.errors && (numSiret.dirty || numSiret.touched)">            <small *ngIf="numSiret.errors?.[\'required\']"><b>Le numéro SIRET est obligatoire</b></small>            <small *ngIf="numSiret.errors?.[\'pattern\']"><b>Le numéro SIRET doit contenir 14 chiffres</b></small>          </div>        </div>      </div>      <div class="form-row">        <div class="form-group">          <label for="codeApeOrNaf">Code APE/NAF</label>          <input             type="text"             id="codeApeOrNaf"             [(ngModel)]="formData.codeAPE_NAFEntreprise.value"             name="codeApeOrNaf"             placeholder=\'01.23A\'            pattern="^\d{2}\.\d{2}[A-Z]$"            title="Format requis: 2 chiffres, point, 2 chiffres, 1 lettre majuscule (ex: 01.23A)"            #codeApeOrNaf="ngModel"            required          >          <div class="errorMessage" *ngIf="codeApeOrNaf.invalid && codeApeOrNaf.errors && (codeApeOrNaf.dirty || codeApeOrNaf.touched)">            <small *ngIf="codeApeOrNaf.errors?.[\'required\']"><b>Le code APE/NAF est obligatoire</b></small>            <small *ngIf="codeApeOrNaf.errors?.[\'pattern\']"><b>Le code APE/NAF doit être au format 01.23A</b></small>          </div>        </div>        <div class="form-group">          <label for="statutJuridique">Statut juridique</label>          <select type="text" id="statutJuridique" [(ngModel)]="formData.statutJuridiqueEntreprise.value" name="statutJuridique">            <option value="SA">SA</option>          </select>        </div>      </div>      <div class="buttons">        <button type="button" class="btn-cancel" (click)="onPrevious()">Précédent</button>        <button type="submit" class="btn-submit" [disabled]=\'!isFormValid()\'>Suivant</button>      </div>    </form>  </div></div></div>'
+    var COMPONENTS = [{'name': 'AddFactsheetComponent', 'selector': 'app-add-factsheet'},{'name': 'AddFactsheets1Component', 'selector': 'app-add-factsheets-1'},{'name': 'AddFactsheets2Component', 'selector': 'app-add-factsheets-2'},{'name': 'AddFactsheets3Component', 'selector': 'app-add-factsheets-3'},{'name': 'AddFactsheets4Component', 'selector': 'app-add-factsheets-4'},{'name': 'AddFactsheets5Component', 'selector': 'app-add-factsheets-5'},{'name': 'AddFactsheets6Component', 'selector': 'app-add-factsheets-6'},{'name': 'AddFactsheets7Component', 'selector': 'app-add-factsheets-7'},{'name': 'AddFactsheets8Component', 'selector': 'app-add-factsheets-8'},{'name': 'AddFactsheets9Component', 'selector': 'app-add-factsheets-9'},{'name': 'AddScheduleComponent', 'selector': 'app-add-schedule'},{'name': 'AddSearchFormComponent', 'selector': 'app-add-search-form'},{'name': 'AddUpdateScheduleComponent', 'selector': 'app-add-update-schedule'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'BackConfirmationModalComponent', 'selector': 'app-back-confirmation-modal'},{'name': 'BreadcrumbComponent', 'selector': 'app-breadcrumb'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'DeleteConfirmationModalComponent', 'selector': 'app-delete-confirmation-modal'},{'name': 'FactsheetsComponent', 'selector': 'app-factsheets'},{'name': 'FactsheetsStudentTabComponent', 'selector': 'app-factsheets-student-tab'},{'name': 'HeaderComponent', 'selector': 'app-header'},{'name': 'ListStudentTabComponent', 'selector': 'app-list-student-tab'},{'name': 'LoadingComponent', 'selector': 'app-loading'},{'name': 'ModalePlanningComponent', 'selector': 'app-modale-planning'},{'name': 'ModaleSoutenanceComponent', 'selector': 'app-modale-soutenance'},{'name': 'NavigationTabsComponent', 'selector': 'app-navigation-tabs'},{'name': 'ScheduleBoardComponent', 'selector': 'app-schedule-board'},{'name': 'ScheduleComponent', 'selector': 'app-schedule'},{'name': 'SearchDetailsComponent', 'selector': 'app-search-details'},{'name': 'SearchesStudentTabComponent', 'selector': 'app-searches-student-tab'},{'name': 'SheetDetailsComponent', 'selector': 'app-sheet-details'},{'name': 'SlotComponent', 'selector': 'app-slot'},{'name': 'StatsCardsComponent', 'selector': 'app-stats-cards'},{'name': 'StudentDashboardManagerComponent', 'selector': 'app-student-dashboard-manager'},{'name': 'StudentFactsheetsManagerComponent', 'selector': 'app-student-factsheets-manager'},{'name': 'TutorAttributionModalComponent', 'selector': 'app-tutor-attribution-modal'},{'name': 'UnderDevelopmentComponent', 'selector': 'app-under-development'},{'name': 'UpdateFactsheet1Component', 'selector': 'app-update-factsheets-1'},{'name': 'UpdateFactsheetComponent', 'selector': 'app-update-factsheet'},{'name': 'UpdateFactsheets2Component', 'selector': 'app-update-factsheets-2'},{'name': 'UpdateFactsheets3Component', 'selector': 'app-update-factsheets-3'},{'name': 'UpdateFactsheets4Component', 'selector': 'app-update-factsheets-4'},{'name': 'UpdateFactsheets5Component', 'selector': 'app-update-factsheets-5'},{'name': 'UpdateFactsheets6Component', 'selector': 'app-update-factsheets-6'},{'name': 'UpdateFactsheets7Component', 'selector': 'app-update-factsheets-7'},{'name': 'UpdateFactsheets8Component', 'selector': 'app-update-factsheets-8'},{'name': 'UpdateFactsheets9Component', 'selector': 'app-update-factsheets-9'},{'name': 'UpdateScheduleComponent', 'selector': 'app-update-schedule'},{'name': 'UpdateSearchComponent', 'selector': 'app-update-search'},{'name': 'WelcomeComponent', 'selector': 'app-welcome-card'}];
+    var DIRECTIVES = [];
+    var ACTUAL_COMPONENT = {'name': 'UpdateFactsheets4Component'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'UpdateFactsheets4Component.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

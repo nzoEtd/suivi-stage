@@ -1,0 +1,1953 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>stage-management-iut documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">stage-management-iut documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  ModalePlanningComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/components/modale-planning/modale-planning.component.ts</code>
+</p>
+
+
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.io/api/core/OnInit" target="_blank" >OnInit</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-modale-planning</code></td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                                <code><a href="https://angular.io/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                <code><a href="https://angular.io/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+                                <code><a href="https://angular.io/api/forms/ReactiveFormsModule" target="_blank" >ReactiveFormsModule</a></code>
+                            <code>OverlayModule</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./modale-planning.component.css</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./modale-planning.component.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#apremOrderValidator" >apremOrderValidator</a>
+                            </li>
+                            <li>
+                                <a href="#apremStartValidator" >apremStartValidator</a>
+                            </li>
+                            <li>
+                                <a href="#currentAcademicYearId" >currentAcademicYearId</a>
+                            </li>
+                            <li>
+                                <a href="#dateOrderValidator" >dateOrderValidator</a>
+                            </li>
+                            <li>
+                                <a href="#dropdownOpen" >dropdownOpen</a>
+                            </li>
+                            <li>
+                                <a href="#isSubmitting" >isSubmitting</a>
+                            </li>
+                            <li>
+                                <a href="#matinOrderValidator" >matinOrderValidator</a>
+                            </li>
+                            <li>
+                                <a href="#newPlanning" >newPlanning</a>
+                            </li>
+                            <li>
+                                <a href="#planningForm" >planningForm</a>
+                            </li>
+                            <li>
+                                <a href="#promos" >promos</a>
+                            </li>
+                            <li>
+                                <a href="#salles" >salles</a>
+                            </li>
+                            <li>
+                                <a href="#selectedSalles" >selectedSalles</a>
+                            </li>
+                            <li>
+                                <a href="#submitted" >submitted</a>
+                            </li>
+                            <li>
+                                <a href="#toastr" >toastr</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#initForm" >initForm</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <a href="#onCancel" >onCancel</a>
+                            </li>
+                            <li>
+                                <a href="#onSalleToggle" >onSalleToggle</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#onSubmit" >onSubmit</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Outputs</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#cancel" >cancel</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Accessors</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                    <a href="#selectedSallesText" >selectedSallesText</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(fb: <a href="https://angular.io/api/forms/FormBuilder" target="_blank">FormBuilder</a>, router: <a href="https://angular.io/api/router/Router" target="_blank">Router</a>, planningService: <a href="../injectables/PlanningService.html" target="_self">PlanningService</a>, trainingYearService: <a href="../injectables/TrainingYearService.html" target="_self">TrainingYearService</a>, salleService: <a href="../injectables/SalleService.html" target="_self">SalleService</a>, academicYearService: <a href="../injectables/AcademicYearService.html" target="_self">AcademicYearService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:52</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>fb</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.io/api/forms/FormBuilder" target="_blank" >FormBuilder</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>router</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.io/api/router/Router" target="_blank" >Router</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>planningService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/PlanningService.html" target="_self" >PlanningService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>trainingYearService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/TrainingYearService.html" target="_self" >TrainingYearService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>salleService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SalleService.html" target="_self" >SalleService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>academicYearService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/AcademicYearService.html" target="_self" >AcademicYearService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+    <section data-compodoc="block-outputs">
+    <h3 id="outputs">Outputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="cancel"></a>
+                        <b>cancel</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.io/api/core/EventEmitter" target="_blank" >EventEmitter</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="40" class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:40</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="initForm"></a>
+                    <span class="name">
+                        <span ><b>initForm</b></span>
+                        <a href="#initForm"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>initForm()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="78"
+                                    class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:78</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="63"
+                                    class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:63</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onCancel"></a>
+                    <span class="name">
+                        <span ><b>onCancel</b></span>
+                        <a href="#onCancel"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onCancel()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="223"
+                                    class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:223</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onSalleToggle"></a>
+                    <span class="name">
+                        <span ><b>onSalleToggle</b></span>
+                        <a href="#onSalleToggle"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onSalleToggle(event: <a href="https://angular.io/api/router/Event" target="_blank">Event</a>, salle: <a href="../classes/Salle.html" target="_self">Salle</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="130"
+                                    class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:130</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                            <code><a href="https://angular.io/api/router/Event" target="_blank" >Event</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>salle</td>
+                                            <td>
+                                                            <code><a href="../classes/Salle.html" target="_self" >Salle</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onSubmit"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>onSubmit</b></span>
+                        <a href="#onSubmit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onSubmit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="146"
+                                    class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:146</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="apremOrderValidator"></a>
+                    <span class="name">
+                        <span ><b>apremOrderValidator</b></span>
+                        <a href="#apremOrderValidator"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.io/api/forms/ValidatorFn" target="_blank" >ValidatorFn</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>() &#x3D;&gt; {...}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="123" class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:123</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="apremStartValidator"></a>
+                    <span class="name">
+                        <span ><b>apremStartValidator</b></span>
+                        <a href="#apremStartValidator"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.io/api/forms/ValidatorFn" target="_blank" >ValidatorFn</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>() &#x3D;&gt; {...}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="116" class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:116</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentAcademicYearId"></a>
+                    <span class="name">
+                        <span ><b>currentAcademicYearId</b></span>
+                        <a href="#currentAcademicYearId"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:52</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="dateOrderValidator"></a>
+                    <span class="name">
+                        <span ><b>dateOrderValidator</b></span>
+                        <a href="#dateOrderValidator"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.io/api/forms/ValidatorFn" target="_blank" >ValidatorFn</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>() &#x3D;&gt; {...}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="102" class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:102</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="dropdownOpen"></a>
+                    <span class="name">
+                        <span ><b>dropdownOpen</b></span>
+                        <a href="#dropdownOpen"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="50" class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:50</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isSubmitting"></a>
+                    <span class="name">
+                        <span ><b>isSubmitting</b></span>
+                        <a href="#isSubmitting"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="45" class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:45</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="matinOrderValidator"></a>
+                    <span class="name">
+                        <span ><b>matinOrderValidator</b></span>
+                        <a href="#matinOrderValidator"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.io/api/forms/ValidatorFn" target="_blank" >ValidatorFn</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>() &#x3D;&gt; {...}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="109" class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:109</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="newPlanning"></a>
+                    <span class="name">
+                        <span ><b>newPlanning</b></span>
+                        <a href="#newPlanning"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/Planning.html" target="_self" >Planning</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Planning()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="46" class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:46</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="planningForm"></a>
+                    <span class="name">
+                        <span ><b>planningForm</b></span>
+                        <a href="#planningForm"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.io/api/forms/FormGroup" target="_blank" >FormGroup</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="43" class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:43</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="promos"></a>
+                    <span class="name">
+                        <span ><b>promos</b></span>
+                        <a href="#promos"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/TrainingYear.html" target="_self" >TrainingYear[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="47" class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:47</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="salles"></a>
+                    <span class="name">
+                        <span ><b>salles</b></span>
+                        <a href="#salles"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/Salle.html" target="_self" >Salle[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="48" class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:48</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="selectedSalles"></a>
+                    <span class="name">
+                        <span ><b>selectedSalles</b></span>
+                        <a href="#selectedSalles"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/Salle.html" target="_self" >Salle[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="49" class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:49</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="submitted"></a>
+                    <span class="name">
+                        <span ><b>submitted</b></span>
+                        <a href="#submitted"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="44" class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:44</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="toastr"></a>
+                    <span class="name">
+                        <span ><b>toastr</b></span>
+                        <a href="#toastr"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(ToastrService)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="41" class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:41</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-accessors">
+    <h3 id="accessors">
+        Accessors
+    </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="selectedSallesText"></a>
+                        <span class="name"><b>selectedSallesText</b><a href="#selectedSallesText"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>get</b><code>selectedSallesText()</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="139" class="link-to-prism">src/app/components/modale-planning/modale-planning.component.ts:139</a></div>
+                                </td>
+                            </tr>
+
+            </tbody>
+        </table>
+</section>
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, EventEmitter, OnInit, Output } from &quot;@angular/core&quot;;
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ValidatorFn,
+  AbstractControl,
+} from &quot;@angular/forms&quot;;
+import { Router } from &quot;@angular/router&quot;;
+import { forkJoin } from &quot;rxjs&quot;;
+import { CommonModule } from &quot;@angular/common&quot;;
+import { FormsModule, ReactiveFormsModule } from &quot;@angular/forms&quot;;
+import { ToastrService } from &#x27;ngx-toastr&#x27;;
+import { inject } from &#x27;@angular/core&#x27;;
+
+import { PlanningService } from &quot;../../services/planning.service&quot;;
+import { TrainingYearService } from &quot;../../services/training-year.service&quot;;
+import { SalleService } from &quot;../../services/salle.service&quot;;
+import { AcademicYearService } from &quot;../../services/academic-year.service&quot;;
+
+import { TrainingYear } from &quot;../../models/training-year.model&quot;;
+import { Salle } from &quot;../../models/salle.model&quot;;
+import { Soutenance } from &quot;../../models/soutenance.model&quot;;
+import { OverlayModule, ConnectedPosition } from &quot;@angular/cdk/overlay&quot;;
+
+import {
+  addDays,
+  minutesToHHMM,
+  timeStringToMinutes,
+} from &quot;../../utils/timeManagement&quot;;
+import { Planning } from &quot;../../models/planning.model&quot;;
+
+@Component({
+  selector: &quot;app-modale-planning&quot;,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, OverlayModule],
+  templateUrl: &quot;./modale-planning.component.html&quot;,
+  styleUrls: [&quot;./modale-planning.component.css&quot;],
+})
+export class ModalePlanningComponent implements OnInit {
+  @Output() cancel &#x3D; new EventEmitter&lt;void&gt;();
+  toastr &#x3D; inject(ToastrService);
+
+  planningForm!: FormGroup;
+  submitted &#x3D; false;
+  isSubmitting &#x3D; false;
+  newPlanning: Planning &#x3D; new Planning();
+  promos: TrainingYear[] &#x3D; [];
+  salles: Salle[] &#x3D; [];
+  selectedSalles: Salle[] &#x3D; [];
+  dropdownOpen &#x3D; false;
+
+  currentAcademicYearId!: number;
+
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private planningService: PlanningService,
+    private trainingYearService: TrainingYearService,
+    private salleService: SalleService,
+    private academicYearService: AcademicYearService,
+  ) {}
+
+  ngOnInit(): void {
+    this.initForm();
+
+    forkJoin({
+      promos: this.trainingYearService.getTrainingYears(),
+      salles: this.salleService.getSalles(),
+      academicYear: this.academicYearService.getCurrentAcademicYear(),
+    }).subscribe(({ promos, salles, academicYear }) &#x3D;&gt; {
+      this.promos &#x3D; promos;
+      this.salles &#x3D; salles.filter((s) &#x3D;&gt; s.estDisponible);
+      this.selectedSalles &#x3D; [...this.salles];
+      this.currentAcademicYearId &#x3D; academicYear?.idAnneeUniversitaire || 0;
+    });
+  }
+
+  initForm() {
+    this.planningForm &#x3D; this.fb.group(
+      {
+        nom: [&quot;&quot;, Validators.required],
+        idAnneeFormation: [null, Validators.required],
+        dateDebut: [null, Validators.required],
+        dateFin: [null, Validators.required],
+        heureDebutMatin: [null, Validators.required],
+        heureFinMatin: [null, Validators.required],
+        heureDebutAprem: [null, Validators.required],
+        heureFinAprem: [null, Validators.required],
+        dureeSoutenance: [null, Validators.required],
+      },
+      {
+        validators: [
+          this.dateOrderValidator,
+          this.matinOrderValidator,
+          this.apremStartValidator,
+          this.apremOrderValidator,
+        ],
+      },
+    );
+  }
+
+  dateOrderValidator: ValidatorFn &#x3D; (form: AbstractControl) &#x3D;&gt; {
+    const debut &#x3D; form.get(&quot;dateDebut&quot;)?.value;
+    const fin &#x3D; form.get(&quot;dateFin&quot;)?.value;
+    if (!debut || !fin) return null;
+    return fin &gt;&#x3D; debut ? null : { dateOrder: true };
+  };
+
+  matinOrderValidator: ValidatorFn &#x3D; (form: AbstractControl) &#x3D;&gt; {
+    const debut &#x3D; form.get(&quot;heureDebutMatin&quot;)?.value;
+    const fin &#x3D; form.get(&quot;heureFinMatin&quot;)?.value;
+    if (!debut || !fin) return null;
+    return fin &gt; debut ? null : { matinOrder: true };
+  };
+
+  apremStartValidator: ValidatorFn &#x3D; (form: AbstractControl) &#x3D;&gt; {
+    const finMatin &#x3D; form.get(&quot;heureFinMatin&quot;)?.value;
+    const debutAprem &#x3D; form.get(&quot;heureDebutAprem&quot;)?.value;
+    if (!finMatin || !debutAprem) return null;
+    return debutAprem &gt; finMatin ? null : { apremStart: true };
+  };
+
+  apremOrderValidator: ValidatorFn &#x3D; (form: AbstractControl) &#x3D;&gt; {
+    const debut &#x3D; form.get(&quot;heureDebutAprem&quot;)?.value;
+    const fin &#x3D; form.get(&quot;heureFinAprem&quot;)?.value;
+    if (!debut || !fin) return null;
+    return fin &gt; debut ? null : { apremOrder: true };
+  };
+
+  onSalleToggle(event: Event, salle: Salle) {
+    const checked &#x3D; (event.target as HTMLInputElement).checked;
+    if (checked) {
+      this.selectedSalles.push(salle);
+    } else {
+      this.selectedSalles &#x3D; this.selectedSalles.filter((s) &#x3D;&gt; s !&#x3D;&#x3D; salle);
+    }
+  }
+
+  get selectedSallesText(): string {
+    return this.selectedSalles.length
+      ? this.selectedSalles.map((s) &#x3D;&gt; s.nomSalle).join(&quot;, &quot;)
+      : &quot;-- Sélectionner --&quot;;
+  }
+
+  // Soumission du formulaire
+  async onSubmit() {
+    this.submitted &#x3D; true;
+
+    if (this.planningForm.invalid) return;
+    try {
+      this.isSubmitting &#x3D; true;
+      this.newPlanning &#x3D; this.planningForm.value;
+
+      // Transformation des heures au format attendu par l&#x27;algo
+      const startMorningMinutes &#x3D; timeStringToMinutes(
+        this.newPlanning.heureDebutMatin!,
+      );
+      const endMorningMinutes &#x3D; timeStringToMinutes(
+        this.newPlanning.heureFinMatin!,
+      );
+      const startAfternoonMinutes &#x3D; timeStringToMinutes(
+        this.newPlanning.heureDebutAprem!,
+      );
+      const endAfternoonMinutes &#x3D; timeStringToMinutes(
+        this.newPlanning.heureFinAprem!,
+      );
+
+      this.newPlanning.idAnneeUniversitaire &#x3D; this.currentAcademicYearId;
+
+      // Execution de l&#x27;algo
+      this.planningService
+        .runAlgorithmPlanning(
+          startMorningMinutes,
+          endMorningMinutes,
+          startAfternoonMinutes,
+          endAfternoonMinutes,
+          this.newPlanning.dureeSoutenance!,
+          this.newPlanning.dureeSoutenance! * 1.3,
+          5,
+          20 * 60,
+          this.selectedSalles,
+          this.newPlanning.idAnneeFormation!,
+          this.currentAcademicYearId,
+        )
+        .subscribe({
+          next: (result: any) &#x3D;&gt; {
+            if (result.status &#x3D;&#x3D;&#x3D; &quot;success&quot;) {
+              const parsed &#x3D; JSON.parse(result.output) as any[];
+              const soutenances: Soutenance[] &#x3D; parsed.map((item) &#x3D;&gt; ({
+                idSoutenance: -1,
+                date: addDays(this.newPlanning.dateDebut!, item.date),
+                nomSalle: Number(item.nomSalle),
+                heureDebut: minutesToHHMM(item.heureDebut),
+                heureFin: minutesToHHMM(item.heureFin),
+                idUPPA: item.idUPPA.toString(),
+                idLecteur: item.idLecteur,
+                idPlanning: null,
+              }));
+
+              this.router.navigate([&quot;/schedule/add-schedule&quot;], {
+                state: {
+                  newPlanning: this.newPlanning,
+                  soutenances,
+                  salles: this.salles,
+                },
+              });
+            }
+          },
+          error: (error) &#x3D;&gt; {
+            this.toastr.error(error, &quot;Erreur lors de la génération du planning.&quot;);
+            this.isSubmitting &#x3D; false;
+          },
+          complete: () &#x3D;&gt; {
+            this.isSubmitting &#x3D; false;
+          },
+        });
+    } catch (error: any) {
+      this.toastr.error(error, &quot;Erreur lors de la création du planning.&quot;);
+      this.isSubmitting &#x3D; false;
+    }
+  }
+
+  onCancel() {
+    this.cancel.emit();
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;modal-overlay&quot;&gt;
+  &lt;div class&#x3D;&quot;modal&quot;&gt;
+    &lt;div class&#x3D;&quot;modal-header&quot;&gt;
+      &lt;h3 class&#x3D;&quot;modal-title&quot;&gt;Générer un planning&lt;/h3&gt;
+      &lt;button type&#x3D;&quot;button&quot; class&#x3D;&quot;close-button&quot; (click)&#x3D;&quot;onCancel()&quot;&gt;✕&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;div class&#x3D;&quot;modal-body&quot;&gt;
+      &lt;form
+        class&#x3D;&quot;form&quot;
+        [formGroup]&#x3D;&quot;planningForm&quot;
+        (ngSubmit)&#x3D;&quot;onSubmit()&quot;
+        [class.disabled-form]&#x3D;&quot;isSubmitting&quot;
+      &gt;
+        &lt;!-- Nom --&gt;
+        &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+          &lt;label&gt;Nom du planning* :&lt;/label&gt;
+          &lt;input type&#x3D;&quot;text&quot; formControlName&#x3D;&quot;nom&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div
+          class&#x3D;&quot;error-message&quot;
+          *ngIf&#x3D;&quot;submitted &amp;&amp; planningForm.get(&#x27;nom&#x27;)?.hasError(&#x27;required&#x27;)&quot;
+        &gt;
+          Le nom du planning est obligatoire.
+        &lt;/div&gt;
+
+        &lt;!-- Promo --&gt;
+        &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+          &lt;label&gt;Promo étudiants* :&lt;/label&gt;
+          &lt;select formControlName&#x3D;&quot;idAnneeFormation&quot;&gt;
+            &lt;option [ngValue]&#x3D;&quot;null&quot;&gt;-- Sélectionner --&lt;/option&gt;
+            &lt;option
+              *ngFor&#x3D;&quot;let promo of promos&quot;
+              [ngValue]&#x3D;&quot;promo.idAnneeFormation&quot;
+            &gt;
+              {{ promo.libelle }}
+            &lt;/option&gt;
+          &lt;/select&gt;
+        &lt;/div&gt;
+        &lt;div
+          class&#x3D;&quot;error-message&quot;
+          *ngIf&#x3D;&quot;
+            submitted &amp;&amp;
+            planningForm.get(&#x27;idAnneeFormation&#x27;)?.hasError(&#x27;required&#x27;)
+          &quot;
+        &gt;
+          La promo est obligatoire.
+        &lt;/div&gt;
+
+        &lt;!-- Dates --&gt;
+        &lt;div class&#x3D;&quot;line-wrapper&quot;&gt;
+          &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+            &lt;label&gt;Début* :&lt;/label&gt;
+            &lt;input type&#x3D;&quot;date&quot; formControlName&#x3D;&quot;dateDebut&quot; /&gt;
+          &lt;/div&gt;
+          &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+            &lt;label&gt;Fin* :&lt;/label&gt;
+            &lt;input type&#x3D;&quot;date&quot; formControlName&#x3D;&quot;dateFin&quot; /&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div
+          class&#x3D;&quot;error-message&quot;
+          *ngIf&#x3D;&quot;
+            submitted &amp;&amp; planningForm.get(&#x27;dateDebut&#x27;)?.hasError(&#x27;required&#x27;)
+          &quot;
+        &gt;
+          La date de début est obligatoire.
+        &lt;/div&gt;
+        &lt;div
+          class&#x3D;&quot;error-message&quot;
+          *ngIf&#x3D;&quot;submitted &amp;&amp; planningForm.get(&#x27;dateFin&#x27;)?.hasError(&#x27;required&#x27;)&quot;
+        &gt;
+          La date de fin est obligatoire.
+        &lt;/div&gt;
+        &lt;div class&#x3D;&quot;error-message&quot; *ngIf&#x3D;&quot;planningForm.hasError(&#x27;dateOrder&#x27;)&quot;&gt;
+          La date de fin doit être postérieure à la date de début.
+        &lt;/div&gt;
+
+        &lt;!-- Matin --&gt;
+        &lt;div class&#x3D;&quot;time-section&quot;&gt;Matin&lt;/div&gt;
+        &lt;div class&#x3D;&quot;line-wrapper&quot;&gt;
+          &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+            &lt;label&gt;Début* :&lt;/label&gt;
+            &lt;input type&#x3D;&quot;time&quot; formControlName&#x3D;&quot;heureDebutMatin&quot; /&gt;
+          &lt;/div&gt;
+          &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+            &lt;label&gt;Fin* :&lt;/label&gt;
+            &lt;input type&#x3D;&quot;time&quot; formControlName&#x3D;&quot;heureFinMatin&quot; /&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div
+          class&#x3D;&quot;error-message&quot;
+          *ngIf&#x3D;&quot;
+            submitted &amp;&amp;
+            planningForm.get(&#x27;heureDebutMatin&#x27;)?.hasError(&#x27;required&#x27;)
+          &quot;
+        &gt;
+          L&#x27;heure de début du matin est obligatoire.
+        &lt;/div&gt;
+        &lt;div
+          class&#x3D;&quot;error-message&quot;
+          *ngIf&#x3D;&quot;
+            submitted &amp;&amp; planningForm.get(&#x27;heureFinMatin&#x27;)?.hasError(&#x27;required&#x27;)
+          &quot;
+        &gt;
+          L&#x27;heure de fin du matin est obligatoire.
+        &lt;/div&gt;
+        &lt;div class&#x3D;&quot;error-message&quot; *ngIf&#x3D;&quot;planningForm.hasError(&#x27;matinOrder&#x27;)&quot;&gt;
+          La fin du matin doit être après le début.
+        &lt;/div&gt;
+
+        &lt;!-- Aprem --&gt;
+        &lt;div class&#x3D;&quot;time-section&quot;&gt;Après-midi&lt;/div&gt;
+        &lt;div class&#x3D;&quot;line-wrapper&quot;&gt;
+          &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+            &lt;label&gt;Début* :&lt;/label&gt;
+            &lt;input type&#x3D;&quot;time&quot; formControlName&#x3D;&quot;heureDebutAprem&quot; /&gt;
+          &lt;/div&gt;
+          &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+            &lt;label&gt;Fin* :&lt;/label&gt;
+            &lt;input type&#x3D;&quot;time&quot; formControlName&#x3D;&quot;heureFinAprem&quot; /&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div
+          class&#x3D;&quot;error-message&quot;
+          *ngIf&#x3D;&quot;
+            submitted &amp;&amp;
+            planningForm.get(&#x27;heureDebutAprem&#x27;)?.hasError(&#x27;required&#x27;)
+          &quot;
+        &gt;
+          L&#x27;heure de début de l&#x27;après-midi est obligatoire.
+        &lt;/div&gt;
+        &lt;div
+          class&#x3D;&quot;error-message&quot;
+          *ngIf&#x3D;&quot;
+            submitted &amp;&amp; planningForm.get(&#x27;heureFinAprem&#x27;)?.hasError(&#x27;required&#x27;)
+          &quot;
+        &gt;
+          L&#x27;heure de fin de l&#x27;après-midi est obligatoire.
+        &lt;/div&gt;
+        &lt;div class&#x3D;&quot;error-message&quot; *ngIf&#x3D;&quot;planningForm.hasError(&#x27;apremStart&#x27;)&quot;&gt;
+          L&#x27;après-midi doit commencer après la fin du matin.
+        &lt;/div&gt;
+        &lt;div class&#x3D;&quot;error-message&quot; *ngIf&#x3D;&quot;planningForm.hasError(&#x27;apremOrder&#x27;)&quot;&gt;
+          La fin de l&#x27;après-midi doit être après le début.
+        &lt;/div&gt;
+
+        &lt;!-- Salles --&gt;
+        &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+          &lt;label&gt;Salles disponibles* :&lt;/label&gt;
+
+          &lt;div class&#x3D;&quot;multi-select&quot;&gt;
+            &lt;div
+              class&#x3D;&quot;select-box&quot;
+              cdkOverlayOrigin
+              #origin&#x3D;&quot;cdkOverlayOrigin&quot;
+              (click)&#x3D;&quot;dropdownOpen &#x3D; !dropdownOpen&quot;
+            &gt;
+              {{ selectedSallesText }}
+              &lt;span class&#x3D;&quot;arrow&quot;&gt;&lt;/span&gt;
+            &lt;/div&gt;
+
+            &lt;ng-template
+              cdkConnectedOverlay
+              [cdkConnectedOverlayOrigin]&#x3D;&quot;origin&quot;
+              [cdkConnectedOverlayOpen]&#x3D;&quot;dropdownOpen&quot;
+              [cdkConnectedOverlayHasBackdrop]&#x3D;&quot;true&quot;
+              [cdkConnectedOverlayBackdropClass]&#x3D;&quot;&#x27;transparent-backdrop&#x27;&quot;
+              (backdropClick)&#x3D;&quot;dropdownOpen &#x3D; false&quot;
+            &gt;
+              &lt;div class&#x3D;&quot;options&quot;&gt;
+                &lt;label *ngFor&#x3D;&quot;let salle of salles&quot; class&#x3D;&quot;option&quot;&gt;
+                  &lt;input
+                    type&#x3D;&quot;checkbox&quot;
+                    [checked]&#x3D;&quot;selectedSalles.includes(salle)&quot;
+                    (change)&#x3D;&quot;onSalleToggle($event, salle)&quot;
+                  /&gt;
+                  {{ salle.nomSalle }}
+                &lt;/label&gt;
+              &lt;/div&gt;
+            &lt;/ng-template&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;!-- Durée --&gt;
+        &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+          &lt;label&gt;Durée soutenance* :&lt;/label&gt;
+          &lt;input type&#x3D;&quot;number&quot; formControlName&#x3D;&quot;dureeSoutenance&quot; /&gt; minutes
+        &lt;/div&gt;
+        &lt;div
+          class&#x3D;&quot;error-message&quot;
+          *ngIf&#x3D;&quot;
+            submitted &amp;&amp;
+            planningForm.get(&#x27;dureeSoutenance&#x27;)?.hasError(&#x27;required&#x27;)
+          &quot;
+        &gt;
+          La durée est obligatoire.
+        &lt;/div&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Btn --&gt;
+    &lt;div class&#x3D;&quot;modal-footer&quot;&gt;
+      &lt;button type&#x3D;&quot;button&quot; class&#x3D;&quot;cancel-button&quot; (click)&#x3D;&quot;onCancel()&quot;&gt;
+        Annuler
+      &lt;/button&gt;
+      &lt;button
+        class&#x3D;&quot;generate-button&quot;
+        [disabled]&#x3D;&quot;isSubmitting&quot;
+        (click)&#x3D;&quot;onSubmit()&quot;
+      &gt;
+        Générer
+      &lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./modale-planning.component.css</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(128, 128, 128, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.modal {
+  background: #eff6ff;
+  border-radius: 12px;
+  width: 500px;
+  max-width: 90%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 15px 20px;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.modal-body {
+  padding: 10px 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: 10px 20px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.input-wrapper label {
+  font-weight: normal;
+  text-align: left;
+  flex-shrink: 0;
+}
+
+.input-wrapper input,
+.input-wrapper select {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 10px;
+  border: 1px solid #60a5fa;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: white;
+  box-sizing: border-box;
+}
+
+.line-wrapper {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.line-wrapper .input-wrapper {
+  flex: 1;
+}
+
+.time-section {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+.multi-select {
+  position: relative;
+  flex: 1;
+}
+
+.select-box {
+  border: 1px solid #60a5fa;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  font-size: 0.95rem;
+}
+
+.select-box .arrow {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid #666;
+  transition: transform 0.2s ease;
+}
+
+.options {
+  min-width: 300px;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #60a5fa;
+  background: white;
+  z-index: 10000;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.transparent-backdrop {
+  background: transparent;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  gap: 8px;
+  cursor: pointer;
+  min-height: 30px;
+}
+
+.option-text {
+  flex: 1;
+  font-size: 0.88rem;
+  color: #333;
+}
+
+.option:hover {
+  background-color: #f0f9ff;
+}
+
+.option input[type&#x3D;&quot;checkbox&quot;] {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* BOUTONS */
+.cancel-button,
+.generate-button {
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: opacity 0.2s;
+}
+
+.cancel-button {
+  background: #a2a2a2;
+  color: #fff;
+}
+
+.generate-button {
+  background: #0a63a4;
+  color: #fff;
+}
+
+.generate-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #d32f2f;
+  background-color: #fdecea;
+  padding: 6px 10px;
+  border-radius: 4px;
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="modal-overlay">  <div class="modal">    <div class="modal-header">      <h3 class="modal-title">Générer un planning</h3>      <button type="button" class="close-button" (click)="onCancel()">✕</button>    </div>    <div class="modal-body">      <form        class="form"        [formGroup]="planningForm"        (ngSubmit)="onSubmit()"        [class.disabled-form]="isSubmitting"      >        <!-- Nom -->        <div class="input-wrapper">          <label>Nom du planning* :</label>          <input type="text" formControlName="nom" />        </div>        <div          class="error-message"          *ngIf="submitted && planningForm.get(\'nom\')?.hasError(\'required\')"        >          Le nom du planning est obligatoire.        </div>        <!-- Promo -->        <div class="input-wrapper">          <label>Promo étudiants* :</label>          <select formControlName="idAnneeFormation">            <option [ngValue]="null">-- Sélectionner --</option>            <option              *ngFor="let promo of promos"              [ngValue]="promo.idAnneeFormation"            >              {{ promo.libelle }}            </option>          </select>        </div>        <div          class="error-message"          *ngIf="            submitted &&            planningForm.get(\'idAnneeFormation\')?.hasError(\'required\')          "        >          La promo est obligatoire.        </div>        <!-- Dates -->        <div class="line-wrapper">          <div class="input-wrapper">            <label>Début* :</label>            <input type="date" formControlName="dateDebut" />          </div>          <div class="input-wrapper">            <label>Fin* :</label>            <input type="date" formControlName="dateFin" />          </div>        </div>        <div          class="error-message"          *ngIf="            submitted && planningForm.get(\'dateDebut\')?.hasError(\'required\')          "        >          La date de début est obligatoire.        </div>        <div          class="error-message"          *ngIf="submitted && planningForm.get(\'dateFin\')?.hasError(\'required\')"        >          La date de fin est obligatoire.        </div>        <div class="error-message" *ngIf="planningForm.hasError(\'dateOrder\')">          La date de fin doit être postérieure à la date de début.        </div>        <!-- Matin -->        <div class="time-section">Matin</div>        <div class="line-wrapper">          <div class="input-wrapper">            <label>Début* :</label>            <input type="time" formControlName="heureDebutMatin" />          </div>          <div class="input-wrapper">            <label>Fin* :</label>            <input type="time" formControlName="heureFinMatin" />          </div>        </div>        <div          class="error-message"          *ngIf="            submitted &&            planningForm.get(\'heureDebutMatin\')?.hasError(\'required\')          "        >          L\'heure de début du matin est obligatoire.        </div>        <div          class="error-message"          *ngIf="            submitted && planningForm.get(\'heureFinMatin\')?.hasError(\'required\')          "        >          L\'heure de fin du matin est obligatoire.        </div>        <div class="error-message" *ngIf="planningForm.hasError(\'matinOrder\')">          La fin du matin doit être après le début.        </div>        <!-- Aprem -->        <div class="time-section">Après-midi</div>        <div class="line-wrapper">          <div class="input-wrapper">            <label>Début* :</label>            <input type="time" formControlName="heureDebutAprem" />          </div>          <div class="input-wrapper">            <label>Fin* :</label>            <input type="time" formControlName="heureFinAprem" />          </div>        </div>        <div          class="error-message"          *ngIf="            submitted &&            planningForm.get(\'heureDebutAprem\')?.hasError(\'required\')          "        >          L\'heure de début de l\'après-midi est obligatoire.        </div>        <div          class="error-message"          *ngIf="            submitted && planningForm.get(\'heureFinAprem\')?.hasError(\'required\')          "        >          L\'heure de fin de l\'après-midi est obligatoire.        </div>        <div class="error-message" *ngIf="planningForm.hasError(\'apremStart\')">          L\'après-midi doit commencer après la fin du matin.        </div>        <div class="error-message" *ngIf="planningForm.hasError(\'apremOrder\')">          La fin de l\'après-midi doit être après le début.        </div>        <!-- Salles -->        <div class="input-wrapper">          <label>Salles disponibles* :</label>          <div class="multi-select">            <div              class="select-box"              cdkOverlayOrigin              #origin="cdkOverlayOrigin"              (click)="dropdownOpen = !dropdownOpen"            >              {{ selectedSallesText }}              <span class="arrow"></span>            </div>            <ng-template              cdkConnectedOverlay              [cdkConnectedOverlayOrigin]="origin"              [cdkConnectedOverlayOpen]="dropdownOpen"              [cdkConnectedOverlayHasBackdrop]="true"              [cdkConnectedOverlayBackdropClass]="\'transparent-backdrop\'"              (backdropClick)="dropdownOpen = false"            >              <div class="options">                <label *ngFor="let salle of salles" class="option">                  <input                    type="checkbox"                    [checked]="selectedSalles.includes(salle)"                    (change)="onSalleToggle($event, salle)"                  />                  {{ salle.nomSalle }}                </label>              </div>            </ng-template>          </div>        </div>        <!-- Durée -->        <div class="input-wrapper">          <label>Durée soutenance* :</label>          <input type="number" formControlName="dureeSoutenance" /> minutes        </div>        <div          class="error-message"          *ngIf="            submitted &&            planningForm.get(\'dureeSoutenance\')?.hasError(\'required\')          "        >          La durée est obligatoire.        </div>      </form>    </div>    <!-- Btn -->    <div class="modal-footer">      <button type="button" class="cancel-button" (click)="onCancel()">        Annuler      </button>      <button        class="generate-button"        [disabled]="isSubmitting"        (click)="onSubmit()"      >        Générer      </button>    </div>  </div></div></div>'
+    var COMPONENTS = [{'name': 'AddFactsheetComponent', 'selector': 'app-add-factsheet'},{'name': 'AddFactsheets1Component', 'selector': 'app-add-factsheets-1'},{'name': 'AddFactsheets2Component', 'selector': 'app-add-factsheets-2'},{'name': 'AddFactsheets3Component', 'selector': 'app-add-factsheets-3'},{'name': 'AddFactsheets4Component', 'selector': 'app-add-factsheets-4'},{'name': 'AddFactsheets5Component', 'selector': 'app-add-factsheets-5'},{'name': 'AddFactsheets6Component', 'selector': 'app-add-factsheets-6'},{'name': 'AddFactsheets7Component', 'selector': 'app-add-factsheets-7'},{'name': 'AddFactsheets8Component', 'selector': 'app-add-factsheets-8'},{'name': 'AddFactsheets9Component', 'selector': 'app-add-factsheets-9'},{'name': 'AddScheduleComponent', 'selector': 'app-add-schedule'},{'name': 'AddSearchFormComponent', 'selector': 'app-add-search-form'},{'name': 'AddUpdateScheduleComponent', 'selector': 'app-add-update-schedule'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'BackConfirmationModalComponent', 'selector': 'app-back-confirmation-modal'},{'name': 'BreadcrumbComponent', 'selector': 'app-breadcrumb'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'DeleteConfirmationModalComponent', 'selector': 'app-delete-confirmation-modal'},{'name': 'FactsheetsComponent', 'selector': 'app-factsheets'},{'name': 'FactsheetsStudentTabComponent', 'selector': 'app-factsheets-student-tab'},{'name': 'HeaderComponent', 'selector': 'app-header'},{'name': 'ListStudentTabComponent', 'selector': 'app-list-student-tab'},{'name': 'LoadingComponent', 'selector': 'app-loading'},{'name': 'ModalePlanningComponent', 'selector': 'app-modale-planning'},{'name': 'ModaleSoutenanceComponent', 'selector': 'app-modale-soutenance'},{'name': 'NavigationTabsComponent', 'selector': 'app-navigation-tabs'},{'name': 'ScheduleBoardComponent', 'selector': 'app-schedule-board'},{'name': 'ScheduleComponent', 'selector': 'app-schedule'},{'name': 'SearchDetailsComponent', 'selector': 'app-search-details'},{'name': 'SearchesStudentTabComponent', 'selector': 'app-searches-student-tab'},{'name': 'SheetDetailsComponent', 'selector': 'app-sheet-details'},{'name': 'SlotComponent', 'selector': 'app-slot'},{'name': 'StatsCardsComponent', 'selector': 'app-stats-cards'},{'name': 'StudentDashboardManagerComponent', 'selector': 'app-student-dashboard-manager'},{'name': 'StudentFactsheetsManagerComponent', 'selector': 'app-student-factsheets-manager'},{'name': 'TutorAttributionModalComponent', 'selector': 'app-tutor-attribution-modal'},{'name': 'UnderDevelopmentComponent', 'selector': 'app-under-development'},{'name': 'UpdateFactsheet1Component', 'selector': 'app-update-factsheets-1'},{'name': 'UpdateFactsheetComponent', 'selector': 'app-update-factsheet'},{'name': 'UpdateFactsheets2Component', 'selector': 'app-update-factsheets-2'},{'name': 'UpdateFactsheets3Component', 'selector': 'app-update-factsheets-3'},{'name': 'UpdateFactsheets4Component', 'selector': 'app-update-factsheets-4'},{'name': 'UpdateFactsheets5Component', 'selector': 'app-update-factsheets-5'},{'name': 'UpdateFactsheets6Component', 'selector': 'app-update-factsheets-6'},{'name': 'UpdateFactsheets7Component', 'selector': 'app-update-factsheets-7'},{'name': 'UpdateFactsheets8Component', 'selector': 'app-update-factsheets-8'},{'name': 'UpdateFactsheets9Component', 'selector': 'app-update-factsheets-9'},{'name': 'UpdateScheduleComponent', 'selector': 'app-update-schedule'},{'name': 'UpdateSearchComponent', 'selector': 'app-update-search'},{'name': 'WelcomeComponent', 'selector': 'app-welcome-card'}];
+    var DIRECTIVES = [];
+    var ACTUAL_COMPONENT = {'name': 'ModalePlanningComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'ModalePlanningComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
