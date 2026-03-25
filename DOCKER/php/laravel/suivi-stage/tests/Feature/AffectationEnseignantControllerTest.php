@@ -188,7 +188,9 @@ class AffectationEnseignantControllerTest extends TestCase
             ->where('idAnneeUniversitaire', $affectation->idAnneeUniversitaire)
             ->first();
 
-        $response = $this->getJson("/api/affectation/{$affectation->idPersonnel}-{$affectation->idUPPA}-{$affectation->idAnneeUniversitaire}");
+        $url = "/api/affectation/{$affectation->idUPPA}-{$affectation->idAnneeUniversitaire}";
+
+        $response = $this->getJson($url);
 
         $response->assertStatus(200)
             ->assertJson([
@@ -199,6 +201,7 @@ class AffectationEnseignantControllerTest extends TestCase
                 'prenomEtudiant' => $etudiant->prenom
             ]);
     }
+
 
     /**
      * La méthode show va retourner une erreur 404 si l'affectation n'existe pas
