@@ -5,6 +5,9 @@ import {
   SimpleChanges,
   ChangeDetectorRef,
   OnDestroy,
+  AfterViewChecked,
+  ViewChild,
+  ElementRef,
 } from "@angular/core";
 import {
   FormBuilder,
@@ -42,6 +45,8 @@ import { ToastrService } from "ngx-toastr";
 import { inject } from "@angular/core";
 import { OverlayModule } from "@angular/cdk/overlay";
 import { Staff } from "../../models/staff.model";
+// @ts-ignore
+import Datepicker from 'vanillajs-datepicker/Datepicker';
 
 @Component({
   selector: "app-add-update-schedule",
@@ -58,7 +63,8 @@ import { Staff } from "../../models/staff.model";
   templateUrl: "./add-update-schedule.component.html",
   styleUrls: ["./add-update-schedule.component.css"],
 })
-export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
+export class AddUpdateScheduleComponent implements OnChanges, OnDestroy, AfterViewChecked {
+  @ViewChild('datepickerEl') datepickerEl!: ElementRef;
   private destroy$ = new Subject<void>();
   toastr = inject(ToastrService);
 
@@ -86,6 +92,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   hasNewStart: boolean = false;
   newEndDay: Date | null = null;
   hasNewEnd: boolean = false;
+  initialized = false;
 
   //Variables pour les modales
   dropdownOpen: boolean = false;
@@ -93,6 +100,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   isSubmitting: boolean = false;
   newDay: { date: string } | null = null;
   planningForm!: FormGroup;
+  hasValue: boolean = false;
 
   //Variables drag and drop
   planningByDay: Record<string, SlotItem[]> = {};
@@ -125,9 +133,6 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
       console.log("soutenances finales : ", this.slots);
 
       this.timeBlocks = [];
-      this.planningForm = this.fb.group({
-        date: [null, Validators.required],
-      });
 
       if (
         this.planning &&
@@ -182,6 +187,36 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     }
   }
 
+  ngAfterViewChecked() {
+    if (this.modalOpen && this.datepickerEl && !this.initialized) {
+      this.initDatepicker();
+      this.initialized = true;
+    }
+  
+    if (!this.modalOpen) {
+      this.initialized = false;
+    }
+  }
+
+  datepicker: any;
+
+  initDatepicker() {
+    const elem = this.datepickerEl.nativeElement;
+    const today = new Date();
+    this.datepicker = new Datepicker(elem, {
+      format: 'yyyy-mm-dd',
+      pickLevel: 0,
+      daysOfWeekDisabled: [0, 6],
+      datesDisabled: this.jours,
+      minDate: today,
+    });
+
+    elem.addEventListener('changeDate', (e: any) => {
+      this.planningForm.get('date')?.setValue(e.detail.date);
+      this.hasValue = true;
+    });
+  }
+
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
@@ -215,6 +250,10 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   }
 
   openModalJour() {
+    this.hasValue = false;
+    this.planningForm = this.fb.group({
+      date: [null, Validators.required],
+    });
     this.title = "Ajouter un jour";
     this.modalOpen = true;
   }

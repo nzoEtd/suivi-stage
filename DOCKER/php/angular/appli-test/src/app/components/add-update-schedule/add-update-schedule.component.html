@@ -85,6 +85,7 @@
   [title]="title"
   (submit)="addJour()"
   (cancel)="modalOpen = false"
+  [hasValue]="hasValue"
 >
     <form
         class="form"
@@ -96,7 +97,9 @@
         <div class="line-wrapper">
             <div class="input-wrapper">
               <label>Date* :</label>
-              <input type="date" formControlName="date" />
+              <!-- <input type="date" formControlName="date" /> -->
+              <input #datepickerEl type="text" formControlName="date">
+              <!-- <div #datepickerEl></div> -->
             </div>
         </div>
     </form>

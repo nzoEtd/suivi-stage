@@ -10,6 +10,7 @@ import { CommonModule } from "@angular/common";
 export class ModaleComponent {
 
   @Input() title: string = '';
+  @Input() hasValue: boolean = true;
   // @Input() submitLabel: string = 'Valider';
 
   @Output() submit = new EventEmitter<void>();
