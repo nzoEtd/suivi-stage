@@ -1096,12 +1096,13 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
     public function test_handleSheetCreate_renvoie_une_erreur_500_car_une_erreur_est_simulee()
     {
         Route::post('/test/fiche-descriptive-create-500', function () {
-            throw new Exception('Erreur simulée');
-        });
+            throw new \Exception('Erreur simulée');
+        })->middleware(\App\Http\Middleware\DispatchDataDescriptiveSheet::class);
 
         $response = $this->postJson('/test/fiche-descriptive-create-500', []);
+
         $response->assertStatus(500)
-            ->assertJson(['message' => 'Une erreur s\'est produite :']);
+            ->assertJsonFragment(['message' => 'Une erreur s\'est produite :']);
     }
 
     
@@ -1181,12 +1182,14 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
     {
         $ficheDescriptive = FicheDescriptive::first();
 
+        // AJOUT : On attache le middleware à la route de test
         Route::put('/test/fiche-descriptive-update-500/{id}', function ($id) {
-            throw new Exception('Erreur simulée');
-        });
+            throw new \Exception('Erreur simulée');
+        })->middleware(\App\Http\Middleware\DispatchDataDescriptiveSheet::class);
 
         $response = $this->putJson('/test/fiche-descriptive-update-500/' . $ficheDescriptive->idFicheDescriptive, []);
+
         $response->assertStatus(500)
-            ->assertJson(['message' => 'Une erreur s\'est produite :']);
+            ->assertJsonFragment(['message' => 'Une erreur s\'est produite :']);
     }
 }
