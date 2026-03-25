@@ -28,16 +28,11 @@ jobs:
           cd DOCKER/php/laravel/suivi-stage
           composer install --no-dev --optimize-autoloader
 
-      # Install phpDocumentor
-      - name: Install phpDocumentor locally
+      # Generate Laravel backend docs with Docker
+      - name: Generate Backend Docs with Docker
         run: |
-          cd DOCKER/php/laravel/suivi-stage
-          composer require --dev phpdocumentor/phpdocumentor
-
-      - name: Generate Backend Docs
-        run: |
-          cd DOCKER/php/laravel/suivi-stage
-          ./vendor/bin/phpdoc -d app -t ../../../docs/backend
+          docker run --rm -v ${{ github.workspace }}/DOCKER/php/laravel/suivi-stage:/data phpdoc/phpdoc:latest \
+            -d /data/app -t /data/docs/backend
 
       # Set up Node.js for Angular
       - name: Set up Node.js 20
