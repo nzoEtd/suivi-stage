@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { environment } from "../../environments/environment";
-import { Planning, PlanningCreate } from "../models/planning.model";
+import { Planning, PlanningCreate, PlanningUpdate } from "../models/planning.model";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Observable, catchError, tap, of } from "rxjs";
 import { Salle } from "../models/salle.model";
@@ -91,10 +91,11 @@ export class PlanningService {
   }
 
   //Mise à jour d'un planning
-  updatePlanning(planning: Planning): Observable<null> {
+  updatePlanning(planning: Planning | PlanningUpdate): Observable<null> {
     const httpOptions = {
       headers: new HttpHeaders({ "Content-type": "application/json" }),
     };
+    console.log("le planning à modifier :", planning)
 
     return this.http
       .put(

@@ -129,6 +129,7 @@ Route::resource('salle', SalleController::class);
 
 // Route pour le Controller Planning
 Route::resource('planning', PlanningController::class);
+Route::put('/planning/update/{idPlanning}', [PlanningController::class, 'update'])->name('planning.update');
 
 // Route pour le Controller Soutenance
 Route::put('/soutenance/update/{idSoutenance}', [SoutenanceController::class, 'update'])->name('soutenance.update');

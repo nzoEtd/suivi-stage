@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from "@angular/core";
 import { SlotComponent } from "../slot/slot.component";
 import {
   FormBuilder,
@@ -23,7 +23,6 @@ import { SalleService } from "../../services/salle.service";
 import { forkJoin } from "rxjs";
 import { ModaleComponent } from "../modale/modale.component";
 import { OverlayModule } from "@angular/cdk/overlay";
-import { PlanningItemsService } from "../../services/planning-items.service";
 import { TrainingYear } from "../../models/training-year.model";
 import { Student } from "../../models/student.model";
 import { TrainingYearService } from "../../services/training-year.service";
@@ -53,7 +52,7 @@ import { createSlotsFromStudents } from "../../utils/fonctions";
   templateUrl: "./schedule-board.component.html",
   styleUrls: ["./schedule-board.component.css"],
 })
-export class ScheduleBoardComponent implements OnInit {
+export class ScheduleBoardComponent implements OnInit, OnChanges {
   @Input() jourActuel!: Date;
   @Input() slots!: SlotItem[];
   @Input() sallesDispo!: number[];
@@ -112,7 +111,6 @@ export class ScheduleBoardComponent implements OnInit {
 
   constructor(private cdRef: ChangeDetectorRef,
     private salleService: SalleService,
-    private planningItemsService: PlanningItemsService,
     private trainingYearService: TrainingYearService,
     private studentService: StudentService,
     private fb: FormBuilder,
@@ -122,10 +120,6 @@ export class ScheduleBoardComponent implements OnInit {
     private studentStaffService: StudentStaffAcademicYearService,) {}
 
   async ngOnInit() {
-      // this.planningItemsService.items$
-      // .subscribe(items => {
-      //   this.items = items;
-      // });
       forkJoin({
         promos: this.trainingYearService.getTrainingYears(),
         academicYear: this.academicYearService.getCurrentAcademicYear(),
@@ -177,6 +171,17 @@ export class ScheduleBoardComponent implements OnInit {
         ),
       );
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    // Détecter si planningByDay a changé
+    if (changes['planningByDay'] && !changes['planningByDay'].firstChange) {
+      console.log("planningByDay mis à jour dans l'enfant:", this.planningByDay);
+      
+      // Reconstruire le cache avec les nouvelles données
+      this.rebuildSlotsCache();
+      this.cdRef.detectChanges();
+    }
   }
 
   toMinutes(str: string): number {

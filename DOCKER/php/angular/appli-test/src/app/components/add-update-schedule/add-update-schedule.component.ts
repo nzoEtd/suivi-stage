@@ -16,7 +16,7 @@ import {
   ReactiveFormsModule,
 } from "@angular/forms";
 import { CommonModule } from "@angular/common";
-import { Planning, PlanningCreate } from "../../models/planning.model";
+import { Planning, PlanningCreate, PlanningUpdate } from "../../models/planning.model";
 import { ScheduleBoardComponent } from "../schedule-board/schedule-board.component";
 import { LoadingComponent } from "../loading/loading.component";
 import { Router } from "@angular/router";
@@ -41,18 +41,6 @@ import { DataStoreService } from "../../services/data.service";
 import { ToastrService } from "ngx-toastr";
 import { inject } from "@angular/core";
 import { OverlayModule } from "@angular/cdk/overlay";
-import { TrainingYear } from "../../models/training-year.model";
-import { Student } from "../../models/student.model";
-import { TrainingYearService } from "../../services/training-year.service";
-import { StudentService } from "../../services/student.service";
-import { AcademicYearService } from "../../services/academic-year.service";
-import { Company } from "../../models/company.model";
-import { CompanyTutor } from "../../models/company-tutor.model";
-import { Student_Staff_AcademicYear_String } from "../../models/student-staff-academicYear-string.model";
-import { CompanyService } from "../../services/company.service";
-import { CompanyTutorService } from "../../services/company-tutor.service";
-import { StudentStaffAcademicYearService } from "../../services/student-staff-academicYear.service";
-import { PlanningItemsService } from "../../services/planning-items.service";
 import { Staff } from "../../models/staff.model";
 
 @Component({
@@ -94,6 +82,11 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   isValidating: boolean = false;
   allStaff: Staff[] = [];
 
+  newStartDay: Date | null = null;
+  hasNewStart: boolean = false;
+  newEndDay: Date | null = null;
+  hasNewEnd: boolean = false;
+
   //Variables pour les modales
   dropdownOpen: boolean = false;
   submitted: boolean = false;
@@ -113,7 +106,6 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     private readonly cdRef: ChangeDetectorRef,
     private router: Router,
     private fb: FormBuilder,
-    private planningItemsService: PlanningItemsService,
   ) {}
 
   ngOnInit(): void {
@@ -229,15 +221,30 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
 
   addJour() {
     this.newDay = this.planningForm.value;
-    console.log("test newDay :", this.newDay);
     if (this.newDay) {
       const date = new Date(this.newDay.date);
+      const dayKey = date.toISOString().slice(0, 10);
       this.planningByDay = {
         ...this.planningByDay,
-        [date.toLocaleDateString("fr-CA")]:
-          this.planningByDay[date.toLocaleDateString("fr-CA")] || [],
+        [dayKey]: this.planningByDay[dayKey] || [],
       };
+      if (!this.jours.some(j => j.toISOString().slice(0, 10) === dayKey)) {
+        this.jours = [...this.jours, date].sort((a, b) => a.getTime() - b.getTime());
+      }
+      const dateDayKey = new Date(dayKey);
       console.log(this.planningByDay);
+      if (this.planning?.dateDebut && this.planning?.dateFin){
+        const dateDebut = new Date(this.planning.dateDebut);
+        const dateFin = new Date(this.planning.dateFin);
+        if(dateDayKey < dateDebut){
+          this.hasNewStart = true;
+          this.newStartDay = dateDayKey;
+        }
+        if(dateDayKey > dateFin){
+          this.hasNewEnd = true;
+          this.newEndDay = dateDayKey;
+        }
+      }
       this.cdRef.detectChanges();
     }
     this.modalOpen = false;
@@ -256,6 +263,57 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
       return;
     }
     if (this.isEditMode) {
+      // UPDATE DE LA NOUVELLE DATE DE DEBUT OU DE FIN DU PLANNING
+      if(this.hasNewStart || this.hasNewEnd){
+        let planningToUpdate = this.planning as Planning;
+        let plannToCreate: PlanningUpdate;
+        console.log("ça marche le format ?", planningToUpdate.heureDebutMatin!.slice(0, 5))
+        if (this.hasNewStart) {
+          plannToCreate = {
+            ...planningToUpdate,
+            dateDebut: formatDateToYYYYMMDD(this.newStartDay!),
+            dateFin: formatDateToYYYYMMDD(planningToUpdate.dateFin!!),
+            heureDebutMatin: planningToUpdate.heureDebutMatin!.slice(0, 5),
+            heureFinMatin: planningToUpdate.heureFinMatin!.slice(0, 5),
+            heureDebutAprem: planningToUpdate.heureDebutAprem!.slice(0, 5),
+            heureFinAprem: planningToUpdate.heureFinAprem!.slice(0, 5),
+          }
+        } 
+        if (this.hasNewEnd) {
+          plannToCreate = {
+            ...planningToUpdate,
+            dateDebut: formatDateToYYYYMMDD(planningToUpdate.dateDebut!),
+            dateFin: formatDateToYYYYMMDD(this.newEndDay!),
+            heureDebutMatin: planningToUpdate.heureDebutMatin!.slice(0, 5),
+            heureFinMatin: planningToUpdate.heureFinMatin!.slice(0, 5),
+            heureDebutAprem: planningToUpdate.heureDebutAprem!.slice(0, 5),
+            heureFinAprem: planningToUpdate.heureFinAprem!.slice(0, 5),
+          }
+        } 
+        console.log("planning après changement format ?", plannToCreate!)
+          
+        this.planningService.updatePlanning(plannToCreate!)
+            .subscribe({
+              next: () => {
+                this.dataStore.refreshKeys(["plannings"]);
+                this.toastr.success(
+                  "La modification du planning a bien été prise en compte.",
+                  `Nouvelle date de ${this.hasNewStart ? "début": "fin"} enregistré.`
+                )
+              },
+              error: (err) => {
+                this.toastr.error(
+                  err,
+                  `Impossible d'enregistrer la nouvelle date de ${this.hasNewStart ? "début": "fin"} du planning.`,
+                );
+              },
+            });
+        this.hasNewStart = false;
+        this.hasNewEnd = false;
+        this.newStartDay = null;
+        this.newEndDay = null;
+      }
+
       // AJOUT DES NOUVEAUX SLOTS
       if (slotToAdd.length != 0) {
         const soutenancesToCreate = slotToAdd.map(
@@ -283,6 +341,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
             },
           });
       }
+
       // UPDATE
       console.log("UPDATING Planning:", this.planning);
       console.log("UPDATING Soutenances:", this.finalSlots);
@@ -371,7 +430,6 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
     this.items = event.items;
     this.planningByDay = event.planningByDay;
     this.itemsToAdd = event.itemsToAdd;
-    this.planningItemsService.setItems(this.items);
   }
 
   getAllSlots(): SlotItem[] {
