@@ -123,11 +123,15 @@ class EntrepriseControllerTest extends TestCase
      */
     public function test_store_renvoie_une_erreur_de_base_de_donnees()
     {
-        \Illuminate\Support\Facades\DB::shouldReceive('table')->andThrow(new \Illuminate\Database\QueryException(
-            'insert',
-            [],
-            new \Exception('Erreur de base de données simulée')
-        ));
+        // On simule une QueryException avec les bons arguments
+        \Illuminate\Support\Facades\DB::shouldReceive('connection')->andThrow(
+            new \Illuminate\Database\QueryException(
+                'mysql',
+                'insert into entreprises...',
+                [],
+                new \Exception('Erreur SQL')
+            )
+        );
 
         $donnees = [
             'raisonSociale' => 'TEST API',
