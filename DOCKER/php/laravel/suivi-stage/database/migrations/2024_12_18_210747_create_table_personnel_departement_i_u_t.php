@@ -20,10 +20,10 @@ class CreateTablePersonnelDepartementIUT extends Migration
 
             // Clé étrangère
             $table->unsignedInteger('idPersonnel');
-            $table->foreign('idPersonnel')->references('idPersonnel')->on('personnels');
+            $table->foreign('idPersonnel')->references('idPersonnel')->on('personnels')->onDelete('cascade');
 
             $table->unsignedTinyInteger('idDepartement');
-            $table->foreign('idDepartement')->references('idDepartement')->on('departement_i_u_t_s');
+            $table->foreign('idDepartement')->references('idDepartement')->on('departement_i_u_t_s')->onDelete('cascade');
         });
     }
 
