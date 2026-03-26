@@ -566,54 +566,56 @@ class DispatchDataDescriptiveSheetMiddlewareTest extends TestCase
         // Appel API
         $response = $this->postJson('/api/fiche-descriptive/create', $donnees);
 
-        $response->assertStatus(200)
-            ->assertJson([
-                "ficheDescriptive" => [
-                    "dateCreation" => Carbon::now()->format('Y-m-d'),
-                    "dateDerniereModification" => Carbon::now()->format('Y-m-d'),
-                    "contenuStage" => null,
-                    "thematique" => "Développement",
-                    "sujet" => "Sujet",
-                    "fonctions" => "Fonctions",
-                    "taches" => "Taches",
-                    "competences" => "Compétences",
-                    "details" => null,
-                    "debutStage" => "2025-03-05",
-                    "finStage" => "2025-03-19",
-                    "nbJourSemaine" => 5,
-                    "nbHeureSemaine" => 35,
-                    "clauseConfidentialite" => false,
-                    "serviceEntreprise" => null,
-                    "adresseMailStage" => "testtt@gmail.com",
-                    "telephoneStage" => "0504050608",
-                    "adresseStage" => "15 rue de la Victoire",
-                    "codePostalStage" => "47000",
-                    "villeStage" => "Agen",
-                    "paysStage" => "France",
-                    "longitudeStage" => null,
-                    "latitudeStage" => null,
-                    "statut" => "En cours",
-                    "numeroConvention" => null,
-                    "interruptionStage" => null,
-                    "dateDebutInterruption" => null,
-                    "dateFinInterruption" => null,
-                    "personnelTechniqueDisponible" => true,
-                    "materielPrete" => "Ordinateur, téléphone, voiture",
-                    "idEntreprise" => $entreprise->idEntreprise,
-                    "idTuteurEntreprise" => 8,
-                    "idUPPA" => $etudiant->idUPPA,
-                    "idFicheDescriptive" => 5
-                ],
-                "tuteur" => [
-                    "nom" => "HAKKE",
-                    "prenom" => "Idil",
-                    "telephone" => "0405060504",
-                    "adresseMail" => "hakkeidil@test.eu",
-                    "idEntreprise" => $entreprise->idEntreprise,
-                    "fonction" => "Chef de projet",
-                    "idTuteur" => 8
-                ]
-            ]);
+        $response->assertStatus(200);
+        $generatedId = $response->json('ficheDescriptive.idFicheDescriptive');
+
+        $response->assertJson([
+            "ficheDescriptive" => [
+                "dateCreation" => Carbon::now()->format('Y-m-d'),
+                "dateDerniereModification" => Carbon::now()->format('Y-m-d'),
+                "contenuStage" => null,
+                "thematique" => "Développement",
+                "sujet" => "Sujet",
+                "fonctions" => "Fonctions",
+                "taches" => "Taches",
+                "competences" => "Compétences",
+                "details" => null,
+                "debutStage" => "2025-03-05",
+                "finStage" => "2025-03-19",
+                "nbJourSemaine" => 5,
+                "nbHeureSemaine" => 35,
+                "clauseConfidentialite" => false,
+                "serviceEntreprise" => null,
+                "adresseMailStage" => "testtt@gmail.com",
+                "telephoneStage" => "0504050608",
+                "adresseStage" => "15 rue de la Victoire",
+                "codePostalStage" => "47000",
+                "villeStage" => "Agen",
+                "paysStage" => "France",
+                "longitudeStage" => null,
+                "latitudeStage" => null,
+                "statut" => "En cours",
+                "numeroConvention" => null,
+                "interruptionStage" => null,
+                "dateDebutInterruption" => null,
+                "dateFinInterruption" => null,
+                "personnelTechniqueDisponible" => true,
+                "materielPrete" => "Ordinateur, téléphone, voiture",
+                "idEntreprise" => $entreprise->idEntreprise,
+                "idTuteurEntreprise" => 8,
+                "idUPPA" => $etudiant->idUPPA,
+                "idFicheDescriptive" => $generatedId
+            ],
+            "tuteur" => [
+                "nom" => "HAKKE",
+                "prenom" => "Idil",
+                "telephone" => "0405060504",
+                "adresseMail" => "hakkeidil@test.eu",
+                "idEntreprise" => $entreprise->idEntreprise,
+                "fonction" => "Chef de projet",
+                "idTuteur" => 8
+            ]
+        ]);
     }
 
     /**
