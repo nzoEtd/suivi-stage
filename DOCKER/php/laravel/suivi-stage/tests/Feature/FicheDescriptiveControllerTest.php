@@ -574,16 +574,15 @@ class FicheDescriptiveControllerTest extends TestCase
      */
     public function test_destroy_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        // Mock du modèle FicheDescriptive pour déclencher une exception
         $this->mock(FicheDescriptive::class, function ($mock) {
-            $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
+            $mock->shouldReceive('findOrFail')
+                ->once()
+                ->andThrow(new \Exception('Erreur simulée'));
         });
 
-        $uneFicheDescriptive = FicheDescriptive::first();
-
-        $response = $this->delete('/api/fiche-descriptive/delete/' . $uneFicheDescriptive->idFicheDescriptive);
+        $response = $this->deleteJson('/api/fiche-descriptive/delete/999');
 
         $response->assertStatus(500)
-            ->assertJson(['message' => 'Une erreur s\'est produite :']);
+            ->assertJsonFragment(['message' => 'Une erreur s\'est produite :']);
     }
 }
