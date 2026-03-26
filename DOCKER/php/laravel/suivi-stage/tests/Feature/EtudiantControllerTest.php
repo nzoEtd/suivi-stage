@@ -122,8 +122,6 @@ class EtudiantControllerTest extends TestCase
      */
     public function test_indexRechercheStage_renvoie_une_erreur_500_en_cas_d_exception()
     {
-        // On doit mocker Etudiant (car il y a un findOrFail d'abord) 
-        // ou laisser Etudiant tranquille et mocker RechercheStage
         $mockEtudiant = \Mockery::mock('alias:App\Models\Etudiant');
         $mockEtudiant->shouldReceive('findOrFail')->andReturn(new \App\Models\Etudiant());
 
@@ -161,6 +159,11 @@ class EtudiantControllerTest extends TestCase
         $response->assertStatus(204);
     }
 
+
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function test_indexFicheDescriptive_renvoie_500_en_cas_d_exception()
     {
         $this->mock(FicheDescriptive::class, function ($mock) {
