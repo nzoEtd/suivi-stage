@@ -162,9 +162,9 @@ class FicheDescriptiveControllerTest extends TestCase
             "dateFinInterruption" =>  null,
             "personnelTechniqueDisponible" =>  true,
             "materielPrete" =>  "Ordinateur, logiciel de gestion",
-            "idEntreprise" => 1,
+            "idEntreprise" => 99999,
             "idTuteurEntreprise" => 2,
-            'idUPPA' => 64105202
+            'idUPPA' => 99999
         ];
         $response = $this->postJson('/api/fiche-descriptive/create', $donnees);
 
@@ -181,19 +181,28 @@ class FicheDescriptiveControllerTest extends TestCase
      */
     public function test_store_methode_doit_retourner_une_erreur_500_car_un_probleme_est_survenue()
     {
+        // Utiliser l'alias avec le namespace exact défini dans le contrôleur
         $mock = \Mockery::mock('alias:App\Models\FicheDescriptive');
-        $mock->shouldReceive('create')->andThrow(new \Exception('Erreur simulée'));
+        $mock->shouldReceive('create')
+            ->once()
+            ->andThrow(new \Exception('Erreur simulée'));
 
         $donnees = [
             'statut' => 'En cours',
             'idEntreprise' => 1,
-            'idTuteurEntreprise' => 2,
+            'idTuteurEntreprise' => 1,
             'idUPPA' => 610123
         ];
 
         $response = $this->postJson('/api/fiche-descriptive/create', $donnees);
 
-        $response->assertStatus(500);
+        $response->assertStatus(500)
+            ->assertJson([
+                'message' => "Une erreur s'est produite :",
+                'erreurs' => 'Erreur simulée'
+            ]);
+
+        \Mockery::close();
     }
     
 
