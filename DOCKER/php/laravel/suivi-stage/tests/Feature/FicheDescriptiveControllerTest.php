@@ -383,13 +383,14 @@ class FicheDescriptiveControllerTest extends TestCase
      * La méthode update doit retourner une erreur 500 si une erreur survient lors de la mise à jour
      * 
      * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function test_update_methode_doit_retourner_une_erreur_500_car_un_probleme_est_survenu()
     {
         // Mock du modèle FicheDescriptive pour déclencher une exception
-        $this->mock(FicheDescriptive::class, function ($mock) {
-            $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
-        });
+        $mock = Mockery::mock('alias:App\Models\Personnel');
+        $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
 
         $donnees = [
             "contenuStage" =>  "Développement d'une application web",
@@ -423,10 +424,11 @@ class FicheDescriptiveControllerTest extends TestCase
         ];
 
         $rechercheFirst = FicheDescriptive::first();
-        $response = $this->putJson('/api/fiche-descriptive/update/' . $rechercheFirst->idFicheDescriptive, $donnees);
+        $response = $this->putJson('/api/fiche-descriptive/update/1', $donnees);
         $response->assertStatus(500)
             ->assertJson(['message' => 'Une erreur s\'est produite :']);
     }
+
     
     /*
     ================================
@@ -523,20 +525,18 @@ class FicheDescriptiveControllerTest extends TestCase
      * La méthode show doit retourner une erreur 500 si une erreur survient lors de la récupération
      * 
      * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
-    public function test_show_methode_doit_retourner_une_erreur_500_si_une_erreur_survient()
+    public function test_show_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        // Mock du modèle FicheDescriptive pour déclencher une exception
-        $this->mock(FicheDescriptive::class, function ($mock) {
-            $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
-        });
+        $mock = Mockery::mock('alias:App\Models\FicheDescriptive');
+        $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
 
-        $ficheDescriptive = FicheDescriptive::first();
-
-        $response = $this->get('/api/fiche-descriptive/' . $ficheDescriptive->idFicheDescriptive);
+        $response = $this->get('/api/fiche-descriptive/1');
 
         $response->assertStatus(500)
-            ->assertJson(['message' => 'Une erreur s\'est produite :']);
+            ->assertJson(['message' => "Une erreur s\'est produite :"]);
     }
 
     /*
@@ -579,6 +579,8 @@ class FicheDescriptiveControllerTest extends TestCase
      * La méthode destroy doit retourner une erreur 500 en cas d'exception
      * 
      * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function test_destroy_renvoie_une_erreur_generique_en_cas_d_exception()
     {
