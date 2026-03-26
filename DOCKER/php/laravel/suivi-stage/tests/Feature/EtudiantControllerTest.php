@@ -166,15 +166,21 @@ class EtudiantControllerTest extends TestCase
      */
     public function test_indexFicheDescriptive_renvoie_500_en_cas_d_exception()
     {
-        $this->mock(FicheDescriptive::class, function ($mock) {
-            $mock->shouldReceive('where')->andThrow(new \Exception('Erreur simulée'));
-        });
+        $mock = \Mockery::mock('alias:' . FicheDescriptive::class);
+        $mock->shouldReceive('where')
+            ->andThrow(new \Exception('Erreur simulée'));
 
         $etudiant = Etudiant::first();
+
         $response = $this->get("/api/etudiants/{$etudiant->idUPPA}/fiches-descriptives");
 
         $response->assertStatus(500)
-            ->assertJson(['message' => "Une erreur s'est produite :"]);
+            ->assertJson([
+                'message' => "Une erreur s'est produite",
+                'erreurs' => 'Erreur simulée'
+            ]);
+
+        \Mockery::close();
     }
 
     public function test_indexFicheDescriptive_renvoie_404_si_etudiant_n_existe_pas()
