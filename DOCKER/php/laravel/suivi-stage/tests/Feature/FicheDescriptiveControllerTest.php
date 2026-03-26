@@ -189,8 +189,9 @@ class FicheDescriptiveControllerTest extends TestCase
      */
     public function test_store_methode_doit_retourner_une_erreur_500_car_un_probleme_est_survenue()
     {
-        \Mockery::mock('alias:App\Models\FicheDescriptive')
-            ->shouldReceive('create')
+        $mock = \Mockery::mock('alias:' . FicheDescriptive::class);
+        $mock->shouldReceive('create')
+            ->once()
             ->andThrow(new \Exception('Erreur simulée'));
 
         $donnees = [
@@ -202,9 +203,17 @@ class FicheDescriptiveControllerTest extends TestCase
 
         $response = $this->postJson('/api/fiche-descriptive/create', $donnees);
 
-        $response->assertStatus(500);
+        $response->assertStatus(500)
+            ->assertJson([
+                'message' => "Une erreur s'est produite :",
+                'exception' => 'Erreur simulée'
+            ]);
         \Mockery::close();
     }
+
+   
+
+
 
     /*
     ================================
@@ -423,7 +432,6 @@ class FicheDescriptiveControllerTest extends TestCase
             "materielPrete" =>  "Ordinateur, logiciel de gestion"
         ];
 
-        $rechercheFirst = FicheDescriptive::first();
         $response = $this->putJson('/api/fiche-descriptive/update/1', $donnees);
         $response->assertStatus(500)
             ->assertJson(['message' => 'Une erreur s\'est produite :']);
@@ -536,7 +544,7 @@ class FicheDescriptiveControllerTest extends TestCase
         $response = $this->get('/api/fiche-descriptive/1');
 
         $response->assertStatus(500)
-            ->assertJson(['message' => "Une erreur s\'est produite :"]);
+            ->assertJson(['message' => "Une erreur s'est produite :"]);
     }
 
     /*
