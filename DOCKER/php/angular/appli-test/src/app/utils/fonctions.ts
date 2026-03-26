@@ -5,7 +5,7 @@ import { SlotItem } from "../models/slotItem.model";
 import { Soutenance, SoutenanceCreate } from "../models/soutenance.model";
 import { Staff } from "../models/staff.model";
 import { Student } from "../models/student.model";
-import { getDateHeure, isSameDay } from "./timeManagement";
+import { buildDate, getDateHeure, isSameDay } from "./timeManagement";
 import { CompanyTutor } from "../models/company-tutor.model";
 import { StudentStaffAcademicYearService } from "../services/student-staff-academicYear.service";
 import { Student_TrainingYear_AcademicYear } from "../models/student-trainingYear-academicYear.model";
@@ -13,6 +13,8 @@ import { forkJoin } from "rxjs";
 import { Student_Staff_AcademicYear } from "../models/student-staff-academicYear.model";
 import { AcademicYear } from "../models/academic-year.model";
 import { Student_Staff_AcademicYear_String } from "../models/student-staff-academicYear-string.model";
+import { CreneauDisponible } from "./types";
+import { FormGroup } from "@angular/forms";
 
 export async function loadSoutenancesForPlanning(
   planning: Planning,
@@ -174,4 +176,79 @@ export function createSlotsFromStudents(allStudents: Student[], allCompanies: Co
     slots.push(slot);
   })
   return slots;
+}
+
+export function updateLecteursDisponibles(creneauValue: string, keepCurrentLecteur = false, creneauxDisponibles: CreneauDisponible[], soutenancesJour: Record<string, SlotItem[]>, soutenance: SlotItem, enseignantsLecteurs: Staff[], allStaff: Staff[], soutenanceForm: FormGroup) {
+  const [date, salleStr, heureDebut] = creneauValue.split("|");
+  const salle = Number(salleStr);
+  const creneau = creneauxDisponibles.find(
+    (c) =>
+      c.date === date && c.salle === salle && c.heureDebut === heureDebut,
+  );
+  if (!creneau) return;
+
+  const heureDebutDate = buildDate(creneau.date, creneau.heureDebut);
+  const heureFinDate = buildDate(creneau.date, creneau.heureFin);
+
+  const soutenances = soutenancesJour[date] || [];
+
+  const idNonDisponibles = soutenances
+    .filter(
+      (s) =>
+        s.id !== soutenance.id &&
+        isOverlap(
+          heureDebutDate,
+          heureFinDate,
+          s.dateDebut!,
+          s.dateFin!,
+        ),
+    )
+    .flatMap((s) => [s.idLecteur, s.idReferent]);
+
+  const referentTechnique = referentEstTechnique(
+    soutenance.idReferent,
+    allStaff,
+  );
+
+  enseignantsLecteurs = allStaff.filter((s) => {
+    if (idNonDisponibles.includes(s.idPersonnel)) {
+      return false;
+    }
+    if (s.idPersonnel === soutenance.idReferent) {
+      return false;
+    }
+    if (!referentTechnique && !s.estTechnique) {
+      return false;
+    }
+    return true;
+  });
+
+  const lecteurCtrl = soutenanceForm?.get("lecteur");
+  if (!lecteurCtrl) return;
+
+  if (keepCurrentLecteur) {
+    const lecteurActuelDispo = enseignantsLecteurs.some(
+      (e) => e.idPersonnel === soutenance.idLecteur,
+    );
+    if (!lecteurActuelDispo) {
+      lecteurCtrl.setValue(enseignantsLecteurs[0]?.idPersonnel ?? null);
+    }
+  } else {
+    const currentLecteur = Number(lecteurCtrl.value);
+    const toujoursDispo = enseignantsLecteurs.some(
+      (e) => e.idPersonnel === currentLecteur,
+    );
+    if (!toujoursDispo) {
+      lecteurCtrl.setValue(enseignantsLecteurs[0]?.idPersonnel ?? null);
+    }
+  }
+}
+
+export function isOverlap(start1: Date, end1: Date, start2: Date, end2: Date): boolean {
+  return start1 < end2 && end1 > start2;
+}
+
+export function referentEstTechnique(idReferent: number, allStaff: Staff[]): boolean {
+  const enseignant = allStaff.find((s) => s.idPersonnel === idReferent);
+  return enseignant?.estTechnique || false;
 }

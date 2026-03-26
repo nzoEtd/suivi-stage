@@ -2,7 +2,7 @@
     <div>
         @if(!onlyDisplay){
             <button class="little-btn primary" (click)="openModalStudent()"><b>
-                Ajouter un étudiant
+                Ajouter une soutenance
             </b></button>
         }
         <div class="slot-box"
@@ -49,9 +49,6 @@
             <div class="hours-header"></div>
             @for(salle of sallesDispo; track salle; let last = $last){
                 <span class="salle-header">Salle {{salle}}</span>
-            }
-            @if(!onlyDisplay){
-                <span class="addRoom" title="Ajouter une salle" (click)="openModalRoom()"><b>+</b></span>
             }
         </div>
 
@@ -171,6 +168,48 @@
             }
         }
     </div>
+    @if(!onlyDisplay){
+        <span class="addRoom primary" title="Ajouter une salle" (click)="openModalRoom()"><b>
+            <!-- Bouton en haut à droite du planning -->
+            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 50 50"> -->
+                <!-- Rounded rectangle button background -->
+                <!-- <rect x="1" y="1" width="48" height="48" rx="15" ry="15" fill="#0A63A4" stroke-width="2"/> -->
+              
+                <!-- Plus sign -->
+                <!-- <text x="26" y="17" font-family="Arial, sans-serif" font-size="20" fill="white" text-anchor="middle" dominant-baseline="middle">+</text> -->
+              
+                <!-- Label -->
+                <!-- <text x="25" y="36" font-family="Arial, sans-serif" font-size="10" fill="white" text-anchor="middle">SALLE</text>
+              </svg> -->
+              <!-- Barre bouton sur le coté du planning -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="50%" viewBox="0 300 50 50" style="transition: width 0.3s ease;"
+              onmouseover="this.setAttribute('width','30')"
+              onmouseout="this.setAttribute('width','15')">
+                <!-- Rounded rectangle button background -->
+                <rect x="1" y="1" width="48" height="600" rx="15" ry="15" fill="none" stroke="none" stroke-width="2"/>
+              
+                <!-- Plus sign -->
+                <text x="26" y="270" font-family="Arial, sans-serif" font-size="50" fill="white" text-anchor="middle" dominant-baseline="middle" style="transition: width 0.3s ease;"
+                onmouseover="this.setAttribute('width','50')"
+                onmouseout="this.setAttribute('width','500')">+</text>
+              
+                <!-- Label -->
+                <text x="340" y="50" font-family="Arial, sans-serif" font-size="40" fill="white" text-anchor="middle" transform="rotate(90, 25, 36)">SALLE</text>
+              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="50%" viewBox="0 300 50 50" style="transition: width 0.3s ease;"
+              onmouseover="this.setAttribute('width','30')"
+              onmouseout="this.setAttribute('width','15')">
+                <!-- Rounded rectangle button background -->
+                <rect x="1" y="1" width="48" height="600" rx="15" ry="15" fill="none" stroke="none" stroke-width="2"/>
+              
+                <!-- Plus sign -->
+                <text x="26" y="270" font-family="Arial, sans-serif" font-size="50" fill="white" text-anchor="middle" dominant-baseline="middle">+</text>
+              
+                <!-- Label -->
+                <text x="340" y="50" font-family="Arial, sans-serif" font-size="40" fill="white" text-anchor="middle" transform="rotate(90, 25, 36)">SALLE</text>
+              </svg>
+        </b></span>
+    }
 </div>
 
 <app-modale

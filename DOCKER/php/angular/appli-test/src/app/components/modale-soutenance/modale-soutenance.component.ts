@@ -20,13 +20,8 @@ import {
   timeStringToMinutes,
   dateToHeureStr,
 } from "../../utils/timeManagement";
-
-type CreneauDisponible = {
-  date: string;
-  salle: number;
-  heureDebut: string;
-  heureFin: string;
-};
+import { CreneauDisponible } from "../../utils/types";
+import { isOverlap, referentEstTechnique, updateLecteursDisponibles } from "../../utils/fonctions";
 
 @Component({
   selector: "app-modale-soutenance",
@@ -71,10 +66,10 @@ export class ModaleSoutenanceComponent implements OnInit {
     });
 
     this.soutenanceForm.get("creneau")?.valueChanges.subscribe((value) => {
-      this.updateLecteursDisponibles(value, false);
+      this.updateLecteursDisponibles(value, false/*, this.creneauxDisponibles, this.soutenancesJour, this.soutenance, this.enseignantsLecteurs, this.allStaff, this.soutenanceForm*/);
     });
 
-    this.updateLecteursDisponibles(currentCreneauKey, true);
+    this.updateLecteursDisponibles(currentCreneauKey, true/*, this.creneauxDisponibles, this.soutenancesJour, this.soutenance, this.enseignantsLecteurs, this.allStaff, this.soutenanceForm*/);
     this.isDataLoaded = true;
   }
 
@@ -119,7 +114,7 @@ export class ModaleSoutenanceComponent implements OnInit {
             const heureFin = buildDate(date, heureFinStr);
 
             const soutenancesChevauchantes = autresSoutenances.filter((s) =>
-              this.isOverlap(heureDebut, heureFin, s.dateDebut!, s.dateFin!),
+              isOverlap(heureDebut, heureFin, s.dateDebut!, s.dateFin!),
             );
 
             // Salle occupée
@@ -192,7 +187,7 @@ export class ModaleSoutenanceComponent implements OnInit {
       .filter(
         (s) =>
           s.id !== this.soutenance.id &&
-          this.isOverlap(
+          isOverlap(
             heureDebutDate,
             heureFinDate,
             s.dateDebut!,
@@ -201,8 +196,9 @@ export class ModaleSoutenanceComponent implements OnInit {
       )
       .flatMap((s) => [s.idLecteur, s.idReferent]);
 
-    const referentTechnique = this.referentEstTechnique(
+    const referentTechnique = referentEstTechnique(
       this.soutenance.idReferent,
+      this.allStaff,
     );
 
     this.enseignantsLecteurs = this.allStaff.filter((s) => {
@@ -237,15 +233,6 @@ export class ModaleSoutenanceComponent implements OnInit {
         lecteurCtrl.setValue(this.enseignantsLecteurs[0]?.idPersonnel ?? null);
       }
     }
-  }
-
-  referentEstTechnique(idReferent: number): boolean {
-    const enseignant = this.allStaff.find((s) => s.idPersonnel === idReferent);
-    return enseignant?.estTechnique || false;
-  }
-
-  isOverlap(start1: Date, end1: Date, start2: Date, end2: Date): boolean {
-    return start1 < end2 && end1 > start2;
   }
 
   onCancel(event?: MouseEvent) {

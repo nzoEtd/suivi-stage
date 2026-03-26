@@ -263,18 +263,12 @@
   transform: translateY(-50%);
 }
 
-.addRoom:last-child{
+.addRoom{
     display: block;
-    position: absolute;
-    right: 112px;
+    position: relative;
+    margin-left: -15px;
     justify-self: center;
     text-align: center;
-    padding: 5px;
-    padding-top: 0;
-    padding-bottom: 1px;
-    border-radius: 25px;
-    background-color: white;
-    border: 1px solid #3a3a3a;
     cursor: pointer;
     z-index: 1000;
 }

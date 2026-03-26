@@ -362,7 +362,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     this.slotDurationTierTemps = tierTempsSlot && tierTempsSlot.dateDebut && tierTempsSlot.dateFin ? tierTempsSlot.dateFin.getTime() - tierTempsSlot.dateDebut.getTime() : 0;
     console.log("durée basique :", this.slotDuration, ", durée tier-temps :", this.slotDurationTierTemps)
 
-    this.title = "Ajouter un étudiant";
+    this.title = "Ajouter une soutenance";
     // this.modalStudent = true;
     this.modalOpen = true;
     this.modalStudent = true;
