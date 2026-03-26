@@ -470,6 +470,7 @@ class FicheDescriptiveControllerTest extends TestCase
      * 
      * @return void
      */
+
     public function test_show_methode_doit_retourner_un_code_200_car_la_fiche_descriptive_a_ete_trouvee()
     {
         $ficheFirst = FicheDescriptive::first();
@@ -477,8 +478,14 @@ class FicheDescriptiveControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'idFicheDescriptive' => $ficheFirst->idFicheDescriptive,
-                'statut' => $ficheFirst->statut
+                'idFicheDescriptive' => [
+                    'value' => $ficheFirst->idFicheDescriptive,
+                    'type' => 'ficheDescriptive'
+                ],
+                'statut' => [
+                    'value' => $ficheFirst->statut,
+                    'type' => 'ficheDescriptive'
+                ]
             ]);
     }
 
