@@ -2,15 +2,12 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\RechercheStage;
 use App\Models\Etudiant;
 use App\Models\FicheDescriptive;
 use App\Models\Parcours;
 use App\Models\AnneeUniversitaire;
-use Illuminate\Support\Facades\DB;
 use Mockery;
 
 class EtudiantControllerTest extends TestCase

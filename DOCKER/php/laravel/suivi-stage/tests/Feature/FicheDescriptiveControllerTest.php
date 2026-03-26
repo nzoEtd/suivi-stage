@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\FicheDescriptive;
 use Tests\TestCase;
 use Tests\Feature\Exception;
+use Mockery;
 
 class FicheDescriptiveControllerTest extends TestCase
 {
@@ -20,6 +21,13 @@ class FicheDescriptiveControllerTest extends TestCase
         parent::setUp();
         $this->artisan('migrate:fresh');
         $this->artisan('db:seed');
+    }
+
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
     }
 
     /*
@@ -574,15 +582,12 @@ class FicheDescriptiveControllerTest extends TestCase
      */
     public function test_destroy_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        $this->mock(FicheDescriptive::class, function ($mock) {
-            $mock->shouldReceive('findOrFail')
-                ->once()
-                ->andThrow(new \Exception('Erreur simulée'));
-        });
+        $mock = Mockery::mock('alias:App\Models\FicheDescriptive');
+        $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
 
-        $response = $this->deleteJson('/api/fiche-descriptive/delete/999');
+        $response = $this->deleteJson('/api/fiche-descriptive/delete/1');
 
         $response->assertStatus(500)
-            ->assertJsonFragment(['message' => 'Une erreur s\'est produite :']);
+            ->assertJson(['message' => "Une erreur s'est produite :"]);
     }
 }
