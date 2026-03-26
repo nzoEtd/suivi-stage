@@ -145,13 +145,12 @@ class EtudiantControllerTest extends TestCase
     public function test_indexFicheDescriptive_renvoie_200_et_la_liste_des_fiches_descriptives()
     {
         $etudiant = Etudiant::first();
-        \App\Models\FicheDescriptive::create([
-            'idUPPA' => $etudiant->idUPPA,
-            'titre' => 'Stage de test',
-        ]);
+        $fiches = FicheDescriptive::where('idUPPA', $etudiant->idUPPA)->get();
 
         $response = $this->get("/api/etudiants/{$etudiant->idUPPA}/fiches-descriptives");
-        $response->assertStatus(200);
+
+        $response->assertStatus(200)
+            ->assertJson($fiches->toArray());
     }
 
     public function test_indexFicheDescriptive_renvoie_204_si_aucune_fiche()
