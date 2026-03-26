@@ -211,42 +211,48 @@ class FicheDescriptiveControllerTest extends TestCase
 
     public function test_update_methode_doit_retourner_200_car_la_fiche_descriptive_a_ete_mise_a_jour()
     {
-        $donnees = [
-            "contenuStage" =>  "Développement d'une application web",
-            "thematique" =>  "Développement logiciel",
-            "sujet" =>  "Création d'un outil de gestion des tâches",
-            "fonctions" =>  "Développeur logiciel",
-            "taches" =>  "Analyser, développer et tester",
-            "competences" =>  "PHP, Laravel, JavaScript",
-            "details" =>  "Travail en collaboration avec l'équipe backend",
-            "debutStage" =>  "2025-02-01",
-            "finStage" =>  "2025-06-30",
-            "nbJourSemaine" =>  5,
-            "nbHeureSemaine" =>  35,
-            "clauseConfidentialite" =>  true,
-            "serviceEntreprise" => "Service informatique",
-            "adresseMailStage" => "perigueux@zero-infini.fr",
-            "telephoneStage" => "0556010203",
-            "adresseStage" => "20 Rue Ernest Guillier",
-            "codePostalStage" => "24000",
-            "villeStage" => "Périgueux",
-            "paysStage" => "France",
-            "longitudeStage" => "0.716667",
-            "latitudeStage" => "45.183333",
-            "statut" =>  "En cours",
-            "numeroConvention" =>  "12345-ABCDE",
-            "interruptionStage" =>  false,
-            "dateDebutInterruption" =>  null,
-            "dateFinInterruption" =>  null,
-            "personnelTechniqueDisponible" =>  true,
-            "materielPrete" =>  "Ordinateur, logiciel de gestion"
+        $donneesEnvoyees = [
+            "contenuStage" => ["value" => "Développement d'une application web", "type" => "ficheDescriptive"],
+            "thematiqueFicheDescriptive" => ["value" => "Développement logiciel", "type" => "ficheDescriptive"],
+            "sujetFicheDescriptive" => ["value" => "Création d'un outil de gestion des tâches", "type" => "ficheDescriptive"],
+            "fonctionsFicheDescriptive" => ["value" => "Développeur logiciel", "type" => "ficheDescriptive"],
+            "tachesFicheDescriptive" => ["value" => "Analyser, développer et tester", "type" => "ficheDescriptive"],
+            "competencesFicheDescriptive" => ["value" => "PHP, Laravel, JavaScript", "type" => "ficheDescriptive"],
+            "detailsFicheDescriptive" => ["value" => "Travail en collaboration avec l'équipe backend", "type" => "ficheDescriptive"],
+            "debutStageFicheDescriptive" => ["value" => "2025-02-01", "type" => "ficheDescriptive"],
+            "finStageFicheDescriptive" => ["value" => "2025-06-30", "type" => "ficheDescriptive"],
+            "nbJourSemaineFicheDescriptive" => ["value" => 5, "type" => "ficheDescriptive"],
+            "nbHeuresSemaineFicheDescriptive" => ["value" => 35, "type" => "ficheDescriptive"],
+            "clauseConfidentialiteFicheDescriptive" => ["value" => true, "type" => "ficheDescriptive"],
+            "serviceEntrepriseFicheDescriptive" => ["value" => "Service informatique", "type" => "ficheDescriptive"],
+            "adresseMailStageFicheDescriptive" => ["value" => "perigueux@zero-infini.fr", "type" => "ficheDescriptive"],
+            "telephoneStageFicheDescriptive" => ["value" => "0556010203", "type" => "ficheDescriptive"],
+            "adresseStageFicheDescriptive" => ["value" => "20 Rue Ernest Guillier", "type" => "ficheDescriptive"],
+            "codePostalStageFicheDescriptive" => ["value" => "24000", "type" => "ficheDescriptive"],
+            "villeStageFicheDescriptive" => ["value" => "Périgueux", "type" => "ficheDescriptive"],
+            "paysStageFicheDescriptive" => ["value" => "France", "type" => "ficheDescriptive"],
+            "statut" => ["value" => "En cours", "type" => "ficheDescriptive"],
+            "numeroConvention" => ["value" => "12345-ABCDE", "type" => "ficheDescriptive"],
+            "interruptionStageFicheDescriptive" => ["value" => false, "type" => "ficheDescriptive"],
+            "personnelTechniqueDisponibleFicheDescriptive" => ["value" => true, "type" => "ficheDescriptive"],
+            "materielPreteFicheDescriptive" => ["value" => "Ordinateur, logiciel de gestion", "type" => "ficheDescriptive"]
         ];
 
         $rechercheFirst = FicheDescriptive::first();
-        $response = $this->putJson('/api/fiche-descriptive/update/' . $rechercheFirst->idFicheDescriptive, $donnees);
+
+        $response = $this->putJson('/api/fiche-descriptive/update/' . $rechercheFirst->idFicheDescriptive, $donneesEnvoyees);
+
         $response->assertStatus(200)
             ->assertJson([
-                'ficheDescriptive' => $donnees
+                'ficheDescriptive' => [
+                    'thematique' => "Développement logiciel",
+                    'sujet'      => "Création d'un outil de gestion des tâches",
+                    'fonctions'  => "Développeur logiciel",
+                    'competences' => "PHP, Laravel, JavaScript",
+                    'debutStage' => "2025-02-01",
+                    'finStage'   => "2025-06-30",
+                    'telephoneStage' => "0556010203"
+                ]
             ]);
     }
 
