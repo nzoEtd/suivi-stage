@@ -75,23 +75,7 @@ class PersonnelController extends Controller
 
             ]);
 
-            $unPersonnel = Personnel::create([
-                'login'             => $donneesValidees['login'],
-                'roles'             => $donneesValidees['roles'],
-                'nom'               => $donneesValidees['nom'],
-                'prenom'            => $donneesValidees['prenom'],
-                'adresse'           => $donneesValidees['adresse'],
-                'ville'             => $donneesValidees['ville'],
-                'codePostal'        => $donneesValidees['codePostal'],
-                'telephone'         => $donneesValidees['telephone'],
-                'adresseMail'       => $donneesValidees['adresseMail'],
-                'longitudeAdresse'  => $donneesValidees['longitudeAdresse'],
-                'latitudeAdresse'   => $donneesValidees['latitudeAdresse'],
-                'quotaEtudiant'     => $donneesValidees['quotaEtudiant'],
-                'estTechnique'     => $donneesValidees['estTechnique'],
-
-                
-            ]);
+            $unPersonnel = Personnel::create($donneesValidees);
 
             return response()->json($unPersonnel, 201);
         } catch (\Illuminate\Validation\ValidationException $e) {

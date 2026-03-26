@@ -57,6 +57,8 @@ class PersonnelControllerTest extends TestCase
         $response->assertStatus(201);
         $response->assertJsonFragment(['login' => 'jdupont']);
     }
+
+
     public function test_store_renvoie_une_erreur_de_validation()
     {
         $donnees = [
