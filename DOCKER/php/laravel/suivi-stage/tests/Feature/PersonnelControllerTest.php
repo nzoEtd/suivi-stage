@@ -82,31 +82,36 @@ class PersonnelControllerTest extends TestCase
             ->assertJson(['message' => 'Erreur de validation dans les données']);
     }
 
+
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function test_store_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        $this->mock(Personnel::class, function ($mock) {
-            $mock->shouldReceive('create')->andThrow(new \Exception('Erreur simulée'));
-        });
+        $mock = \Mockery::mock('alias:' . Personnel::class);
+        $mock->shouldReceive('create')
+            ->once()
+            ->andThrow(new \Exception('Erreur simulée'));
 
         $donnees = [
             'login' => 'jdupont',
             'roles' => 'Enseignant',
             'nom' => 'Dupont',
             'prenom' => 'Jean',
-            'adresse' => null,
-            'ville' => null,
-            'codePostal' => null,
-            'telephone' => null,
             'adresseMail' => 'jdupont@univ-pau.fr',
-            'longitudeAdresse' => null,
-            'latitudeAdresse' => null,
             'quotaEtudiant' => 8,
         ];
 
-        $response = $this->post('/api/personnel/create', $donnees);
+        $response = $this->postJson('/api/personnel/create', $donnees);
 
         $response->assertStatus(500)
-            ->assertJson(['message' => "Une erreur s'est produite :"]);
+            ->assertJson([
+                'message' => "Une erreur s'est produite :",
+                'exception' => 'Erreur simulée'
+            ]);
+
+        \Mockery::close();
     }
 
     /*
