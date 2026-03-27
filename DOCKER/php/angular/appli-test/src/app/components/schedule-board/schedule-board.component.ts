@@ -34,7 +34,9 @@ import { Student_Staff_AcademicYear_String } from "../../models/student-staff-ac
 import { CompanyService } from "../../services/company.service";
 import { CompanyTutorService } from "../../services/company-tutor.service";
 import { StudentStaffAcademicYearService } from "../../services/student-staff-academicYear.service";
-import { createSlotsFromStudents } from "../../utils/fonctions";
+import { createSlotsFromStudents, updateLecteur } from "../../utils/fonctions";
+import { Staff } from "../../models/staff.model";
+import { StaffService } from "../../services/staff.service";
 
 @Component({
   selector: "app-schedule-board",
@@ -70,6 +72,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
   PAUSE_HEIGHT = 15;
   slotDuration: number = 0;
   slotDurationTierTemps: number = 0;
+  allStaff: Staff[] = [];
 
   //Variables pour les modales
   isModalOpen: boolean = false;
@@ -92,6 +95,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
   allTutors: CompanyTutor[] = [];
   referents: Student_Staff_AcademicYear_String[] = [];
   hasValue: boolean = false;
+  autoOpen: boolean = false;
 
   // Variables for drag and drop
   private slotsCache = new Map<TimeBlock, SlotItem[]>();
@@ -119,7 +123,8 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     private academicYearService: AcademicYearService,
     private companiesService: CompanyService,
     private tutorService: CompanyTutorService,
-    private studentStaffService: StudentStaffAcademicYearService,) {}
+    private studentStaffService: StudentStaffAcademicYearService,
+    private staffService: StaffService,) {}
 
   async ngOnInit() {
       forkJoin({
@@ -128,12 +133,14 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
         allCompanies: this.companiesService.getCompanies(),
         allTutors: this.tutorService.getCompanyTutors(),
         referents: this.studentStaffService.getAllStudentTeachers(),
-      }).subscribe(({ promos, academicYear, allCompanies, allTutors, referents }) => {
+        staff: this.staffService.getStaffs(),
+      }).subscribe(({ promos, academicYear, allCompanies, allTutors, referents, staff }) => {
         this.promos = promos.filter(p => p.idAnneeFormation != this.idPromoActuelle);
         this.currentAcademicYearId = academicYear?.idAnneeUniversitaire || 0;
         this.allCompanies = allCompanies;
         this.allTutors = allTutors;
         this.referents = referents;
+        this.allStaff = staff;
       });
       // Toujours commencer les blocs à une heure 'pile' donc sans minutes
       const converted = this.timeBlocks.map((b: TimeBlockConfig) => {
@@ -183,6 +190,14 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
       // Reconstruire le cache avec les nouvelles données
       this.rebuildSlotsCache();
       this.cdRef.detectChanges();
+    }
+    // Détecter si jourActuel a changé et qu'il n'y a aucune soutenance dedans
+    if (changes['jourActuel'] && !changes['jourActuel'].firstChange && this.sallesDispo.length == 0) {
+      console.log("jourActuel:", this.jourActuel);
+      
+      // Ouvrir la modale d'ajout de salle
+      this.autoOpen = true;
+      this.openModalRoom();
     }
   }
 
@@ -293,6 +308,14 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
   get promoSelected(): boolean {
     return this.planningForm.get('idAnneeFormation')?.value != null;
   }
+  
+  closeModal(){
+    if(this.autoOpen){
+      this.toastr.warning('Aucune soutenance ne pourra être posée','Attention, ce jour n\'a pas de salle attribuée.');
+    }
+    this.modalOpen = false;
+    this.autoOpen = false;
+  }
 
   openModalRoom(){
     this.initFormRoom();
@@ -320,7 +343,8 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     this.cdRef.detectChanges();
     this.modalOpen = false;
     this.submitted = false;
-    this.toastr.warning('Avant de changer de jour, veuillez ajouter un créneau dans la nouvelle salle pour la sauvegarder.');
+    this.toastr.warning('Avant de changer de jour, veuillez ajouter un créneau dans la nouvelle salle.', 'Attention, la salle n\'est pas sauvegardée automatiquement');
+    this.autoOpen = false;
   }
 
   onSalleToggle(event: Event, salle: Salle) {
@@ -534,6 +558,13 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
         draggedSlot.dateFin = newEnd;
         draggedSlot.salle = newRoom;
         draggedSlot.topPercent = newTop;
+
+        // Ajout/changement d'un lecteur
+        let lecteur = updateLecteur(true, this.planningByDay, draggedSlot, this.allStaff);
+        if(lecteur){
+          draggedSlot.idLecteur = lecteur.idPersonnel;
+          draggedSlot.lecteur = `${lecteur.prenom![0]}. ${lecteur.nom}`;
+        }
         // Si le slot a changé de date on le supprime de l'ancienne dans planningByDay
         if (lastDate != null && dayKey !== lastDate) {
           this.planningByDay[lastDate] = this.planningByDay[lastDate].filter(
