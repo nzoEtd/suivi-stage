@@ -454,6 +454,8 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
       salle: draggedSlot.salle,
       topPercent: draggedSlot.topPercent,
       heightPercent: draggedSlot.heightPercent,
+      idLecteur: draggedSlot.idLecteur,
+      lecteur: draggedSlot.lecteur,
     };
 
     let duration =
@@ -522,6 +524,25 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
               (s.dateDebut! < newEnd && s.dateFin! > newStart)),
         );
 
+        // Placement accepté
+        draggedSlot.dateDebut = newStart;
+        draggedSlot.dateFin = newEnd;
+        draggedSlot.salle = newRoom;
+        draggedSlot.topPercent = newTop;
+
+        // Ajout/changement d'un lecteur
+        let lecteur = updateLecteur(true, this.planningByDay, draggedSlot, this.allStaff);
+        console.log("y a vrm un lecteur ?", lecteur)
+        if(lecteur){
+          draggedSlot.idLecteur = lecteur.idPersonnel;
+          draggedSlot.lecteur = `${lecteur.prenom![0]}. ${lecteur.nom}`;
+        }
+        else{
+          draggedSlot.idLecteur = 0;
+          draggedSlot.lecteur = "";
+        }
+        console.log("ça donne quoi le dragged slot ?", draggedSlot.idLecteur, draggedSlot.lecteur)
+
         // Vérification de la disponibilité du créneau choisit et de la disponibilité des profs
         if (!this.canPlaceSlot(newStart, newEnd, draggedSlot.referent, draggedSlot.lecteur, newRoom, existingSlots) ||
             (prevState.dateDebut != null && (prevState.dateDebut!.getHours() * 60 + prevState.dateDebut!.getMinutes()) == (newStart.getHours() * 60 + newStart.getMinutes())
@@ -537,6 +558,8 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
           draggedSlot.salle = prevState.salle;
           draggedSlot.topPercent = prevState.topPercent;
           draggedSlot.heightPercent = prevState.heightPercent;
+          draggedSlot.idLecteur = prevState.idLecteur;
+          draggedSlot.lecteur = prevState.lecteur;
 
           this.isRendering = false;
           this.cdRef.detectChanges();
@@ -549,22 +572,13 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
           }, 0);
           return;
         }
+        //Si aucune erreur n'est renvoyée alors le lecteur est présent, on averti l'utilisateur s'il a changé
+        if(prevState.idLecteur != null && prevState.idLecteur != draggedSlot.idLecteur){
+          this.toastr.warning("L'enseignant lecteur a été modifié.");
+        }
 
         // Si slot peut être posé et qu'il était en liste d'attente on l'enlève
         this.items = this.items.filter((i) => i.id !== draggedSlot.id);
-
-        // Placement accepté
-        draggedSlot.dateDebut = newStart;
-        draggedSlot.dateFin = newEnd;
-        draggedSlot.salle = newRoom;
-        draggedSlot.topPercent = newTop;
-
-        // Ajout/changement d'un lecteur
-        let lecteur = updateLecteur(true, this.planningByDay, draggedSlot, this.allStaff);
-        if(lecteur){
-          draggedSlot.idLecteur = lecteur.idPersonnel;
-          draggedSlot.lecteur = `${lecteur.prenom![0]}. ${lecteur.nom}`;
-        }
         // Si le slot a changé de date on le supprime de l'ancienne dans planningByDay
         if (lastDate != null && dayKey !== lastDate) {
           this.planningByDay[lastDate] = this.planningByDay[lastDate].filter(
@@ -647,7 +661,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
 
   teachersOk(
     aReferent: string,
-    aLecteur: string,
+    // aLecteur: string,
     aSalle: number,
     bReferent: string,
     bLecteur: string,
@@ -658,20 +672,20 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     }
 
     const referentOccupe = aReferent == bReferent || aReferent == bLecteur;
-    const lecteurOccupe = aLecteur == bReferent || aLecteur == bLecteur;
+    // const lecteurOccupe = aLecteur == bReferent || aLecteur == bLecteur;
     if (referentOccupe) {
       const erreurReferent = `${aReferent} n'est pas disponible pour ce créneau (soutenance en salle ${bSalle}).`;
       if (!this.dropError.includes(erreurReferent)) {
         this.dropError.push(erreurReferent);
       }
     }
-    if (lecteurOccupe) {
-      const erreurLecteur = `${aLecteur} n'est pas disponible pour ce créneau (soutenance en salle ${bSalle}).`;
-      if (!this.dropError.includes(erreurLecteur)) {
-        this.dropError.push(erreurLecteur);
-      }
-    }
-    return !referentOccupe && !lecteurOccupe;
+    // if (lecteurOccupe) {
+    //   const erreurLecteur = `${aLecteur} n'est pas disponible pour ce créneau (soutenance en salle ${bSalle}).`;
+    //   if (!this.dropError.includes(erreurLecteur)) {
+    //     this.dropError.push(erreurLecteur);
+    //   }
+    // }
+    return !referentOccupe /*&& !lecteurOccupe*/;
   }
 
   canPlaceSlot(
@@ -683,6 +697,10 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     existingSlots: SlotItem[],
   ): boolean {
     this.dropError = [];
+    if(lecteur == null || lecteur == ""){
+      this.dropError.push("Pas de lecteur disponible pour ce créneau.");
+      return false;
+    }
     const hasOverlap = existingSlots.some((s) =>
       this.overlaps(
         start,
@@ -700,7 +718,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     const teacherAvailable = existingSlots.every((s) =>
       this.teachersOk(
         referent,
-        lecteur,
+        // lecteur,
         salle,
         s.referent,
         s.lecteur,
