@@ -21,7 +21,7 @@ import {
   dateToHeureStr,
 } from "../../utils/timeManagement";
 import { CreneauDisponible } from "../../utils/types";
-import { isOverlap, referentEstTechnique, updateLecteursDisponibles } from "../../utils/fonctions";
+import { isOverlap, referentEstTechnique } from "../../utils/fonctions";
 
 @Component({
   selector: "app-modale-soutenance",
@@ -66,10 +66,10 @@ export class ModaleSoutenanceComponent implements OnInit {
     });
 
     this.soutenanceForm.get("creneau")?.valueChanges.subscribe((value) => {
-      this.updateLecteursDisponibles(value, false/*, this.creneauxDisponibles, this.soutenancesJour, this.soutenance, this.enseignantsLecteurs, this.allStaff, this.soutenanceForm*/);
+      this.updateLecteursDisponibles(value, false);
     });
 
-    this.updateLecteursDisponibles(currentCreneauKey, true/*, this.creneauxDisponibles, this.soutenancesJour, this.soutenance, this.enseignantsLecteurs, this.allStaff, this.soutenanceForm*/);
+    this.updateLecteursDisponibles(currentCreneauKey, true);
     this.isDataLoaded = true;
   }
 

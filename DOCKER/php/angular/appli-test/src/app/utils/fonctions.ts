@@ -5,7 +5,7 @@ import { SlotItem } from "../models/slotItem.model";
 import { Soutenance, SoutenanceCreate } from "../models/soutenance.model";
 import { Staff } from "../models/staff.model";
 import { Student } from "../models/student.model";
-import { buildDate, getDateHeure, isSameDay } from "./timeManagement";
+import { buildDate, formatDate, getDateHeure, isSameDay } from "./timeManagement";
 import { CompanyTutor } from "../models/company-tutor.model";
 import { StudentStaffAcademicYearService } from "../services/student-staff-academicYear.service";
 import { Student_TrainingYear_AcademicYear } from "../models/student-trainingYear-academicYear.model";
@@ -178,19 +178,17 @@ export function createSlotsFromStudents(allStudents: Student[], allCompanies: Co
   return slots;
 }
 
-export function updateLecteursDisponibles(creneauValue: string, keepCurrentLecteur = false, creneauxDisponibles: CreneauDisponible[], soutenancesJour: Record<string, SlotItem[]>, soutenance: SlotItem, enseignantsLecteurs: Staff[], allStaff: Staff[], soutenanceForm: FormGroup) {
-  const [date, salleStr, heureDebut] = creneauValue.split("|");
-  const salle = Number(salleStr);
-  const creneau = creneauxDisponibles.find(
-    (c) =>
-      c.date === date && c.salle === salle && c.heureDebut === heureDebut,
-  );
-  if (!creneau) return;
+export function updateLecteur(keepCurrentLecteur = false, soutenancesJour: Record<string, SlotItem[]>, soutenance: SlotItem, allStaff: Staff[]): Staff | null {
+  console.log("tt les trucs sont là ?", keepCurrentLecteur, soutenancesJour, soutenance, allStaff)
+  const dateDeb = formatDate(soutenance.dateDebut!, "Date");
+  const heureDeb = formatDate(soutenance.dateDebut!, "Heure");
+  const heureFin = formatDate(soutenance.dateFin!, "Heure");
+  console.log("les dates ?", dateDeb, heureDeb, heureFin)
+  
+  const heureDebutDate = buildDate(dateDeb, heureDeb);
+  const heureFinDate = buildDate(dateDeb, heureFin);
 
-  const heureDebutDate = buildDate(creneau.date, creneau.heureDebut);
-  const heureFinDate = buildDate(creneau.date, creneau.heureFin);
-
-  const soutenances = soutenancesJour[date] || [];
+  const soutenances = soutenancesJour[dateDeb] || [];
 
   const idNonDisponibles = soutenances
     .filter(
@@ -210,38 +208,44 @@ export function updateLecteursDisponibles(creneauValue: string, keepCurrentLecte
     allStaff,
   );
 
-  enseignantsLecteurs = allStaff.filter((s) => {
+  let enseignantsLecteurs = allStaff.filter((s) => {
     if (idNonDisponibles.includes(s.idPersonnel)) {
+      console.log("non dispo :", s.nom)
       return false;
     }
     if (s.idPersonnel === soutenance.idReferent) {
+      console.log("c déjà le référent :", s.nom)
       return false;
     }
     if (!referentTechnique && !s.estTechnique) {
+      console.log("le référent est pas technique et lui non plus :", s.nom)
       return false;
     }
+    console.log("c tt bon :", s.nom)
     return true;
   });
+  console.log("lecteurs après leur truc ?", enseignantsLecteurs)
 
-  const lecteurCtrl = soutenanceForm?.get("lecteur");
-  if (!lecteurCtrl) return;
+  let lecteur = enseignantsLecteurs.find(
+    (e) => e.idPersonnel === soutenance.idLecteur,
+  ) ?? null;
 
   if (keepCurrentLecteur) {
     const lecteurActuelDispo = enseignantsLecteurs.some(
       (e) => e.idPersonnel === soutenance.idLecteur,
     );
     if (!lecteurActuelDispo) {
-      lecteurCtrl.setValue(enseignantsLecteurs[0]?.idPersonnel ?? null);
+      lecteur = enseignantsLecteurs[0] ?? null;
     }
   } else {
-    const currentLecteur = Number(lecteurCtrl.value);
     const toujoursDispo = enseignantsLecteurs.some(
-      (e) => e.idPersonnel === currentLecteur,
+      (e) => e.idPersonnel === lecteur?.idPersonnel,
     );
     if (!toujoursDispo) {
-      lecteurCtrl.setValue(enseignantsLecteurs[0]?.idPersonnel ?? null);
+      lecteur = enseignantsLecteurs[0] ?? null;
     }
   }
+  return lecteur;
 }
 
 export function isOverlap(start1: Date, end1: Date, start2: Date, end2: Date): boolean {

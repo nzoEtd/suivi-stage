@@ -216,7 +216,7 @@
   *ngIf="modalOpen"
   [title]="title"
   (submit)="onSubmit()"
-  (cancel)="modalOpen = false"
+  (cancel)="closeModal()"
   [hasValue]="hasValue"
 >
     <form

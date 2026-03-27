@@ -285,6 +285,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy, AfterVi
         }
       }
       this.cdRef.detectChanges();
+      this.updateJour(dateDayKey);
     }
     this.modalOpen = false;
   }
