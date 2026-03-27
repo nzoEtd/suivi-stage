@@ -574,7 +574,8 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
         }
         //Si aucune erreur n'est renvoyée alors le lecteur est présent, on averti l'utilisateur s'il a changé
         if(prevState.idLecteur != null && prevState.idLecteur != draggedSlot.idLecteur){
-          this.toastr.warning("L'enseignant lecteur a été modifié.");
+          this.toastr.warning("L'enseignant lecteur précédent n'est pas disponible sur ce créneau\nUn autre lecteur a été sélectionné automatiquement.",
+          "Lecteur modifié",);
         }
 
         // Si slot peut être posé et qu'il était en liste d'attente on l'enlève
