@@ -447,7 +447,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy, AfterVi
             this.dataStore.refreshKeys(["plannings", "soutenances"]);
             this.isValidating = false;
             this.toastr.success(
-              "L'ajout a bien été prises en comptes.",
+              "L'ajout a bien été pris en comptes.",
               "Planning enregistré.",
             );
 

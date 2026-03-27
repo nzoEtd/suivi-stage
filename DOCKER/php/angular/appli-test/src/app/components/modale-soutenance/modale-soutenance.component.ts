@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Output, Input, OnInit } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Output,
+  Input,
+  OnInit,
+  inject,
+} from "@angular/core";
 import { CommonModule } from "@angular/common";
 import {
   FormBuilder,
@@ -20,6 +27,7 @@ import {
   timeStringToMinutes,
   dateToHeureStr,
 } from "../../utils/timeManagement";
+import { ToastrService } from "ngx-toastr";
 import { CreneauDisponible } from "../../utils/types";
 import { isOverlap, referentEstTechnique } from "../../utils/fonctions";
 
@@ -31,6 +39,8 @@ import { isOverlap, referentEstTechnique } from "../../utils/fonctions";
   styleUrls: ["./modale-soutenance.component.css"],
 })
 export class ModaleSoutenanceComponent implements OnInit {
+  initialFormValue: any;
+
   @Input() soutenance!: SlotItem;
   @Input() editMode: boolean = false;
   @Input() sallesDispo!: number[];
@@ -39,6 +49,8 @@ export class ModaleSoutenanceComponent implements OnInit {
   @Input() timeBlocks: TimeBlockConfig[] = [];
 
   @Output() close = new EventEmitter<void>();
+
+  toastr = inject(ToastrService);
 
   soutenanceForm!: FormGroup;
   enseignantsLecteurs: Staff[] = [];
@@ -64,6 +76,7 @@ export class ModaleSoutenanceComponent implements OnInit {
       creneau: [currentCreneauKey, Validators.required],
       lecteur: [Number(this.soutenance.idLecteur), Validators.required],
     });
+    this.initialFormValue = this.soutenanceForm.value;
 
     this.soutenanceForm.get("creneau")?.valueChanges.subscribe((value) => {
       this.updateLecteursDisponibles(value, false);
@@ -117,11 +130,11 @@ export class ModaleSoutenanceComponent implements OnInit {
               isOverlap(heureDebut, heureFin, s.dateDebut!, s.dateFin!),
             );
 
-            // Salle occupée
+            // room available ?
             if (soutenancesChevauchantes.some((s) => s.salle === salle))
               continue;
 
-            // Enseignants occupés
+            // Referent teacher available
             const enseignantsOccupes = soutenancesChevauchantes.flatMap((s) => [
               s.idLecteur,
               s.idReferent,
@@ -129,6 +142,13 @@ export class ModaleSoutenanceComponent implements OnInit {
 
             if (enseignantsOccupes.includes(this.soutenance.idReferent))
               continue;
+
+            // Readers available ?
+            const lecteursDisponibles = this.getLecteursDisponibles(
+              soutenancesChevauchantes,
+            );
+
+            if (lecteursDisponibles.length === 0) continue;
 
             creneaux.push({
               date,
@@ -141,7 +161,7 @@ export class ModaleSoutenanceComponent implements OnInit {
       }
     }
 
-    // Tri par jour puis salle puis heure
+    // sort by day, then room, then hours
     creneaux.sort((a, b) => {
       if (a.date !== b.date) {
         return a.date.localeCompare(b.date);
@@ -169,6 +189,25 @@ export class ModaleSoutenanceComponent implements OnInit {
     return creneaux;
   }
 
+  getLecteursDisponibles(chevauchements: SlotItem[]): Staff[] {
+    const idNonDisponibles = chevauchements.flatMap((s) => [
+      s.idLecteur,
+      s.idReferent,
+    ]);
+
+    const referentTechnique = referentEstTechnique(
+      this.soutenance.idReferent,
+      this.allStaff
+    );
+
+    return this.allStaff.filter((s) => {
+      if (idNonDisponibles.includes(s.idPersonnel)) return false;
+      if (s.idPersonnel === this.soutenance.idReferent) return false;
+      if (!referentTechnique && !s.estTechnique) return false;
+      return true;
+    });
+  }
+
   updateLecteursDisponibles(creneauValue: string, keepCurrentLecteur = false) {
     const [date, salleStr, heureDebut] = creneauValue.split("|");
     const salle = Number(salleStr);
@@ -183,36 +222,13 @@ export class ModaleSoutenanceComponent implements OnInit {
 
     const soutenances = this.soutenancesJour[date] || [];
 
-    const idNonDisponibles = soutenances
-      .filter(
-        (s) =>
-          s.id !== this.soutenance.id &&
-          isOverlap(
-            heureDebutDate,
-            heureFinDate,
-            s.dateDebut!,
-            s.dateFin!,
-          ),
-      )
-      .flatMap((s) => [s.idLecteur, s.idReferent]);
-
-    const referentTechnique = referentEstTechnique(
-      this.soutenance.idReferent,
-      this.allStaff,
+    const chevauchements = soutenances.filter(
+      (s) =>
+        s.id !== this.soutenance.id &&
+        isOverlap(heureDebutDate, heureFinDate, s.dateDebut!, s.dateFin!),
     );
 
-    this.enseignantsLecteurs = this.allStaff.filter((s) => {
-      if (idNonDisponibles.includes(s.idPersonnel)) {
-        return false;
-      }
-      if (s.idPersonnel === this.soutenance.idReferent) {
-        return false;
-      }
-      if (!referentTechnique && !s.estTechnique) {
-        return false;
-      }
-      return true;
-    });
+    this.enseignantsLecteurs = this.getLecteursDisponibles(chevauchements);
 
     const lecteurCtrl = this.soutenanceForm?.get("lecteur");
     if (!lecteurCtrl) return;
@@ -231,6 +247,10 @@ export class ModaleSoutenanceComponent implements OnInit {
       );
       if (!toujoursDispo) {
         lecteurCtrl.setValue(this.enseignantsLecteurs[0]?.idPersonnel ?? null);
+        this.toastr.warning(
+          "L'enseignant lecteur précédent n'est pas disponible sur ce créneau\nUn autre lecteur a été sélectionné automatiquement.",
+          "Lecteur modifié",
+        );
       }
     }
   }
@@ -281,6 +301,7 @@ export class ModaleSoutenanceComponent implements OnInit {
           salle,
         });
       }
+      this.toastr.success("Les modifications ont bien été prises en comptes.");
       break;
     }
     
@@ -299,5 +320,12 @@ export class ModaleSoutenanceComponent implements OnInit {
     } else {
       throw new Error("Enseignant non trouvé.");
     }
+  }
+
+  isFormChanged(): boolean {
+    return (
+      JSON.stringify(this.soutenanceForm.value) !==
+      JSON.stringify(this.initialFormValue)
+    );
   }
 }
