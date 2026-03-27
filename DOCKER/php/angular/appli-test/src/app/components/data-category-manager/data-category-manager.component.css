@@ -24,8 +24,8 @@
   color: #a40a0a;
 }
 
-/* Barre de recherche et filtres */
-.searchBarAndfilters {
+/* Barre de recherche*/
+.searchBar {
     padding: 0 5px;
     display: flex;
     flex-wrap: wrap;
@@ -61,12 +61,18 @@
     padding: 4px;
 }
 
+.filters {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
 /* Boutons de filtres */
 .filter-buttons {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    flex: 2;
+    margin-bottom: 15px;
 }
 
 .filter-button {
@@ -89,6 +95,14 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.filter-button:disabled
+{
+    background-image: none !important;
+    color: gray;
+    cursor: none;
+    background-color: lightgray;
 }
 
 /* Styles spécifiques pour le bouton de tri par date */

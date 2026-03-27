@@ -1,25 +1,41 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { StudentService } from '../../services/student.service';
-import { StaffService } from '../../services/staff.service';
-import { SalleService } from '../../services/salle.service';
 import { CommonModule } from '@angular/common';
 import { LoadingComponent } from '../loading/loading.component';
 import { DepartmentService } from '../../services/department.service';
 import { Department } from '../../models/department.model';
-import { CompanyService } from '../../services/company.service';
-import { CompanyTutorService } from '../../services/company-tutor.service';
 import { Company } from '../../models/company.model';
 import { CompanyTutor } from '../../models/company-tutor.model';
 import { FormsModule } from '@angular/forms';
+import { StudentTrainingYearAcademicYearService } from '../../services/student-trainingYear-academicYear.service';
+import { TrainingYearService } from '../../services/training-year.service';
+import { TrainingYear } from '../../models/training-year.model';
+import { AcademicYear } from '../../models/academic-year.model';
+import { filter, firstValueFrom, forkJoin, Subject } from 'rxjs';
+import { DataStoreService } from '../../services/data.service';
+import { InitService } from '../../services/init.service';
 
+/**
+ * Guide d'ajout d'une nouvelle catégorie :
+ * 
+ * 1. Ajouter la nouvelle catégorie dans le type Category en bas du fichier
+ * 2. Dans loadData(), ajouter un nouvel case et faire appel aux services nécessaires en respectant la même structure nécessaire
+ * 3. Dans le case du loadData(), mettre dans cols_labels un tableau des libellés des colonnes qui seront affichées à la tête du tableau
+ * 4. Dans tableConfigs, ajouter la configuration du modèle de la catégorie
+ * 5. Dans applySearch(), ajouter un nouvel Map pour tout nouvel champ d'une clé étrangère, appelé relation dans ce composant
+ * Ajouter le code qui utilise le nouvel Map dans un nouvel case du switch
+ * 6. Dans applySort(), ajouter chaque relation dans le if
+ * 7. Faire des modifications dans pluralizeLabel() si besoin
+ */
 @Component({
   selector: 'app-data-category-manager',
   imports: [RouterLink, CommonModule, LoadingComponent, FormsModule],
   templateUrl: './data-category-manager.component.html',
   styleUrl: './data-category-manager.component.css'
 })
-export class DataCategoryManagerComponent {
+export default class DataCategoryManagerComponent implements AfterViewInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   categorie!: Category;
   fullData: any[] = [];
   data: any[] = [];
@@ -27,147 +43,178 @@ export class DataCategoryManagerComponent {
   departments: Department[] = [];
   companies: Company[] = [];
   tutors: CompanyTutor[] = [];
+  trainingYears: TrainingYear[] = [];
+  academicYears: AcademicYear[] = [];
   searchTerm: string = '';
+  sortedCols: { name: string; order: SortOrder}[] = [];
+  additionalData: any[] = [];
+  filters: { name: string; vals: string[] }[] = [];
+  selectedFilters: Record<string, any> = {};
+
+  allDataLoaded: boolean = false;
   loading: boolean = true;
-  sortedCols: { name: string; order: SortOrder}[] = []
 
   constructor(
     private route: ActivatedRoute,
-    private studentService: StudentService,
-    private staffService: StaffService,
-    private salleService: SalleService,
+    private studentTrainingAcademicYears: StudentTrainingYearAcademicYearService,
+    private trainingService: TrainingYearService,
     private departService: DepartmentService,
-    private entrepriseService: CompanyService,
-    private tuteurService: CompanyTutorService,
+    private dataStore: DataStoreService,
+    private readonly initService: InitService,
     private readonly cdRef: ChangeDetectorRef
   ){};
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.route.params.subscribe(async params => {
       this.categorie = params['category'];
 
       await this.loadData();
+
+      console.log(this.data);
     });
 
-    //Loading sortedCols
     this.sortedCols = this.cols.map(col => ({ name: col.db_name, order: ' ' }));
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  mergeData<T, U>(
+    data: T[],
+    additionalData: U[],
+    mainKey: keyof T,
+    additionalKey: keyof U,
+  ) : (T & Partial<U>)[] {
+    const map = new Map<any, U>(
+      additionalData.map(item => [item[additionalKey], item])
+    );
+
+    return data.map(item => ({
+      ...item,
+      ...(map.get(item[mainKey]) || {})
+    }));
   }
 
   /**
    * Load data needed for the component to work properly
    */
   async loadData() {
-    this.loading = true;
 
-    let cols_labels: string[];
+    let cols_labels;
+    let data: any;
+
+    const category = (this.categorie ?? '');
     
-    switch(this.categorie) {
-      case 'etudiants':
-        //Récupération de données liées aux étudiants
-        this.departService.getDepartments().subscribe({
-          next: (data) => {
-            this.departments = data;
-            this.cdRef.detectChanges();
-          },
-          error: (err) => {
-            console.error('Error loading departements:', err);
-            this.loading = false;
-          }
-        });
-        this.entrepriseService.getCompanies().subscribe({
-          next: (data) => {
-            this.companies = data;
-            this.cdRef.detectChanges();
-          },
-          error: (err) => {
-            console.error('Error loading entreprises:', err);
-            this.loading = false;
-          }          
-        });
-        this.tuteurService.getCompanyTutors().subscribe({
-          next: (data) => {
-            this.tutors = data;
-            this.cdRef.detectChanges();
-          },
-          error: (err) => {
-            console.error('Error loading tuteurs:', err);
-            this.loading = false;
-          }          
-        });
+    switch(category) {
 
-        //Récupération des étudiants
-        this.studentService.getStudents().subscribe({
-          next: (data) => {
-            this.data = data;
-            this.fullData = data;
-            
-            if (this.data.length > 0) {
-              cols_labels = ["ID UPPA", "Login", "Nom", "Prénom", "Adresse", "Ville", "Code postal", "Téléphone", "Adresse mail", "Tier-temps", "Département", "Entreprise", "Tuteur"];
-              this.initCols(cols_labels);
-            }
+      case 'etudiants': {
+        this.dataStore.ensureDataLoaded([
+          'students','companies','tutors','academicYears'
+        ]);
 
-            this.loading = false;
-            this.cdRef.detectChanges();
-          },
-          error: (err) => {
-            console.error('Error loading etudiants:', err);
-            this.loading = false;
-          }
-        });
+        data = await firstValueFrom(
+          this.dataStore.data$.pipe(
+            filter(d => d.loaded === true && d.loading === false)
+          )
+        );
+
+        this.fullData = data.students ?? [];
+        this.companies = data.companies ?? [];
+        this.tutors = data.tutors ?? [];
+        this.academicYears = data.academicYears ?? [];
+
+        this.cdRef.detectChanges();
+
+        await firstValueFrom(
+          forkJoin({
+            deps: this.departService.getDepartments(),
+            add: this.studentTrainingAcademicYears.getStudentsTrainingYearsAcademicYears(),
+            training: this.trainingService.getTrainingYears()
+          })
+        ).then(({ deps, training }) => {
+          this.departments = deps;
+          this.trainingYears = training;
+          this.allDataLoaded = true;
+          this.cdRef.detectChanges();
+        }).catch(err => console.error(err));
+
+        if (this.fullData && this.fullData.length > 0) {
+          const merged = this.mergeData(this.fullData, this.additionalData, 'idUPPA', 'idUPPA');
+          this.fullData = merged;
+          this.data = [...merged];
+
+          const cols_labels = ["ID UPPA", "Login", "Nom", "Prénom", "Adresse", "Ville", "Code postal", "Téléphone", "Adresse mail", "Tier-temps", "Département", "Entreprise", "Tuteur", "Promo"];
+          this.initCols(cols_labels);
+          this.initFilters();
+          this.cdRef.detectChanges();
+        }
+
+        this.initService.setInitialized();
 
         break;
+      };
 
       case 'personnel':
-        this.staffService.getStaffs().subscribe({
-          next: (data) => {
-            this.data = data;
-            this.fullData = data;
+        this.dataStore.ensureDataLoaded(['staff']);
 
-            if (this.data.length > 0) {
-              cols_labels = [" ", "Login", "Rôle(s)", "Nom", "Prénom", "Adresse", "Ville", "Code postal", "Téléphone", "Adresse mail", "Quota étudiant", "Est informaticien"];
-              this.initCols(cols_labels);
-            }
+        data = await firstValueFrom(
+          this.dataStore.data$.pipe(
+            filter(d => d.loaded === true && d.loading === false)
+          )
+        );
 
-            this.loading = false;
-            this.cdRef.detectChanges();
-          },
-          error: (err) => {
-            console.error('Error loading personnel:', err);
-            this.loading = false;
-          }
-        });
+        this.fullData = data.staff ?? [];
+        this.data = this.fullData;
+
+        this.allDataLoaded = true;
+        this.cdRef.detectChanges();
+
+        cols_labels = [" ", "Login","Rôle(s)", "Nom", "Prénom", "Adresse", "Ville", "Code postal", "Téléphone", "Adresse mail", "Quota étudiant", "Est informaticien"];
+        
+        this.initCols(cols_labels);
+        this.initFilters();
+
+        this.initService.setInitialized();
 
         break;
         
       case 'salles':
-        this.salleService.getSalles().subscribe({
-          next: (data) => {
-            this.data = data;
-            this.fullData = data;
+        this.dataStore.ensureDataLoaded(['salles']);
 
-            if (this.data.length > 0) {
-              cols_labels = [" ", "Est disponible"];
-              this.initCols(cols_labels);
-            }
+        data = await firstValueFrom(
+          this.dataStore.data$.pipe(
+            filter(d => d.loaded === true && d.loading === false)
+          )
+        );
 
-            this.loading = false;
-            this.cdRef.detectChanges();
-          },
-          error: (err) => {
-            console.error('Error loading salles:', err);
-            this.loading = false;
-          }
-        });
+        this.fullData = data.salles ?? [];
+        this.data = this.fullData;
+
+        this.allDataLoaded = true;
+        this.cdRef.detectChanges();
+
+        cols_labels = ["Numéro", "Est disponible"];
+        
+        this.initCols(cols_labels);
+        this.initFilters();
+
+        this.cdRef.detectChanges();
+
+        this.initService.setInitialized();
 
         break;
     }
+
+    this.loading = false;
   }
 
   /**
    * 
-   * @param id Identifiant 
-   * @param data Données fournies
-   * @returns Le libellé correspondant à id ou l'identifiant en string si le libellé n'a pas été trouvé
+   * @param id Data ID
+   * @param data Data to search the ID in
+   * @returns Label of the corresponding data item
    */
   getLibelleByIdAndData(id: number, data: any[]): string {
     let found_data = data.find((line) => Object.values(line)[0] === id);
@@ -187,7 +234,7 @@ export class DataCategoryManagerComponent {
 
     if (target) {
       this.searchTerm = target.value;
-      this.applyFilters();
+      this.applySearch();
     }
   }
 
@@ -207,7 +254,7 @@ export class DataCategoryManagerComponent {
     } = {
       etudiants: {
         searchFields: ["idUPPA", "login", "nom", "prenom", "adresse", "ville", "codePostal", "telephone", "adresseMail"],
-        relations: ["departement", "entreprise", "tuteur"]
+        relations: ["departement", "entreprise", "tuteur", "trainingYear"]
       },
       personnel: {
         searchFields: ["login", "nom", "prenom", "adresse", "ville", "codePostal", "telephone", "adresseMail", "quotaEtudiant"],
@@ -219,7 +266,10 @@ export class DataCategoryManagerComponent {
       }
   };
 
-  applyFilters() {
+  /**
+   * Search the term amongst data and display corresponding data
+   */
+  applySearch() {
     const term = this.searchTerm.toLowerCase().trim();
 
     if (!term) {
@@ -252,10 +302,13 @@ export class DataCategoryManagerComponent {
         switch (rel) {
           case "departement":
             return deptMap.get(item.idDepartement)?.includes(term);
+
           case "entreprise":
             return compMap.get(item.idEntreprise)?.includes(term);
+
           case "tuteur":
             return tutorMap.get(item.idTuteur)?.includes(term);
+            
           default:
             return false;
         }
@@ -265,6 +318,11 @@ export class DataCategoryManagerComponent {
     });
   }
 
+  /**
+   * Sort a column by set order
+   * @param col Column name
+   * @param newOrder New order sort
+   */
   applySort(col: string, newOrder: SortOrder) {
     this.sortedCols.find(s => s.name === col);
 
@@ -344,6 +402,11 @@ export class DataCategoryManagerComponent {
 
   }
 
+  /**
+   * Give a sort icon next to the column name depending on its order
+   * @param col Column name
+   * @returns Icon
+   */
   getSortIcon(col: string): string {
     const sort = this.sortedCols.find(s => s.name === col);
     if (!sort) return ' ';
@@ -352,33 +415,119 @@ export class DataCategoryManagerComponent {
     else return ' ';
   }
 
+  /**
+   * Sort the col data in the next order (if no sort -> asc, if asc -> desc, if desc -> no sort)
+   * @param col Col object containing its database name and its label
+   */
   sortCol(col: {db_name: string, label: string}) {
-      const colFound = this.sortedCols.find(s => s.name === col.db_name);
+    const colFound = this.sortedCols.find(s => s.name === col.db_name);
 
-      const oldSort = colFound?.order;
-      let newOrder: SortOrder = ' ';
-        
-      if (oldSort === ' ') {
-        newOrder = 'asc';
-      }
-      else if (oldSort === 'asc') {
-        newOrder = 'desc';
-      }
-      else {
-        newOrder = ' ';
-      }
+    const oldSort = colFound?.order;
+    let newOrder: SortOrder = ' ';
       
-      this.applySort(col.db_name, newOrder);
+    if (oldSort === ' ') {
+      newOrder = 'asc';
     }
+    else if (oldSort === 'asc') {
+      newOrder = 'desc';
+    }
+    else {
+      newOrder = ' ';
+    }
+    
+    this.applySort(col.db_name, newOrder);
+  }
 
+  /**
+   * Initialize columns on the table
+   * @param labels Column labels
+   */
   initCols(labels: string[]) {
-    this.cols = Object.keys(this.data[0])
-    .filter(key => key !== 'longitudeAdresse' && key !== 'latitudeAdresse')
+    if (!labels) labels = [];
+
+    const data = [...this.data];
+
+    this.cols = Object.keys(data[0])
+    .filter(key => key !== 'longitudeAdresse' && key !== 'latitudeAdresse' && key !== 'idAnneeUniversitaire')
     .map((key, i) => ({
       db_name: key,
       label: labels[i] ?? key
     }));
+
     this.cols.map((col) => {this.sortedCols.push({name: col.db_name, order: ' '})});
+  }
+
+  /**
+   * Initialize filters
+   */
+  initFilters() {
+    this.filters = this.cols.map((col) => {
+      const champ = col;
+      const vals = this.data.map((item) => item[champ.db_name]).filter(v => v !== null && v !== undefined);
+
+      const options = [...new Set(vals)];
+
+      return {
+        name: champ.label,
+        vals: options
+      };
+    });
+
+    if (this.categorie === "personnel") this.filters = this.filters.slice(1);
+
+    this.filters.map((filter) => {
+      this.selectedFilters[filter.name] = "";
+    })
+  }
+
+  /**
+   * Apply selected filters to data
+   */
+  applyFilters() {
+    let filteredData = [...this.fullData];
+
+    for (const [key, value] of Object.entries(this.selectedFilters)) {
+      if (value == null || value === '' || (Array.isArray(value) && value.length === 0)) continue;
+
+      const field = this.cols.find((col) => col.label === key);
+      
+      if (!field) continue;
+
+      const dbKey = field.db_name;
+
+      filteredData = filteredData.filter((item) => {
+        const valData = item[dbKey];
+
+        return String(value) === String(valData);
+      });
+    }
+
+    this.data = filteredData;
+  }
+
+  /**
+   * Retourne le pluriel du label de filtre
+   * @param label Nom du filtre
+   * @returns Pluriel du nom
+   */
+  pluralizeLabel(label: string): string {
+
+    if (!label) return "";
+    var [first, last] = label.split(' ');
+    let newString = "";
+
+    first = (first.endsWith('s') || first.endsWith('(s)') || first === 'Est') ? first : first + 's';
+
+    if (last) {
+      last = last.endsWith('al') ? last.replace('al', 'aux') : last;
+
+      newString = first + ' ' + last;
+    }
+    else {
+      newString = first;
+    }
+    
+    return newString;
   }
 }
 

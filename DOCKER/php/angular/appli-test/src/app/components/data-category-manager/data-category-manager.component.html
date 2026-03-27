@@ -2,48 +2,97 @@
   <app-loading *ngIf="loading" />
   <div *ngIf="!loading">
     <nav aria-label="breadcrumb">
-        <ol class="data-category--title">
-          <li>
-            <a routerLink="/data-management">Gestion des données</a>
-          </li>
-          <li>/</li>
-          <li class="active">
-            {{ categorie.charAt(0).toUpperCase() + categorie.slice(1) }}
-          </li>
-        </ol>
-      </nav>
+      <ol class="data-category--title">
+        <li>
+          <a routerLink="/data-management">Gestion des données</a>
+        </li>
+        <li>/</li>
+        <li class="active">
+          {{ categorie.charAt(0).toUpperCase() + categorie.slice(1) }}
+        </li>
+      </ol>
+    </nav>
 
-    <div class="searchBarAndfilters">
-        <div class="search-container">
-          <input 
-            type="text"
-            [(ngModel)]="searchTerm"
-            (input)="onSearchTermChange($event)"
-            placeholder="Rechercher..." 
-            class="search-input"
-          />
-          <button 
-            (click)="clearSearchTerm()"
-            class="clear-button"
-          >
-            X
-          </button>
-        </div>
-
-        <div class="filter-buttons">
-          <!-- <select 
-            #promoSelect
-            [(ngModel)]="currentStudyYearFilter"
-            (change)="setStudyYearFilter(currentStudyYearFilter, promoSelect)"
-            class="filter-button"
-          >
-            <option value="all">Toutes les promos</option>
-            <option value="BUT 1">BUT 1</option>
-            <option value="BUT 2">BUT 2</option>
-            <option value="BUT 3">BUT 3</option>
-          </select> -->
-        </div>
+    <div class="searchBar">
+      <div class="search-container">
+        <input 
+          type="text"
+          [(ngModel)]="searchTerm"
+          (input)="onSearchTermChange($event)"
+          placeholder="Rechercher..." 
+          class="search-input"
+        />
+        <button 
+          (click)="clearSearchTerm()"
+          class="clear-button"
+        >
+          X
+        </button>
       </div>
+    </div>
+
+    <div class="filters">
+      <div *ngFor="let filter of filters" class="filter-buttons">
+        <select
+          [(ngModel)]="selectedFilters[filter.name]"
+          (change)="applyFilters()"
+          class="filter-button"
+          [disabled]="filter.vals.length === 0"
+        >
+          <option value="">{{ pluralizeLabel(filter.name) }}</option>
+
+          <ng-container [ngSwitch]="filter.name">
+            <ng-container *ngSwitchCase="'Tier-temps'">
+              <option *ngFor="let val of filter.vals" [value]="val">
+                {{ +val === 1 ? 'Oui' : 'Non' }}
+              </option>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'Est informaticien'">
+              <option *ngFor="let val of filter.vals" [value]="val" [disabled]="filter.vals.length === 0">
+                {{ +val === 1 ? 'Oui' : 'Non' }}
+              </option>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'Est disponible'">
+              <option *ngFor="let val of filter.vals" [value]="val" [disabled]="filter.vals.length === 0">
+                {{ +val === 1 ? 'Oui' : 'Non' }}
+              </option>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'Département'">
+              <option *ngFor="let val of filter.vals" [value]="val" [disabled]="filter.vals.length === 0">
+                {{ getLibelleByIdAndData(+val, departments) }}
+              </option>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'Entreprise'">
+              <option *ngFor="let val of filter.vals" [value]="val" [disabled]="filter.vals.length === 0">
+                {{ getLibelleByIdAndData(+val, companies) }}
+              </option>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'Tuteur'">
+              <option *ngFor="let val of filter.vals" [value]="val" [disabled]="filter.vals.length === 0">
+                {{ getLibelleByIdAndData(+val, tutors) }}
+              </option>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'Promo'">
+              <option *ngFor="let val of filter.vals" [value]="val" [disabled]="filter.vals.length === 0">
+                {{ getLibelleByIdAndData(+val, trainingYears) }}
+              </option>
+            </ng-container>
+
+            <ng-container *ngSwitchDefault>
+              <option *ngFor="let val of filter.vals" [value]="val" [disabled]="filter.vals.length === 0">
+                {{ val }}
+              </option>
+            </ng-container>
+          </ng-container>
+        </select>
+      </div>
+    </div>
 
     <div class="table-view">
       <div class="table-container">
@@ -61,54 +110,68 @@
             </tr>
           </thead>
           <tbody>
-            @for (item of data; track $index) {
-              <tr>
-                @for (col of cols; track col; let isFirst = $first; let isLast = $last) {
-                  @if (col.db_name !== "longitudeAdresse" && col.db_name !== "latitudeAdresse")
-                  {
-                    @if (col.db_name === "tierTemps" || col.db_name === "estTechnique" || col.db_name === "estDisponible") {
-                    <td [class.firstTd]="isFirst" 
-                        [class.lastTd]="isLast">
-                      
-                      {{ $any(item)[col.db_name] === 1 ? "Oui" : "Non" }}
-                    </td>                    
-                    }
-                    @else if (col.db_name === "idDepartement") {
+            @if (data.length > 0) {
+              @for (item of data; track $index) {
+                <tr>
+                  @for (col of cols; track col; let isFirst = $first; let isLast = $last) {
+                    @if (col.db_name !== "longitudeAdresse" && col.db_name !== "latitudeAdresse")
+                    {
+                      @if (col.db_name === "tierTemps" || col.db_name === "estTechnique" || col.db_name === "estDisponible") {
                       <td [class.firstTd]="isFirst" 
                           [class.lastTd]="isLast">
                         
-                        {{ getLibelleByIdAndData($any(item)[col.db_name], this.departments) }}
-                      </td>                     
-                    }
-                    @else if (col.db_name === "idEntreprise") {
-                      <td [class.firstTd]="isFirst" 
-                          [class.lastTd]="isLast">
-                        
-                        {{ getLibelleByIdAndData($any(item)[col.db_name], this.companies) }}
-                      </td>                     
-                    }
-                    @else if (col.db_name === "idTuteur") {
-                      <td [class.firstTd]="isFirst" 
-                          [class.lastTd]="isLast">
-                        
-                        {{ getLibelleByIdAndData($any(item)[col.db_name], this.tutors) }}
-                      </td>                     
-                    }
-                    @else {
-                      <td [class.firstTd]="isFirst" 
-                          [class.lastTd]="isLast">
-                        
-                        <!--$any permet une gestion des différents types de valeurs-->
-                        @if ($any(item)[col.db_name] === null) {
-                          <span>Non renseigné</span>
-                        }
-                        @else {
-                          {{ $any(item)[col.db_name] }}
-                        }
-                      </td>
+                        {{ $any(item)[col.db_name] === 1 ? "Oui" : "Non" }}
+                      </td>                    
+                      }
+                      @else if (col.db_name === "idDepartement") {
+                        <td [class.firstTd]="isFirst" 
+                            [class.lastTd]="isLast">
+                          
+                          {{ getLibelleByIdAndData($any(item)[col.db_name], this.departments) }}
+                        </td>                     
+                      }
+                      @else if (col.db_name === "idEntreprise") {
+                        <td [class.firstTd]="isFirst" 
+                            [class.lastTd]="isLast">
+                          
+                          {{ getLibelleByIdAndData($any(item)[col.db_name], this.companies) }}
+                        </td>                     
+                      }
+                      @else if (col.db_name === "idTuteur") {
+                        <td [class.firstTd]="isFirst" 
+                            [class.lastTd]="isLast">
+                          
+                          {{ getLibelleByIdAndData($any(item)[col.db_name], this.tutors) }}
+                        </td>                     
+                      }
+                      @else if (col.db_name === "idAnneeFormation") {
+                        <td [class.firstTd]="isFirst" 
+                            [class.lastTd]="isLast">
+                          {{ getLibelleByIdAndData($any(item)[col.db_name], this.trainingYears) }}
+                          
+                        </td>                     
+                      }
+                      @else {
+                        <td [class.firstTd]="isFirst" 
+                            [class.lastTd]="isLast">
+                          
+                          <!--$any permet une gestion des différents types de valeurs-->
+                          @if ($any(item)[col.db_name] === null) {
+                            <span>Non renseigné</span>
+                          }
+                          @else {
+                            {{ $any(item)[col.db_name] }}
+                          }
+                        </td>
+                      }
                     }
                   }
-                }
+                </tr>
+              }
+            }
+            @else {
+              <tr>
+                Aucune donnée trouvée.
               </tr>
             }
           </tbody>
