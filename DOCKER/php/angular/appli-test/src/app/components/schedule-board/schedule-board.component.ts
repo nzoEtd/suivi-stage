@@ -192,7 +192,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
       this.cdRef.detectChanges();
     }
     // Détecter si jourActuel a changé et qu'il n'y a aucune soutenance dedans
-    if (changes['jourActuel'] && !changes['jourActuel'].firstChange && this.sallesDispo.length == 0) {
+    if (changes['jourActuel'] && !changes['jourActuel'].firstChange && this.sallesDispo.length == 0 && !this.onlyDisplay) {
       console.log("jourActuel:", this.jourActuel);
       
       // Ouvrir la modale d'ajout de salle
@@ -336,7 +336,9 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
   addRoom(){
     console.log("salles sélectionnées fin : ",this.selectedSalles)
     this.selectedSalles.forEach(salle => {
-      this.sallesDispo.push(salle.nomSalle);
+      if(!this.sallesDispo.some(s => s == salle.nomSalle)){
+        this.sallesDispo.push(salle.nomSalle);
+      }
     });
 
     this.rebuildSlotsCache();
