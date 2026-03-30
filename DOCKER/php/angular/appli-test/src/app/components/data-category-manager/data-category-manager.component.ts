@@ -25,7 +25,7 @@ import { InitService } from '../../services/init.service';
  * 5. Dans applySearch(), ajouter un nouvel Map pour tout nouvel champ d'une clé étrangère, appelé relation dans ce composant
  * Ajouter le code qui utilise le nouvel Map dans un nouvel case du switch
  * 6. Dans applySort(), ajouter chaque relation dans le if
- * 7. Faire des modifications dans pluralizeLabel() si besoin
+ * 7. Faire des modifications dans pluralizeLabel() et le html si besoin
  */
 @Component({
   selector: 'app-data-category-manager',
@@ -50,6 +50,7 @@ export default class DataCategoryManagerComponent implements AfterViewInit, OnDe
   additionalData: any[] = [];
   filters: { name: string; vals: string[] }[] = [];
   selectedFilters: Record<string, any> = {};
+  selectedItems: any[] = [];
 
   allDataLoaded: boolean = false;
   loading: boolean = true;
@@ -528,6 +529,49 @@ export default class DataCategoryManagerComponent implements AfterViewInit, OnDe
     }
     
     return newString;
+  }
+
+  /**
+   * Indique si la ligne de donnée est sélectionné ou non
+   * @param item Ligne de données
+   * @returns true si oui, sinon false
+   */
+  isSelected(item: any): boolean {
+    return this.selectedItems.includes(item);
+  }
+
+  /**
+   * Vérifie que tous les items ont bien été sélectionnés
+   * @returns true si oui, sinon false
+   */
+  allItemsSelected(): boolean {
+    return this.data.length > 0 && this.selectedItems.length === this.data.length;
+  }
+
+  /**
+   * Ajoute ou enlève la ligne de données des lignes sélectionnées
+   * @param item Ligne de données
+   * @param event Cochage/Décochage
+   */
+  toggleItemSelection(item: any, event: any) {
+    console.log(item);
+    if (event.target.checked) {
+      this.selectedItems.push(item);
+    } else {
+      this.selectedItems = this.selectedItems.filter(i => i !== item);
+    }
+  }
+
+  /**
+   * Sélectionne toutes les lignes de données
+   * @param event Cochage/Décochage
+   */
+  toggleAllItemSelection(event: any) {
+    if (event.target.checked) {
+      this.selectedItems = [...this.data];
+    } else {
+      this.selectedItems = [];
+    }
   }
 }
 

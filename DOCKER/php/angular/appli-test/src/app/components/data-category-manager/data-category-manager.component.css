@@ -1,7 +1,7 @@
 .data-category
 {
     margin: 50px auto 30px auto;
-    max-width: 90%;
+    max-width: 95%;
 }
 
 .data-category--title
@@ -138,12 +138,13 @@ select.filter-button:not(:focus) {
 
 /* Tableau */
 .table-container {
-    overflow-x: auto;
+    overflow-x: scroll;
     margin: 0 5px;
     width: 100%;
     background-color: #f7f7f7;
     padding: 15px 30px;
     border-radius: 15px;
+    transform: rotateX(180deg);
 }
 
 table {
@@ -151,6 +152,7 @@ table {
     border-collapse: separate;
     border-spacing: 0 5px;
     min-width: 800px;
+    transform: rotateX(180deg);
 }
 
 th {

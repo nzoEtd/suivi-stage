@@ -99,6 +99,14 @@
         <table>
           <thead>
             <tr>
+              <th>
+                <input type="checkbox"
+                  name=""
+                  id=""
+                  [checked]="allItemsSelected()"
+                  (change)="toggleAllItemSelection($event)"
+                />
+              </th>
               @for (col of cols; track col) {
                 <th (click)="sortCol(col)">
                   <div class="col_labels">
@@ -113,47 +121,49 @@
             @if (data.length > 0) {
               @for (item of data; track $index) {
                 <tr>
-                  @for (col of cols; track col; let isFirst = $first; let isLast = $last) {
+                  <td class="firstTd">
+                    <input type="checkbox" 
+                          name=""
+                          id=""
+                          [checked]="isSelected(item)"
+                          (change)="toggleItemSelection(item, $event)"
+                    />
+                  </td>
+                  @for (col of cols; track col; let isLast = $last) {
                     @if (col.db_name !== "longitudeAdresse" && col.db_name !== "latitudeAdresse")
                     {
                       @if (col.db_name === "tierTemps" || col.db_name === "estTechnique" || col.db_name === "estDisponible") {
-                      <td [class.firstTd]="isFirst" 
-                          [class.lastTd]="isLast">
+                      <td [class.lastTd]="isLast">
                         
                         {{ $any(item)[col.db_name] === 1 ? "Oui" : "Non" }}
                       </td>                    
                       }
                       @else if (col.db_name === "idDepartement") {
-                        <td [class.firstTd]="isFirst" 
-                            [class.lastTd]="isLast">
+                        <td [class.lastTd]="isLast">
                           
                           {{ getLibelleByIdAndData($any(item)[col.db_name], this.departments) }}
                         </td>                     
                       }
                       @else if (col.db_name === "idEntreprise") {
-                        <td [class.firstTd]="isFirst" 
-                            [class.lastTd]="isLast">
+                        <td [class.lastTd]="isLast">
                           
                           {{ getLibelleByIdAndData($any(item)[col.db_name], this.companies) }}
                         </td>                     
                       }
                       @else if (col.db_name === "idTuteur") {
-                        <td [class.firstTd]="isFirst" 
-                            [class.lastTd]="isLast">
+                        <td [class.lastTd]="isLast">
                           
                           {{ getLibelleByIdAndData($any(item)[col.db_name], this.tutors) }}
                         </td>                     
                       }
                       @else if (col.db_name === "idAnneeFormation") {
-                        <td [class.firstTd]="isFirst" 
-                            [class.lastTd]="isLast">
+                        <td [class.lastTd]="isLast">
                           {{ getLibelleByIdAndData($any(item)[col.db_name], this.trainingYears) }}
                           
                         </td>                     
                       }
                       @else {
-                        <td [class.firstTd]="isFirst" 
-                            [class.lastTd]="isLast">
+                        <td [class.lastTd]="isLast">
                           
                           <!--$any permet une gestion des différents types de valeurs-->
                           @if ($any(item)[col.db_name] === null) {
