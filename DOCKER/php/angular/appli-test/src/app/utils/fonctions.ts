@@ -128,6 +128,7 @@ export function getAllSallesUsed(
   sallesDispo: number[],
   jour: Date,
   slots: SlotItem[],
+  newSlots?: SlotItem[],
 ): number[] {
   const salles: number[] = [];
   slots.forEach((slot) => {
@@ -141,6 +142,19 @@ export function getAllSallesUsed(
       }
     });
   });
+  if(newSlots){
+    newSlots.forEach((slot) => {
+      sallesDispo.forEach((salle) => {
+        if (
+          salle === slot.salle &&
+          !salles.includes(salle) &&
+          isSameDay(slot.dateDebut!, jour)
+        ) {
+          salles.push(salle);
+        }
+      });
+    });
+  }
   return salles;
 }
 

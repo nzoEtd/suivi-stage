@@ -164,6 +164,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy, AfterVi
           this.salles,
           this.selectedJour,
           this.slots,
+          this.itemsToAdd
         );
         let idSlotTemp = 0;
         this.slots.forEach((slot) => {
@@ -228,6 +229,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy, AfterVi
       this.salles,
       this.selectedJour,
       this.slots,
+      this.itemsToAdd
     );
   }
 
