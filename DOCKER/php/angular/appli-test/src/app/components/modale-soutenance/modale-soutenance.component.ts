@@ -28,13 +28,8 @@ import {
   dateToHeureStr,
 } from "../../utils/timeManagement";
 import { ToastrService } from "ngx-toastr";
-
-type CreneauDisponible = {
-  date: string;
-  salle: number;
-  heureDebut: string;
-  heureFin: string;
-};
+import { CreneauDisponible } from "../../utils/types";
+import { isOverlap, referentEstTechnique } from "../../utils/fonctions";
 
 @Component({
   selector: "app-modale-soutenance",
@@ -132,7 +127,7 @@ export class ModaleSoutenanceComponent implements OnInit {
             const heureFin = buildDate(date, heureFinStr);
 
             const soutenancesChevauchantes = autresSoutenances.filter((s) =>
-              this.isOverlap(heureDebut, heureFin, s.dateDebut!, s.dateFin!),
+              isOverlap(heureDebut, heureFin, s.dateDebut!, s.dateFin!),
             );
 
             // room available ?
@@ -200,8 +195,9 @@ export class ModaleSoutenanceComponent implements OnInit {
       s.idReferent,
     ]);
 
-    const referentTechnique = this.referentEstTechnique(
+    const referentTechnique = referentEstTechnique(
       this.soutenance.idReferent,
+      this.allStaff
     );
 
     return this.allStaff.filter((s) => {
@@ -229,7 +225,7 @@ export class ModaleSoutenanceComponent implements OnInit {
     const chevauchements = soutenances.filter(
       (s) =>
         s.id !== this.soutenance.id &&
-        this.isOverlap(heureDebutDate, heureFinDate, s.dateDebut!, s.dateFin!),
+        isOverlap(heureDebutDate, heureFinDate, s.dateDebut!, s.dateFin!),
     );
 
     this.enseignantsLecteurs = this.getLecteursDisponibles(chevauchements);
@@ -259,16 +255,7 @@ export class ModaleSoutenanceComponent implements OnInit {
     }
   }
 
-  referentEstTechnique(idReferent: number): boolean {
-    const enseignant = this.allStaff.find((s) => s.idPersonnel === idReferent);
-    return enseignant?.estTechnique || false;
-  }
-
-  isOverlap(start1: Date, end1: Date, start2: Date, end2: Date): boolean {
-    return start1 < end2 && end1 > start2;
-  }
-
-  onCancel() {
+  onCancel(event?: MouseEvent) {
     this.close.emit();
   }
 
@@ -317,7 +304,7 @@ export class ModaleSoutenanceComponent implements OnInit {
       this.toastr.success("Les modifications ont bien été prises en comptes.");
       break;
     }
-
+    
     this.soutenance.dateDebut = buildDate(date, creneau.heureDebut);
     this.soutenance.dateFin = buildDate(date, creneau.heureFin);
     this.soutenance.idLecteur = form.lecteur;

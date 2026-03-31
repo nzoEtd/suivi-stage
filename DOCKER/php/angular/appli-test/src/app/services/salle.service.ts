@@ -15,7 +15,6 @@ export class SalleService {
   //Sélection de toutes les salles
   getSalles(): Observable<Salle[]> {
     return this.http.get<Salle[]>(`${this.apiUrl}/api/salle`).pipe(
-      tap((response) => this.log(response)),
       catchError((error) => this.handleError(error, null))
     );
   }
@@ -29,7 +28,6 @@ export class SalleService {
     return this.http
       .get<Salle>(`${this.apiUrl}/api/salle/${nomSalle}`, { params })
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, undefined))
       );
   }
@@ -47,16 +45,10 @@ export class SalleService {
         httpOptions
       )
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, null))
       );
   }
-
-  //Log la réponse de l'API
-  private log(response: any) {
-    console.table(response);
-  }
-
+  
   //Retourne l'erreur en cas de problème avec l'API
   private handleError(error: Error, errorValue: any) {
     console.error(error);

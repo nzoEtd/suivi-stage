@@ -23,7 +23,6 @@ export class SoutenanceService {
     return this.http
       .get<Soutenance[]>(`${this.apiUrl}/api/soutenance`, { params })
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, undefined))
       );
   }
@@ -42,7 +41,6 @@ export class SoutenanceService {
     return this.http
       .get<Soutenance>(`${this.apiUrl}/api/soutenance/${id}`, { params })
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, undefined))
       );
   }
@@ -60,7 +58,6 @@ export class SoutenanceService {
         httpOptions
       )
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, null))
       );
   }
@@ -71,6 +68,8 @@ export class SoutenanceService {
       headers: new HttpHeaders({ "Content-Type": "application/json" }),
     };
 
+    console.log("soutenances ajoutées :", soutenances)
+
     return this.http
       .post<Soutenance[]>(
         `${this.apiUrl}/api/soutenance/create-many`,
@@ -78,7 +77,6 @@ export class SoutenanceService {
         httpOptions
       )
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, []))
       );
   }
@@ -96,7 +94,6 @@ export class SoutenanceService {
         httpOptions
       )
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, null))
       );
   }
@@ -115,7 +112,6 @@ export class SoutenanceService {
         httpOptions
       )
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, null))
       );
   }
@@ -125,14 +121,8 @@ export class SoutenanceService {
     return this.http
       .delete(`${this.apiUrl}/api/soutenance/delete/${soutenance.idSoutenance}`)
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, null))
       );
-  }
-
-  //Log la réponse de l'API
-  private log(response: any) {
-    console.table(response);
   }
 
   //Retourne l'erreur en cas de problème avec l'API

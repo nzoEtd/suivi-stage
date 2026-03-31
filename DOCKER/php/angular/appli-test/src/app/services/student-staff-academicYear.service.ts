@@ -29,14 +29,9 @@ export class StudentStaffAcademicYearService {
       params = params.set("fields", fields.join(","));
     }
 
-    return this.http
-      .get<Student_Staff_AcademicYear>(`${this.apiUrl}/api/affectation`, {
-        params,
-      })
-      .pipe(
-        tap((response) => this.log(response)),
-        catchError((error) => this.handleError(error, null)),
-      );
+    return this.http.get<Student_Staff_AcademicYear>(`${this.apiUrl}/api/affectation`, {params}).pipe(
+      catchError(error => this.handleError(error, null))
+    );
   }
 
   getTutorByUppaAndYear(
@@ -50,15 +45,9 @@ export class StudentStaffAcademicYearService {
       params = params.set("fields", fields.join(","));
     }
 
-    return this.http
-      .get<Student_Staff_AcademicYear>(
-        `${this.apiUrl}/api/affectation/${studentId}-${idAnneeUniversitaire}`,
-        { params },
-      )
-      .pipe(
-        tap((response) => this.log(response)),
-        catchError((error) => this.handleError(error, null)),
-      );
+    return this.http.get<Student_Staff_AcademicYear>(`${this.apiUrl}/api/affectation/${studentId}-${idAnneeUniversitaire}`, {params}).pipe(
+      catchError(error => this.handleError(error, null))
+    );
   }
 
   addStudentTeacherAssignments(
@@ -75,7 +64,6 @@ export class StudentStaffAcademicYearService {
         httpOptions,
       )
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, undefined)),
       );
   }
@@ -94,7 +82,6 @@ export class StudentStaffAcademicYearService {
         httpOptions,
       )
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, undefined)),
       );
   }
@@ -106,19 +93,9 @@ export class StudentStaffAcademicYearService {
   }
 
   extractStudentTeacherAssignments(): Observable<ExcelResponse> {
-    return this.http
-      .get<ExcelResponse>(
-        `${this.apiUrl}/api/affectation/extraction-affectations-etudiants-enseignants`,
-      )
-      .pipe(
-        tap((response) => this.log(response)),
-        catchError((error) => this.handleError(error, null)),
+      return this.http.get<ExcelResponse>(`${this.apiUrl}/api/affectation/extraction-affectations-etudiants-enseignants`).pipe(
+          catchError(error => this.handleError(error, null))
       );
-  }
-
-  //Log la réponse de l'API
-  private log(response: any) {
-    console.table(response);
   }
 
   //Retourne l'erreur en cas de problème avec l'API
