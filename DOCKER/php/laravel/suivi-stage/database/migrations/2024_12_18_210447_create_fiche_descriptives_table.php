@@ -33,8 +33,8 @@ class CreateFicheDescriptivesTable extends Migration
             $table->unsignedTinyInteger('nbJourSemaine')->nullable();
             $table->unsignedTinyInteger('nbHeureSemaine')->nullable();
             $table->boolean('clauseConfidentialite')->nullable();
-            $table->string('serviceEntreprise',100)->nullable();
-            $table->string('adresseMailStage',100)->nullable();
+            $table->string('serviceEntreprise', 100)->nullable();
+            $table->string('adresseMailStage', 100)->nullable();
             $table->string('telephoneStage', 20)->nullable();
             $table->string('adresseStage', 100)->nullable();
             $table->string('codePostalStage', 10)->nullable();
@@ -42,7 +42,7 @@ class CreateFicheDescriptivesTable extends Migration
             $table->string('paysStage', 50)->nullable();
             $table->string('longitudeStage', 20)->nullable();
             $table->string('latitudeStage', 20)->nullable();
-            $table->enum('statut', ['En cours','Validee','Refusée'])->default('En cours');
+            $table->enum('statut', ['En cours', 'Validee', 'Refusée'])->default('En cours');
             $table->string('numeroConvention', 50)->nullable();
             $table->boolean('interruptionStage')->nullable();
             $table->date('dateDebutInterruption')->nullable();

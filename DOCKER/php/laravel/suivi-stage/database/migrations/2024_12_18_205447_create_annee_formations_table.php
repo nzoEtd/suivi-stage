@@ -17,9 +17,9 @@ class CreateAnneeFormationsTable extends Migration
             $table->engine = 'InnoDB';
             // Clé primaire
             $table->tinyIncrements('idAnneeFormation');
-            
+
             // Attributs
-            $table->string('libelle',10);
+            $table->string('libelle', 10);
         });
     }
 

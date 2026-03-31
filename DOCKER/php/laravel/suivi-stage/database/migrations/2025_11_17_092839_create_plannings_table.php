@@ -26,7 +26,7 @@ class CreatePlanningsTable extends Migration
             $table->time('heureFinMatin');
             $table->time('heureDebutAprem');
             $table->time('heureFinAprem');
-            $table->integer('dureeSoutenance'); // en minutes
+            $table->integer('dureeSoutenance');  // en minutes
 
             // Clés étrangères
             $table->unsignedTinyInteger('idAnneeFormation');

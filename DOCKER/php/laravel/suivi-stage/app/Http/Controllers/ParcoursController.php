@@ -17,12 +17,11 @@ class ParcoursController extends Controller
     {
         $fields = explode(',', $request->query('fields', '*'));
 
-        $allowedFields = ['codeParcours','idDepartement','libelle'];
+        $allowedFields = ['codeParcours', 'idDepartement', 'libelle'];
         $fields = array_intersect($fields, $allowedFields);
 
         $parcours = Parcours::select(empty($fields) ? '*' : $fields)->get();
 
         return response()->json($parcours, 200);
     }
-
 }

@@ -35,7 +35,6 @@ class CreateSoutenancesTable extends Migration
 
             $table->unsignedInteger('idLecteur');
             $table->foreign('idLecteur')->references('idPersonnel')->on('personnels');
-
         });
     }
 

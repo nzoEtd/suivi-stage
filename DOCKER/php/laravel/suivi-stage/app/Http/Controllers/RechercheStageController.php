@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\RechercheStage;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class RechercheStageController extends Controller
 {
@@ -14,22 +14,23 @@ class RechercheStageController extends Controller
      * @param \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         // Récupère les champs demandés dans la requête (ou "*" par défaut)
         $fields = explode(',', $request->query('fields', '*'));
-    
+
         // Vérifie si les champs demandés existent dans la table
         $allowedFields = ['idRecherche', 'dateCreation', 'dateModification',
-                          'date1erContact', 'typeContact', 'nomContact',
-                          'prenomContact', 'fonctionContact', 'telephoneContact',
-                          'adresseMailContact', 'observations', 'dateRelance',
-                          'statut', 'idUPPA', 'idEntreprise']; // Liste des champs autorisés
+            'date1erContact', 'typeContact', 'nomContact',
+            'prenomContact', 'fonctionContact', 'telephoneContact',
+            'adresseMailContact', 'observations', 'dateRelance',
+            'statut', 'idUPPA', 'idEntreprise'];  // Liste des champs autorisés
         $fields = array_intersect($fields, $allowedFields);
-    
+
         // Si aucun champ valide n'est fourni, on récupère tout par défaut
         $recherchesStages = RechercheStage::select(empty($fields) ? '*' : $fields)->get();
-    
-        return response()->json($recherchesStages,200);
+
+        return response()->json($recherchesStages, 200);
     }
 
     /**
@@ -47,25 +48,24 @@ class RechercheStageController extends Controller
      */
     public function store(Request $request)
     {
-        try
-        {
+        try {
             $donneesValidees = $request->validate([
-                'dateCreation'          => 'bail|required|date',
-                'dateModification'      => 'bail|required|date',
-                'date1erContact'        => 'bail|required|date',
-                'typeContact'           => 'bail|required|string|in:Courrier,Mail,Présentiel,Téléphone,Site de recrutement',
-                'nomContact'            => 'bail|required|string|max:50',
-                'prenomContact'         => 'bail|required|string|max:50',
-                'fonctionContact'       => 'bail|required|string|max:50',
-                'telephoneContact'      => ['nullable','string','regex:/^(\+33|0)\d{9}$/m'], // Obligé de passer les paramètres dans un tableau puisque la règle "regex" est utilisée avec d'autres
-                'adresseMailContact'    => 'nullable|string|email|max:100',
-                'observations'          => 'nullable|string',
-                'dateRelance'           => 'nullable|date',
-                'statut'                => 'bail|required|string|in:En cours,Validé,Refusé,Relancé',
-                'idUPPA'                => 'bail|required|string',
-                'idEntreprise'          => 'required|integer',
+                'dateCreation' => 'bail|required|date',
+                'dateModification' => 'bail|required|date',
+                'date1erContact' => 'bail|required|date',
+                'typeContact' => 'bail|required|string|in:Courrier,Mail,Présentiel,Téléphone,Site de recrutement',
+                'nomContact' => 'bail|required|string|max:50',
+                'prenomContact' => 'bail|required|string|max:50',
+                'fonctionContact' => 'bail|required|string|max:50',
+                'telephoneContact' => ['nullable', 'string', 'regex:/^(\+33|0)\d{9}$/m'],  // Obligé de passer les paramètres dans un tableau puisque la règle "regex" est utilisée avec d'autres
+                'adresseMailContact' => 'nullable|string|email|max:100',
+                'observations' => 'nullable|string',
+                'dateRelance' => 'nullable|date',
+                'statut' => 'bail|required|string|in:En cours,Validé,Refusé,Relancé',
+                'idUPPA' => 'bail|required|string',
+                'idEntreprise' => 'required|integer',
             ]);
-    
+
             $uneRechercheStage = RechercheStage::create([
                 'dateCreation' => Carbon::parse($donneesValidees['dateCreation'])->format('Y-m-d'),
                 'dateModification' => Carbon::parse($donneesValidees['dateModification'])->format('Y-m-d'),
@@ -82,35 +82,29 @@ class RechercheStageController extends Controller
                 'idUPPA' => $donneesValidees['idUPPA'],
                 'idEntreprise' => $donneesValidees['idEntreprise'],
             ]);
-    
+
             return response()->json($uneRechercheStage, 201);
-        }
-        catch (\Illuminate\Validation\ValidationException $e)
-        {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Erreur de validation dans les données',
                 'erreurs' => $e->errors()
             ], 422);
-        }
-        catch (\Illuminate\Database\QueryException $e)
-        {
+        } catch (\Illuminate\Database\QueryException $e) {
             return response()->json([
                 'message' => 'Erreur dans la base de données',
                 'erreurs' => $e->getMessage()
             ], 500);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'erreurs' => $e->getMessage()
             ], 500);
         }
     }
-    
+
     /**
      * Retourne une recherche de stage particulier
-     * 
+     *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      * Code HTTP retourné :
@@ -122,23 +116,18 @@ class RechercheStageController extends Controller
      */
     public function show($id)
     {
-        try
-        {
+        try {
             $uneRechercheStage = RechercheStage::findOrFail($id);
             return response()->json($uneRechercheStage, 200);
-        }
-        catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
-        {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Aucune recherche de stage trouvée'
-            ],404);
-        }
-        catch (\Exception $e)
-        {
+            ], 404);
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite',
+                'message' => "Une erreur s'est produite",
                 'erreurs' => $e->getMessage()
-            ],500);
+            ], 500);
         }
     }
 
@@ -158,46 +147,39 @@ class RechercheStageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try
-        {
+        try {
             $donneesValidees = $request->validate([
-                'date1erContact'        => 'bail|required|date',
-                'typeContact'           => 'bail|required|string|in:Courrier,Mail,Présentiel,Téléphone,Site de recrutement',
-                'nomContact'            => 'bail|required|string|max:50',
-                'prenomContact'         => 'bail|required|string|max:50',
-                'fonctionContact'       => 'bail|required|string|max:50',
-                'telephoneContact'      => ['nullable','string','regex:/^(\+33|0)\d{9}$/m'], // Obligé de passer les paramètres dans un tableau puisque la règle "regex" est utilisée avec d'autres
-                'adresseMailContact'    => 'nullable|string|email|max:100',
-                'observations'          => 'nullable|string',
-                'dateRelance'           => 'nullable|date',
-                'statut'                => 'bail|required|string|in:En cours,Validé,Refusé,Relancé',
+                'date1erContact' => 'bail|required|date',
+                'typeContact' => 'bail|required|string|in:Courrier,Mail,Présentiel,Téléphone,Site de recrutement',
+                'nomContact' => 'bail|required|string|max:50',
+                'prenomContact' => 'bail|required|string|max:50',
+                'fonctionContact' => 'bail|required|string|max:50',
+                'telephoneContact' => ['nullable', 'string', 'regex:/^(\+33|0)\d{9}$/m'],  // Obligé de passer les paramètres dans un tableau puisque la règle "regex" est utilisée avec d'autres
+                'adresseMailContact' => 'nullable|string|email|max:100',
+                'observations' => 'nullable|string',
+                'dateRelance' => 'nullable|date',
+                'statut' => 'bail|required|string|in:En cours,Validé,Refusé,Relancé',
             ]);
-            $donneesValidees['dateModification'] = Carbon::now()->format('Y-m-d'); // Ajout de la date de modification
-    
+            $donneesValidees['dateModification'] = Carbon::now()->format('Y-m-d');  // Ajout de la date de modification
+
             $uneRechercheStage = RechercheStage::findOrFail($id);
             $uneRechercheStage->update($donneesValidees);
 
             return response()->json($uneRechercheStage, 200);
-        }
-        catch (\Illuminate\Validation\ValidationException $e)
-        {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Erreur de validation dans les données',
                 'erreurs' => $e->errors()
-            ],422);   
-        }
-        catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
-        {
+            ], 422);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Aucune recherche de stage trouvée'
-            ],404);
-        }
-        catch (\Exception $e)
-        {
+            ], 404);
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite',
+                'message' => "Une erreur s'est produite",
                 'erreurs' => $e->getMessage()
-            ],500);
+            ], 500);
         }
     }
 
@@ -215,27 +197,22 @@ class RechercheStageController extends Controller
      */
     public function destroy($id)
     {
-        try
-        {
+        try {
             $uneRechercheStage = RechercheStage::findOrFail($id);
             $uneRechercheStage->delete();
 
             return response()->json([
                 'message' => 'La recherche de stage a bien été supprimée'
             ], 200);
-        }
-        catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
-        {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Aucune recherche de stage trouvée'
-            ],404);
-        }
-        catch (\Exception $e)
-        {
+            ], 404);
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite',
+                'message' => "Une erreur s'est produite",
                 'erreurs' => $e->getMessage()
-            ],500);
+            ], 500);
         }
     }
 }

@@ -15,13 +15,13 @@
 }
 
 .titleAndAddSearchButton h3 {
-  color: #08A28A;
+  color: #08a28a;
 }
 
 .titleAndAddSearchButton button {
   padding: 5px 8px 7px;
   border-radius: 8px;
-  background-color: #0A63A4;
+  background-color: #0a63a4;
   color: white;
 }
 
@@ -50,7 +50,7 @@
   width: 100%;
   padding: 8px 12px;
   padding-right: 40px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
 }
 
@@ -68,7 +68,7 @@
   width: 20px;
   height: 20px;
   fill: currentColor;
-  color: #9CA3AF;
+  color: #9ca3af;
 }
 
 /* Boutons de filtres */
@@ -81,7 +81,7 @@
 
 .filter-button {
   padding: 8px 16px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid #e5e7eb;
   border-radius: 9999px;
   background: white;
   min-width: 100px;
@@ -112,7 +112,7 @@
 }
 
 .filter-button.active {
-  background-color: #F3F4F6;
+  background-color: #f3f4f6;
 }
 
 select.filter-button {
@@ -181,7 +181,7 @@ tbody tr:nth-child(odd):hover td {
 }
 
 tbody tr:nth-child(odd):hover::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -198,7 +198,7 @@ tbody tr:nth-child(even):hover td {
 }
 
 tbody tr:nth-child(even):hover::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -304,104 +304,104 @@ tbody tr:nth-child(even):hover::after {
 /* Media Queries */
 @media (max-width: 950px) {
   .table-view {
-      display: none;
+    display: none;
   }
 
   .cards-view {
-      display: block;
+    display: block;
   }
 
   .searchBarAndfilters {
-      flex-direction: column;
-      gap: 10px;
-      max-width: 600px;
-      margin: 0 auto;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 600px;
+    margin: 0 auto;
   }
 
   .search-container {
-      width: 100%;
-      max-width: none;
-      margin-bottom: 10px;
+    width: 100%;
+    max-width: none;
+    margin-bottom: 10px;
   }
 
   .filter-buttons {
-      width: 100%;
-      display: flex;
-      align-items: start;
-      justify-content: start;
+    width: 100%;
+    display: flex;
+    align-items: start;
+    justify-content: start;
   }
 
   .filter-button {
-      width: 100%;
-      min-width: 135px;
-      padding: 6px 12px;
+    width: 100%;
+    min-width: 135px;
+    padding: 6px 12px;
   }
 
   .search-card {
-      position: relative;
+    position: relative;
   }
 
   .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .card-separator {
-      margin: 1rem 0;
-      border: none;
-      border-top: 1px solid #e5e7eb;
+    margin: 1rem 0;
+    border: none;
+    border-top: 1px solid #e5e7eb;
   }
 
   .card-actions {
-      display: flex;
-      justify-content: flex-end;
-      padding: 0 1rem;
-      gap: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 1rem;
+    gap: 1rem;
   }
 
-  .card-actions .edit-icon, 
+  .card-actions .edit-icon,
   .card-actions .delete-icon {
-      width: 20px;
-      height: 20px;
+    width: 20px;
+    height: 20px;
   }
 
-  .card-actions .edit-icon:hover, 
+  .card-actions .edit-icon:hover,
   .card-actions .delete-icon:hover {
-      transform: translateY(-2px);  /* Même effet sur mobile */
+    transform: translateY(-2px); /* Même effet sur mobile */
   }
 }
 
 @media (max-width: 480px) {
   .searchBarAndfilters {
-      padding: 0 8px;
+    padding: 0 8px;
   }
 
   .filter-buttons {
-      grid-template-columns: 1fr;
+    grid-template-columns: 1fr;
   }
 
   .filter-button {
-      max-width: 150px;
-      min-width: 135px;
+    max-width: 150px;
+    min-width: 135px;
   }
 
   .search-input {
-      font-size: 14px;
+    font-size: 14px;
   }
 
   .card-content {
-      grid-template-columns: 1fr;
+    grid-template-columns: 1fr;
   }
 
   .card-header {
-      flex-direction: flex;
-      justify-content: space-between;
-      gap: 8px;
+    flex-direction: flex;
+    justify-content: space-between;
+    gap: 8px;
   }
 
   .status-badge {
-      align-self: flex-start;
+    align-self: flex-start;
   }
 }
 
@@ -413,18 +413,19 @@ tbody tr:nth-child(even):hover::after {
   width: 100%;
 }
 
-.edit-icon, .delete-icon {
+.edit-icon,
+.delete-icon {
   cursor: pointer;
-  transition: all 0.2s ease;  /* Ajout de la transition pour tous les effets */
+  transition: all 0.2s ease; /* Ajout de la transition pour tous les effets */
 }
 
 .edit-icon {
-  color: #0A63A4;
+  color: #0a63a4;
 }
 
 .edit-icon:hover {
   color: #338ccd;
-  transform: translateY(-3px);  /* Effet de surélévation */
+  transform: translateY(-3px); /* Effet de surélévation */
 }
 
 .delete-icon {
@@ -433,5 +434,15 @@ tbody tr:nth-child(even):hover::after {
 
 .delete-icon:hover {
   color: #ef4444;
-  transform: translateY(-3px);  /* Effet de surélévation */
+  transform: translateY(-3px); /* Effet de surélévation */
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
 }

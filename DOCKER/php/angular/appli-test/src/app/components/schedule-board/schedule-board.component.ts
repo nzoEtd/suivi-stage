@@ -1,23 +1,29 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  SimpleChanges,
+  inject,
+  ChangeDetectorRef,
+} from "@angular/core";
 import { SlotComponent } from "../slot/slot.component";
 import {
   FormBuilder,
   FormGroup,
   Validators,
-  ValidatorFn,
-  AbstractControl,
-  FormsModule, 
-  ReactiveFormsModule
+  FormsModule,
+  ReactiveFormsModule,
 } from "@angular/forms";
 import { MatGridListModule } from "@angular/material/grid-list";
 import { SlotItem } from "../../models/slotItem.model";
 import { TimeBlock, TimeBlockConfig } from "../../models/timeBlock.model";
 import { isSameDay } from "../../utils/timeManagement";
-import { ToastrService } from 'ngx-toastr';
-import { inject } from '@angular/core';
-import { CdkDrag,   CdkDragDrop,   CdkDragPlaceholder, CdkDropList, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { ChangeDetectorRef } from '@angular/core';
+import { ToastrService } from "ngx-toastr";
+import { CdkDrag, CdkDragDrop, CdkDropList } from "@angular/cdk/drag-drop";
 import { Salle } from "../../models/salle.model";
 import { SalleService } from "../../services/salle.service";
 import { forkJoin } from "rxjs";
@@ -40,16 +46,18 @@ import { StaffService } from "../../services/staff.service";
 
 @Component({
   selector: "app-schedule-board",
-  imports: [CommonModule,
-    SlotComponent, 
-    MatGridListModule, 
-    CdkDrag/*, 
-    CdkDragPlaceholder*/, 
-    CdkDropList, 
-    ModaleComponent, 
+  imports: [
+    CommonModule,
+    SlotComponent,
+    MatGridListModule,
+    CdkDrag /*, 
+    CdkDragPlaceholder*/,
+    CdkDropList,
+    ModaleComponent,
     OverlayModule,
     FormsModule,
-    ReactiveFormsModule,],
+    ReactiveFormsModule,
+  ],
   standalone: true,
   templateUrl: "./schedule-board.component.html",
   styleUrls: ["./schedule-board.component.css"],
@@ -64,7 +72,11 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
   @Input() idPromoActuelle: number | null = null;
 
   @Output() editSlot = new EventEmitter<SlotItem>();
-  @Output() slotUpdated = new EventEmitter<{planningByDay:Record<string, SlotItem[]>, items:SlotItem[], itemsToAdd:SlotItem[]}>();
+  @Output() slotUpdated = new EventEmitter<{
+    planningByDay: Record<string, SlotItem[]>;
+    items: SlotItem[];
+    itemsToAdd: SlotItem[];
+  }>();
 
   toastr = inject(ToastrService);
 
@@ -115,7 +127,8 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
 
   teacherInSlot: number[] = [];
 
-  constructor(private cdRef: ChangeDetectorRef,
+  constructor(
+    private cdRef: ChangeDetectorRef,
     private salleService: SalleService,
     private trainingYearService: TrainingYearService,
     private studentService: StudentService,
@@ -124,26 +137,31 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     private companiesService: CompanyService,
     private tutorService: CompanyTutorService,
     private studentStaffService: StudentStaffAcademicYearService,
-    private staffService: StaffService,) {}
+    private staffService: StaffService,
+  ) {}
 
   async ngOnInit() {
-      forkJoin({
-        promos: this.trainingYearService.getTrainingYears(),
-        academicYear: this.academicYearService.getCurrentAcademicYear(),
-        allCompanies: this.companiesService.getCompanies(),
-        allTutors: this.tutorService.getCompanyTutors(),
-        referents: this.studentStaffService.getAllStudentTeachers(),
-        staff: this.staffService.getStaffs(),
-      }).subscribe(({ promos, academicYear, allCompanies, allTutors, referents, staff }) => {
-        this.promos = promos.filter(p => p.idAnneeFormation != this.idPromoActuelle);
+    forkJoin({
+      promos: this.trainingYearService.getTrainingYears(),
+      academicYear: this.academicYearService.getCurrentAcademicYear(),
+      allCompanies: this.companiesService.getCompanies(),
+      allTutors: this.tutorService.getCompanyTutors(),
+      referents: this.studentStaffService.getAllStudentTeachers(),
+      staff: this.staffService.getStaffs(),
+    }).subscribe(
+      ({ promos, academicYear, allCompanies, allTutors, referents, staff }) => {
+        this.promos = promos.filter(
+          (p) => p.idAnneeFormation != this.idPromoActuelle,
+        );
         this.currentAcademicYearId = academicYear?.idAnneeUniversitaire || 0;
         this.allCompanies = allCompanies;
         this.allTutors = allTutors;
         this.referents = referents;
         this.allStaff = staff;
-      });
-      // Toujours commencer les blocs à une heure 'pile' donc sans minutes
-      const converted = this.timeBlocks.map((b: TimeBlockConfig) => {
+      },
+    );
+    // Toujours commencer les blocs à une heure 'pile' donc sans minutes
+    const converted = this.timeBlocks.map((b: TimeBlockConfig) => {
       const startMin = this.toMinutes(b.start);
       const endMin =
         b.end.split(":").map(Number)[1] == 0
@@ -184,17 +202,25 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     // Détecter si planningByDay a changé
-    if (changes['planningByDay'] && !changes['planningByDay'].firstChange) {
-      console.log("planningByDay mis à jour dans l'enfant:", this.planningByDay);
-      
+    if (changes["planningByDay"] && !changes["planningByDay"].firstChange) {
+      console.log(
+        "planningByDay mis à jour dans l'enfant:",
+        this.planningByDay,
+      );
+
       // Reconstruire le cache avec les nouvelles données
       this.rebuildSlotsCache();
       this.cdRef.detectChanges();
     }
     // Détecter si jourActuel a changé et qu'il n'y a aucune soutenance dedans
-    if (changes['jourActuel'] && !changes['jourActuel'].firstChange && this.sallesDispo.length == 0 && !this.onlyDisplay) {
+    if (
+      changes["jourActuel"] &&
+      !changes["jourActuel"].firstChange &&
+      this.sallesDispo.length == 0 &&
+      !this.onlyDisplay
+    ) {
       console.log("jourActuel:", this.jourActuel);
-      
+
       // Ouvrir la modale d'ajout de salle
       this.autoOpen = true;
       this.openModalRoom();
@@ -231,7 +257,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
           slot.dateDebut!.getHours() * 60 + slot.dateDebut!.getMinutes();
         const endMin =
           slot.dateFin!.getHours() * 60 + slot.dateFin!.getMinutes();
-        
+
         if (block.type === "morning" && endMin > block.endMin) {
           return false;
         }
@@ -272,20 +298,16 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
 
   initFormRoom() {
     this.hasValue = false;
-    this.planningForm = this.fb.group(
-      {
-        salle: [null, Validators.required],
-      },
-    );
+    this.planningForm = this.fb.group({
+      salle: [null, Validators.required],
+    });
   }
 
   initFormStudent() {
     this.hasValue = false;
-    this.planningForm = this.fb.group(
-      {
-        idAnneeFormation: [null, Validators.required],
-      },
-    );
+    this.planningForm = this.fb.group({
+      idAnneeFormation: [null, Validators.required],
+    });
   }
 
   onStudentToggle(event: Event, student: Student) {
@@ -293,10 +315,13 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     if (checked) {
       this.selectedStudents.push(student);
     } else {
-      this.selectedStudents = this.selectedStudents.filter((s) => s !== student);
+      this.selectedStudents = this.selectedStudents.filter(
+        (s) => s !== student,
+      );
     }
-    this.selectedStudents.length ?
-    this.hasValue = true : this.hasValue = false;
+    this.selectedStudents.length
+      ? (this.hasValue = true)
+      : (this.hasValue = false);
   }
 
   get selectedStudentsText(): string {
@@ -306,37 +331,44 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
   }
 
   get promoSelected(): boolean {
-    return this.planningForm.get('idAnneeFormation')?.value != null;
+    return this.planningForm.get("idAnneeFormation")?.value != null;
   }
-  
-  closeModal(){
-    if(this.autoOpen){
-      this.toastr.warning('Aucune soutenance ne pourra être posée','Attention, ce jour n\'a pas de salle attribuée.');
+
+  closeModal() {
+    if (this.autoOpen) {
+      this.toastr.warning(
+        "Aucune soutenance ne pourra être posée",
+        "Attention, ce jour n'a pas de salle attribuée.",
+      );
     }
     this.modalOpen = false;
     this.autoOpen = false;
   }
 
-  openModalRoom(){
+  openModalRoom() {
     this.initFormRoom();
     this.salles = [];
     this.selectedSalles = [];
     forkJoin({
       salles: this.salleService.getSalles(),
     }).subscribe(({ salles }) => {
-      this.salles = salles.filter((s) => s.estDisponible && !this.sallesDispo.some(salle => s.nomSalle == salle));
-      console.log("salles selectionnables :",this.selectedSalles)
+      this.salles = salles.filter(
+        (s) =>
+          s.estDisponible &&
+          !this.sallesDispo.some((salle) => s.nomSalle == salle),
+      );
+      console.log("salles selectionnables :", this.selectedSalles);
     });
-  
+
     this.title = "Ajouter une salle pour ce jour";
     this.modalOpen = true;
     this.modalStudent = false;
   }
 
-  addRoom(){
-    console.log("salles sélectionnées fin : ",this.selectedSalles)
-    this.selectedSalles.forEach(salle => {
-      if(!this.sallesDispo.some(s => s == salle.nomSalle)){
+  addRoom() {
+    console.log("salles sélectionnées fin : ", this.selectedSalles);
+    this.selectedSalles.forEach((salle) => {
+      if (!this.sallesDispo.some((s) => s == salle.nomSalle)) {
         this.sallesDispo.push(salle.nomSalle);
       }
     });
@@ -345,7 +377,10 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     this.cdRef.detectChanges();
     this.modalOpen = false;
     this.submitted = false;
-    this.toastr.warning('Avant de changer de jour, veuillez ajouter un créneau dans la nouvelle salle.', 'Attention, la salle n\'est pas sauvegardée automatiquement');
+    this.toastr.warning(
+      "Avant de changer de jour, veuillez ajouter un créneau dans la nouvelle salle.",
+      "Attention, la salle n'est pas sauvegardée automatiquement",
+    );
     this.autoOpen = false;
   }
 
@@ -356,8 +391,9 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     } else {
       this.selectedSalles = this.selectedSalles.filter((s) => s !== salle);
     }
-    this.selectedSalles.length ?
-    this.hasValue = true : this.hasValue = false;
+    this.selectedSalles.length
+      ? (this.hasValue = true)
+      : (this.hasValue = false);
   }
 
   get selectedSallesText(): string {
@@ -366,7 +402,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
       : "-- Sélectionner --";
   }
 
-  onSubmit(){
+  onSubmit() {
     this.submitted = true;
     // console.log("?????", this.planningForm.invalid, this.planningForm, this.selectedStudents, this.planningForm.value)
     if (this.modalStudent && this.planningForm.invalid) return;
@@ -375,65 +411,84 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     this.isSubmitting = false;
   }
 
-  openModalStudent(){
+  openModalStudent() {
     this.initFormStudent();
     this.listenPromoChange();
 
-    console.log("y a des slots au moins ?", this.slots)
-    const basicSlot = this.slots.find(s => s.tierTemps == false);
-    console.log("un slot basique ?", basicSlot)
-    const tierTempsSlot = this.slots.find(s => s.tierTemps == true);
-    console.log("un slot tier-temps ?", tierTempsSlot)
-    this.slotDuration = basicSlot && basicSlot.dateDebut && basicSlot.dateFin ? basicSlot.dateFin.getTime() - basicSlot.dateDebut.getTime() : 0;
-    this.slotDurationTierTemps = tierTempsSlot && tierTempsSlot.dateDebut && tierTempsSlot.dateFin ? tierTempsSlot.dateFin.getTime() - tierTempsSlot.dateDebut.getTime() : 0;
-    console.log("durée basique :", this.slotDuration, ", durée tier-temps :", this.slotDurationTierTemps)
+    console.log("y a des slots au moins ?", this.slots);
+    const basicSlot = this.slots.find((s) => s.tierTemps == false);
+    console.log("un slot basique ?", basicSlot);
+    const tierTempsSlot = this.slots.find((s) => s.tierTemps == true);
+    console.log("un slot tier-temps ?", tierTempsSlot);
+    this.slotDuration =
+      basicSlot && basicSlot.dateDebut && basicSlot.dateFin
+        ? basicSlot.dateFin.getTime() - basicSlot.dateDebut.getTime()
+        : 0;
+    this.slotDurationTierTemps =
+      tierTempsSlot && tierTempsSlot.dateDebut && tierTempsSlot.dateFin
+        ? tierTempsSlot.dateFin.getTime() - tierTempsSlot.dateDebut.getTime()
+        : 0;
+    console.log(
+      "durée basique :",
+      this.slotDuration,
+      ", durée tier-temps :",
+      this.slotDurationTierTemps,
+    );
 
     this.title = "Ajouter une soutenance";
     // this.modalStudent = true;
     this.modalOpen = true;
     this.modalStudent = true;
-    this.planningForm.get('idAnneeFormation')?.reset();
+    this.planningForm.get("idAnneeFormation")?.reset();
     this.students = [];
     this.selectedStudents = [];
   }
 
   listenPromoChange() {
-    this.planningForm.get('idAnneeFormation')!
-      .valueChanges
-      .subscribe(idPromo => {
-  
+    this.planningForm
+      .get("idAnneeFormation")!
+      .valueChanges.subscribe((idPromo) => {
         if (idPromo) {
           this.loadStudents(idPromo);
           console.log("des étudiants ?", this.students);
-          this.planningForm.get('etudiants')?.setValue(this.students);
+          this.planningForm.get("etudiants")?.setValue(this.students);
         } else {
           this.students = [];
-          this.planningForm.get('etudiants')?.setValue([]);
+          this.planningForm.get("etudiants")?.setValue([]);
         }
-  
       });
   }
 
   loadStudents(idPromo: number) {
-    this.studentService.getStudentsByPromo(idPromo)
-      .subscribe(students => {
-        this.students = students.filter(s => !this.itemsToAdd.some(i => s.idUPPA == i.idUPPA) &&
-                                      !this.items.some(i => s.idUPPA == i.idUPPA) &&
-                                      !this.slots.some(i => s.idUPPA == i.idUPPA));
-      });
+    this.studentService.getStudentsByPromo(idPromo).subscribe((students) => {
+      this.students = students.filter(
+        (s) =>
+          !this.itemsToAdd.some((i) => s.idUPPA == i.idUPPA) &&
+          !this.items.some((i) => s.idUPPA == i.idUPPA) &&
+          !this.slots.some((i) => s.idUPPA == i.idUPPA),
+      );
+    });
   }
 
-  addStudent(){
+  addStudent() {
     this.newItems = [];
-    const newSlots: SlotItem[] = createSlotsFromStudents(this.selectedStudents, this.allCompanies, this.allTutors, this.referents, this.currentAcademicYearId, this.slotDuration, this.slotDurationTierTemps);
-    console.log("les nouveaux slots :",newSlots);
-    newSlots.forEach(slot => {
+    const newSlots: SlotItem[] = createSlotsFromStudents(
+      this.selectedStudents,
+      this.allCompanies,
+      this.allTutors,
+      this.referents,
+      this.currentAcademicYearId,
+      this.slotDuration,
+      this.slotDurationTierTemps,
+    );
+    console.log("les nouveaux slots :", newSlots);
+    newSlots.forEach((slot) => {
       this.newItems.push(slot);
-    })
+    });
     // this.planningItemsService.addToWaiting(this.newItems);
-    this.items = [...this.items, ...this.newItems]
-    this.itemsToAdd = [...this.itemsToAdd, ...this.newItems]
-    console.log("slot ajoutés à enregistrer : ",this.itemsToAdd)
+    this.items = [...this.items, ...this.newItems];
+    this.itemsToAdd = [...this.itemsToAdd, ...this.newItems];
+    console.log("slot ajoutés à enregistrer : ", this.itemsToAdd);
     this.modalOpen = false;
     this.submitted = false;
   }
@@ -495,9 +550,9 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
         this.cdRef.detectChanges();
       } else {
         // S'il y a une salle le slot est droppé dans la salle au bon endroit
-        duration == null
-          ? (duration = draggedSlot.duree)
-          : (duration = duration);
+        if (duration == null) {
+          duration = draggedSlot.duree;
+        }
 
         const containerTop = rect.top;
         const containerHeight = rect.height;
@@ -533,22 +588,42 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
         draggedSlot.topPercent = newTop;
 
         // Ajout/changement d'un lecteur
-        let lecteur = updateLecteur(true, this.planningByDay, draggedSlot, this.allStaff);
-        console.log("y a vrm un lecteur ?", lecteur)
-        if(lecteur){
+        let lecteur = updateLecteur(
+          true,
+          this.planningByDay,
+          draggedSlot,
+          this.allStaff,
+        );
+        console.log("y a vrm un lecteur ?", lecteur);
+        if (lecteur) {
           draggedSlot.idLecteur = lecteur.idPersonnel;
           draggedSlot.lecteur = `${lecteur.prenom![0]}. ${lecteur.nom}`;
-        }
-        else{
+        } else {
           draggedSlot.idLecteur = 0;
           draggedSlot.lecteur = "";
         }
-        console.log("ça donne quoi le dragged slot ?", draggedSlot.idLecteur, draggedSlot.lecteur)
+        console.log(
+          "ça donne quoi le dragged slot ?",
+          draggedSlot.idLecteur,
+          draggedSlot.lecteur,
+        );
 
         // Vérification de la disponibilité du créneau choisit et de la disponibilité des profs
-        if (!this.canPlaceSlot(newStart, newEnd, draggedSlot.referent, draggedSlot.lecteur, newRoom, existingSlots) ||
-            (prevState.dateDebut != null && (prevState.dateDebut!.getHours() * 60 + prevState.dateDebut!.getMinutes()) == (newStart.getHours() * 60 + newStart.getMinutes())
-              && prevState.salle == newRoom)) {
+        if (
+          !this.canPlaceSlot(
+            newStart,
+            newEnd,
+            draggedSlot.referent,
+            draggedSlot.lecteur,
+            newRoom,
+            existingSlots,
+          ) ||
+          (prevState.dateDebut != null &&
+            prevState.dateDebut!.getHours() * 60 +
+              prevState.dateDebut!.getMinutes() ==
+              newStart.getHours() * 60 + newStart.getMinutes() &&
+            prevState.salle == newRoom)
+        ) {
           // Le slot revient à sa place
           this.dropError.forEach((e) => {
             this.toastr.error(e, "Impossible de placer la soutenance.");
@@ -575,9 +650,14 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
           return;
         }
         //Si aucune erreur n'est renvoyée alors le lecteur est présent, on averti l'utilisateur s'il a changé
-        if(prevState.idLecteur != null && prevState.idLecteur != draggedSlot.idLecteur){
-          this.toastr.warning("L'enseignant lecteur précédent n'est pas disponible sur ce créneau\nUn autre lecteur a été sélectionné automatiquement.",
-          "Lecteur modifié",);
+        if (
+          prevState.idLecteur != null &&
+          prevState.idLecteur != draggedSlot.idLecteur
+        ) {
+          this.toastr.warning(
+            "L'enseignant lecteur précédent n'est pas disponible sur ce créneau\nUn autre lecteur a été sélectionné automatiquement.",
+            "Lecteur modifié",
+          );
         }
 
         // Si slot peut être posé et qu'il était en liste d'attente on l'enlève
@@ -599,9 +679,10 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     }
 
     this.slotUpdated.emit({
-      planningByDay: this.planningByDay, 
+      planningByDay: this.planningByDay,
       items: this.items,
-      itemsToAdd: this.itemsToAdd,});
+      itemsToAdd: this.itemsToAdd,
+    });
   }
 
   onPlanningDrop(event: CdkDragDrop<any>) {
@@ -700,7 +781,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     existingSlots: SlotItem[],
   ): boolean {
     this.dropError = [];
-    if(lecteur == null || lecteur == ""){
+    if (lecteur == null || lecteur == "") {
       this.dropError.push("Pas de lecteur disponible pour ce créneau.");
       return false;
     }
@@ -831,27 +912,30 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     this.startX = event.clientX;
     this.startY = event.clientY;
   }
-  
+
   onPointerMove(event: PointerEvent) {
     if (!this.pointerDown || !this.onlyDisplay) return;
-  
+
     const dx = Math.abs(event.clientX - this.startX);
     const dy = Math.abs(event.clientY - this.startY);
-  
+
     // seuil pour considérer que c'est un drag
     if (dx > 5 || dy > 5) {
       this.pointerDown = false;
-      this.toastr.error("Veuillez cliquer sur le bouton modifier.", "Le drag and drop n'est pas utilisable en mode affichage.");
+      this.toastr.error(
+        "Veuillez cliquer sur le bouton modifier.",
+        "Le drag and drop n'est pas utilisable en mode affichage.",
+      );
     }
   }
 
   // Ligne guide des heures et enseignants du slot sélectionné
   onDragStarted(event: any, slot: SlotItem) {
     this.isDragging = true; // Activer la ligne guide
-    if(slot.idLecteur){
+    if (slot.idLecteur) {
       this.teacherInSlot.push(slot.idLecteur);
     }
-    if(slot.idReferent){
+    if (slot.idReferent) {
       this.teacherInSlot.push(slot.idReferent);
     }
   }
