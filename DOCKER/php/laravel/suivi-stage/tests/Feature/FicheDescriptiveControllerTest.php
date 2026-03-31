@@ -77,6 +77,9 @@ class FicheDescriptiveControllerTest extends TestCase
         ];
 
         $response = $this->postJson('/api/fiche-descriptive/create', $donnees);
+        if ($response->status() !== 201) {
+            dump($response->json());
+        }
 
         $response
             ->assertStatus(201)

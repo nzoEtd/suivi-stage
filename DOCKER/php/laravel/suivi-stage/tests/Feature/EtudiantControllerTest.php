@@ -2,19 +2,19 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\RechercheStage;
+use App\Models\AnneeUniversitaire;
 use App\Models\Etudiant;
 use App\Models\FicheDescriptive;
 use App\Models\Parcours;
-use App\Models\AnneeUniversitaire;
+use App\Models\RechercheStage;
+use Tests\TestCase;
 use Mockery;
 
 class EtudiantControllerTest extends TestCase
 {
     /**
      * Recréer les tables avec ces seeders
-     * 
+     *
      * @return void
      */
     public function setUp(): void
@@ -23,33 +23,36 @@ class EtudiantControllerTest extends TestCase
         $this->artisan('migrate:fresh');
         $this->artisan('db:seed');
     }
+
     /*
-    ================================
-        TEST DE LA METHODE INDEX
-    ================================
-    */
+     * ================================
+     *     TEST DE LA METHODE INDEX
+     * ================================
+     */
     public function test_index_renvoie_une_confirmation_et_la_liste_de_tous_les_etudiants()
     {
         $etudiants = Etudiant::all();
 
         $response = $this->get('/api/etudiants');
 
-        $response->assertStatus(200)
+        $response
+            ->assertStatus(200)
             ->assertJson($etudiants->toArray());
     }
 
     /*
-    ================================
-        TEST DE LA METHODE SHOW
-    ================================
-    */
+     * ================================
+     *     TEST DE LA METHODE SHOW
+     * ================================
+     */
     public function test_show_renvoie_une_confirmation_et_les_informations_de_l_etudiant()
     {
         $unEtudiant = Etudiant::first();
 
         $response = $this->get('/api/etudiants/' . $unEtudiant->idUPPA);
 
-        $response->assertStatus(200)
+        $response
+            ->assertStatus(200)
             ->assertJson($unEtudiant->toArray());
     }
 
@@ -59,7 +62,8 @@ class EtudiantControllerTest extends TestCase
 
         $response = $this->get('/api/etudiants/' . $idEtudiant);
 
-        $response->assertStatus(404)
+        $response
+            ->assertStatus(404)
             ->assertJson(['message' => 'Aucun étudiant trouvé']);
     }
 
@@ -75,17 +79,16 @@ class EtudiantControllerTest extends TestCase
 
         $response = $this->get('/api/etudiants/1');
 
-        $response->assertStatus(500)
+        $response
+            ->assertStatus(500)
             ->assertJsonFragment(['message' => "Une erreur s'est produite"]);
     }
 
-
-
     /*
-    ================================
-        TEST DE INDEXRECHERCHESTAGE
-    ================================
-    */
+     * ================================
+     *     TEST DE INDEXRECHERCHESTAGE
+     * ================================
+     */
     public function test_indexRechercheStage_renvoie_une_confirmation_et_toutes_les_recherches_de_stage_de_l_etudiant()
     {
         $idEtudiant = '611082';
@@ -93,7 +96,8 @@ class EtudiantControllerTest extends TestCase
 
         $response = $this->get("/api/etudiants/{$idEtudiant}/recherches-stages");
 
-        $response->assertStatus(200)
+        $response
+            ->assertStatus(200)
             ->assertJson($recherches->toArray());
     }
 
@@ -109,7 +113,8 @@ class EtudiantControllerTest extends TestCase
         $idEtudiant = PHP_INT_MAX;
         $response = $this->get("/api/etudiants/{$idEtudiant}/recherches-stages");
 
-        $response->assertStatus(404)
+        $response
+            ->assertStatus(404)
             ->assertJson(['message' => 'Aucun étudiant trouvé']);
     }
 
@@ -126,17 +131,18 @@ class EtudiantControllerTest extends TestCase
             ->shouldReceive('where')
             ->andThrow(new \Exception('Erreur simulée'));
 
-        $response = $this->get("/api/etudiants/611082/recherches-stages");
+        $response = $this->get('/api/etudiants/611082/recherches-stages');
 
-        $response->assertStatus(500)
+        $response
+            ->assertStatus(500)
             ->assertJsonFragment(['message' => "Une erreur s'est produite"]);
     }
 
     /*
-    ================================
-        TEST DE INDEXFICHEDESCRIPTIVE
-    ================================
-    */
+     * ================================
+     *     TEST DE INDEXFICHEDESCRIPTIVE
+     * ================================
+     */
     public function test_indexFicheDescriptive_renvoie_200_et_la_liste_des_fiches_descriptives()
     {
         $etudiant = Etudiant::first();
@@ -144,7 +150,8 @@ class EtudiantControllerTest extends TestCase
 
         $response = $this->get("/api/etudiants/{$etudiant->idUPPA}/fiches-descriptives");
 
-        $response->assertStatus(200)
+        $response
+            ->assertStatus(200)
             ->assertJson($fiches->toArray());
     }
 
@@ -156,7 +163,6 @@ class EtudiantControllerTest extends TestCase
         $response->assertStatus(204);
     }
 
-
     /**
      * @runInSeparateProcess
      * @preserveGlobalState disabled
@@ -164,14 +170,16 @@ class EtudiantControllerTest extends TestCase
     public function test_indexFicheDescriptive_renvoie_500_en_cas_d_exception()
     {
         $mock = \Mockery::mock('alias:' . FicheDescriptive::class);
-        $mock->shouldReceive('where')
+        $mock
+            ->shouldReceive('where')
             ->andThrow(new \Exception('Erreur simulée'));
 
         $etudiant = Etudiant::first();
 
         $response = $this->get("/api/etudiants/{$etudiant->idUPPA}/fiches-descriptives");
 
-        $response->assertStatus(500)
+        $response
+            ->assertStatus(500)
             ->assertJson([
                 'message' => "Une erreur s'est produite",
                 'erreurs' => 'Erreur simulée'
@@ -185,15 +193,16 @@ class EtudiantControllerTest extends TestCase
         $idEtudiant = PHP_INT_MAX;
         $response = $this->get("/api/etudiants/{$idEtudiant}/fiches-descriptives");
 
-        $response->assertStatus(404)
+        $response
+            ->assertStatus(404)
             ->assertJson(['message' => 'Aucun étudiant trouvé']);
     }
 
     /*
-    ================================
-        TEST DE INDEXPARCOURS
-    ================================
-    */
+     * ================================
+     *     TEST DE INDEXPARCOURS
+     * ================================
+     */
     public function test_indexParcours_renvoie_200_et_la_liste_des_parcours()
     {
         $etudiant = Etudiant::first();
@@ -202,7 +211,8 @@ class EtudiantControllerTest extends TestCase
         $parcours = Parcours::first();
         $annee = AnneeUniversitaire::first();
 
-        $response->assertStatus(200)
+        $response
+            ->assertStatus(200)
             ->assertJsonFragment([
                 'idUPPA' => $etudiant->idUPPA,
                 'codeParcours' => $parcours->codeParcours,
@@ -215,7 +225,8 @@ class EtudiantControllerTest extends TestCase
         $idEtudiant = '6402561';
         $response = $this->get("/api/etudiants/{$idEtudiant}/parcours");
 
-        $response->assertStatus(404)
+        $response
+            ->assertStatus(404)
             ->assertJson(['message' => 'Aucun étudiant trouvé']);
     }
 
@@ -229,7 +240,8 @@ class EtudiantControllerTest extends TestCase
 
         $response = $this->get("/api/etudiants/{$etudiant->idUPPA}/parcours");
 
-        $response->assertStatus(500)
+        $response
+            ->assertStatus(500)
             ->assertJsonFragment(['message' => "Une erreur s'est produite"]);
     }
 
