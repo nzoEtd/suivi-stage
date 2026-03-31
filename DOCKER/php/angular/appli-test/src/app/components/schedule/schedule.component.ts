@@ -34,8 +34,6 @@ import { ModaleSoutenanceComponent } from "../modale-soutenance/modale-soutenanc
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { DataStoreService } from "../../services/data.service";
-// import { ToastrService } from 'ngx-toastr';
-// import { inject } from '@angular/core';
 
 @Component({
   selector: "app-schedule",
