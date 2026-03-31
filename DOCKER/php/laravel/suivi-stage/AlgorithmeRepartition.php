@@ -6,10 +6,10 @@ require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/FonctionsAlgorithme.php';
 require_once __DIR__ . '/Affichage.php';
 
-use PDO;
-use Exception;
-use App\AlgorithmeAttribution\FonctionsAlgorithme;
 use App\AlgorithmeAttribution\Affichage;
+use App\AlgorithmeAttribution\FonctionsAlgorithme;
+use Exception;
+use PDO;
 
 class AlgorithmeRepartition
 {
@@ -25,26 +25,18 @@ class AlgorithmeRepartition
     public function executeForStudent(string $idUPPA, string $idFicheDescriptive): ?array
     {
         try {
-            // echo "Traitement pour l'étudiant avec l'ID : $idUPPA (Fiche descriptive: $idFicheDescriptive)\n";
-
             // Récupération des données
             $this->professeursMatrix = $this->getProfesseursMatrix();
             $etudiantData = $this->getEtudiantData($idUPPA, $idFicheDescriptive);
 
             if (empty($etudiantData)) {
-                // echo "Erreur : Données insuffisantes pour poursuivre le traitement.\n";
                 return null;
             }
-
-            // echo "Données de l'étudiant récupérées avec succès\n";
-            // echo "Données de l'étudiant : \n";
-            // print_r($etudiantData);
 
             // Vérification des données requises
             $requiredFields = ['latitudeStage', 'longitudeStage', 'codePostalStage', 'idEntreprise'];
             foreach ($requiredFields as $field) {
                 if (!isset($etudiantData[0][$field])) {
-                    // echo "Erreur : Donnée manquante : $field\n";
                     return null;
                 }
             }
@@ -59,13 +51,13 @@ class AlgorithmeRepartition
 
             // Définition des critères
             $criteres = [
-                "NOM",
-                "PRENOM",
-                "COMPTEUR_ETUDIANT",
-                "DISTANCE_GPS_PROF_ENTREPRISE",
-                "ETUDIANT_DEJA_PRESENT_VILLE",
-                "ETUDIANT_DEJA_PRESENT_ENREPRISE",
-                "EQUITE_DEUX_TROIS_ANNEE"
+                'NOM',
+                'PRENOM',
+                'COMPTEUR_ETUDIANT',
+                'DISTANCE_GPS_PROF_ENTREPRISE',
+                'ETUDIANT_DEJA_PRESENT_VILLE',
+                'ETUDIANT_DEJA_PRESENT_ENREPRISE',
+                'EQUITE_DEUX_TROIS_ANNEE'
             ];
 
             // Initialisation de la matrice de résultats
@@ -91,8 +83,6 @@ class AlgorithmeRepartition
                 $distance = $this->calculateDistance($coordonneesProf, $coordonneesEtudiant);
                 $resultats[$prof['nom']]['DISTANCE_GPS_PROF_ENTREPRISE'] =
                     ($distance > 20 && !in_array($codePostal, ['64', '40'])) ? 1 : 0;
-
-                // echo "Distance entre le professeur " . $prof['nom'] . " et l'étudiant : $distance km\n";
 
                 // Vérification présence ville et entreprise
                 $presentVille = $this->isEtudiantPresentVille($codePostal, $idUPPA);
@@ -131,7 +121,6 @@ class AlgorithmeRepartition
 
             return $professeursTries;
         } catch (Exception $e) {
-            // echo "ERREUR : " . $e->getMessage() . "\n";
             throw $e;
         }
     }
