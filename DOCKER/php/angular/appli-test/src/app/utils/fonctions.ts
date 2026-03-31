@@ -17,16 +17,15 @@ import { Student_Staff_AcademicYear_String } from "../models/student-staff-acade
 export async function loadSoutenancesForPlanning(
   planning: Planning,
   allSoutenances: Soutenance[],
-  slots: SlotItem[],
   allStudents: Student[],
   allStaff: Staff[],
   allCompanies: Company[],
   allTutors: CompanyTutor[],
   referents: Student_Staff_AcademicYear_String[],
   trainingAcademicYears: Student_TrainingYear_AcademicYear[],
-  academicYears: AcademicYear[],
   cdRef: ChangeDetectorRef,
 ): Promise<SlotItem[]> {
+  let slots: SlotItem[];
   try {
     console.log("Chargement des soutenances pour le planning:", planning.nom);
     const filteredSoutenances = allSoutenances.filter((s) => {

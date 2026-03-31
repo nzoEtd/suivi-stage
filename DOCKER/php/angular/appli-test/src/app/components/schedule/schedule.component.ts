@@ -327,14 +327,12 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
       this.slots = await loadSoutenancesForPlanning(
         this.selectedPlanning,
         this.allSoutenances,
-        this.slots,
         this.allStudents,
         this.allStaff,
         this.allCompanies,
         this.allTutors,
         this.allReferents,
         this.allTrainingAcademicYears,
-        this.allAcademicYears,
         this.cdRef,
       );
       this.slots.forEach((slot) => {
