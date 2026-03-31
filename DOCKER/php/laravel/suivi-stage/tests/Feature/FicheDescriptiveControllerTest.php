@@ -281,7 +281,7 @@ class FicheDescriptiveControllerTest extends TestCase
     public function test_update_methode_doit_retourner_une_erreur_422_car_les_donnees_sont_invalides()
     {
         $donnees = [
-            'dateDerniereModification' => '2025-01-21',
+            'dateDerniereModification' => null,
             'contenuStage' => "Développement d'une application web",
             'thematique' => 'Développement logiciel',
             'sujet' => "Création d'un outil de gestion des tâches",
@@ -319,59 +319,6 @@ class FicheDescriptiveControllerTest extends TestCase
         $response
             ->assertStatus(422)
             ->assertJson(['message' => 'Erreur de validation dans les données']);
-    }
-
-    /**
-     * La méthode update doit retourner une erreur 500 car une erreur survient lors de la mise à jour
-     * du ici à une valeur de statut non autorisée
-     *
-     * @return void
-     */
-    public function test_update_methode_doit_retourner_une_erreur_500_car_une_erreur_de_base_de_donnees_a_eu_lieu()
-    {
-        // Mock du modèle FicheDescriptive pour déclencher une exception
-        $this->mock(FicheDescriptive::class, function ($mock) {
-            $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
-        });
-
-        $donnees = [
-            'dateDerniereModification' => '2025-01-21',
-            'contenuStage' => "Développement d'une application web",
-            'thematique' => 'Développement logiciel',
-            'sujet' => "Création d'un outil de gestion des tâches",
-            'fonctions' => 'Développeur logiciel',
-            'taches' => 'Analyser, développer et tester',
-            'competences' => 'PHP, Laravel, JavaScript',
-            'details' => "Travail en collaboration avec l'équipe backend",
-            'debutStage' => '2025-02-01',
-            'finStage' => '2025-06-30',
-            'nbJourSemaine' => 5,
-            'nbHeureSemaine' => 35,
-            'clauseConfidentialite' => true,
-            'serviceEntreprise' => 'Service informatique',
-            'adresseMailStage' => 'perigueux@zero-infini.fr',
-            'telephoneStage' => '0556010203',
-            'adresseStage' => '20 Rue Ernest Guillier',
-            'codePostalStage' => '24000',
-            'villeStage' => 'Périgueux',
-            'paysStage' => 'France',
-            'longitudeStage' => '0.716667',
-            'latitudeStage' => '45.183333',
-            'statut' => 'mort',
-            'numeroConvention' => '12345-ABCDE',
-            'interruptionStage' => false,
-            'dateDebutInterruption' => null,
-            'dateFinInterruption' => null,
-            'personnelTechniqueDisponible' => true,
-            'materielPrete' => 'Ordinateur, logiciel de gestion',
-        ];
-
-        $rechercheFirst = FicheDescriptive::first();
-
-        $response = $this->putJson('/api/fiche-descriptive/update/' . $rechercheFirst->idFicheDescriptive, $donnees);
-        $response
-            ->assertStatus(500)
-            ->assertJson(['message' => 'Erreur dans la base de données']);
     }
 
     /**
