@@ -33,6 +33,7 @@
               [timeBlocks]="timeBlocks"
               [onlyDisplay]="false"
               [planningByDay]="planningByDay"
+              [idPromoActuelle]="planning.idAnneeFormation"
               (editSlot)="openEditModal($event)"
               (slotUpdated)="onSlotUpdated($event)"
             ></app-schedule-board>
@@ -49,6 +50,9 @@
                 }}</span>
               }
             </div>
+            <span class="jour" title="Ajouter un jour" (click)="openModalJour()"
+              ><b>+</b></span
+            >
           </div>
         </div>
       </div>
@@ -78,3 +82,28 @@
   [allStaff]="allStaff"
   [timeBlocks]="timeBlocks"
 />
+
+<app-modale
+  *ngIf="modalOpen"
+  [title]="title"
+  (submit)="addJour()"
+  (cancel)="modalOpen = false"
+  [hasValue]="hasValue"
+>
+  <form
+    class="form"
+    [formGroup]="planningForm"
+    (ngSubmit)="addJour()"
+    [class.disabled-form]="isSubmitting"
+  >
+    <!-- Date -->
+    <div class="line-wrapper">
+      <div class="input-wrapper">
+        <label>Date* :</label>
+        <!-- <input type="date" formControlName="date" /> -->
+        <input #datepickerEl type="text" formControlName="date" />
+        <!-- <div #datepickerEl></div> -->
+      </div>
+    </div>
+  </form>
+</app-modale>

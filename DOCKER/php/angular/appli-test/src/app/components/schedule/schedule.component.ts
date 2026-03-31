@@ -274,7 +274,7 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
 
   openModal(slot: SlotItem) {
     this.selectedSoutenance = slot!;
-    this.idSoutenance = this.selectedSoutenance!.id;
+    this.idSoutenance = this.selectedSoutenance!.id as number;
     this.isModalSoutenanceOpen = true;
   }
 

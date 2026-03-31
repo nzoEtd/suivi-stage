@@ -220,7 +220,7 @@ export class ModalePlanningComponent implements OnInit {
     }
   }
 
-  onCancel() {
-    this.cancel.emit();
-  }
+  onCancel(event?: MouseEvent) {
+    this.cancel.emit(); 
+}
 }

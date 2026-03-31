@@ -20,7 +20,6 @@ export class StudentTdAcademicYearService {
         }
 
         return this.http.get<Student_TD_AcademicYear[]>(`${this.apiUrl}/api/etudiants-td-annee-univ`, {params}).pipe(
-        tap(response => this.log(response)),
         catchError(error => this.handleError(error, null))
         );
     }
@@ -44,7 +43,6 @@ export class StudentTdAcademicYearService {
             { params }
           )
           .pipe(
-            tap((response) => this.log(response)),
             catchError((error) => this.handleError(error, []))
           );
       }
@@ -64,7 +62,6 @@ export class StudentTdAcademicYearService {
             httpOptions
           )
           .pipe(
-            tap((response) => this.log(response)),
             catchError((error) => this.handleError(error, null))
           );
       }
@@ -81,17 +78,9 @@ export class StudentTdAcademicYearService {
         return this.http
           .delete<null>(`${this.apiUrl}/api/etudiants-td-annee-univ`, httpOptions)
           .pipe(
-            tap((response) => this.log(response)),
             catchError((error) => this.handleError(error, null))
           );
       }
-
-
-
-    //Log la réponse de l'API
-    private log(response: any) {
-        console.table(response);
-    }
 
     //Retourne l'erreur en cas de problème avec l'API
     private handleError(error: Error, errorValue: any) {

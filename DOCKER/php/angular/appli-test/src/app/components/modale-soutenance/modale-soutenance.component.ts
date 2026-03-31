@@ -28,14 +28,8 @@ import {
   dateToHeureStr,
 } from "../../utils/timeManagement";
 import { ToastrService } from "ngx-toastr";
-import { sortCreneaux } from "../../utils/slotsUtils";
-
-export type CreneauDisponible = {
-  date: string;
-  salle: number;
-  heureDebut: string;
-  heureFin: string;
-};
+import { CreneauDisponible } from "../../utils/types";
+import { isOverlap, referentEstTechnique } from "../../utils/fonctions";
 
 @Component({
   selector: "app-modale-soutenance",
@@ -231,8 +225,9 @@ export class ModaleSoutenanceComponent implements OnInit {
       s.idReferent,
     ]);
 
-    const referentTechnique = this.referentEstTechnique(
+    const referentTechnique = referentEstTechnique(
       this.soutenance.idReferent,
+      this.allStaff,
     );
 
     return this.allStaff.filter((s) => {
@@ -260,7 +255,7 @@ export class ModaleSoutenanceComponent implements OnInit {
     const chevauchements = soutenances.filter(
       (s) =>
         s.id !== this.soutenance.id &&
-        this.isOverlap(heureDebutDate, heureFinDate, s.dateDebut!, s.dateFin!),
+        isOverlap(heureDebutDate, heureFinDate, s.dateDebut!, s.dateFin!),
     );
 
     this.enseignantsLecteurs = this.getLecteursDisponibles(chevauchements);
@@ -290,16 +285,7 @@ export class ModaleSoutenanceComponent implements OnInit {
     }
   }
 
-  referentEstTechnique(idReferent: number): boolean {
-    const enseignant = this.allStaff.find((s) => s.idPersonnel === idReferent);
-    return enseignant?.estTechnique || false;
-  }
-
-  isOverlap(start1: Date, end1: Date, start2: Date, end2: Date): boolean {
-    return start1 < end2 && end1 > start2;
-  }
-
-  onCancel() {
+  onCancel(event?: MouseEvent) {
     this.close.emit();
   }
 
