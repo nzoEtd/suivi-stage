@@ -2,18 +2,18 @@
 
 namespace Tests\Feature;
 
+use App\Models\FicheDescriptive;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Models\FicheDescriptive;
-use Tests\TestCase;
 use Tests\Feature\Exception;
+use Tests\TestCase;
 use Mockery;
 
 class FicheDescriptiveControllerTest extends TestCase
 {
     /**
      * Recréer les tables avec les seeders
-     * 
+     *
      * @return void
      */
     public function setUp(): void
@@ -23,7 +23,6 @@ class FicheDescriptiveControllerTest extends TestCase
         $this->artisan('db:seed');
     }
 
-
     protected function tearDown(): void
     {
         Mockery::close();
@@ -31,158 +30,159 @@ class FicheDescriptiveControllerTest extends TestCase
     }
 
     /*
-    ================================
-        TEST DE LA METHODE STORE
-    ================================
-    */
+     * ================================
+     *     TEST DE LA METHODE STORE
+     * ================================
+     */
 
     /**
      * La méthode store va retourner une confirmation 200 et la liste de toutes les entreprises
-     * 
+     *
      * @return void
      */
     public function test_store_la_methode_doit_renvoyer_201()
     {
         $donnees = [
-            "contenuStage" =>  "Développement d'une application web",
-            "thematique" =>  "Développement logiciel",
-            "sujet" =>  "Création d'un outil de gestion des tâches",
-            "fonctions" =>  "Développeur logiciel",
-            "taches" =>  "Analyser, développer et tester",
-            "competences" =>  "PHP, Laravel, JavaScript",
-            "details" =>  "Travail en collaboration avec l'équipe backend",
-            "debutStage" =>  "2025-02-01",
-            "finStage" =>  "2025-06-30",
-            "nbJourSemaine" =>  5,
-            "nbHeureSemaine" =>  35,
-            "clauseConfidentialite" =>  true,
-            "serviceEntreprise" => "Service informatique",
-            "adresseMailStage" => "perigueux@zero-infini.fr",
-            "telephoneStage" => "0556010203",
-            "adresseStage" => "20 Rue Ernest Guillier",
-            "codePostalStage" => "24000",
-            "villeStage" => "Périgueux",
-            "paysStage" => "France",
-            "longitudeStage" => "0.716667",
-            "latitudeStage" => "45.183333",
-            "statut" =>  "En cours",
-            "numeroConvention" =>  "12345-ABCDE",
-            "interruptionStage" =>  false,
-            "dateDebutInterruption" =>  null,
-            "dateFinInterruption" =>  null,
-            "personnelTechniqueDisponible" =>  true,
-            "materielPrete" =>  "Ordinateur, logiciel de gestion",
-            "idEntreprise" => 1,
-            "idTuteurEntreprise" => 2,
+            'contenuStage' => "Développement d'une application web",
+            'thematique' => 'Développement logiciel',
+            'sujet' => "Création d'un outil de gestion des tâches",
+            'fonctions' => 'Développeur logiciel',
+            'taches' => 'Analyser, développer et tester',
+            'competences' => 'PHP, Laravel, JavaScript',
+            'details' => "Travail en collaboration avec l'équipe backend",
+            'debutStage' => '2025-02-01',
+            'finStage' => '2025-06-30',
+            'nbJourSemaine' => 5,
+            'nbHeureSemaine' => 35,
+            'clauseConfidentialite' => true,
+            'serviceEntreprise' => 'Service informatique',
+            'adresseMailStage' => 'perigueux@zero-infini.fr',
+            'telephoneStage' => '0556010203',
+            'adresseStage' => '20 Rue Ernest Guillier',
+            'codePostalStage' => '24000',
+            'villeStage' => 'Périgueux',
+            'paysStage' => 'France',
+            'longitudeStage' => '0.716667',
+            'latitudeStage' => '45.183333',
+            'statut' => 'En cours',
+            'numeroConvention' => '12345-ABCDE',
+            'interruptionStage' => false,
+            'dateDebutInterruption' => null,
+            'dateFinInterruption' => null,
+            'personnelTechniqueDisponible' => true,
+            'materielPrete' => 'Ordinateur, logiciel de gestion',
+            'idEntreprise' => 1,
+            'idTuteurEntreprise' => 2,
             'idUPPA' => 610123
         ];
 
         $response = $this->postJson('/api/fiche-descriptive/create', $donnees);
 
-        $response->assertStatus(201)
+        $response
+            ->assertStatus(201)
             ->assertJson($donnees);
     }
 
     /**
      * La méthode store doit retourner une erreur 422 si les données ne sont pas valides
      * car la date de création doit être obligatoire et non null
-     * 
+     *
      * @return void
      */
-
     public function test_store_doit_retourner_une_erreur_422_si_les_donnees_ne_sont_pas_valides()
     {
         $donnees = [
-            "contenuStage" =>  "Développement d'une application web",
-            "thematique" =>  "Développement logiciel",
-            "sujet" =>  "Création d'un outil de gestion des tâches",
-            "fonctions" =>  "Développeur logiciel",
-            "taches" =>  "Analyser, développer et tester",
-            "competences" =>  "PHP, Laravel, JavaScript",
-            "details" =>  "Travail en collaboration avec l'équipe backend",
-            "debutStage" =>  "2025-02-01",
-            "finStage" =>  "2025-06-30",
-            "nbJourSemaine" =>  5,
-            "nbHeureSemaine" =>  35,
-            "clauseConfidentialite" =>  true,
-            "serviceEntreprise" => "Service informatique",
-            "adresseMailStage" => "perigueux@zero-infini.fr",
-            "telephoneStage" => "0556010203",
-            "adresseStage" => "20 Rue Ernest Guillier",
-            "codePostalStage" => "24000",
-            "villeStage" => "Périgueux",
-            "paysStage" => "France",
-            "longitudeStage" => "0.716667",
-            "latitudeStage" => "45.183333",
-            "statut" =>  "En france",
-            "numeroConvention" =>  "12345-ABCDE",
-            "interruptionStage" =>  false,
-            "dateDebutInterruption" =>  null,
-            "dateFinInterruption" =>  null,
-            "personnelTechniqueDisponible" =>  true,
-            "materielPrete" =>  "Ordinateur, logiciel de gestion",
-            "idEntreprise" => 1,
-            "idTuteurEntreprise" => 2,
+            'contenuStage' => "Développement d'une application web",
+            'thematique' => 'Développement logiciel',
+            'sujet' => "Création d'un outil de gestion des tâches",
+            'fonctions' => 'Développeur logiciel',
+            'taches' => 'Analyser, développer et tester',
+            'competences' => 'PHP, Laravel, JavaScript',
+            'details' => "Travail en collaboration avec l'équipe backend",
+            'debutStage' => '2025-02-01',
+            'finStage' => '2025-06-30',
+            'nbJourSemaine' => 5,
+            'nbHeureSemaine' => 35,
+            'clauseConfidentialite' => true,
+            'serviceEntreprise' => 'Service informatique',
+            'adresseMailStage' => 'perigueux@zero-infini.fr',
+            'telephoneStage' => '0556010203',
+            'adresseStage' => '20 Rue Ernest Guillier',
+            'codePostalStage' => '24000',
+            'villeStage' => 'Périgueux',
+            'paysStage' => 'France',
+            'longitudeStage' => '0.716667',
+            'latitudeStage' => '45.183333',
+            'statut' => 'En france',
+            'numeroConvention' => '12345-ABCDE',
+            'interruptionStage' => false,
+            'dateDebutInterruption' => null,
+            'dateFinInterruption' => null,
+            'personnelTechniqueDisponible' => true,
+            'materielPrete' => 'Ordinateur, logiciel de gestion',
+            'idEntreprise' => 1,
+            'idTuteurEntreprise' => 2,
             'idUPPA' => 610123
         ];
 
         $response = $this->postJson('/api/fiche-descriptive/create', $donnees);
 
-        $response->assertStatus(422)
+        $response
+            ->assertStatus(422)
             ->assertJson(['message' => 'Erreur de validation dans les données']);
     }
 
     /**
      * La méthode store doit retourner une erreur 500 si une erreur survient lors de l'insertion
      * par exemple une données (clé étrangère n'existe pas)
-     * 
+     *
      * @return void
      */
-
     public function test_store_methode_doit_retourner_une_erreur_500_car_une_cle_etrangere_n_existe_pas()
     {
         $donnees = [
-            "contenuStage" =>  "Développement d'une application web",
-            "thematique" =>  "Développement logiciel",
-            "sujet" =>  "Création d'un outil de gestion des tâches",
-            "fonctions" =>  "Développeur logiciel",
-            "taches" =>  "Analyser, développer et tester",
-            "competences" =>  "PHP, Laravel, JavaScript",
-            "details" =>  "Travail en collaboration avec l'équipe backend",
-            "debutStage" =>  "2025-02-01",
-            "finStage" =>  "2025-06-30",
-            "nbJourSemaine" =>  5,
-            "nbHeureSemaine" =>  35,
-            "clauseConfidentialite" =>  true,
-            "serviceEntreprise" => "Service informatique",
-            "adresseMailStage" => "perigueux@zero-infini.fr",
-            "telephoneStage" => "0556010203",
-            "adresseStage" => "20 Rue Ernest Guillier",
-            "codePostalStage" => "24000",
-            "villeStage" => "Périgueux",
-            "paysStage" => "France",
-            "longitudeStage" => "0.716667",
-            "latitudeStage" => "45.183333",
-            "statut" =>  "En cours",
-            "numeroConvention" =>  "12345-ABCDE",
-            "interruptionStage" =>  false,
-            "dateDebutInterruption" =>  null,
-            "dateFinInterruption" =>  null,
-            "personnelTechniqueDisponible" =>  true,
-            "materielPrete" =>  "Ordinateur, logiciel de gestion",
-            "idEntreprise" => 99999,
-            "idTuteurEntreprise" => 2,
+            'contenuStage' => "Développement d'une application web",
+            'thematique' => 'Développement logiciel',
+            'sujet' => "Création d'un outil de gestion des tâches",
+            'fonctions' => 'Développeur logiciel',
+            'taches' => 'Analyser, développer et tester',
+            'competences' => 'PHP, Laravel, JavaScript',
+            'details' => "Travail en collaboration avec l'équipe backend",
+            'debutStage' => '2025-02-01',
+            'finStage' => '2025-06-30',
+            'nbJourSemaine' => 5,
+            'nbHeureSemaine' => 35,
+            'clauseConfidentialite' => true,
+            'serviceEntreprise' => 'Service informatique',
+            'adresseMailStage' => 'perigueux@zero-infini.fr',
+            'telephoneStage' => '0556010203',
+            'adresseStage' => '20 Rue Ernest Guillier',
+            'codePostalStage' => '24000',
+            'villeStage' => 'Périgueux',
+            'paysStage' => 'France',
+            'longitudeStage' => '0.716667',
+            'latitudeStage' => '45.183333',
+            'statut' => 'En cours',
+            'numeroConvention' => '12345-ABCDE',
+            'interruptionStage' => false,
+            'dateDebutInterruption' => null,
+            'dateFinInterruption' => null,
+            'personnelTechniqueDisponible' => true,
+            'materielPrete' => 'Ordinateur, logiciel de gestion',
+            'idEntreprise' => 99999,
+            'idTuteurEntreprise' => 2,
             'idUPPA' => 99999
         ];
         $response = $this->postJson('/api/fiche-descriptive/create', $donnees);
 
-        $response->assertStatus(500)
+        $response
+            ->assertStatus(500)
             ->assertJson(['message' => 'Erreur dans la base de données']);
     }
 
     /**
      * La méthode store doit retourner une erreur 500 si une erreur survient lors de l'insertion
-     * 
+     *
      * @return void
      * @runInSeparateProcess
      * @preserveGlobalState disabled
@@ -190,7 +190,8 @@ class FicheDescriptiveControllerTest extends TestCase
     public function test_store_methode_doit_retourner_une_erreur_500_car_un_probleme_est_survenue()
     {
         $mock = \Mockery::mock('alias:' . FicheDescriptive::class);
-        $mock->shouldReceive('create')
+        $mock
+            ->shouldReceive('create')
             ->once()
             ->andThrow(new \Exception('Erreur simulée'));
 
@@ -203,7 +204,8 @@ class FicheDescriptiveControllerTest extends TestCase
 
         $response = $this->postJson('/api/fiche-descriptive/create', $donnees);
 
-        $response->assertStatus(500)
+        $response
+            ->assertStatus(500)
             ->assertJson([
                 'message' => "Une erreur s'est produite :",
                 'exception' => 'Erreur simulée'
@@ -211,65 +213,61 @@ class FicheDescriptiveControllerTest extends TestCase
         \Mockery::close();
     }
 
-   
-
-
-
     /*
-    ================================
-        TEST DE LA METHODE UPDATE
-    ================================
-    */
+     * ================================
+     *     TEST DE LA METHODE UPDATE
+     * ================================
+     */
 
     /**
      * La méthode update doit retourner une confirmation 200 et les données de la fiche descriptive
-     * 
+     *
      * @return void
      */
-
     public function test_update_methode_doit_retourner_200_car_la_fiche_descriptive_a_ete_mise_a_jour()
     {
         $donneesEnvoyees = [
-            "contenuStage" => ["value" => "Développement d'une application web", "type" => "ficheDescriptive"],
-            "thematiqueFicheDescriptive" => ["value" => "Développement logiciel", "type" => "ficheDescriptive"],
-            "sujetFicheDescriptive" => ["value" => "Création d'un outil de gestion des tâches", "type" => "ficheDescriptive"],
-            "fonctionsFicheDescriptive" => ["value" => "Développeur logiciel", "type" => "ficheDescriptive"],
-            "tachesFicheDescriptive" => ["value" => "Analyser, développer et tester", "type" => "ficheDescriptive"],
-            "competencesFicheDescriptive" => ["value" => "PHP, Laravel, JavaScript", "type" => "ficheDescriptive"],
-            "detailsFicheDescriptive" => ["value" => "Travail en collaboration avec l'équipe backend", "type" => "ficheDescriptive"],
-            "debutStageFicheDescriptive" => ["value" => "2025-02-01", "type" => "ficheDescriptive"],
-            "finStageFicheDescriptive" => ["value" => "2025-06-30", "type" => "ficheDescriptive"],
-            "nbJourSemaineFicheDescriptive" => ["value" => 5, "type" => "ficheDescriptive"],
-            "nbHeuresSemaineFicheDescriptive" => ["value" => 35, "type" => "ficheDescriptive"],
-            "clauseConfidentialiteFicheDescriptive" => ["value" => true, "type" => "ficheDescriptive"],
-            "serviceEntrepriseFicheDescriptive" => ["value" => "Service informatique", "type" => "ficheDescriptive"],
-            "adresseMailStageFicheDescriptive" => ["value" => "perigueux@zero-infini.fr", "type" => "ficheDescriptive"],
-            "telephoneStageFicheDescriptive" => ["value" => "0556010203", "type" => "ficheDescriptive"],
-            "adresseStageFicheDescriptive" => ["value" => "20 Rue Ernest Guillier", "type" => "ficheDescriptive"],
-            "codePostalStageFicheDescriptive" => ["value" => "24000", "type" => "ficheDescriptive"],
-            "villeStageFicheDescriptive" => ["value" => "Périgueux", "type" => "ficheDescriptive"],
-            "paysStageFicheDescriptive" => ["value" => "France", "type" => "ficheDescriptive"],
-            "statut" => ["value" => "En cours", "type" => "ficheDescriptive"],
-            "numeroConvention" => ["value" => "12345-ABCDE", "type" => "ficheDescriptive"],
-            "interruptionStageFicheDescriptive" => ["value" => false, "type" => "ficheDescriptive"],
-            "personnelTechniqueDisponibleFicheDescriptive" => ["value" => true, "type" => "ficheDescriptive"],
-            "materielPreteFicheDescriptive" => ["value" => "Ordinateur, logiciel de gestion", "type" => "ficheDescriptive"]
+            'contenuStage' => ['value' => "Développement d'une application web", 'type' => 'ficheDescriptive'],
+            'thematiqueFicheDescriptive' => ['value' => 'Développement logiciel', 'type' => 'ficheDescriptive'],
+            'sujetFicheDescriptive' => ['value' => "Création d'un outil de gestion des tâches", 'type' => 'ficheDescriptive'],
+            'fonctionsFicheDescriptive' => ['value' => 'Développeur logiciel', 'type' => 'ficheDescriptive'],
+            'tachesFicheDescriptive' => ['value' => 'Analyser, développer et tester', 'type' => 'ficheDescriptive'],
+            'competencesFicheDescriptive' => ['value' => 'PHP, Laravel, JavaScript', 'type' => 'ficheDescriptive'],
+            'detailsFicheDescriptive' => ['value' => "Travail en collaboration avec l'équipe backend", 'type' => 'ficheDescriptive'],
+            'debutStageFicheDescriptive' => ['value' => '2025-02-01', 'type' => 'ficheDescriptive'],
+            'finStageFicheDescriptive' => ['value' => '2025-06-30', 'type' => 'ficheDescriptive'],
+            'nbJourSemaineFicheDescriptive' => ['value' => 5, 'type' => 'ficheDescriptive'],
+            'nbHeuresSemaineFicheDescriptive' => ['value' => 35, 'type' => 'ficheDescriptive'],
+            'clauseConfidentialiteFicheDescriptive' => ['value' => true, 'type' => 'ficheDescriptive'],
+            'serviceEntrepriseFicheDescriptive' => ['value' => 'Service informatique', 'type' => 'ficheDescriptive'],
+            'adresseMailStageFicheDescriptive' => ['value' => 'perigueux@zero-infini.fr', 'type' => 'ficheDescriptive'],
+            'telephoneStageFicheDescriptive' => ['value' => '0556010203', 'type' => 'ficheDescriptive'],
+            'adresseStageFicheDescriptive' => ['value' => '20 Rue Ernest Guillier', 'type' => 'ficheDescriptive'],
+            'codePostalStageFicheDescriptive' => ['value' => '24000', 'type' => 'ficheDescriptive'],
+            'villeStageFicheDescriptive' => ['value' => 'Périgueux', 'type' => 'ficheDescriptive'],
+            'paysStageFicheDescriptive' => ['value' => 'France', 'type' => 'ficheDescriptive'],
+            'statut' => ['value' => 'En cours', 'type' => 'ficheDescriptive'],
+            'numeroConvention' => ['value' => '12345-ABCDE', 'type' => 'ficheDescriptive'],
+            'interruptionStageFicheDescriptive' => ['value' => false, 'type' => 'ficheDescriptive'],
+            'personnelTechniqueDisponibleFicheDescriptive' => ['value' => true, 'type' => 'ficheDescriptive'],
+            'materielPreteFicheDescriptive' => ['value' => 'Ordinateur, logiciel de gestion', 'type' => 'ficheDescriptive']
         ];
 
         $rechercheFirst = FicheDescriptive::first();
 
         $response = $this->putJson('/api/fiche-descriptive/update/' . $rechercheFirst->idFicheDescriptive, $donneesEnvoyees);
 
-        $response->assertStatus(200)
+        $response
+            ->assertStatus(200)
             ->assertJson([
                 'ficheDescriptive' => [
-                    'thematique' => "Développement logiciel",
-                    'sujet'      => "Création d'un outil de gestion des tâches",
-                    'fonctions'  => "Développeur logiciel",
-                    'competences' => "PHP, Laravel, JavaScript",
-                    'debutStage' => "2025-02-01",
-                    'finStage'   => "2025-06-30",
-                    'telephoneStage' => "0556010203"
+                    'thematique' => 'Développement logiciel',
+                    'sujet' => "Création d'un outil de gestion des tâches",
+                    'fonctions' => 'Développeur logiciel',
+                    'competences' => 'PHP, Laravel, JavaScript',
+                    'debutStage' => '2025-02-01',
+                    'finStage' => '2025-06-30',
+                    'telephoneStage' => '0556010203'
                 ]
             ]);
     }
@@ -277,55 +275,56 @@ class FicheDescriptiveControllerTest extends TestCase
     /**
      * La méthode update doit retourner une erreur 422 si les données ne sont pas valides
      * car la date de création doit être obligatoire et non null
-     * 
+     *
      * @return void
      */
     public function test_update_methode_doit_retourner_une_erreur_422_car_les_donnees_sont_invalides()
     {
         $donnees = [
-            "dateDerniereModification" => "2025-01-21",
-            "contenuStage" =>  "Développement d'une application web",
-            "thematique" =>  "Développement logiciel",
-            "sujet" =>  "Création d'un outil de gestion des tâches",
-            "fonctions" =>  "Développeur logiciel",
-            "taches" =>  "Analyser, développer et tester",
-            "competences" =>  "PHP, Laravel, JavaScript",
-            "details" =>  "Travail en collaboration avec l'équipe backend",
-            "debutStage" =>  "2025-02-01",
-            "finStage" =>  "2025-06-30",
-            "nbJourSemaine" =>  5,
-            "nbHeureSemaine" =>  35,
-            "clauseConfidentialite" =>  true,
-            "serviceEntreprise" => "Service informatique",
-            "adresseMailStage" => "perigueux@zero-infini.fr",
-            "telephoneStage" => "0556010203",
-            "adresseStage" => "20 Rue Ernest Guillier",
-            "codePostalStage" => "24000",
-            "villeStage" => "Périgueux",
-            "paysStage" => "France",
-            "longitudeStage" => "0.716667",
-            "latitudeStage" => "45.183333",
-            "statut" =>  "En france",
-            "numeroConvention" =>  "12345-ABCDE",
-            "interruptionStage" =>  false,
-            "dateDebutInterruption" =>  null,
-            "dateFinInterruption" =>  null,
-            "personnelTechniqueDisponible" =>  true,
-            "materielPrete" =>  "Ordinateur, logiciel de gestion",
+            'dateDerniereModification' => '2025-01-21',
+            'contenuStage' => "Développement d'une application web",
+            'thematique' => 'Développement logiciel',
+            'sujet' => "Création d'un outil de gestion des tâches",
+            'fonctions' => 'Développeur logiciel',
+            'taches' => 'Analyser, développer et tester',
+            'competences' => 'PHP, Laravel, JavaScript',
+            'details' => "Travail en collaboration avec l'équipe backend",
+            'debutStage' => '2025-02-01',
+            'finStage' => '2025-06-30',
+            'nbJourSemaine' => 5,
+            'nbHeureSemaine' => 35,
+            'clauseConfidentialite' => true,
+            'serviceEntreprise' => 'Service informatique',
+            'adresseMailStage' => 'perigueux@zero-infini.fr',
+            'telephoneStage' => '0556010203',
+            'adresseStage' => '20 Rue Ernest Guillier',
+            'codePostalStage' => '24000',
+            'villeStage' => 'Périgueux',
+            'paysStage' => 'France',
+            'longitudeStage' => '0.716667',
+            'latitudeStage' => '45.183333',
+            'statut' => 'En france',
+            'numeroConvention' => '12345-ABCDE',
+            'interruptionStage' => false,
+            'dateDebutInterruption' => null,
+            'dateFinInterruption' => null,
+            'personnelTechniqueDisponible' => true,
+            'materielPrete' => 'Ordinateur, logiciel de gestion',
         ];
 
         $rechercheFirst = FicheDescriptive::first();
 
         $response = $this->putJson('/api/fiche-descriptive/update/' . $rechercheFirst->idFicheDescriptive, $donnees);
 
-        $response->assertStatus(422)
+        $response
+            ->assertStatus(422)
             ->assertJson(['message' => 'Erreur de validation dans les données']);
     }
 
     /**
      * La méthode update doit retourner une erreur 500 car une erreur survient lors de la mise à jour
-     * du ici à une clé étrangère qui n'existe pas
-     * 
+     * du ici à une valeur de statut non autorisée
+     *
      * @return void
      */
     public function test_update_methode_doit_retourner_une_erreur_500_car_une_erreur_de_base_de_donnees_a_eu_lieu()
@@ -336,46 +335,48 @@ class FicheDescriptiveControllerTest extends TestCase
         });
 
         $donnees = [
-            "dateDerniereModification" => "2025-01-21",
-            "contenuStage" =>  "Développement d'une application web",
-            "thematique" =>  "Développement logiciel",
-            "sujet" =>  "Création d'un outil de gestion des tâches",
-            "fonctions" =>  "Développeur logiciel",
-            "taches" =>  "Analyser, développer et tester",
-            "competences" =>  "PHP, Laravel, JavaScript",
-            "details" =>  "Travail en collaboration avec l'équipe backend",
-            "debutStage" =>  "2025-02-01",
-            "finStage" =>  "2025-06-30",
-            "nbJourSemaine" =>  5,
-            "nbHeureSemaine" =>  35,
-            "clauseConfidentialite" =>  true,
-            "serviceEntreprise" => "Service informatique",
-            "adresseMailStage" => "perigueux@zero-infini.fr",
-            "telephoneStage" => "0556010203",
-            "adresseStage" => "20 Rue Ernest Guillier",
-            "codePostalStage" => "24000",
-            "villeStage" => "Périgueux",
-            "paysStage" => "France",
-            "longitudeStage" => "0.716667",
-            "latitudeStage" => "45.183333",
-            "statut" =>  "En cours",
-            "numeroConvention" =>  "12345-ABCDE",
-            "interruptionStage" =>  false,
-            "dateDebutInterruption" =>  null,
-            "dateFinInterruption" =>  null,
-            "personnelTechniqueDisponible" =>  true,
-            "materielPrete" =>  "Ordinateur, logiciel de gestion",
+            'dateDerniereModification' => '2025-01-21',
+            'contenuStage' => "Développement d'une application web",
+            'thematique' => 'Développement logiciel',
+            'sujet' => "Création d'un outil de gestion des tâches",
+            'fonctions' => 'Développeur logiciel',
+            'taches' => 'Analyser, développer et tester',
+            'competences' => 'PHP, Laravel, JavaScript',
+            'details' => "Travail en collaboration avec l'équipe backend",
+            'debutStage' => '2025-02-01',
+            'finStage' => '2025-06-30',
+            'nbJourSemaine' => 5,
+            'nbHeureSemaine' => 35,
+            'clauseConfidentialite' => true,
+            'serviceEntreprise' => 'Service informatique',
+            'adresseMailStage' => 'perigueux@zero-infini.fr',
+            'telephoneStage' => '0556010203',
+            'adresseStage' => '20 Rue Ernest Guillier',
+            'codePostalStage' => '24000',
+            'villeStage' => 'Périgueux',
+            'paysStage' => 'France',
+            'longitudeStage' => '0.716667',
+            'latitudeStage' => '45.183333',
+            'statut' => 'mort',
+            'numeroConvention' => '12345-ABCDE',
+            'interruptionStage' => false,
+            'dateDebutInterruption' => null,
+            'dateFinInterruption' => null,
+            'personnelTechniqueDisponible' => true,
+            'materielPrete' => 'Ordinateur, logiciel de gestion',
         ];
 
         $rechercheFirst = FicheDescriptive::first();
 
         $response = $this->putJson('/api/fiche-descriptive/update/' . $rechercheFirst->idFicheDescriptive, $donnees);
-        $response->assertStatus(500)
+        $response
+            ->assertStatus(500)
             ->assertJson(['message' => 'Erreur dans la base de données']);
     }
+
     /**
      * La méthode update doit retourner une erreur 404 car la fiche descriptive n'existe pas
-     * 
+     *
      * @return void
      */
     public function test_update_methode_doit_retourner_une_erreur_404_car_l_id_de_la_fiche_descriptive_n_existe_pas()
@@ -385,12 +386,13 @@ class FicheDescriptiveControllerTest extends TestCase
             'statut' => 'En cours'
         ]);
 
-        $response->assertStatus(404)
+        $response
+            ->assertStatus(404)
             ->assertJson(['message' => 'Fiche descriptive non trouvée']);
     }
+
     /**
      * La méthode update doit retourner une erreur 500 si une erreur survient lors de la mise à jour
-     * 
      * @return void
      * @runInSeparateProcess
      * @preserveGlobalState disabled
@@ -398,70 +400,71 @@ class FicheDescriptiveControllerTest extends TestCase
     public function test_update_methode_doit_retourner_une_erreur_500_car_un_probleme_est_survenu()
     {
         // Mock du modèle FicheDescriptive pour déclencher une exception
-        $mock = Mockery::mock('alias:App\Models\Personnel');
+        $mock = Mockery::mock('alias:App\Models\FicheDescriptive');
         $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
 
         $donnees = [
-            "contenuStage" =>  "Développement d'une application web",
-            "thematique" =>  "Développement logiciel",
-            "sujet" =>  "Création d'un outil de gestion des tâches",
-            "fonctions" =>  "Développeur logiciel",
-            "taches" =>  "Analyser, développer et tester",
-            "competences" =>  "PHP, Laravel, JavaScript",
-            "details" =>  "Travail en collaboration avec l'équipe backend",
-            "debutStage" =>  "2025-02-01",
-            "finStage" =>  "2025-06-30",
-            "nbJourSemaine" =>  5,
-            "nbHeureSemaine" =>  35,
-            "clauseConfidentialite" =>  true,
-            "serviceEntreprise" => "Service informatique",
-            "adresseMailStage" => "perigueux@zero-infini.fr",
-            "telephoneStage" => "0556010203",
-            "adresseStage" => "20 Rue Ernest Guillier",
-            "codePostalStage" => "24000",
-            "villeStage" => "Périgueux",
-            "paysStage" => "France",
-            "longitudeStage" => "0.716667",
-            "latitudeStage" => "45.183333",
-            "statut" =>  "En cours",
-            "numeroConvention" =>  "12345-ABCDE",
-            "interruptionStage" =>  false,
-            "dateDebutInterruption" =>  null,
-            "dateFinInterruption" =>  null,
-            "personnelTechniqueDisponible" =>  true,
-            "materielPrete" =>  "Ordinateur, logiciel de gestion"
+            'contenuStage' => "Développement d'une application web",
+            'thematique' => 'Développement logiciel',
+            'sujet' => "Création d'un outil de gestion des tâches",
+            'fonctions' => 'Développeur logiciel',
+            'taches' => 'Analyser, développer et tester',
+            'competences' => 'PHP, Laravel, JavaScript',
+            'details' => "Travail en collaboration avec l'équipe backend",
+            'debutStage' => '2025-02-01',
+            'finStage' => '2025-06-30',
+            'nbJourSemaine' => 5,
+            'nbHeureSemaine' => 35,
+            'clauseConfidentialite' => true,
+            'serviceEntreprise' => 'Service informatique',
+            'adresseMailStage' => 'perigueux@zero-infini.fr',
+            'telephoneStage' => '0556010203',
+            'adresseStage' => '20 Rue Ernest Guillier',
+            'codePostalStage' => '24000',
+            'villeStage' => 'Périgueux',
+            'paysStage' => 'France',
+            'longitudeStage' => '0.716667',
+            'latitudeStage' => '45.183333',
+            'statut' => 'En cours',
+            'numeroConvention' => '12345-ABCDE',
+            'interruptionStage' => false,
+            'dateDebutInterruption' => null,
+            'dateFinInterruption' => null,
+            'personnelTechniqueDisponible' => true,
+            'materielPrete' => 'Ordinateur, logiciel de gestion'
         ];
 
         $response = $this->putJson('/api/fiche-descriptive/update/1', $donnees);
-        $response->assertStatus(500)
-            ->assertJson(['message' => 'Une erreur s\'est produite :']);
+        $response
+            ->assertStatus(500)
+            ->assertJson(['message' => "Une erreur s'est produite :"]);
     }
 
-    
     /*
-    ================================
-        TEST DE LA METHODE INDEX
-    ================================
-    */
-    /**
-     * La méthode index doit retourner une confirmation 200 et la liste de toutes les fiches descriptives
-     * 
-     * @return void
+     * ================================
+     *     TEST DE LA METHODE INDEX
+     * ================================
      */
 
+    /**
+     * La méthode index doit retourner une confirmation 200 et la liste de toutes les fiches descriptives
+     *
+     * @return void
+     */
     public function test_index_methode_doit_retourner_200_et_la_list_des_fiches_descriptives()
     {
         $fiches = FicheDescriptive::all();
 
         $response = $this->get('/api/fiche-descriptive');
 
-        $response->assertStatus(200)
+        $response
+            ->assertStatus(200)
             ->assertJson($fiches->toArray());
     }
 
     /**
      * La méthode index doit retourner une erreur 500 si une erreur survient lors de la récupération
-     * 
+     *
      * @return void
      */
 
@@ -484,24 +487,25 @@ class FicheDescriptiveControllerTest extends TestCase
                     'erreurs' => 'Erreur simulée',
                 ]);
     }*/
-        /*
-    ================================
-        TEST DE LA METHODE SHOW
-    ================================
-    */
+
+    /*
+     * ================================
+     *     TEST DE LA METHODE SHOW
+     * ================================
+     */
 
     /**
      * La méthode show doit retourner une confirmation 200 et les données de la fiche descriptive
-     * 
+     *
      * @return void
      */
-
     public function test_show_methode_doit_retourner_un_code_200_car_la_fiche_descriptive_a_ete_trouvee()
     {
         $ficheFirst = FicheDescriptive::first();
         $response = $this->get('/api/fiche-descriptive/' . $ficheFirst->idFicheDescriptive);
 
-        $response->assertStatus(200)
+        $response
+            ->assertStatus(200)
             ->assertJson([
                 'idFicheDescriptive' => [
                     'value' => $ficheFirst->idFicheDescriptive,
@@ -516,7 +520,7 @@ class FicheDescriptiveControllerTest extends TestCase
 
     /**
      * La méthode show doit retourner une erreur 404 si la fiche descriptive n'existe pas
-     * 
+     *
      * @return void
      */
     public function test_show_methode_doit_retourner_une_erreur_404_car_la_fiche_descriptive_n_existe_pas()
@@ -525,13 +529,14 @@ class FicheDescriptiveControllerTest extends TestCase
 
         $response = $this->get('/api/fiche-descriptive/' . $idFiche);
 
-        $response->assertStatus(404)
+        $response
+            ->assertStatus(404)
             ->assertJson(['message' => 'Fiche descriptive non trouvée']);
     }
 
     /**
      * La méthode show doit retourner une erreur 500 si une erreur survient lors de la récupération
-     * 
+     *
      * @return void
      * @runInSeparateProcess
      * @preserveGlobalState disabled
@@ -543,19 +548,20 @@ class FicheDescriptiveControllerTest extends TestCase
 
         $response = $this->get('/api/fiche-descriptive/1');
 
-        $response->assertStatus(500)
+        $response
+            ->assertStatus(500)
             ->assertJson(['message' => "Une erreur s'est produite :"]);
     }
 
     /*
-    ==================================
-        TEST DE LA METHODE DESTROY
-    ==================================
-    */
+     * ==================================
+     *     TEST DE LA METHODE DESTROY
+     * ==================================
+     */
 
     /**
      * La méthode destroy doit retourner une confirmation 200 et un message de suppression
-     * 
+     *
      * @return void
      */
     public function test_destroy_doit_retourner_un_code_200()
@@ -564,13 +570,14 @@ class FicheDescriptiveControllerTest extends TestCase
 
         $response = $this->delete('/api/fiche-descriptive/delete/' . $uneFicheDescriptive->idFicheDescriptive);
 
-        $response->assertStatus(200)
+        $response
+            ->assertStatus(200)
             ->assertJson(['message' => 'La fiche descriptive a bien été supprimée']);
     }
 
     /**
      * La méthode destroy doit retourner une erreur 404 si la fiche descriptive n'a pas été trouvée
-     * 
+     *
      * @return void
      */
     public function test_destroy_renvoie_une_erreur_non_trouvee_en_cas_de_fiche_non_trouvee()
@@ -579,13 +586,14 @@ class FicheDescriptiveControllerTest extends TestCase
 
         $response = $this->delete('/api/fiche-descriptive/delete/' . $idFiche);
 
-        $response->assertStatus(404)
+        $response
+            ->assertStatus(404)
             ->assertJson(['message' => 'Aucune fiche descriptive trouvée']);
     }
 
     /**
      * La méthode destroy doit retourner une erreur 500 en cas d'exception
-     * 
+     *
      * @return void
      * @runInSeparateProcess
      * @preserveGlobalState disabled
@@ -597,7 +605,8 @@ class FicheDescriptiveControllerTest extends TestCase
 
         $response = $this->deleteJson('/api/fiche-descriptive/delete/1');
 
-        $response->assertStatus(500)
+        $response
+            ->assertStatus(500)
             ->assertJson(['message' => "Une erreur s'est produite :"]);
     }
 }

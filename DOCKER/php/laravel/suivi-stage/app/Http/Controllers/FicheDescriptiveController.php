@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\FicheDescriptive;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class FicheDescriptiveController extends Controller
 {
-
     /**
      * Enregistre les données du formulaire d'une fiche descriptive
      * @param Request $request
@@ -21,37 +20,37 @@ class FicheDescriptiveController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'contenuStage'                  => 'nullable|string',
-                'thematique'                    => 'nullable|string|max:50',
-                'sujet'                         => 'nullable|string|max:50',
-                'fonctions'                     => 'nullable|string',
-                'taches'                        => 'nullable|string',
-                'competences'                   => 'nullable|string',
-                'details'                       => 'nullable|string',
-                'debutStage'                    => 'nullable|date',
-                'finStage'                      => 'nullable|date',
-                'nbJourSemaine'                 => 'nullable|integer',
-                'nbHeureSemaine'                => 'nullable|integer',
-                'clauseConfidentialite'         => 'nullable|boolean',
-                'serviceEntreprise'             => 'nullable|string|max:100',
-                'adresseMailStage'             => 'nullable|string|email|max:100',
-                'telephoneStage'                => ['nullable', 'string', 'regex:/^(\+33|0)\d{9}$/m', 'max:20'],
-                'adresseStage'                  => 'nullable|string|max:100',
-                'codePostalStage'               => ['nullable', 'string', 'regex:/^\d{5}$/'],
-                'villeStage'                    => 'nullable|string|max:50',
-                'paysStage'                     => 'nullable|string|max:50',
-                'longitudeStage'                => 'nullable|string|max:20',
-                'latitudeStage'                 => 'nullable|string|max:20',
-                'statut'                        => 'bail|required|string|in:En cours,Validee,Refusée',
-                'numeroConvention'              => 'nullable|string|max:50',
-                'interruptionStage'             => 'nullable|boolean',
-                'dateDebutInterruption'         => 'nullable|date',
-                'dateFinInterruption'           => 'nullable|date',
-                'personnelTechniqueDisponible'  => 'nullable|boolean',
-                'materielPrete'                 => 'nullable|string',
-                'idEntreprise'                  => 'bail|required|integer',
-                'idTuteurEntreprise'            => 'bail|required|integer',
-                'idUPPA'                        => 'bail|required|integer'
+                'contenuStage' => 'nullable|string',
+                'thematique' => 'nullable|string|max:50',
+                'sujet' => 'nullable|string|max:50',
+                'fonctions' => 'nullable|string',
+                'taches' => 'nullable|string',
+                'competences' => 'nullable|string',
+                'details' => 'nullable|string',
+                'debutStage' => 'nullable|date',
+                'finStage' => 'nullable|date',
+                'nbJourSemaine' => 'nullable|integer',
+                'nbHeureSemaine' => 'nullable|integer',
+                'clauseConfidentialite' => 'nullable|boolean',
+                'serviceEntreprise' => 'nullable|string|max:100',
+                'adresseMailStage' => 'nullable|string|email|max:100',
+                'telephoneStage' => ['nullable', 'string', 'regex:/^(\+33|0)\d{9}$/m', 'max:20'],
+                'adresseStage' => 'nullable|string|max:100',
+                'codePostalStage' => ['nullable', 'string', 'regex:/^\d{5}$/'],
+                'villeStage' => 'nullable|string|max:50',
+                'paysStage' => 'nullable|string|max:50',
+                'longitudeStage' => 'nullable|string|max:20',
+                'latitudeStage' => 'nullable|string|max:20',
+                'statut' => 'bail|required|string|in:En cours,Validee,Refusée',
+                'numeroConvention' => 'nullable|string|max:50',
+                'interruptionStage' => 'nullable|boolean',
+                'dateDebutInterruption' => 'nullable|date',
+                'dateFinInterruption' => 'nullable|date',
+                'personnelTechniqueDisponible' => 'nullable|boolean',
+                'materielPrete' => 'nullable|string',
+                'idEntreprise' => 'bail|required|integer',
+                'idTuteurEntreprise' => 'bail|required|integer',
+                'idUPPA' => 'bail|required|integer'
             ]);
 
             $uneFicheDescriptive = FicheDescriptive::create([
@@ -103,7 +102,7 @@ class FicheDescriptiveController extends Controller
             ], 500);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'erreurs' => $e->getMessage()
             ], 500);
         }
@@ -122,34 +121,34 @@ class FicheDescriptiveController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'contenuStage'                  => 'nullable|string',
-                'thematique'                    => 'nullable|string|max:50',
-                'sujet'                         => 'nullable|string|max:50',
-                'fonctions'                     => 'nullable|string',
-                'taches'                        => 'nullable|string',
-                'competences'                   => 'nullable|string',
-                'details'                       => 'nullable|string',
-                'debutStage'                    => 'nullable|date|date-format:Y-m-d',
-                'finStage'                      => 'nullable|date|date-format:Y-m-d',
-                'nbJourSemaine'                 => 'nullable|integer',
-                'nbHeureSemaine'                => 'nullable|integer',
-                'clauseConfidentialite'         => 'nullable|boolean',
-                'serviceEntreprise'             => 'nullable|string|max:100',
-                'adresseMailStage'             => 'nullable|string|email|max:100',
-                'telephoneStage'                => ['nullable', 'string', 'regex:/^(\+33|0)\d{9}$/m', 'max:20'],
-                'adresseStage'                  => 'nullable|string|max:100',
-                'codePostalStage'               => ['nullable', 'string', 'regex:/^\d{5}$/'],
-                'villeStage'                    => 'nullable|string|max:50',
-                'paysStage'                     => 'nullable|string|max:50',
-                'longitudeStage'                => 'nullable|string|max:20',
-                'latitudeStage'                 => 'nullable|string|max:20',
-                'statut'                        => 'bail|required|string|in:En cours,Validee,Refusée',
-                'numeroConvention'              => 'nullable|string|max:50',
-                'interruptionStage'             => 'nullable|boolean',
-                'dateDebutInterruption'         => 'nullable|date|date-format:Y-m-d',
-                'dateFinInterruption'           => 'nullable|date|date-format:Y-m-d',
-                'personnelTechniqueDisponible'  => 'nullable||boolean',
-                'materielPrete'                 => 'nullable|string',
+                'contenuStage' => 'nullable|string',
+                'thematique' => 'nullable|string|max:50',
+                'sujet' => 'nullable|string|max:50',
+                'fonctions' => 'nullable|string',
+                'taches' => 'nullable|string',
+                'competences' => 'nullable|string',
+                'details' => 'nullable|string',
+                'debutStage' => 'nullable|date|date-format:Y-m-d',
+                'finStage' => 'nullable|date|date-format:Y-m-d',
+                'nbJourSemaine' => 'nullable|integer',
+                'nbHeureSemaine' => 'nullable|integer',
+                'clauseConfidentialite' => 'nullable|boolean',
+                'serviceEntreprise' => 'nullable|string|max:100',
+                'adresseMailStage' => 'nullable|string|email|max:100',
+                'telephoneStage' => ['nullable', 'string', 'regex:/^(\+33|0)\d{9}$/m', 'max:20'],
+                'adresseStage' => 'nullable|string|max:100',
+                'codePostalStage' => ['nullable', 'string', 'regex:/^\d{5}$/'],
+                'villeStage' => 'nullable|string|max:50',
+                'paysStage' => 'nullable|string|max:50',
+                'longitudeStage' => 'nullable|string|max:20',
+                'latitudeStage' => 'nullable|string|max:20',
+                'statut' => 'bail|required|string|in:En cours,Validee,Refusée',
+                'numeroConvention' => 'nullable|string|max:50',
+                'interruptionStage' => 'nullable|boolean',
+                'dateDebutInterruption' => 'nullable|date|date-format:Y-m-d',
+                'dateFinInterruption' => 'nullable|date|date-format:Y-m-d',
+                'personnelTechniqueDisponible' => 'nullable||boolean',
+                'materielPrete' => 'nullable|string',
             ]);
 
             // Récupération et mise à jour en une seule ligne
@@ -177,7 +176,7 @@ class FicheDescriptiveController extends Controller
             ], 500);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'erreurs' => $e->getMessage()
             ], 500);
         }
@@ -202,7 +201,7 @@ class FicheDescriptiveController extends Controller
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'erreurs' => $e->getMessage()
             ], 500);
         }
@@ -211,7 +210,6 @@ class FicheDescriptiveController extends Controller
     /**
      * Récupère l'ensemble des fiches descriptives
      * @return \Illuminate\Http\JsonResponse
-     * 
      */
     public function index()
     {
@@ -220,7 +218,7 @@ class FicheDescriptiveController extends Controller
             return response()->json($fichesDescriptives, 200);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'erreurs' => $e->getMessage()
             ], 500);
         }
@@ -228,7 +226,7 @@ class FicheDescriptiveController extends Controller
 
     /**
      * Supprime une fiche descriptive
-     * 
+     *
      * @param int $id
      * @return \Illuminate\Http\Response
      * Code HTTP retourné :
@@ -253,7 +251,7 @@ class FicheDescriptiveController extends Controller
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'erreurs' => $e->getMessage()
             ], 500);
         }
