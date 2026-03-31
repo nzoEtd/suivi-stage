@@ -11,7 +11,7 @@
   
       <div class="modal-footer">
         <button class="cancel-button" (click)="onCancel()">Annuler</button>
-        <button class="generate-button" (click)="onSubmit()" [disabled]="!hasValue">Ajouter</button>
+        <button class="generate-button" (click)="onSubmit()" [disabled]="!hasValue">{{ submitLabel }}</button>
       </div>
   
     </div>
