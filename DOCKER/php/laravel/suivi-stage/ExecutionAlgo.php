@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 require_once 'DatabaseConnection.php';
 require_once 'AlgorithmeRepartition.php';
 
@@ -19,11 +19,11 @@ $idFicheDescriptive = $argv[2];
 
 try {
     // echo "Démarrage de l'algorithme pour l'étudiant $idUPPA (Fiche descriptive: $idFicheDescriptive)...\n";
-    
+
     $db = DatabaseConnection::connect();
     $algorithme = new AlgorithmeRepartition($db);
     $resultat = $algorithme->executeForStudent($idUPPA, $idFicheDescriptive);
-    
+
     if ($resultat) {
         // echo "Attribution réussie !\n";
         // print_r($resultat);

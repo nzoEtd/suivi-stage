@@ -2,7 +2,7 @@
 
 namespace App\AlgorithmeAttribution;
 
-require __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/FonctionsAlgorithme.php';
 require_once __DIR__ . '/Affichage.php';
 
@@ -11,26 +11,26 @@ use Exception;
 use App\AlgorithmeAttribution\FonctionsAlgorithme;
 use App\AlgorithmeAttribution\Affichage;
 
-class AlgorithmeRepartition 
+class AlgorithmeRepartition
 {
     private PDO $db;
     private array $professeursMatrix;
 
-    public function __construct(PDO $db) 
+    public function __construct(PDO $db)
     {
         $this->db = $db;
         $this->professeursMatrix = [];
     }
 
-    public function executeForStudent(string $idUPPA, string $idFicheDescriptive): ?array 
+    public function executeForStudent(string $idUPPA, string $idFicheDescriptive): ?array
     {
         try {
             // echo "Traitement pour l'étudiant avec l'ID : $idUPPA (Fiche descriptive: $idFicheDescriptive)\n";
-            
+
             // Récupération des données
             $this->professeursMatrix = $this->getProfesseursMatrix();
             $etudiantData = $this->getEtudiantData($idUPPA, $idFicheDescriptive);
-            
+
             if (empty($etudiantData)) {
                 // echo "Erreur : Données insuffisantes pour poursuivre le traitement.\n";
                 return null;
@@ -91,7 +91,7 @@ class AlgorithmeRepartition
                 $distance = $this->calculateDistance($coordonneesProf, $coordonneesEtudiant);
                 $resultats[$prof['nom']]['DISTANCE_GPS_PROF_ENTREPRISE'] =
                     ($distance > 20 && !in_array($codePostal, ['64', '40'])) ? 1 : 0;
-                
+
                 // echo "Distance entre le professeur " . $prof['nom'] . " et l'étudiant : $distance km\n";
 
                 // Vérification présence ville et entreprise
@@ -102,13 +102,13 @@ class AlgorithmeRepartition
                     if ($etudiantPresentResult['present']) {
                         // On utilise l'ID de l'étudiant déjà présent dans l'entreprise
                         $profAssocié = $this->getProfesseurAssocie($etudiantPresentResult['idUPPA']);
-                        $resultats[$prof['nom']]['ETUDIANT_DEJA_PRESENT_ENREPRISE'] = 
+                        $resultats[$prof['nom']]['ETUDIANT_DEJA_PRESENT_ENREPRISE'] =
                             ($profAssocié === $prof['nom']) ? 1000 : 0;
                     }
                 }
 
                 // Équité 2ème/3ème année
-                $resultats[$prof['nom']]['EQUITE_DEUX_TROIS_ANNEE'] = 
+                $resultats[$prof['nom']]['EQUITE_DEUX_TROIS_ANNEE'] =
                     $this->checkEquiteDeuxTrois($prof['idPersonnel']) ? 1 : 0;  // Changed from 'id'
             }
 
@@ -130,49 +130,48 @@ class AlgorithmeRepartition
             echo json_encode($professeursTries, JSON_PRETTY_PRINT);
 
             return $professeursTries;
-
         } catch (Exception $e) {
             // echo "ERREUR : " . $e->getMessage() . "\n";
             throw $e;
         }
     }
 
-    private function getProfesseursMatrix(): array 
+    private function getProfesseursMatrix(): array
     {
         return FonctionsAlgorithme::getProfesseursMatrix($this->db);
     }
 
-    private function getEtudiantData(string $idUPPA, string $idFicheDescriptive): array 
+    private function getEtudiantData(string $idUPPA, string $idFicheDescriptive): array
     {
         return FonctionsAlgorithme::getEtudiantData($idUPPA, $idFicheDescriptive, $this->db);
     }
 
-    private function calculateDistance(array $coordsProf, array $coordsEtudiant): float 
+    private function calculateDistance(array $coordsProf, array $coordsEtudiant): float
     {
         return FonctionsAlgorithme::calculateDistance($coordsProf, $coordsEtudiant);
     }
 
-    private function trierProfesseurs(array $resultats): array 
+    private function trierProfesseurs(array $resultats): array
     {
         return Affichage::maxProf($resultats);
     }
 
-    private function isEtudiantPresentVille(string $codePostal, string $idUPPA): bool 
+    private function isEtudiantPresentVille(string $codePostal, string $idUPPA): bool
     {
         return FonctionsAlgorithme::isEtudiantPresentVille($codePostal, $idUPPA, $this->db);
     }
 
-    private function isEtudiantPresentEntreprise(string $idEntreprise, string $idUPPA): array 
+    private function isEtudiantPresentEntreprise(string $idEntreprise, string $idUPPA): array
     {
         return FonctionsAlgorithme::isEtudiantPresentEntreprise($idEntreprise, $idUPPA, $this->db);
     }
 
-    private function getProfesseurAssocie(string $idUPPA): ?string 
+    private function getProfesseurAssocie(string $idUPPA): ?string
     {
         return FonctionsAlgorithme::getProfesseurAssocie($idUPPA, $this->db);
     }
 
-    private function checkEquiteDeuxTrois(string $idProf): bool 
+    private function checkEquiteDeuxTrois(string $idProf): bool
     {
         return FonctionsAlgorithme::checkEquiteDeuxTrois($idProf, $this->db);
     }
