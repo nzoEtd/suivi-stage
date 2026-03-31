@@ -20,7 +20,6 @@ export class TDService {
     }
 
     return this.http.get<TD[]>(`${this.apiUrl}/api/tds`, { params }).pipe(
-      tap((response) => this.log(response)),
       catchError((error) => this.handleError(error, null)),
     );
   }
@@ -34,7 +33,6 @@ export class TDService {
     }
 
     return this.http.get<TD>(`${this.apiUrl}/api/tds/${TDId}`, { params }).pipe(
-      tap((response) => this.log(response)),
       catchError((error) => this.handleError(error, null)),
     );
   }
@@ -47,7 +45,6 @@ export class TDService {
     };
 
     return this.http.post<TD>(`${this.apiUrl}/api/tds`, td, httpOptions).pipe(
-      tap((response) => this.log(response)),
       catchError((error) => this.handleError(error, null)),
     );
   }
@@ -61,7 +58,6 @@ export class TDService {
     return this.http
       .put(`${this.apiUrl}/api/tds/update/${td.idTD}`, td, httpOptions)
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, null)),
       );
   }
@@ -69,14 +65,8 @@ export class TDService {
   //Supression d'un TD
   deleteTD(td: TD): Observable<null> {
     return this.http.delete(`${this.apiUrl}/api/tds/delete/${td.idTD}`).pipe(
-      tap((response) => this.log(response)),
       catchError((error) => this.handleError(error, null)),
     );
-  }
-
-  //Log la réponse de l'API
-  private log(response: any) {
-    console.table(response);
   }
 
   //Retourne l'erreur en cas de problème avec l'API

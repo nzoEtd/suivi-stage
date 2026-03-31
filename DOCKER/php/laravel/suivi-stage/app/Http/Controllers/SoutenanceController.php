@@ -71,19 +71,18 @@ class SoutenanceController extends Controller
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite',
+                'message' => "Une erreur s'est produite",
                 'exception' => $e->getMessage()
             ], 500);
         }
     }
-
 
     /**
      * Crée plusieurs soutenances en une seule requête
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-     * 
+     *
      * Code HTTP retourné :
      *   - 201 : si toutes les soutenances ont bien été créées
      *   - 422 : s'il y a eu une erreur de validation des données
@@ -96,7 +95,6 @@ class SoutenanceController extends Controller
             $createdSoutenances = [];
 
             foreach ($soutenancesData as $index => $data) {
-
                 $validated = Validator::make($data, [
                     'date' => 'required|date',
                     'heureDebut' => 'required|date_format:H:i',
@@ -118,13 +116,11 @@ class SoutenanceController extends Controller
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite',
+                'message' => "Une erreur s'est produite",
                 'exception' => $e->getMessage()
             ], 500);
         }
     }
-
-
 
     /**
      * Retourne une soutenance particulière
@@ -146,7 +142,7 @@ class SoutenanceController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['message' => 'Soutenance non trouvée'], 404);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Une erreur s\'est produite', 'exception' => $e->getMessage()], 500);
+            return response()->json(['message' => "Une erreur s'est produite", 'exception' => $e->getMessage()], 500);
         }
     }
 
@@ -176,7 +172,7 @@ class SoutenanceController extends Controller
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      * @throws \Exception
      */
-    public function update(Request $request, $idSoutenance)
+    public function update($idSoutenance, Request $request)
     {
         try {
             $donneesValidees = $request->validate([
@@ -189,6 +185,11 @@ class SoutenanceController extends Controller
                 'idLecteur' => 'required|integer',
             ]);
 
+            // Convertir la date ISO envoyée en format Y-m-d pour la bd
+            if (isset($donneesValidees['date']) && is_string($donneesValidees['date'])) {
+                $donneesValidees['date'] = \Carbon\Carbon::parse($donneesValidees['date'])->format('Y-m-d');
+            }
+
             $soutenance = Soutenance::findOrFail($idSoutenance);
             $soutenance->update($donneesValidees);
 
@@ -198,7 +199,7 @@ class SoutenanceController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['message' => 'Soutenance non trouvée'], 404);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Une erreur s\'est produite', 'exception' => $e->getMessage()], 500);
+            return response()->json(['message' => "Une erreur s'est produite", 'exception' => $e->getMessage()], 500);
         }
     }
 
@@ -226,7 +227,7 @@ class SoutenanceController extends Controller
                     'received' => $request->all()
                 ], 400);
             }
-    
+
             $donneesValidees = $request->validate([
                 'soutenances' => 'required|array',
                 'soutenances.*.idSoutenance' => 'required|integer',
@@ -238,14 +239,14 @@ class SoutenanceController extends Controller
                 'soutenances.*.idUPPA' => 'required|string',
                 'soutenances.*.idLecteur' => 'required|integer',
             ]);
-    
+
             $updatedCount = 0;
             $errors = [];
-    
+
             foreach ($donneesValidees['soutenances'] as $item) {
                 try {
                     $soutenance = Soutenance::find($item['idSoutenance']);
-                    
+
                     if ($soutenance) {
                         $soutenance->update([
                             'date' => $item['date'],
@@ -264,14 +265,13 @@ class SoutenanceController extends Controller
                     $errors[] = "Erreur sur soutenance {$item['idSoutenance']}: " . $e->getMessage();
                 }
             }
-    
+
             return response()->json([
                 'message' => 'Mise à jour terminée',
                 'updated' => $updatedCount,
                 'total' => count($donneesValidees['soutenances']),
                 'errors' => $errors
             ], 200);
-    
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Erreur de validation',
@@ -279,12 +279,12 @@ class SoutenanceController extends Controller
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite',
+                'message' => "Une erreur s'est produite",
                 'exception' => $e->getMessage()
             ], 500);
         }
         // try {
-        //     $updatedSoutenances = [];            
+        //     $updatedSoutenances = [];
 
         //     $donneesValidees = $request->validate([
         //         'soutenances.*.idSoutenance' => 'required|integer',
@@ -333,7 +333,7 @@ class SoutenanceController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['message' => 'Soutenance non trouvée'], 404);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Une erreur s\'est produite', 'exception' => $e->getMessage()], 500);
+            return response()->json(['message' => "Une erreur s'est produite", 'exception' => $e->getMessage()], 500);
         }
     }
 }

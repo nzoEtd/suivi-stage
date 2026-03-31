@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class EtudiantTdAnneeUnivController extends Controller
 {
-    
     /**
      * Retourne toutes les relations étudiant / TD / année universitaire
      *
@@ -24,7 +23,7 @@ class EtudiantTdAnneeUnivController extends Controller
             return response()->json($relations, 200);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite lors de la récupération des relations',
+                'message' => "Une erreur s'est produite lors de la récupération des relations",
                 'exception' => $e->getMessage()
             ], 500);
         }
@@ -37,7 +36,7 @@ class EtudiantTdAnneeUnivController extends Controller
      * @return \Illuminate\Http\Response
      * Code HTTP retourné :
      *      - Code 201 : si la relation a bien été créée
-     *      - Code 409 : si la relation existe déjà
+     *      - Code 409 : si la relation existe déj�
      *      - Code 422 : s'il y a eu une erreur de validation des données
      *      - Code 500 : s'il y a eu une erreur
      * @throws \Illuminate\Validation\ValidationException
@@ -52,7 +51,7 @@ class EtudiantTdAnneeUnivController extends Controller
                 'idAnneeUniversitaire' => 'bail|required|integer|exists:annee_universitaires,idAnneeUniversitaire',
             ]);
 
-            // Vérifie si la relation existe déjà 
+            // Vérifie si la relation existe déjà
             $relationExiste = EtudiantTdAnneeUniv::where($donneesValidees)->exists();
 
             if ($relationExiste) {
@@ -71,7 +70,7 @@ class EtudiantTdAnneeUnivController extends Controller
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite lors de la création de la relation',
+                'message' => "Une erreur s'est produite lors de la création de la relation",
                 'exception' => $e->getMessage()
             ], 500);
         }
@@ -107,7 +106,7 @@ class EtudiantTdAnneeUnivController extends Controller
             return response()->json($query->get(), 200);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite lors du filtrage des relations',
+                'message' => "Une erreur s'est produite lors du filtrage des relations",
                 'exception' => $e->getMessage()
             ], 500);
         }
@@ -153,7 +152,7 @@ class EtudiantTdAnneeUnivController extends Controller
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite lors de la suppression de la relation',
+                'message' => "Une erreur s'est produite lors de la suppression de la relation",
                 'exception' => $e->getMessage()
             ], 500);
         }

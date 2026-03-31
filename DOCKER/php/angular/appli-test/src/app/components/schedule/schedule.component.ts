@@ -34,8 +34,6 @@ import { ModaleSoutenanceComponent } from "../modale-soutenance/modale-soutenanc
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { DataStoreService } from "../../services/data.service";
-// import { ToastrService } from 'ngx-toastr';
-// import { inject } from '@angular/core';
 
 @Component({
   selector: "app-schedule",
@@ -54,7 +52,6 @@ import { DataStoreService } from "../../services/data.service";
 })
 export class ScheduleComponent implements AfterViewInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  // toastr = inject(ToastrService);
 
   currentUser?: any;
   currentUserRole?: string;
@@ -172,7 +169,7 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
       this.slots,
     );
   }
-  
+
   async export() {
     if (!this.selectedPlanning || !this.jours.length) return;
 
@@ -277,7 +274,7 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
 
   openModal(slot: SlotItem) {
     this.selectedSoutenance = slot!;
-    this.idSoutenance = this.selectedSoutenance!.id;
+    this.idSoutenance = this.selectedSoutenance!.id as number;
     this.isModalSoutenanceOpen = true;
   }
 
@@ -327,18 +324,18 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
       this.slots = await loadSoutenancesForPlanning(
         this.selectedPlanning,
         this.allSoutenances,
-        this.slots,
         this.allStudents,
         this.allStaff,
         this.allCompanies,
         this.allTutors,
         this.allReferents,
         this.allTrainingAcademicYears,
-        this.allAcademicYears,
         this.cdRef,
       );
-      this.slots.forEach(slot => {
-        const dayKey = slot.dateDebut ? slot.dateDebut.toISOString().slice(0,10) : "attente"; // "YYYY-MM-DD"
+      this.slots.forEach((slot) => {
+        const dayKey = slot.dateDebut
+          ? slot.dateDebut.toISOString().slice(0, 10)
+          : "attente"; // "YYYY-MM-DD"
         if (!this.planningByDay[dayKey]) this.planningByDay[dayKey] = [];
         this.planningByDay[dayKey].push(slot);
       });

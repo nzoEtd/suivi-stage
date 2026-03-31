@@ -29,7 +29,7 @@ class EntrepriseController extends Controller
 
     /**
      * Créer une nouvelle entreprise
-     * 
+     *
      * @warning Lors de la création de l'entreprise, il suffit de renseigner seulement la raison sociale
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -43,72 +43,65 @@ class EntrepriseController extends Controller
      */
     public function store(Request $request)
     {
-        try
-        {
+        try {
             $donneesValidees = $request->validate([
-                'numSIRET'                  => ["nullable","string","regex:/^\d{14}$/"], // Obligé de passer les paramètres dans un tableau puisque la règle "regex" est utilisée avec d'autres
-                'raisonSociale'             => 'required|string|max:100',
-                'typeEtablissement'         => 'nullable|string|in:Administration,Association,Entreprise,Etablissement public',
-                'adresse'                   => 'nullable|string|max:100',
-                'ville'                     => 'nullable|string|max:50',
-                'codePostal'                => ["nullable","string","regex:/^\d{5}$/"],
-                'pays'                      => 'nullable|string|max:50',
-                'telephone'                 => ["nullable","string","regex:/^(\+33|0)\d{9}$/"],
-                'codeAPE_NAF'               => ["nullable","string","regex:/^\d{2}\.\d{2}[A-Z]$/"],
-                'statutJuridique'           => 'nullable|string|in:EI,EURL,SARL,SASU,SAS,SA,SNC,SCS,SCA',
-                'effectif'                  => 'nullable|integer',
-                'nomRepresentant'           => 'nullable|string|max:100',
-                'prenomRepresentant'        => 'nullable|string|max:50',
-                'adresseMailRepresentant'   => 'nullable|string|email|max:100',
-                'telephoneRepresentant'     => ['nullable','string','regex:/^(\+33|0)\d{9}$/'],
-                'fonctionRepresentant'      => 'nullable|string|max:50',
-                'longitudeAdresse'          => 'nullable|string|max:20',
-                'latitudeAdresse'           => 'nullable|string|max:20',
+                'numSIRET' => ['nullable', 'string', 'regex:/^\d{14}$/'],  // Obligé de passer les paramètres dans un tableau puisque la règle "regex" est utilisée avec d'autres
+                'raisonSociale' => 'required|string|max:100',
+                'typeEtablissement' => 'nullable|string|in:Administration,Association,Entreprise,Etablissement public',
+                'adresse' => 'nullable|string|max:100',
+                'ville' => 'nullable|string|max:50',
+                'codePostal' => ['nullable', 'string', 'regex:/^\d{5}$/'],
+                'pays' => 'nullable|string|max:50',
+                'telephone' => ['nullable', 'string', 'regex:/^(\+33|0)\d{9}$/'],
+                'codeAPE_NAF' => ['nullable', 'string', 'regex:/^\d{2}\.\d{2}[A-Z]$/'],
+                'statutJuridique' => 'nullable|string|in:EI,EURL,SARL,SASU,SAS,SA,SNC,SCS,SCA',
+                'effectif' => 'nullable|integer',
+                'nomRepresentant' => 'nullable|string|max:100',
+                'prenomRepresentant' => 'nullable|string|max:50',
+                'adresseMailRepresentant' => 'nullable|string|email|max:100',
+                'telephoneRepresentant' => ['nullable', 'string', 'regex:/^(\+33|0)\d{9}$/'],
+                'fonctionRepresentant' => 'nullable|string|max:50',
+                'longitudeAdresse' => 'nullable|string|max:20',
+                'latitudeAdresse' => 'nullable|string|max:20',
             ]);
-    
+
             $uneEntreprise = Entreprise::create([
-                'numSIRET'                  => $donneesValidees['numSIRET'] ?? null, // Ajoute la valeur si elle est présente, sinon null
-                'raisonSociale'             => $donneesValidees['raisonSociale'],
-                'typeEtablissement'         => $donneesValidees['typeEtablissement'] ?? null,
-                'adresse'                   => $donneesValidees['adresse'] ?? null,
-                'ville'                     => $donneesValidees['ville'] ?? null,
-                'codePostal'                => $donneesValidees['codePostal'] ?? null,
-                'pays'                      => $donneesValidees['pays'] ?? null,
-                'telephone'                 => $donneesValidees['telephone'] ?? null,
-                'codeAPE_NAF'               => $donneesValidees['codeAPE_NAF'] ?? null,
-                'statutJuridique'           => $donneesValidees['statutJuridique'] ?? null,
-                'effectif'                  => $donneesValidees['effectif'] ?? null,
-                'nomRepresentant'           => $donneesValidees['nomRepresentant'] ?? null,
-                'prenomRepresentant'        => $donneesValidees['prenomRepresentant'] ?? null,
-                'adresseMailRepresentant'   => $donneesValidees['adresseMailRepresentant'] ?? null,
-                'telephoneRepresentant'     => $donneesValidees['telephoneRepresentant'] ?? null,
-                'fonctionRepresentant'      => $donneesValidees['fonctionRepresentant'] ?? null,
-                'longitudeAdresse'          => $donneesValidees['longitudeAdresse'] ?? null,
-                'latitudeAdresse'           => $donneesValidees['latitudeAdresse'] ?? null,
+                'numSIRET' => $donneesValidees['numSIRET'] ?? null,  // Ajoute la valeur si elle est présente, sinon null
+                'raisonSociale' => $donneesValidees['raisonSociale'],
+                'typeEtablissement' => $donneesValidees['typeEtablissement'] ?? null,
+                'adresse' => $donneesValidees['adresse'] ?? null,
+                'ville' => $donneesValidees['ville'] ?? null,
+                'codePostal' => $donneesValidees['codePostal'] ?? null,
+                'pays' => $donneesValidees['pays'] ?? null,
+                'telephone' => $donneesValidees['telephone'] ?? null,
+                'codeAPE_NAF' => $donneesValidees['codeAPE_NAF'] ?? null,
+                'statutJuridique' => $donneesValidees['statutJuridique'] ?? null,
+                'effectif' => $donneesValidees['effectif'] ?? null,
+                'nomRepresentant' => $donneesValidees['nomRepresentant'] ?? null,
+                'prenomRepresentant' => $donneesValidees['prenomRepresentant'] ?? null,
+                'adresseMailRepresentant' => $donneesValidees['adresseMailRepresentant'] ?? null,
+                'telephoneRepresentant' => $donneesValidees['telephoneRepresentant'] ?? null,
+                'fonctionRepresentant' => $donneesValidees['fonctionRepresentant'] ?? null,
+                'longitudeAdresse' => $donneesValidees['longitudeAdresse'] ?? null,
+                'latitudeAdresse' => $donneesValidees['latitudeAdresse'] ?? null,
             ]);
-    
-            return response()->json($uneEntreprise,201);
-        }
-        catch (\Illuminate\Validation\ValidationException $e)
-        {
+
+            return response()->json($uneEntreprise, 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Erreur de validation dans les données',
                 'erreur' => $e->errors()
-            ],422);
-        }
-        catch (\Illuminate\Database\QueryException $e)
-        {
+            ], 422);
+        } catch (\Illuminate\Database\QueryException $e) {
             return response()->json([
                 'message' => 'Erreur dans la base de données',
                 'erreur' => $e->getMessage()
-            ],500);
-        }
-        catch (\Exception $e)
-        {
+            ], 500);
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite',
+                'message' => "Une erreur s'est produite",
                 'erreur' => $e->getMessage()
-            ],500);
+            ], 500);
         }
     }
 
@@ -120,24 +113,19 @@ class EntrepriseController extends Controller
      */
     public function show($id)
     {
-        try
-        {
+        try {
             $uneEntreprise = Entreprise::findOrFail($id);
             return response()->json($uneEntreprise, 200);
-        }
-        catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
-        {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Aucune entreprise trouvée'
             ], 404);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite',
+                'message' => "Une erreur s'est produite",
                 'erreur' => $e->getMessage()
             ], 500);
-        } 
+        }
     }
 
     /**

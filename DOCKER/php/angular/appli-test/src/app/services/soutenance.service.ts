@@ -1,6 +1,10 @@
 import { Injectable } from "@angular/core";
 import { environment } from "../../environments/environment";
-import { Soutenance, SoutenanceCreate, SoutenanceUpdate } from "../models/soutenance.model";
+import {
+  Soutenance,
+  SoutenanceCreate,
+  SoutenanceUpdate,
+} from "../models/soutenance.model";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Observable, catchError, tap, of } from "rxjs";
 
@@ -22,16 +26,13 @@ export class SoutenanceService {
 
     return this.http
       .get<Soutenance[]>(`${this.apiUrl}/api/soutenance`, { params })
-      .pipe(
-        tap((response) => this.log(response)),
-        catchError((error) => this.handleError(error, undefined))
-      );
+      .pipe(catchError((error) => this.handleError(error, undefined)));
   }
 
   //Sélection de la soutenance correspondant à l'identifiant passé en paramètre
   getSoutenanceById(
     id: number,
-    fields?: string[]
+    fields?: string[],
   ): Observable<Soutenance | undefined> {
     let params = new HttpParams();
 
@@ -41,10 +42,7 @@ export class SoutenanceService {
 
     return this.http
       .get<Soutenance>(`${this.apiUrl}/api/soutenance/${id}`, { params })
-      .pipe(
-        tap((response) => this.log(response)),
-        catchError((error) => this.handleError(error, undefined))
-      );
+      .pipe(catchError((error) => this.handleError(error, undefined)));
   }
 
   //Ajout d'une soutenance
@@ -57,34 +55,30 @@ export class SoutenanceService {
       .post<Soutenance>(
         `${this.apiUrl}/api/soutenance`,
         soutenance,
-        httpOptions
+        httpOptions,
       )
-      .pipe(
-        tap((response) => this.log(response)),
-        catchError((error) => this.handleError(error, null))
-      );
+      .pipe(catchError((error) => this.handleError(error, null)));
   }
 
   // Ajout de plusieurs soutenances en une seule requête
-  addManySoutenances(soutenances: SoutenanceCreate[]): Observable<Soutenance[]> {
+  addManySoutenances(
+    soutenances: SoutenanceCreate[],
+  ): Observable<Soutenance[]> {
     const httpOptions = {
       headers: new HttpHeaders({ "Content-Type": "application/json" }),
     };
 
+    console.log("soutenances ajoutées :", soutenances);
+
     return this.http
-      .post<Soutenance[]>(
-        `${this.apiUrl}/api/soutenance/create-many`,
-        soutenances,
-        httpOptions
-      )
-      .pipe(
-        tap((response) => this.log(response)),
-        catchError((error) => this.handleError(error, []))
-      );
+      .post<
+        Soutenance[]
+      >(`${this.apiUrl}/api/soutenance/create-many`, soutenances, httpOptions)
+      .pipe(catchError((error) => this.handleError(error, [])));
   }
 
   //Mise à jour d'une soutenance
-  updateSoutenance(soutenance: Soutenance): Observable<null> {
+  updateSoutenance(soutenance: Soutenance): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({ "Content-type": "application/json" }),
     };
@@ -93,12 +87,9 @@ export class SoutenanceService {
       .put(
         `${this.apiUrl}/api/soutenance/update/${soutenance.idSoutenance}`,
         soutenance,
-        httpOptions
+        httpOptions,
       )
-      .pipe(
-        tap((response) => this.log(response)),
-        catchError((error) => this.handleError(error, null))
-      );
+      .pipe(catchError((error) => this.handleError(error, null)));
   }
 
   //Mise à jour de plusieurs soutenance
@@ -107,32 +98,16 @@ export class SoutenanceService {
       headers: new HttpHeaders({ "Content-type": "application/json" }),
     };
     const payload = { soutenances: soutenances };
-    // console.log(JSON.stringify(payload, null, 2));
     return this.http
-      .put(
-        `${this.apiUrl}/api/soutenances/update-many`,
-        payload,
-        httpOptions
-      )
-      .pipe(
-        tap((response) => this.log(response)),
-        catchError((error) => this.handleError(error, null))
-      );
+      .put(`${this.apiUrl}/api/soutenances/update-many`, payload, httpOptions)
+      .pipe(catchError((error) => this.handleError(error, null)));
   }
 
   //Supression d'une soutenance
   deleteSoutenance(soutenance: Soutenance): Observable<null> {
     return this.http
       .delete(`${this.apiUrl}/api/soutenance/delete/${soutenance.idSoutenance}`)
-      .pipe(
-        tap((response) => this.log(response)),
-        catchError((error) => this.handleError(error, null))
-      );
-  }
-
-  //Log la réponse de l'API
-  private log(response: any) {
-    console.table(response);
+      .pipe(catchError((error) => this.handleError(error, null)));
   }
 
   //Retourne l'erreur en cas de problème avec l'API

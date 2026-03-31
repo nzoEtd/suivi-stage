@@ -64,7 +64,7 @@ export class ModalePlanningComponent implements OnInit {
     this.initForm();
 
     forkJoin({
-      promos: this.trainingYearService.getTrainingYears(["libelle"]),
+      promos: this.trainingYearService.getTrainingYears(),
       salles: this.salleService.getSalles(),
       academicYear: this.academicYearService.getCurrentAcademicYear(),
     }).subscribe(({ promos, salles, academicYear }) => {
@@ -220,7 +220,7 @@ export class ModalePlanningComponent implements OnInit {
     }
   }
 
-  onCancel() {
-    this.cancel.emit();
-  }
+  onCancel(event?: MouseEvent) {
+    this.cancel.emit(); 
+}
 }

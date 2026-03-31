@@ -50,3 +50,17 @@ export interface PlanningCreate {
   heureFinAprem: string | null;
   dureeSoutenance: number | null;
 }
+
+export interface PlanningUpdate {
+  idPlanning: number | null;
+  nom: string | null;
+  idAnneeFormation: number | null;
+  idAnneeUniversitaire: number | null;
+  dateDebut: string | null;
+  dateFin: string | null;
+  heureDebutMatin: string | null;
+  heureDebutAprem: string | null;
+  heureFinMatin: string | null;
+  heureFinAprem: string | null;
+  dureeSoutenance: number | null;
+}

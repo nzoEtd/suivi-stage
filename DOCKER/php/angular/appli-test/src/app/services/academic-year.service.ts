@@ -21,7 +21,6 @@ export class AcademicYearService {
         }
 
         return this.http.get<AcademicYear[]>(`${this.apiUrl}/api/annee-universitaire`, {params}).pipe(
-            tap(response => this.log(response)),
             catchError(error => this.handleError(error, null))
         );
     }
@@ -45,7 +44,6 @@ export class AcademicYearService {
         }
 
         return this.http.get<AcademicYear[]>(`${this.apiUrl}/api/annee-universitaire`, {params}).pipe(
-            tap(response => this.log(response)),
             switchMap(years => {
                 if (years.length === 0) {
                     return this.addAcademicYear(this.currentAcademicYear);
@@ -62,14 +60,8 @@ export class AcademicYearService {
         };
             
         return this.http.post<AcademicYear>(`${this.apiUrl}/api/annee-universitaire/create`, academicYear, httpOptions).pipe(
-            tap(response => this.log(response)),
             catchError(error => this.handleError(error, undefined))
         );
-    }
-
-    //Log la réponse de l'API
-    private log(response: any) {
-        console.table(response);
     }
 
     //Retourne l'erreur en cas de problème avec l'API

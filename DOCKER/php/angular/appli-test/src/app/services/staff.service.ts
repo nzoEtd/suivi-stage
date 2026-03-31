@@ -21,7 +21,6 @@ export class StaffService {
     }
 
     return this.http.get<Staff[]>(`${this.apiUrl}/api/personnel`, {params}).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );
   }
@@ -34,14 +33,8 @@ export class StaffService {
     }
 
     return this.http.get<Staff>(`${this.apiUrl}/api/personnel/${idStaff}`, {params}).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );
-  }
-
-  //Log la réponse de l'API
-  private log(response: any) {
-    console.table(response);
   }
 
   //Retourne l'erreur en cas de problème avec l'API

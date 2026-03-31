@@ -17,7 +17,7 @@ class CreateDepartementIUTSTable extends Migration
             $table->engine = 'InnoDB';
             // Clé primaire
             $table->tinyIncrements('idDepartement');
-            
+
             // Attributs
             $table->string('libelle', 100);
         });

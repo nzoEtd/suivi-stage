@@ -30,7 +30,7 @@ class SalleController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource. 
+     * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
@@ -72,7 +72,7 @@ class SalleController extends Controller
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'exception' => $e->getMessage()
             ], 500);
         }
@@ -101,12 +101,11 @@ class SalleController extends Controller
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'exception' => $e->getMessage()
             ], 500);
         }
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -118,7 +117,6 @@ class SalleController extends Controller
     {
         //
     }
-
 
     /**
      * Modifie une salle particulière
@@ -157,12 +155,11 @@ class SalleController extends Controller
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'exception' => $e->getMessage()
             ], 500);
         }
     }
-
 
     /**
      * Supprime une salle particulière
@@ -191,7 +188,7 @@ class SalleController extends Controller
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'exception' => $e->getMessage()
             ], 500);
         }

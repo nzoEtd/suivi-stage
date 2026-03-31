@@ -22,7 +22,7 @@ class CreateRechercheStagesTable extends Migration
             $table->date('dateCreation');
             $table->date('dateModification');
             $table->date('date1erContact');
-            $table->enum('typeContact',['Courrier','Mail','Présentiel','Téléphone','Site de recrutement']);
+            $table->enum('typeContact', ['Courrier', 'Mail', 'Présentiel', 'Téléphone', 'Site de recrutement']);
             $table->string('nomContact', 50);
             $table->string('prenomContact', 50);
             $table->string('fonctionContact', 50);
@@ -30,7 +30,7 @@ class CreateRechercheStagesTable extends Migration
             $table->string('adresseMailContact', 100)->nullable();
             $table->text('observations')->nullable();
             $table->date('dateRelance')->nullable();
-            $table->enum('statut',['En cours','Validé','Refusé','Relancé'])->default('En cours');
+            $table->enum('statut', ['En cours', 'Validé', 'Refusé', 'Relancé'])->default('En cours');
 
             // Clé étrangère
             $table->string('idUPPA');

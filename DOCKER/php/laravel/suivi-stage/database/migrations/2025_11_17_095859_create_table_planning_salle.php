@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class CreateTablePlanningSalle extends Migration
 {
@@ -12,23 +12,20 @@ class CreateTablePlanningSalle extends Migration
      *
      * @return void
      */
-public function up()
-{
-    Schema::create('table_planning_salle', function (Blueprint $table) {
-        $table->engine = 'InnoDB';
-        
-        $table->primary(['idPlanning', 'nomSalle'], 'planning_salle_primary');
+    public function up()
+    {
+        Schema::create('table_planning_salle', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
 
-        $table->unsignedInteger('idPlanning');
-        $table->unsignedInteger('nomSalle');
+            $table->primary(['idPlanning', 'nomSalle'], 'planning_salle_primary');
 
-        $table->foreign('idPlanning')->references('idPlanning')->on('plannings');
-        $table->foreign('nomSalle')->references('nomSalle')->on('salles');
-    });
+            $table->unsignedInteger('idPlanning');
+            $table->unsignedInteger('nomSalle');
 
-
-    
-}
+            $table->foreign('idPlanning')->references('idPlanning')->on('plannings');
+            $table->foreign('nomSalle')->references('nomSalle')->on('salles');
+        });
+    }
 
     /**
      * Reverse the migrations.
