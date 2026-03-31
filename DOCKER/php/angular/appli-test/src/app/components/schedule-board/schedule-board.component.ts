@@ -7,14 +7,14 @@ import {
   EventEmitter,
   OnChanges,
   SimpleChanges,
+  inject,
+  ChangeDetectorRef,
 } from "@angular/core";
 import { SlotComponent } from "../slot/slot.component";
 import {
   FormBuilder,
   FormGroup,
   Validators,
-  ValidatorFn,
-  AbstractControl,
   FormsModule,
   ReactiveFormsModule,
 } from "@angular/forms";
@@ -23,16 +23,7 @@ import { SlotItem } from "../../models/slotItem.model";
 import { TimeBlock, TimeBlockConfig } from "../../models/timeBlock.model";
 import { isSameDay } from "../../utils/timeManagement";
 import { ToastrService } from "ngx-toastr";
-import { inject } from "@angular/core";
-import {
-  CdkDrag,
-  CdkDragDrop,
-  CdkDragPlaceholder,
-  CdkDropList,
-  moveItemInArray,
-  transferArrayItem,
-} from "@angular/cdk/drag-drop";
-import { ChangeDetectorRef } from "@angular/core";
+import { CdkDrag, CdkDragDrop, CdkDropList } from "@angular/cdk/drag-drop";
 import { Salle } from "../../models/salle.model";
 import { SalleService } from "../../services/salle.service";
 import { forkJoin } from "rxjs";

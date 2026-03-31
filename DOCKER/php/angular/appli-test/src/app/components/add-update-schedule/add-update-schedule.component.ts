@@ -8,13 +8,12 @@ import {
   AfterViewChecked,
   ViewChild,
   ElementRef,
+  inject,
 } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
   Validators,
-  ValidatorFn,
-  AbstractControl,
   FormsModule,
   ReactiveFormsModule,
 } from "@angular/forms";
@@ -31,22 +30,18 @@ import { SlotItem } from "../../models/slotItem.model";
 import { TimeBlockConfig } from "../../models/timeBlock.model";
 import { ModaleSoutenanceComponent } from "../modale-soutenance/modale-soutenance.component";
 import { ModaleComponent } from "../modale/modale.component";
-import {
-  createSlotsFromStudents,
-  getAllSallesUsed,
-} from "../../utils/fonctions";
+import { getAllSallesUsed } from "../../utils/fonctions";
 import { PlanningService } from "../../services/planning.service";
 import {
   Soutenance,
   SoutenanceCreate,
   SoutenanceUpdate,
 } from "../../models/soutenance.model";
-import { Subject, forkJoin, switchMap, takeUntil } from "rxjs";
+import { Subject, switchMap, takeUntil } from "rxjs";
 import { SoutenanceService } from "../../services/soutenance.service";
 import { formatDateToYYYYMMDD } from "../../utils/timeManagement";
 import { DataStoreService } from "../../services/data.service";
 import { ToastrService } from "ngx-toastr";
-import { inject } from "@angular/core";
 import { OverlayModule } from "@angular/cdk/overlay";
 import { Staff } from "../../models/staff.model";
 // @ts-ignore

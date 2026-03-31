@@ -30,6 +30,7 @@ import {
 import { ToastrService } from "ngx-toastr";
 import { CreneauDisponible } from "../../utils/types";
 import { isOverlap, referentEstTechnique } from "../../utils/fonctions";
+import { sortCreneaux } from "../../utils/slotsUtils";
 
 @Component({
   selector: "app-modale-soutenance",
@@ -156,12 +157,7 @@ export class ModaleSoutenanceComponent implements OnInit {
     return creneaux
       .filter(({ salle, heureDebutDate, heureFinDate }) => {
         const chevauchantes = autresSoutenances.filter((s) =>
-          this.isOverlap(
-            heureDebutDate,
-            heureFinDate,
-            s.dateDebut!,
-            s.dateFin!,
-          ),
+          isOverlap(heureDebutDate, heureFinDate, s.dateDebut!, s.dateFin!),
         );
 
         // Salle occupée ?
