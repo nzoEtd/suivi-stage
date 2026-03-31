@@ -135,7 +135,7 @@ export class ScheduleBoardComponent implements OnInit {
           slot.dateDebut!.getHours() * 60 + slot.dateDebut!.getMinutes();
         const endMin =
           slot.dateFin!.getHours() * 60 + slot.dateFin!.getMinutes();
-        
+
         if (block.type === "morning" && endMin > block.endMin) {
           return false;
         }
@@ -228,9 +228,9 @@ export class ScheduleBoardComponent implements OnInit {
         this.cdRef.detectChanges();
       } else {
         // S'il y a une salle le slot est droppé dans la salle au bon endroit
-        duration == null
-          ? (duration = draggedSlot.duree)
-          : (duration = duration);
+        if (duration == null) {
+          duration = draggedSlot.duree;
+        }
 
         const containerTop = rect.top;
         const containerHeight = rect.height;

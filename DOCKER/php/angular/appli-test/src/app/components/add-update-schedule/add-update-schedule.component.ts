@@ -130,7 +130,9 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
         let idSlotTemp = 0;
         this.slots.forEach((slot) => {
           idSlotTemp++;
-          slot.id == -1 ? (slot.id = idSlotTemp) : (slot.id = slot.id);
+          if (slot.id === -1) {
+            slot.id = idSlotTemp;
+          }
           const dayKey = slot.dateDebut
             ? slot.dateDebut.toISOString().slice(0, 10)
             : "attente"; // "YYYY-MM-DD"
