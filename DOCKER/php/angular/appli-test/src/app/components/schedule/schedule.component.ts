@@ -52,7 +52,6 @@ import { DataStoreService } from "../../services/data.service";
 })
 export class ScheduleComponent implements AfterViewInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  // toastr = inject(ToastrService);
 
   currentUser?: any;
   currentUserRole?: string;
