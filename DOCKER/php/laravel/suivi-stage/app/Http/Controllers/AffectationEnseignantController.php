@@ -21,7 +21,7 @@ class AffectationEnseignantController extends Controller
             ->join('personnels', 'table_personnel_etudiant_anneeuniv.idPersonnel', '=', 'personnels.idPersonnel')
             ->join('etudiants', 'table_personnel_etudiant_anneeuniv.idUPPA', '=', 'etudiants.idUPPA')
             ->join('annee_universitaires', 'table_personnel_etudiant_anneeuniv.idAnneeUniversitaire', '=', 'annee_universitaires.idAnneeUniversitaire')
-            ->select('annee_universitaires.idAnneeUniversitaire as idAnneeUniversitaire','annee_universitaires.libelle as anneeUniversitaire','personnels.idPersonnel as idPersonnel','personnels.nom as nomPersonnel', 'personnels.prenom as prenomPersonnel', 'etudiants.idUPPA as idUPPA', 'etudiants.nom as nomEtudiant', 'etudiants.prenom as prenomEtudiant')
+            ->select('annee_universitaires.idAnneeUniversitaire as idAnneeUniversitaire', 'annee_universitaires.libelle as anneeUniversitaire', 'personnels.idPersonnel as idPersonnel', 'personnels.nom as nomPersonnel', 'personnels.prenom as prenomPersonnel', 'etudiants.idUPPA as idUPPA', 'etudiants.nom as nomEtudiant', 'etudiants.prenom as prenomEtudiant')
             ->get();
 
         return response()->json($affectations, 200);
@@ -42,8 +42,7 @@ class AffectationEnseignantController extends Controller
      */
     public function store(Request $request)
     {
-        try
-        {
+        try {
             $donneesValidees = $request->validate([
                 'idPersonnel'           => 'bail|required|integer',
                 'idUPPA'                => 'bail|required|integer',
@@ -64,23 +63,17 @@ class AffectationEnseignantController extends Controller
                 ->where('idAnneeUniversitaire', $donneesValidees['idAnneeUniversitaire'])
                 ->first();
             return response()->json($affectation, 201);
-        }	
-        catch (\Illuminate\Validation\ValidationException $e)
-        {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Erreur de validation dans les données',
                 'erreur' => $e->errors()
             ], 422);
-        }
-        catch (\Illuminate\Database\QueryException $e)
-        {
+        } catch (\Illuminate\Database\QueryException $e) {
             return response()->json([
                 'message' => 'Erreur dans la base de données :',
                 'erreur' => $e->getMessage()
             ], 500);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Une erreur s\'est produite :',
                 'erreur' => $e->getMessage()
@@ -105,13 +98,12 @@ class AffectationEnseignantController extends Controller
             ->join('personnels', 'table_personnel_etudiant_anneeuniv.idPersonnel', '=', 'personnels.idPersonnel')
             ->join('etudiants', 'table_personnel_etudiant_anneeuniv.idUPPA', '=', 'etudiants.idUPPA')
             ->join('annee_universitaires', 'table_personnel_etudiant_anneeuniv.idAnneeUniversitaire', '=', 'annee_universitaires.idAnneeUniversitaire')
-            ->select('annee_universitaires.idAnneeUniversitaire as idAnneeUniversitaire','annee_universitaires.libelle as anneeUniversitaire','personnels.idPersonnel as idPersonnel','personnels.nom as nomPersonnel','personnels.prenom as prenomPersonnel','etudiants.idUPPA as idUPPA','etudiants.nom as nomEtudiant', 'etudiants.prenom as prenomEtudiant')
+            ->select('annee_universitaires.idAnneeUniversitaire as idAnneeUniversitaire', 'annee_universitaires.libelle as anneeUniversitaire', 'personnels.idPersonnel as idPersonnel', 'personnels.nom as nomPersonnel', 'personnels.prenom as prenomPersonnel', 'etudiants.idUPPA as idUPPA', 'etudiants.nom as nomEtudiant', 'etudiants.prenom as prenomEtudiant')
             ->where('etudiants.idUPPA', $idUPPA)
             ->where('annee_universitaires.idAnneeUniversitaire', $idAnneeUniversitaire)
             ->first();
-        
-        if (!$affectation)
-        {
+
+        if (!$affectation) {
             return response()->json([
                 'message' => 'Aucune affectation trouvée'
             ], 404);
@@ -138,8 +130,7 @@ class AffectationEnseignantController extends Controller
      */
     public function update(Request $request, $idPersonnel, $idUPPA, $idAnneeUniversitaire)
     {
-        try
-        {
+        try {
             $donneesValidees = $request->validate([
                 'idPersonnel'           => 'required|integer'
             ]);
@@ -151,39 +142,32 @@ class AffectationEnseignantController extends Controller
                 ->update($donneesValidees);
 
             // Vérifie si l'affectation existe
-            if (!$affectation)
-            {
+            if (!$affectation) {
                 return response()->json([
                     'message' => 'Aucune affectation trouvée'
                 ], 404);
-            }            
+            }
 
             // Récupère les données mises à jour
             $affectationMiseAJour = \DB::table('table_personnel_etudiant_anneeuniv')
-            ->where('idPersonnel', $donneesValidees)
-            ->where('idUPPA', $idUPPA)
-            ->where('idAnneeUniversitaire', $idAnneeUniversitaire)
-            ->first();
+                ->where('idPersonnel', $donneesValidees)
+                ->where('idUPPA', $idUPPA)
+                ->where('idAnneeUniversitaire', $idAnneeUniversitaire)
+                ->first();
 
             // Renvoie des données mises à jour
             return response()->json($affectationMiseAJour, 200);
-        }
-        catch (\Illuminate\Validation\ValidationException $e)
-        {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Erreur de validation dans les données',
                 'erreur' => $e->errors()
             ], 422);
-        }
-        catch (\Illuminate\Database\QueryException $e)
-        {
+        } catch (\Illuminate\Database\QueryException $e) {
             return response()->json([
                 'message' => 'Erreur dans la base de données :',
                 'erreur' => $e->getMessage()
             ], 500);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Une erreur s\'est produite :',
                 'erreur' => $e->getMessage()
@@ -206,16 +190,14 @@ class AffectationEnseignantController extends Controller
      */
     public function destroy($idPersonnel, $idUPPA, $idAnneeUniversitaire)
     {
-        try
-        {
+        try {
             $affectation = \DB::table('table_personnel_etudiant_anneeuniv')
-            ->where('idPersonnel', $idPersonnel)
-            ->where('idUPPA', $idUPPA)
-            ->where('idAnneeUniversitaire', $idAnneeUniversitaire)
-            ->delete();
+                ->where('idPersonnel', $idPersonnel)
+                ->where('idUPPA', $idUPPA)
+                ->where('idAnneeUniversitaire', $idAnneeUniversitaire)
+                ->delete();
 
-            if (!$affectation)
-            {
+            if (!$affectation) {
                 return response()->json([
                     'message' => 'Aucune affectation trouvée'
                 ], 404);
@@ -224,9 +206,7 @@ class AffectationEnseignantController extends Controller
             return response()->json([
                 'message' => 'L\'affectation a bien été supprimée'
             ], 200);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Une erreur s\'est produite :',
                 'erreur' => $e->getMessage()
@@ -246,17 +226,15 @@ class AffectationEnseignantController extends Controller
      */
     public function extractStudentTeacherAssignments()
     {
-        try
-        {
+        try {
             $date = new \DateTime();
             // Si la date du jour est supérieure ou égale à septembre
             if ((int)$date->format('m') >= 9) {
                 // L'année universitaire courante est de la forme "anneeN-anneeN+1"
-                $anneeUniversitaireCourante = $date->format('Y').'-'.($date->format('Y')+1);
-            }
-            else {
+                $anneeUniversitaireCourante = $date->format('Y') . '-' . ($date->format('Y') + 1);
+            } else {
                 // L'année universitaire courante est de la forme "anneeN-1-anneeN"
-                $anneeUniversitaireCourante = ($date->format('Y')-1).'-'.date('Y');
+                $anneeUniversitaireCourante = ($date->format('Y') - 1) . '-' . date('Y');
             }
 
             $affectations = \DB::table('table_personnel_etudiant_anneeuniv')
@@ -283,17 +261,17 @@ class AffectationEnseignantController extends Controller
 
             // Exemple de nom de fichier : affectations_2024-2025_1903_214353.xlsx
             $fileName = $date->format('dm_His') . '_affectations_' . $anneeUniversitaireCourante . '.xlsx';
-            
+
             // Créer un chemin temporaire pour le fichier
             $tempPath = storage_path('app/temp/' . $fileName);
-            
+
             // Sauvegarder le fichier Excel temporairement
             Excel::store(new AffectationsExport($affectations), 'temp/' . $fileName);
-            
+
             // Lire le contenu du fichier et le convertir en base64
             $fileContent = file_get_contents($tempPath);
             $base64Excel = base64_encode($fileContent);
-            
+
             // Supprimer le fichier temporaire
             unlink($tempPath);
 
@@ -304,9 +282,7 @@ class AffectationEnseignantController extends Controller
                 'fileContent' => $base64Excel,
                 'mimeType' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             ], 200);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             \Log::error("Erreur lors de l'extraction Excel : " . $e->getMessage());
             return response()->json([
                 'message' => 'Une erreur s\'est produite lors de l\'export Excel',

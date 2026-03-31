@@ -5,6 +5,7 @@ import {
   SimpleChanges,
   ChangeDetectorRef,
   OnDestroy,
+  inject,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Planning, PlanningCreate } from "../../models/planning.model";
@@ -22,15 +23,6 @@ import { SoutenanceService } from "../../services/soutenance.service";
 import { formatDateToYYYYMMDD } from "../../utils/timeManagement";
 import { DataStoreService } from "../../services/data.service";
 import { ToastrService } from "ngx-toastr";
-import { inject } from "@angular/core";
-import {
-  CdkDrag,
-  CdkDropList,
-  CdkDropListGroup,
-  CdkDragDrop,
-  moveItemInArray,
-  transferArrayItem,
-} from "@angular/cdk/drag-drop";
 import { Staff } from "../../models/staff.model";
 
 @Component({
@@ -48,7 +40,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
   private destroy$ = new Subject<void>();
   toastr = inject(ToastrService);
 
-  @Input() isEditMode!: Boolean;
+  @Input() isEditMode!: boolean;
   @Input() planning: Planning | PlanningCreate | undefined;
   @Input() slots: SlotItem[] = [];
   @Input() salles: number[] = [];
@@ -171,7 +163,7 @@ export class AddUpdateScheduleComponent implements OnChanges, OnDestroy {
 
   openEditModal(slot: SlotItem) {
     this.selectedSoutenance = slot;
-    this.idSoutenance = this.selectedSoutenance!.id;
+    this.idSoutenance = this.selectedSoutenance.id;
     this.isModalOpen = true;
   }
 

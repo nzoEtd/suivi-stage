@@ -1,21 +1,20 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  inject,
+  ChangeDetectorRef,
+} from "@angular/core";
 import { SlotComponent } from "../slot/slot.component";
 import { MatGridListModule } from "@angular/material/grid-list";
 import { SlotItem } from "../../models/slotItem.model";
 import { TimeBlock, TimeBlockConfig } from "../../models/timeBlock.model";
 import { isSameDay } from "../../utils/timeManagement";
 import { ToastrService } from "ngx-toastr";
-import { inject } from "@angular/core";
-import {
-  CdkDrag,
-  CdkDragDrop,
-  CdkDragPlaceholder,
-  CdkDropList,
-  moveItemInArray,
-  transferArrayItem,
-} from "@angular/cdk/drag-drop";
-import { ChangeDetectorRef } from "@angular/core";
+import { CdkDrag, CdkDragDrop, CdkDropList } from "@angular/cdk/drag-drop";
 
 @Component({
   selector: "app-schedule-board",

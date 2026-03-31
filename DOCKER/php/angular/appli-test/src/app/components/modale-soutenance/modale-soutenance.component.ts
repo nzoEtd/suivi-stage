@@ -95,13 +95,6 @@ export class ModaleSoutenanceComponent implements OnInit {
   getCurrentCreneauValue(): string {
     return `${formatDateToYYYYMMDD(this.soutenance.dateDebut!)}|${this.soutenance.salle}|${dateToHeureStr(this.soutenance.dateDebut!)}`;
   }
-  private sortCreneaux(creneaux: CreneauDisponible[]): CreneauDisponible[] {
-    return creneaux.sort((a, b) => {
-      if (a.date !== b.date) return a.date.localeCompare(b.date);
-      if (a.salle !== b.salle) return a.salle - b.salle;
-      return a.heureDebut.localeCompare(b.heureDebut);
-    });
-  }
 
   // Génère tous les créneaux possibles par jour, salle et bloc
   private generateAllCreneaux(): {
@@ -202,8 +195,6 @@ export class ModaleSoutenanceComponent implements OnInit {
       }));
   }
 
-  // ---------------- Fonction principale ----------------
-
   getCreneauxDisponibles(): CreneauDisponible[] {
     const allCreneaux = this.generateAllCreneaux();
 
@@ -231,7 +222,7 @@ export class ModaleSoutenanceComponent implements OnInit {
     }
 
     // tri final
-    return this.sortCreneaux(creneaux);
+    return sortCreneaux(creneaux);
   }
 
   getLecteursDisponibles(chevauchements: SlotItem[]): Staff[] {

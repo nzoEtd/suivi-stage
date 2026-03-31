@@ -7,11 +7,7 @@ import { Staff } from "../models/staff.model";
 import { Student } from "../models/student.model";
 import { getDateHeure, isSameDay } from "./timeManagement";
 import { CompanyTutor } from "../models/company-tutor.model";
-import { StudentStaffAcademicYearService } from "../services/student-staff-academicYear.service";
 import { Student_TrainingYear_AcademicYear } from "../models/student-trainingYear-academicYear.model";
-import { forkJoin } from "rxjs";
-import { Student_Staff_AcademicYear } from "../models/student-staff-academicYear.model";
-import { AcademicYear } from "../models/academic-year.model";
 import { Student_Staff_AcademicYear_String } from "../models/student-staff-academicYear-string.model";
 
 export async function loadSoutenancesForPlanning(
