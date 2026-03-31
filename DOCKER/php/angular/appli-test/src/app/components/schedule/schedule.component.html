@@ -85,7 +85,7 @@
   </div>
 </div>
 
-<app-modale-planning *ngIf="isModalOpen" (cancel)="isModalOpen = false" />
+<app-modale-planning [isModalOpen]="isModalOpen" (cancel)="isModalOpen = false" />
 
 <app-modale-soutenance
   *ngIf="isModalSoutenanceOpen"
