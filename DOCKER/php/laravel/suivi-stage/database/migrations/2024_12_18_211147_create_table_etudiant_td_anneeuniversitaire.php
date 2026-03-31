@@ -16,8 +16,8 @@ class CreateTableEtudiantTdAnneeuniversitaire extends Migration
         // Changement du nom de table : "table_etudiant_td_anneeuniversitaire" (trop long) en "table_etudiant_td_anneeuniv"
         Schema::create('table_etudiant_td_anneeuniv', function (Blueprint $table) {
             $table->engine = 'InnoDB';
-             // Clé primaire
-            $table->primary(['idUPPA','idTD','idAnneeUniversitaire'],'etudiant_td_anneeUniv_primary');
+            // Clé primaire
+            $table->primary(['idUPPA', 'idTD', 'idAnneeUniversitaire'], 'etudiant_td_anneeUniv_primary');
 
             // Clé étrangère
             $table->string('idUPPA');

@@ -17,7 +17,7 @@ class CreateTablePersonnelRoleDepartementIUT extends Migration
         Schema::create('table_personnel_role_departement', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             // Clé primaire
-            $table->primary(['idPersonnel','idRole','idDepartement'],'personnel_role_departement_primary');
+            $table->primary(['idPersonnel', 'idRole', 'idDepartement'], 'personnel_role_departement_primary');
 
             // Clé étrangère
             $table->unsignedInteger('idPersonnel');

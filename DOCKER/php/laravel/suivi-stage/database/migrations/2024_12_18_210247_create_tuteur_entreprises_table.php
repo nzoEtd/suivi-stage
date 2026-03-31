@@ -19,11 +19,11 @@ class CreateTuteurEntreprisesTable extends Migration
             $table->increments('idTuteur');
 
             // Attributs
-            $table->string('nom',50);
-            $table->string('prenom',50);
-            $table->string('telephone',12);
-            $table->string('adresseMail',100);
-            $table->string('fonction',50);
+            $table->string('nom', 50);
+            $table->string('prenom', 50);
+            $table->string('telephone', 12);
+            $table->string('adresseMail', 100);
+            $table->string('fonction', 50);
 
             // Clé étrangère
             $table->unsignedInteger('idEntreprise');

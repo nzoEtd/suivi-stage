@@ -17,7 +17,7 @@ class CreateTableEtudiantAnneeformationAnneeuniversitaire extends Migration
         Schema::create('table_etudiant_anneeform_anneeuniv', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             // Clé primaire
-            $table->primary(['idUPPA','idAnneeFormation','idAnneeUniversitaire'],'etudiant_anneeFormation_anneeUniversitaire_primary');
+            $table->primary(['idUPPA', 'idAnneeFormation', 'idAnneeUniversitaire'], 'etudiant_anneeFormation_anneeUniversitaire_primary');
 
             // Clé étrangère
             $table->string('idUPPA');
