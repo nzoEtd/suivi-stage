@@ -28,8 +28,9 @@ import {
   dateToHeureStr,
 } from "../../utils/timeManagement";
 import { ToastrService } from "ngx-toastr";
+import { sortCreneaux } from "../../utils/slotsUtils";
 
-type CreneauDisponible = {
+export type CreneauDisponible = {
   date: string;
   salle: number;
   heureDebut: string;
@@ -94,95 +95,133 @@ export class ModaleSoutenanceComponent implements OnInit {
   getCurrentCreneauValue(): string {
     return `${formatDateToYYYYMMDD(this.soutenance.dateDebut!)}|${this.soutenance.salle}|${dateToHeureStr(this.soutenance.dateDebut!)}`;
   }
-
-  getCreneauxDisponibles(): CreneauDisponible[] {
-    const dureeMs =
-      this.soutenance.dateFin!.getTime() - this.soutenance.dateDebut!.getTime();
-    const dureeMinutes = dureeMs / 60000;
-
-    const pas = 30;
-    const currentKey = this.getCurrentCreneauValue();
-    const creneaux: CreneauDisponible[] = [];
-
-    for (const [date, soutenances] of Object.entries(this.soutenancesJour)) {
-      const autresSoutenances = soutenances.filter(
-        (s) => s.id !== this.soutenance.id,
-      );
-
-      const sallesDuJour = [
-        ...new Set(
-          soutenances.map((s) => s.salle).filter((s): s is number => s != null),
-        ),
-      ];
-
-      for (const salle of sallesDuJour) {
-        for (const block of this.timeBlocks) {
-          const blockStart = timeStringToMinutes(block.start);
-          const blockEnd = timeStringToMinutes(block.end);
-
-          for (
-            let minutesDebut = blockStart;
-            minutesDebut + dureeMinutes <= blockEnd;
-            minutesDebut += pas
-          ) {
-            const heureDebutStr = minutesToHHMM(minutesDebut);
-            const heureFinStr = minutesToHHMM(minutesDebut + dureeMinutes);
-
-            const heureDebut = buildDate(date, heureDebutStr);
-            const heureFin = buildDate(date, heureFinStr);
-
-            const soutenancesChevauchantes = autresSoutenances.filter((s) =>
-              this.isOverlap(heureDebut, heureFin, s.dateDebut!, s.dateFin!),
-            );
-
-            // room available ?
-            if (soutenancesChevauchantes.some((s) => s.salle === salle))
-              continue;
-
-            // Referent teacher available
-            const enseignantsOccupes = soutenancesChevauchantes.flatMap((s) => [
-              s.idLecteur,
-              s.idReferent,
-            ]);
-
-            if (enseignantsOccupes.includes(this.soutenance.idReferent))
-              continue;
-
-            // Readers available ?
-            const lecteursDisponibles = this.getLecteursDisponibles(
-              soutenancesChevauchantes,
-            );
-
-            if (lecteursDisponibles.length === 0) continue;
-
-            creneaux.push({
-              date,
-              salle,
-              heureDebut: heureDebutStr,
-              heureFin: heureFinStr,
-            });
-          }
-        }
-      }
-    }
-
-    // sort by day, then room, then hours
-    creneaux.sort((a, b) => {
-      if (a.date !== b.date) {
-        return a.date.localeCompare(b.date);
-      }
-
-      if (a.salle !== b.salle) {
-        return a.salle - b.salle;
-      }
+  private sortCreneaux(creneaux: CreneauDisponible[]): CreneauDisponible[] {
+    return creneaux.sort((a, b) => {
+      if (a.date !== b.date) return a.date.localeCompare(b.date);
+      if (a.salle !== b.salle) return a.salle - b.salle;
       return a.heureDebut.localeCompare(b.heureDebut);
     });
+  }
 
-    const alreadyInList = creneaux.some(
-      (c) => `${c.date}|${c.salle}|${c.heureDebut}` === currentKey,
+  // Génère tous les créneaux possibles par jour, salle et bloc
+  private generateAllCreneaux(): {
+    date: string;
+    salle: number;
+    heureDebut: string;
+    heureFin: string;
+    heureDebutDate: Date;
+    heureFinDate: Date;
+  }[] {
+    const dureeMinutes =
+      (this.soutenance.dateFin!.getTime() -
+        this.soutenance.dateDebut!.getTime()) /
+      60000;
+    const pas = 30;
+
+    return Object.entries(this.soutenancesJour).flatMap(
+      ([date, soutenances]) => {
+        const sallesDuJour = Array.from(
+          new Set(
+            soutenances
+              .map((s) => s.salle)
+              .filter((s): s is number => s != null),
+          ),
+        );
+
+        return sallesDuJour.flatMap((salle) =>
+          this.timeBlocks.flatMap((block) => {
+            const blockStart = timeStringToMinutes(block.start);
+            const blockEnd = timeStringToMinutes(block.end);
+            const minutesList: number[] = [];
+            for (let m = blockStart; m + dureeMinutes <= blockEnd; m += pas)
+              minutesList.push(m);
+
+            return minutesList.map((minutesDebut) => {
+              const heureDebutStr = minutesToHHMM(minutesDebut);
+              const heureFinStr = minutesToHHMM(minutesDebut + dureeMinutes);
+              return {
+                date,
+                salle,
+                heureDebut: heureDebutStr,
+                heureFin: heureFinStr,
+                heureDebutDate: buildDate(date, heureDebutStr),
+                heureFinDate: buildDate(date, heureFinStr),
+              };
+            });
+          }),
+        );
+      },
+    );
+  }
+
+  // Filtre créneaux selon chevauchement, salle, référent et l'existance de lecteurs
+  private filterCreneauxValides(
+    creneaux: {
+      date: string;
+      salle: number;
+      heureDebut: string;
+      heureFin: string;
+      heureDebutDate: Date;
+      heureFinDate: Date;
+    }[],
+    autresSoutenances: SlotItem[],
+  ): CreneauDisponible[] {
+    return creneaux
+      .filter(({ salle, heureDebutDate, heureFinDate }) => {
+        const chevauchantes = autresSoutenances.filter((s) =>
+          this.isOverlap(
+            heureDebutDate,
+            heureFinDate,
+            s.dateDebut!,
+            s.dateFin!,
+          ),
+        );
+
+        // Salle occupée ?
+        if (chevauchantes.some((s) => s.salle === salle)) return false;
+
+        // Référent occupé ?
+        const enseignantsOccupes = chevauchantes.flatMap((s) => [
+          s.idLecteur,
+          s.idReferent,
+        ]);
+        if (enseignantsOccupes.includes(this.soutenance.idReferent))
+          return false;
+
+        // Lecteurs disponibles ?
+        if (this.getLecteursDisponibles(chevauchantes).length === 0)
+          return false;
+
+        return true;
+      })
+      .map(({ date, salle, heureDebut, heureFin }) => ({
+        date,
+        salle,
+        heureDebut,
+        heureFin,
+      }));
+  }
+
+  // ---------------- Fonction principale ----------------
+
+  getCreneauxDisponibles(): CreneauDisponible[] {
+    const allCreneaux = this.generateAllCreneaux();
+
+    // toutes les soutenances sauf celle actuelle
+    const autresSoutenances = Object.values(this.soutenancesJour).flatMap(
+      (sout) => sout.filter((s) => s.id !== this.soutenance.id),
     );
 
-    if (!alreadyInList) {
+    // filtrage des créneaux valides
+    let creneaux = this.filterCreneauxValides(allCreneaux, autresSoutenances);
+
+    // ajouter le créneau actuel s’il n’est pas déjà présent
+    const currentKey = this.getCurrentCreneauValue();
+    if (
+      !creneaux.some(
+        (c) => `${c.date}|${c.salle}|${c.heureDebut}` === currentKey,
+      )
+    ) {
       creneaux.unshift({
         date: formatDateToYYYYMMDD(this.soutenance.dateDebut!),
         salle: this.soutenance.salle!,
@@ -191,7 +230,8 @@ export class ModaleSoutenanceComponent implements OnInit {
       });
     }
 
-    return creneaux;
+    // tri final
+    return this.sortCreneaux(creneaux);
   }
 
   getLecteursDisponibles(chevauchements: SlotItem[]): Staff[] {
