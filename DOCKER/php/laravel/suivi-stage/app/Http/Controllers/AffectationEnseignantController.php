@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AffectationsExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\AffectationsExport;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AffectationEnseignantController extends Controller
 {
@@ -44,9 +44,9 @@ class AffectationEnseignantController extends Controller
     {
         try {
             $donneesValidees = $request->validate([
-                'idPersonnel'           => 'bail|required|integer',
-                'idUPPA'                => 'bail|required|integer',
-                'idAnneeUniversitaire'  => 'required|integer'
+                'idPersonnel' => 'bail|required|integer',
+                'idUPPA' => 'bail|required|integer',
+                'idAnneeUniversitaire' => 'required|integer'
             ]);
 
             // Création des données à partir d'une requête SQL
@@ -75,7 +75,7 @@ class AffectationEnseignantController extends Controller
             ], 500);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'erreur' => $e->getMessage()
             ], 500);
         }
@@ -132,7 +132,7 @@ class AffectationEnseignantController extends Controller
     {
         try {
             $donneesValidees = $request->validate([
-                'idPersonnel'           => 'required|integer'
+                'idPersonnel' => 'required|integer'
             ]);
 
             // Met à jour les données
@@ -169,7 +169,7 @@ class AffectationEnseignantController extends Controller
             ], 500);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'erreur' => $e->getMessage()
             ], 500);
         }
@@ -204,11 +204,11 @@ class AffectationEnseignantController extends Controller
             }
 
             return response()->json([
-                'message' => 'L\'affectation a bien été supprimée'
+                'message' => "L'affectation a bien été supprimée"
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'erreur' => $e->getMessage()
             ], 500);
         }
@@ -229,7 +229,7 @@ class AffectationEnseignantController extends Controller
         try {
             $date = new \DateTime();
             // Si la date du jour est supérieure ou égale à septembre
-            if ((int)$date->format('m') >= 9) {
+            if ((int) $date->format('m') >= 9) {
                 // L'année universitaire courante est de la forme "anneeN-anneeN+1"
                 $anneeUniversitaireCourante = $date->format('Y') . '-' . ($date->format('Y') + 1);
             } else {
@@ -285,7 +285,7 @@ class AffectationEnseignantController extends Controller
         } catch (\Exception $e) {
             \Log::error("Erreur lors de l'extraction Excel : " . $e->getMessage());
             return response()->json([
-                'message' => 'Une erreur s\'est produite lors de l\'export Excel',
+                'message' => "Une erreur s'est produite lors de l'export Excel",
                 'erreur' => $e->getMessage()
             ], 500);
         }

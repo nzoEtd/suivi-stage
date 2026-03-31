@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class TuteurEntreprise extends Model
 {
     use HasFactory;
+
     // Définit les attributs pouvant être remplis
     protected $fillable = [
         'idTuteur',
@@ -18,6 +19,7 @@ class TuteurEntreprise extends Model
         'fonction',
         'idEntreprise'
     ];
+
     // Définit l'attribut de la clé primaire
     protected $primaryKey = 'idTuteur';
     // Précise que la table ne contient pas de created_at et updated_at

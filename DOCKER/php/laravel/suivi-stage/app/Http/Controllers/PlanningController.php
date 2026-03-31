@@ -85,7 +85,7 @@ class PlanningController extends Controller
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite',
+                'message' => "Une erreur s'est produite",
                 'exception' => $e->getMessage()
             ], 500);
         }
@@ -114,7 +114,7 @@ class PlanningController extends Controller
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite',
+                'message' => "Une erreur s'est produite",
                 'exception' => $e->getMessage()
             ], 500);
         }
@@ -130,7 +130,6 @@ class PlanningController extends Controller
     {
         //
     }
-
 
     /**
      * Modifie un planning particulier
@@ -161,7 +160,6 @@ class PlanningController extends Controller
                 'dureeSoutenance' => 'required|integer',
                 'idAnneeFormation' => 'required|integer',
                 'idAnneeUniversitaire' => 'required|integer'
-
             ]);
 
             $planning = Planning::findOrFail($idPlanning);
@@ -179,7 +177,7 @@ class PlanningController extends Controller
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite',
+                'message' => "Une erreur s'est produite",
                 'exception' => $e->getMessage()
             ], 500);
         }
@@ -212,7 +210,7 @@ class PlanningController extends Controller
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite',
+                'message' => "Une erreur s'est produite",
                 'exception' => $e->getMessage()
             ], 500);
         }

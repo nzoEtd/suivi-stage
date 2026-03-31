@@ -19,7 +19,7 @@ class AnneeUniversitaireController extends Controller
         $fields = explode(',', $request->query('fields', '*'));
 
         // Vérifie si les champs demandés existent dans la table
-        $allowedFields = ['idAnneeUniversitaire','libelle'];
+        $allowedFields = ['idAnneeUniversitaire', 'libelle'];
         $fields = array_intersect($fields, $allowedFields);
 
         // Création de la requête
@@ -33,7 +33,7 @@ class AnneeUniversitaireController extends Controller
         // Exécution de la requête avec les champs sélectionnés
         $anneeUniversitaire = $query->select(empty($fields) ? '*' : $fields)->get();
 
-        return response()->json($anneeUniversitaire,200);
+        return response()->json($anneeUniversitaire, 200);
     }
 
     /**
@@ -50,8 +50,7 @@ class AnneeUniversitaireController extends Controller
      */
     public function store(Request $request)
     {
-        try
-        {
+        try {
             $donneesValidees = $request->validate([
                 'libelle' => 'required|string|max:10'
             ]);
@@ -61,20 +60,16 @@ class AnneeUniversitaireController extends Controller
             ]);
 
             return response()->json($anneeUniversitaire, 201);
-        }
-        catch (\Illuminate\Validation\ValidationException $e)
-        {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Erreur de validation des données',
                 'erreurs' => $e->errors()
-            ],422);
-        }
-        catch (\Exception $e)
-        {
+            ], 422);
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'exception' => $e->getMessage()
-            ],500);
+            ], 500);
         }
     }
 
@@ -92,23 +87,18 @@ class AnneeUniversitaireController extends Controller
      */
     public function show($id)
     {
-        try
-        {
+        try {
             $uneAnneeUniversitaire = AnneeUniversitaire::findOrFail($id);
             return response()->json($uneAnneeUniversitaire, 200);
-        }
-        catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
-        {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Aucune année universitaire trouvée'
-            ],404);
-        }
-        catch (\Exception $e)
-        {
+            ], 404);
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'exception' => $e->getMessage()
-            ],500);
+            ], 500);
         }
     }
 
@@ -129,8 +119,7 @@ class AnneeUniversitaireController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try
-        {
+        try {
             $donneesValidees = $request->validate([
                 'libelle' => 'required|string|max:10'
             ]);
@@ -139,26 +128,20 @@ class AnneeUniversitaireController extends Controller
             $uneAnneeUniversitaire->update($donneesValidees);
 
             return response()->json($uneAnneeUniversitaire, 200);
-        }
-        catch (\Illuminate\Validation\ValidationException $e)
-        {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Erreur de validation dans les données',
                 'erreurs' => $e->errors()
-            ],422);
-        }
-        catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
-        {
+            ], 422);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Aucune année universitaire trouvée'
-            ],404);
-        }
-        catch (\Exception $e)
-        {
+            ], 404);
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'exception' => $e->getMessage()
-            ],500);
+            ], 500);
         }
     }
 
@@ -176,27 +159,22 @@ class AnneeUniversitaireController extends Controller
      */
     public function destroy($id)
     {
-        try
-        {
+        try {
             $uneAnneeUniversitaire = AnneeUniversitaire::findOrFail($id);
             $uneAnneeUniversitaire->delete();
 
             return response()->json([
-                'message' => 'L\'année universitaire a bien été supprimée'
+                'message' => "L'année universitaire a bien été supprimée"
             ], 200);
-        }
-        catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
-        {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Aucune année universitaire trouvée'
-            ],404);
-        }
-        catch (\Exception $e)
-        {
+            ], 404);
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'exception' => $e->getMessage()
-            ],500);
+            ], 500);
         }
     }
 }

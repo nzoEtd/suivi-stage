@@ -30,7 +30,6 @@ class TDController extends Controller
         return response()->json($tds, 200);
     }
 
-
     /**
      * Créer un nouveau TD
      *
@@ -62,7 +61,7 @@ class TDController extends Controller
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite',
+                'message' => "Une erreur s'est produite",
                 'exception' => $e->getMessage()
             ], 500);
         }
@@ -90,7 +89,6 @@ class TDController extends Controller
             ], 404);
         }
     }
-
 
     /**
      * Modifie un TD particulier
