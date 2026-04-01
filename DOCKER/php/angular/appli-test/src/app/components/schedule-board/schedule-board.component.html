@@ -72,7 +72,7 @@
               [style.top.%]="hourPos.top"
               [style.height.%]="hourPos.height"
             >
-              {{ hourPos.hour }}h
+              {{ hourPos.hour }}h{{ hourPos.min ? hourPos.min : ''}}
             </div>
           </div>
           <div class="body-planning">
@@ -111,12 +111,11 @@
                     }
                   }
                   <div class="time-grid">
-                    @for (
-                      position of getQuarterHourPositions(block);
-                      track position
-                    ) {
-                      <div class="quarter-mark" [style.top.%]="position"></div>
-                    }
+                    @for (mark of getQuarterHourPositions(block); track mark.position) {
+                        <div class="quarter-mark" 
+                            [style.top.%]="mark.position"
+                            [class.hour-mark]="mark.isHour"></div>
+                      }
                   </div>
                 </div>
               </div>
@@ -143,7 +142,7 @@
               [style.top.%]="hourPos.top"
               [style.height.%]="hourPos.height"
             >
-              {{ hourPos.hour }}h
+              {{ hourPos.hour }}h{{ hourPos.min ? hourPos.min : ''}}
             </div>
           </div>
           <div class="body-planning">
@@ -186,11 +185,10 @@
                     }
                   }
                   <div class="time-grid">
-                    @for (
-                      position of getQuarterHourPositions(block);
-                      track position
-                    ) {
-                      <div class="quarter-mark" [style.top.%]="position"></div>
+                    @for (mark of getQuarterHourPositions(block); track mark.position) {
+                      <div class="quarter-mark" 
+                            [style.top.%]="mark.position"
+                            [class.hour-mark]="mark.isHour"></div>
                     }
                   </div>
                 </div>

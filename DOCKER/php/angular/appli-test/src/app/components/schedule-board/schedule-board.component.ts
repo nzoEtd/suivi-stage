@@ -179,9 +179,8 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     });
 
     // Total minutes (pauses exclues)
-    const totalMinutes =
-      converted.reduce((sum, b) => sum + (b.duration ?? 0), 0) /*+
-      this.PAUSE_HEIGHT*/;
+    // const totalMinutes =
+    //   converted.reduce((sum, b) => sum + (b.duration ?? 0), 0);
 
     // Pourcentage de hauteur de chaque bloc
     this.blocks = converted/*.map((b) => ({
@@ -250,8 +249,8 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
   //   return Math.floor(block.duration / 15);
   // }
 
-  getQuarterHourPositions(block: TimeBlock): number[] {
-    const positions: number[] = [];
+  getQuarterHourPositions(block: TimeBlock): { position: number; isHour: boolean }[] {
+    const result: { position: number; isHour: boolean }[] = [];
     const startMin = block.startMin;
     const endMin = block.endMin;
     const duration = block.duration;
@@ -263,23 +262,29 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     for (let min = firstQuarter; min <= endMin; min += 15) {
       const offsetFromStart = min - startMin;
       const percentage = (offsetFromStart / duration) * 100;
-      positions.push(percentage);
+      result.push({
+        position: percentage,
+        isHour: min % 60 === 0,
+      });
     }
+    console.log("quarter :", result)
     
-    return positions;
+    return result;
   }
 
   // Calculer la position et hauteur de chaque heure
-  getHourPositions(block: TimeBlock): {hour: string, top: number, height: number}[] {
-    const positions: {hour: string, top: number, height: number}[] = [];
+  getHourPositions(block: TimeBlock): {hour: string, min?: string, top: number, height: number}[] {
+    const positions: {hour: string, min?: string, top: number, height: number}[] = [];
     const startMin = block.startMin;
     const endMin = block.endMin;
     const duration = block.duration;
     
     const startH = Math.floor(startMin / 60);
     const endH = Math.floor(endMin / 60);
+
+    let h = startH
     
-    for (let h = startH; h <= endH; h++) {
+    for (h; h <= endH; h++) {
       const hourStartMin = h * 60;
       const hourEndMin = (h + 1) * 60;
       
@@ -291,13 +296,37 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
         const top = ((visibleStart - startMin) / duration) * 100;
         const height = ((visibleEnd - visibleStart) / duration) * 100;
         
-        positions.push({
-          hour: h.toString().padStart(2, "0"),
-          top,
-          height
-        });
+        if(h == startH && startMin % 60 != 0){
+          positions.push({
+            hour: h.toString().padStart(2, "0"),
+            min: block.start.split(':')[1],
+            top,
+            height
+          });
+        }
+        else if(h + 1 >= endMin / 60){
+          positions.push({
+            hour: h.toString().padStart(2, "0"),
+            top,
+            height
+          });
+          positions.push({
+            hour: block.end.split(':')[0],
+            min: endMin % 60 != 0 ? block.end.split(':')[1] : "",
+            top: top + height,
+            height: 1
+          });
+        }
+        else{
+          positions.push({
+            hour: h.toString().padStart(2, "0"),
+            top,
+            height
+          });
+        }
       }
     }
+    console.log("positions :", positions)
     
     return positions;
   }
