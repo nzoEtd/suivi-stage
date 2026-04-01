@@ -11,7 +11,7 @@ export class ModaleComponent {
 
   @Input() title: string = '';
   @Input() hasValue: boolean = true;
-  // @Input() submitLabel: string = 'Valider';
+  @Input() submitLabel: string = 'Valider';
 
   @Output() submit = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
@@ -20,7 +20,7 @@ export class ModaleComponent {
     this.submit.emit();
   }
 
-  onCancel(event?: MouseEvent) {
+  onCancel() {
     this.cancel.emit(); 
 }
 }
