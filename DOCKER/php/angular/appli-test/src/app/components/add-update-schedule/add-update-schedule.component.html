@@ -50,7 +50,9 @@
                 }}</span>
               }
             </div>
-            <span class="jour" title="Ajouter un jour" (click)="openModalJour()"><b>+</b></span>
+            <span class="jour" title="Ajouter un jour" (click)="openModalJour()"
+              ><b>+</b></span
+            >
           </div>
         </div>
       </div>
@@ -88,21 +90,20 @@
   (cancel)="modalOpen = false"
   [hasValue]="hasValue"
 >
-    <form
-        class="form"
-        [formGroup]="planningForm"
-        (ngSubmit)="addJour()"
-        [class.disabled-form]="isSubmitting"
-      >
-        <!-- Date -->
-        <div class="line-wrapper">
-            <div class="input-wrapper">
-              <label>Date* :</label>
-              <!-- <input type="date" formControlName="date" /> -->
-              <input #datepickerEl type="text" formControlName="date">
-              <!-- <div #datepickerEl></div> -->
-            </div>
-        </div>
-    </form>
-
+  <form
+    class="form"
+    [formGroup]="planningForm"
+    (ngSubmit)="addJour()"
+    [class.disabled-form]="isSubmitting"
+  >
+    <!-- Date -->
+    <div class="line-wrapper">
+      <div class="input-wrapper">
+        <label>Date* :</label>
+        <!-- <input type="date" formControlName="date" /> -->
+        <input #datepickerEl type="text" formControlName="date" />
+        <!-- <div #datepickerEl></div> -->
+      </div>
+    </div>
+  </form>
 </app-modale>

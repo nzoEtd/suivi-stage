@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Etudiant;
-use App\Models\RechercheStage;
 use App\Models\FicheDescriptive;
+use App\Models\RechercheStage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -20,16 +20,16 @@ class EtudiantController extends Controller
     {
         $fields = explode(',', $request->query('fields', '*'));
 
-        $allowedFields = ['idUPPA','nom','prenom',
-                          'adresse','ville','codePostal',
-                          'telephone','adresseMail','idDepartement',
-                          'idEntreprise','idTuteur','tierTemps'];
+        $allowedFields = ['idUPPA', 'nom', 'prenom',
+            'adresse', 'ville', 'codePostal',
+            'telephone', 'adresseMail', 'idDepartement',
+            'idEntreprise', 'idTuteur', 'tierTemps'];
         $fields = array_intersect($fields, $allowedFields);
 
         $etudiants = Etudiant::select(empty($fields) ? '*' : $fields)->get();
 
         return response()->json($etudiants, 200);
-    }   
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -60,23 +60,18 @@ class EtudiantController extends Controller
      */
     public function show($id)
     {
-        try
-        {
+        try {
             $unEtudiant = Etudiant::findOrFail($id);
             return response()->json($unEtudiant, 200);
-        }
-        catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
-        {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Aucun étudiant trouvé'
-            ],404);
-        }
-        catch (\Exception $e)
-        {
+            ], 404);
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite',
+                'message' => "Une erreur s'est produite",
                 'erreurs' => $e->getMessage()
-            ],500);
+            ], 500);
         }
     }
 
@@ -127,32 +122,26 @@ class EtudiantController extends Controller
      */
     public function indexRechercheStage($id)
     {
-        try
-        {
+        try {
             // Vérifie si l'étudiant existe
             $unEtudiant = Etudiant::findOrFail($id);
 
-            $desRecherches = RechercheStage::where('idUPPA',$id)->get();
+            $desRecherches = RechercheStage::where('idUPPA', $id)->get();
 
-            if($desRecherches->isEmpty())
-            {
+            if ($desRecherches->isEmpty()) {
                 return response()->noContent();
             }
-            
+
             return response()->json($desRecherches, 200);
-        }
-        catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
-        {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Aucun étudiant trouvé'
-            ],404);
-        }
-        catch (\Exception $e)
-        {
+            ], 404);
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite',
+                'message' => "Une erreur s'est produite",
                 'erreurs' => $e->getMessage()
-            ],500);
+            ], 500);
         }
     }
 
@@ -169,32 +158,26 @@ class EtudiantController extends Controller
      */
     public function indexFicheDescriptive($id)
     {
-        try
-        {
+        try {
             // Vérifie si l'étudiant existe
             $unEtudiant = Etudiant::findOrFail($id);
 
-            $desFiches = FicheDescriptive::where('idUPPA',$id)->get();
+            $desFiches = FicheDescriptive::where('idUPPA', $id)->get();
 
-            if($desFiches->isEmpty())
-            {
+            if ($desFiches->isEmpty()) {
                 return response()->noContent();
             }
-            
+
             return response()->json($desFiches, 200);
-        }
-        catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
-        {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Aucun étudiant trouvé'
-            ],404);
-        }
-        catch (\Exception $e)
-        {
+            ], 404);
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite',
+                'message' => "Une erreur s'est produite",
                 'erreurs' => $e->getMessage()
-            ],500);
+            ], 500);
         }
     }
 
@@ -209,23 +192,25 @@ class EtudiantController extends Controller
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      * @throws \Exception
      */
-    public function indexParcours($id){
-        try{
+    public function indexParcours($id)
+    {
+        try {
             $unEtudiant = Etudiant::findOrFail($id);
-            $infoParcours = db::table('table_etudiant_parcours_anneeuniv')->where('idUPPA',$id)
-                            ->orderbydesc('idAnneeUniversitaire')->limit(1)->get();
+            $infoParcours = db::table('table_etudiant_parcours_anneeuniv')
+                ->where('idUPPA', $id)
+                ->orderbydesc('idAnneeUniversitaire')
+                ->limit(1)
+                ->get();
             return response()->json($infoParcours, 200);
-        }
-        catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Aucun étudiant trouvé'
-            ],404);
-        }
-        catch(\Exception $e){
+            ], 404);
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite',
+                'message' => "Une erreur s'est produite",
                 'erreurs' => $e->getMessage()
-            ],500);
+            ], 500);
         }
     }
 

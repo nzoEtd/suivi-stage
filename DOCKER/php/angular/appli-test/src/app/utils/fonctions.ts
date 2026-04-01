@@ -7,11 +7,7 @@ import { Staff } from "../models/staff.model";
 import { Student } from "../models/student.model";
 import { buildDate, formatDate, getDateHeure, isSameDay } from "./timeManagement";
 import { CompanyTutor } from "../models/company-tutor.model";
-import { StudentStaffAcademicYearService } from "../services/student-staff-academicYear.service";
 import { Student_TrainingYear_AcademicYear } from "../models/student-trainingYear-academicYear.model";
-import { forkJoin } from "rxjs";
-import { Student_Staff_AcademicYear } from "../models/student-staff-academicYear.model";
-import { AcademicYear } from "../models/academic-year.model";
 import { Student_Staff_AcademicYear_String } from "../models/student-staff-academicYear-string.model";
 import { CreneauDisponible } from "./types";
 import { FormGroup } from "@angular/forms";
@@ -19,16 +15,15 @@ import { FormGroup } from "@angular/forms";
 export async function loadSoutenancesForPlanning(
   planning: Planning,
   allSoutenances: Soutenance[],
-  slots: SlotItem[],
   allStudents: Student[],
   allStaff: Staff[],
   allCompanies: Company[],
   allTutors: CompanyTutor[],
   referents: Student_Staff_AcademicYear_String[],
   trainingAcademicYears: Student_TrainingYear_AcademicYear[],
-  academicYears: AcademicYear[],
   cdRef: ChangeDetectorRef,
 ): Promise<SlotItem[]> {
+  let slots: SlotItem[];
   try {
     console.log("Chargement des soutenances pour le planning:", planning.nom);
     const filteredSoutenances = allSoutenances.filter((s) => {

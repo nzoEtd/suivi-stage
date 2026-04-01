@@ -5,26 +5,21 @@
 
   <div class="searchBarAndfilters">
     <div class="search-container">
-      <input 
+      <input
         type="text"
         [(ngModel)]="searchTerm"
         (input)="onSearchTermChange($event)"
-        placeholder="Rechercher..." 
+        placeholder="Rechercher..."
         class="search-input"
       />
       @if (searchTerm) {
-        <button 
-          (click)="clearSearchTerm()"
-          class="clear-button"
-        >
-          X
-        </button>
+        <button (click)="clearSearchTerm()" class="clear-button">X</button>
       }
     </div>
 
     <div class="filter-buttons">
       @if (!isFactsheetView) {
-        <button 
+        <button
           class="filter-button"
           [class]="currentNbSearchesFilter"
           (click)="toggleNbSearchesSort()"
@@ -32,7 +27,7 @@
           Nombre de recherches
         </button>
 
-        <button 
+        <button
           class="filter-button"
           [class]="currentDateFilter"
           (click)="toggleDateSort()"
@@ -41,7 +36,7 @@
         </button>
       }
 
-      <select 
+      <select
         #statutSelect
         [(ngModel)]="currentStudyYearFilter"
         (change)="setStudyYearFilter(currentStudyYearFilter, statutSelect)"
@@ -53,7 +48,7 @@
         <option value="BUT 3">BUT 3</option>
       </select>
 
-      <select 
+      <select
         #citySelect
         [(ngModel)]="currentTdGroupFilter"
         (change)="setTdGroupFilter(currentTdGroupFilter, citySelect)"
@@ -71,21 +66,48 @@
   <div class="table-view">
     <div class="table-container">
       <table>
+        <caption class="visually-hidden">
+          Liste des fiches des étudiants
+        </caption>
         <thead>
           <tr>
             <th>Étudiant</th>
-            <th>{{ isFactsheetView ? 'Nombre de fiches' : 'Nombre de recherches' }}</th>
-            <th>{{ isFactsheetView ? 'Dernière modification' : 'Dernière recherche' }}</th>
+            <th>
+              {{
+                isFactsheetView ? "Nombre de fiches" : "Nombre de recherches"
+              }}
+            </th>
+            <th>
+              {{
+                isFactsheetView ? "Dernière modification" : "Dernière recherche"
+              }}
+            </th>
             <th>Année formation</th>
             <th>Groupe de TD</th>
           </tr>
         </thead>
         <tbody>
           @for (item of filteredStudentsDatas; track item.student.idUPPA) {
-            <tr (click)="isFactsheetView ? goToStudentFactsheetsManagerView(item.student.idUPPA) : goToStudentDashboardManagerView(item.student.idUPPA)">
-              <td class="firstTd">{{ item.student.prenom }} {{ item.student.nom }}</td>
+            <tr
+              (click)="
+                isFactsheetView
+                  ? goToStudentFactsheetsManagerView(item.student.idUPPA)
+                  : goToStudentDashboardManagerView(item.student.idUPPA)
+              "
+            >
+              <td class="firstTd">
+                {{ item.student.prenom }} {{ item.student.nom }}
+              </td>
               <td>{{ item.countSearches }}</td>
-              <td>{{ item.lastSearchDate ? (item.lastSearchDate | date:'dd/MM/yyyy') : (isFactsheetView ? 'Aucune fiche' : 'Aucune recherche') }}</td>
+              <td>
+                {{
+                  item.lastSearchDate
+                    ? (item.lastSearchDate | date: "dd/MM/yyyy")
+                    : isFactsheetView
+                      ? "Aucune fiche"
+                      : "Aucune recherche"
+                }}
+              </td>
               <td>{{ item.studyYear }}</td>
               <td class="lastTd">{{ item.TdGroup }}</td>
             </tr>
@@ -98,9 +120,13 @@
   <!-- Vue cards pour mobile -->
   <div class="cards-view">
     @for (item of filteredStudentsDatas; track item.student.idUPPA) {
-      <div 
+      <div
         class="search-card"
-        (click)="isFactsheetView ? goToStudentFactsheetsManagerView(item.student.idUPPA) : goToStudentDashboardManagerView(item.student.idUPPA)"
+        (click)="
+          isFactsheetView
+            ? goToStudentFactsheetsManagerView(item.student.idUPPA)
+            : goToStudentDashboardManagerView(item.student.idUPPA)
+        "
       >
         <div class="card-header">
           <h4>{{ item.student.prenom }} {{ item.student.nom }}</h4>
@@ -108,15 +134,27 @@
         </div>
         <div class="card-content">
           <p class="nbSearches">
-            <span class="label">{{ isFactsheetView ? 'Nombre de fiches :' : 'Nombre de recherches :' }}</span> 
+            <span class="label">{{
+              isFactsheetView ? "Nombre de fiches :" : "Nombre de recherches :"
+            }}</span>
             <span>{{ item.countSearches }}</span>
           </p>
           <p class="dateLastSearch">
-            <span class="label">{{ isFactsheetView ? 'Dernière modification :' : 'Dernière recherche :' }}</span> 
-            <span>{{ item.lastSearchDate ? (item.lastSearchDate | date:'dd/MM/yyyy') : (isFactsheetView ? 'Aucune fiche' : 'Aucune recherche') }}</span>
+            <span class="label">{{
+              isFactsheetView
+                ? "Dernière modification :"
+                : "Dernière recherche :"
+            }}</span>
+            <span>{{
+              item.lastSearchDate
+                ? (item.lastSearchDate | date: "dd/MM/yyyy")
+                : isFactsheetView
+                  ? "Aucune fiche"
+                  : "Aucune recherche"
+            }}</span>
           </p>
           <p class="tdGroup">
-            <span class="label">Groupe de TD :</span> 
+            <span class="label">Groupe de TD :</span>
             <span>{{ item.TdGroup }}</span>
           </p>
         </div>

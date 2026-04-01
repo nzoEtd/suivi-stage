@@ -61,13 +61,12 @@ class AnneeFormationController extends Controller
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite',
+                'message' => "Une erreur s'est produite",
                 'exception' => $e->getMessage()
             ], 500);
         }
     }
 
-   
     /**
      * Retourne une année de formation particulière
      *
@@ -90,7 +89,6 @@ class AnneeFormationController extends Controller
             ], 404);
         }
     }
-
 
     /**
      * Modifie une année de formation particulière

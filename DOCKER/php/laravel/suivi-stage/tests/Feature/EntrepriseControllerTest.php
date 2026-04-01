@@ -39,7 +39,7 @@ class EntrepriseControllerTest extends TestCase
         $response = $this->get('/api/entreprises');
 
         $response->assertStatus(200)
-                 ->assertJsonCount($desEntreprises->count());
+            ->assertJsonCount($desEntreprises->count());
     }
 
     /*
@@ -79,7 +79,7 @@ class EntrepriseControllerTest extends TestCase
         $response = $this->postJson('/api/entreprises/create', $donnees);
 
         $response->assertStatus(201)
-                 ->assertJson($donnees);
+            ->assertJson($donnees);
     }
 
     /**
@@ -113,48 +113,33 @@ class EntrepriseControllerTest extends TestCase
         $response = $this->postJson('/api/entreprises/create', $donnees);
 
         $response->assertStatus(422)
-                 ->assertJson(['message' => 'Erreur de validation dans les données']);
+            ->assertJson(['message' => 'Erreur de validation dans les données']);
     }
 
     /**
      * La méthode store va retourner une erreur 500 en cas de QueryException
      *
      * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function test_store_renvoie_une_erreur_de_base_de_donnees()
     {
-        // Mock du modèle RechercheStage pour déclencher une exception
-        $this->mock(\App\Http\Controllers\EntrepriseController::class, function ($mock) {
-            $mock->shouldReceive('store')->andThrow(new \Illuminate\Database\QueryException('Erreur simulée',
-            [],
-            new \Exception('Erreur simulée')
+        \Mockery::mock('alias:App\Models\Entreprise')
+            ->shouldReceive('create')
+            ->andThrow(new \Illuminate\Database\QueryException(
+                'mysql',
+                'insert...',
+                [],
+                new \Exception('Erreur SQL')
             ));
-        });
 
-        $donnees = [
-            'numSIRET' => null,
-            'raisonSociale' => 'TEST API',
-            'typeEtablissement' => null,
-            'adresse' => null,
-            'ville' => null,
-            'codePostal' => null,
-            'pays' => null,
-            'telephone' => null,
-            'codeAPE_NAF' => null,
-            'statutJuridique' => null,
-            'effectif' => null,
-            'nomRepresentant' => null,
-            'prenomRepresentant' => null,
-            'adresseMailRepresentant' => null,
-            'telephoneRepresentant' => null,
-            'fonctionRepresentant' => null,
-            'longitudeAdresse' => null,
-            'latitudeAdresse' => null,
-        ];
+        $donnees = ['raisonSociale' => 'TEST API'];
 
         $response = $this->postJson('/api/entreprises/create', $donnees);
 
-        $response->assertStatus(500);
+        $response->assertStatus(500)
+            ->assertJsonFragment(['message' => 'Erreur dans la base de données']);
     }
 
     /*
@@ -175,7 +160,7 @@ class EntrepriseControllerTest extends TestCase
         $response = $this->get('/api/entreprises/' . $entreprise->idEntreprise);
 
         $response->assertStatus(200)
-                 ->assertJson($entreprise->toArray());
+            ->assertJson($entreprise->toArray());
     }
 
     /**
@@ -196,19 +181,19 @@ class EntrepriseControllerTest extends TestCase
      * La méthode show va retourner une erreur 500 en cas d'exception
      * 
      * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function test_show_retourne_une_erreur_en_cas_d_exception()
     {
-        // Mock du modèle ENTREPRISE pour déclencher une exception
-        $this->mock(\App\Http\Controllers\EntrepriseController::class, function ($mock) {
-            $mock->shouldReceive('show')->andThrow(new \Exception('Erreur simulée'));
-        });
+        \Mockery::mock('alias:App\Models\Entreprise')
+            ->shouldReceive('findOrFail')
+            ->andThrow(new \Exception('Erreur simulée'));
 
-        $entreprise = Entreprise::firstOrFail();
+        $response = $this->get('/api/entreprises/1');
 
-        $response = $this->get('/api/entreprises/' . $entreprise->id);
-
-        $response->assertStatus(500);
+        $response->assertStatus(500)
+            ->assertJsonFragment(['message' => 'Une erreur s\'est produite']);
     }
 
     /*

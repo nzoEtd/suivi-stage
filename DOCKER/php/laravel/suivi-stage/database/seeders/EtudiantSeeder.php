@@ -25,7 +25,7 @@ class EtudiantSeeder extends Seeder
                 'idEntreprise' => 1,
                 'idTuteur' => 1
             ],
-[
+            [
                 'idUPPA' => '610123',
                 'login' => 'lcrussiere',
                 'nom' => 'CRUSSIERE',
@@ -74,7 +74,8 @@ class EtudiantSeeder extends Seeder
                 'idDepartement' => 1,
                 'idEntreprise' => 4,
                 'idTuteur' => 4
-            ],[
+            ],
+            [
                 'idUPPA' => '610459',
                 'login' => 'gvernis',
                 'nom' => 'VERNIS',
@@ -154,7 +155,7 @@ class EtudiantSeeder extends Seeder
                 'idEntreprise' => 3,
                 'idTuteur' => 4
             ],
-        ...array_map(function ($i) {
+            ...array_map(function ($i) {
                 return [
                     'idUPPA' => 700000 + $i,
                     'login' => 'etudiant' . $i,
@@ -162,8 +163,8 @@ class EtudiantSeeder extends Seeder
                     'prenom' => 'Prenom' . $i,
                     'adresseMail' => 'etudiant' . $i . '@example.com',
                     'idDepartement' => 1,
-                    'idEntreprise' => rand(1, 7),
-                    'idTuteur' => rand(1, 7),
+                    'idEntreprise' => random_int(1, 7),
+                    'idTuteur' => random_int(1, 7),
                 ];
             }, range(1, 50)),
         ]);

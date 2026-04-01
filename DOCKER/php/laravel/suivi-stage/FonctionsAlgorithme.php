@@ -11,7 +11,7 @@ class FonctionsAlgorithme
 
     public static function getProfesseursMatrix(PDO $db): array
     {
-        $query = "SELECT
+        $query = 'SELECT
             personnels.idPersonnel,
             personnels.nom,
             personnels.prenom,
@@ -26,23 +26,18 @@ class FonctionsAlgorithme
         WHERE personnels.roles = :role
         GROUP BY personnels.idPersonnel
         HAVING personnels.quotaEtudiant > COUNT(etudiants.idUPPA) AND (personnels.quotaEtudiant - totalEtudiants) > 0
-        ORDER BY personnels.quotaEtudiant DESC";
+        ORDER BY personnels.quotaEtudiant DESC';
 
         $stmt = $db->prepare($query);
         $stmt->execute(['role' => 'Enseignant']);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        //echo "La matrice des professeurs contient uniquement les entrées valides :\n";
-        foreach ($rows as $row) {
-            // print_r($row);
-        }
 
         return $rows;
     }
 
     public static function getEtudiantData(string $idUPPA, string $idFicheDescriptive, PDO $db): array
     {
-        $query = "SELECT etudiants.idUPPA,
+        $query = 'SELECT etudiants.idUPPA,
                     etudiants.nom,
                     etudiants.prenom,
                     fiche_descriptives.longitudeStage,
@@ -57,7 +52,7 @@ class FonctionsAlgorithme
             JOIN fiche_descriptives ON entreprises.idEntreprise = fiche_descriptives.idEntreprise
             JOIN etudiants ON fiche_descriptives.idUPPA = etudiants.idUPPA
             WHERE etudiants.idUPPA = :idUPPA
-            AND fiche_descriptives.idFicheDescriptive = :idFicheDescriptive";
+            AND fiche_descriptives.idFicheDescriptive = :idFicheDescriptive';
 
         $stmt = $db->prepare($query);
         $stmt->execute([
@@ -67,7 +62,6 @@ class FonctionsAlgorithme
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (empty($rows)) {
-            // echo "Aucune donnée trouvée pour l'étudiant avec idUPPA=$idUPPA et idFicheDescriptive=$idFicheDescriptive\n";
             return [];
         }
 
@@ -82,7 +76,7 @@ class FonctionsAlgorithme
             ]);
 
             // Supprimer les mentions "CS", "Cedex" etc.
-            $adresseElements = array_map(function($element) {
+            $adresseElements = array_map(function ($element) {
                 return preg_replace([
                     '/\bCS\b.*/',
                     '/\bCedex\b.*/i',
@@ -93,60 +87,52 @@ class FonctionsAlgorithme
             // Construire l'adresse finale
             $adresse = trim(implode(', ', $adresseElements));
 
-            // echo "Recherche des coordonnées GPS pour l'adresse formatée : $adresse\n";
-            
             // Récupérer les coordonnées via l'API
             $coordinates = self::getGpsCoordinates($adresse);
-            
+
             if ($coordinates) {
                 // Mettre à jour la fiche descriptive avec les nouvelles coordonnées
-                $updateQuery = "UPDATE fiche_descriptives
+                $updateQuery = 'UPDATE fiche_descriptives
                             SET longitudeStage = :lng,
                                 latitudeStage = :lat
-                            WHERE idFicheDescriptive = :idFiche";
-                
+                            WHERE idFicheDescriptive = :idFiche';
+
                 $updateStmt = $db->prepare($updateQuery);
                 $updateStmt->execute([
                     'lng' => $coordinates['lng'],
                     'lat' => $coordinates['lat'],
                     'idFiche' => $rows[0]['idFicheDescriptive']
                 ]);
-                
+
                 // Mettre à jour les données récupérées
                 $rows[0]['longitudeStage'] = $coordinates['lng'];
                 $rows[0]['latitudeStage'] = $coordinates['lat'];
-                
-                // echo "Coordonnées GPS mises à jour en base de données\n";
-            } else {
-                // echo "Impossible de récupérer les coordonnées GPS pour cette adresse\n";
             }
         }
 
-        // echo "Données de l'étudiant récupérées avec succès\n";
-        // print_r($rows);
         return $rows;
     }
 
     public static function calculateDistance(array $coordsProf, array $coordsEtudiant): float
     {
-        $lat1 = deg2rad((float)$coordsProf['lat']);
-        $lon1 = deg2rad((float)$coordsProf['lng']);
-        $lat2 = deg2rad((float)$coordsEtudiant['lat']);
-        $lon2 = deg2rad((float)$coordsEtudiant['lng']);
+        $lat1 = deg2rad((float) $coordsProf['lat']);
+        $lon1 = deg2rad((float) $coordsProf['lng']);
+        $lat2 = deg2rad((float) $coordsEtudiant['lat']);
+        $lon2 = deg2rad((float) $coordsEtudiant['lng']);
 
         $dlat = $lat2 - $lat1;
         $dlon = $lon2 - $lon1;
 
-        $a = sin($dlat/2) * sin($dlat/2) +
-             cos($lat1) * cos($lat2) *
-             sin($dlon/2) * sin($dlon/2);
-        
-        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
-        
+        $a = sin($dlat / 2) * sin($dlat / 2)
+            + cos($lat1) * cos($lat2)
+                * sin($dlon / 2) * sin($dlon / 2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
         return self::RAYON_TERRE * $c;
     }
 
-    public static function isEtudiantPresentVille(string $codePostal, string $idUPPA, PDO $db): bool 
+    public static function isEtudiantPresentVille(string $codePostal, string $idUPPA, PDO $db): bool
     {
         $query = "SELECT 
                 entreprises.idEntreprise, 
@@ -175,18 +161,13 @@ class FonctionsAlgorithme
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         if (!empty($results)) {
-            // echo "Étudiants déjà présents dans la ville (code postal: $codePostal):\n";
-            foreach ($results as $result) {
-                // echo "- {$result['nom']} chez {$result['raisonSociale']}\n";
-            }
             return true;
         }
 
-        // echo "Aucun étudiant n'effectue de stage dans cette ville (code postal: $codePostal)\n";
         return false;
     }
 
-    public static function isEtudiantPresentEntreprise(string $idEntreprise, string $idUPPA, PDO $db): array 
+    public static function isEtudiantPresentEntreprise(string $idEntreprise, string $idUPPA, PDO $db): array
     {
         $query = "SELECT etudiants.nom, etudiants.idUPPA
             FROM etudiants
@@ -204,14 +185,12 @@ class FonctionsAlgorithme
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($result) {
-            // echo "Un étudiant ({$result['nom']}) est déjà présent dans cette entreprise\n";
             return [
                 'present' => true,
                 'idUPPA' => $result['idUPPA']
             ];
         }
 
-        // echo "Aucun étudiant n'effectue de stage dans cette entreprise\n";
         return ['present' => false];
     }
 
@@ -240,24 +219,20 @@ class FonctionsAlgorithme
 
     public static function getProfesseurAssocie(string $idUPPA, PDO $db): ?string
     {
-        // echo "Recherche du professeur associé à l'étudiant $idUPPA\n";
-
-        $query = "SELECT personnels.nom, personnels.idPersonnel
+        $query = 'SELECT personnels.nom, personnels.idPersonnel
                 FROM personnels
                 JOIN table_personnel_etudiant_anneeuniv ON personnels.idPersonnel = table_personnel_etudiant_anneeuniv.idPersonnel
                 JOIN etudiants ON table_personnel_etudiant_anneeuniv.idUPPA = etudiants.idUPPA
-                WHERE etudiants.idUPPA = :idUPPA";
+                WHERE etudiants.idUPPA = :idUPPA';
 
         $stmt = $db->prepare($query);
         $stmt->execute(['idUPPA' => $idUPPA]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($result) {
-            // echo "Professeur associé trouvé : {$result['nom']} (ID: {$result['idPersonnel']})\n";
             return $result['nom'];
         }
 
-        // echo "Aucun professeur associé trouvé pour l'étudiant $idUPPA\n";
         return null;
     }
 
@@ -268,9 +243,9 @@ class FonctionsAlgorithme
             'format' => 'json',
             'limit' => 1
         ];
-        
+
         $url = self::NOMINATIM_URL . '?' . http_build_query($params);
-        
+
         $opts = [
             'http' => [
                 'method' => 'GET',
@@ -280,30 +255,27 @@ class FonctionsAlgorithme
                 ]
             ]
         ];
-        
+
         $context = stream_context_create($opts);
-        
+
         try {
             $response = file_get_contents($url, false, $context);
-            
+
             if ($response === false) {
-                // echo "Erreur lors de la requête à l'API de géocodage\n";
                 return null;
             }
-            
+
             $data = json_decode($response, true);
-            
+
             if (empty($data)) {
-                // echo "Aucun résultat trouvé pour l'adresse : $adresse\n";
                 return null;
             }
-            
+
             return [
                 'lat' => $data[0]['lat'],
                 'lng' => $data[0]['lon']
             ];
         } catch (\Exception $e) {
-            // echo "Erreur lors de la récupération des coordonnées : " . $e->getMessage() . "\n";
             return null;
         }
     }

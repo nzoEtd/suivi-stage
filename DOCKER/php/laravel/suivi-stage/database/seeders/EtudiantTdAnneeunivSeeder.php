@@ -23,11 +23,10 @@ class EtudiantTdAnneeunivSeeder extends Seeder
             $insertData[] = [
                 'idUPPA' => $idUPPA,
                 'idAnneeUniversitaire' => 3,
-                'idTD' => rand(1, 3), 
+                'idTD' => random_int(1, 3),
             ];
         }
 
         DB::table('table_etudiant_td_anneeuniv')->insert($insertData);
     }
-    
 }

@@ -25,17 +25,16 @@ class CreateSoutenancesTable extends Migration
 
             // Clés étrangères
             $table->unsignedInteger('nomSalle');
-            $table->foreign('nomSalle')->references('nomSalle')->on('salles');
+            $table->foreign('nomSalle')->references('nomSalle')->on('salles')->onDelete('cascade');
 
             $table->unsignedInteger('idPlanning');
-            $table->foreign('idPlanning')->references('idPlanning')->on('plannings');
+            $table->foreign('idPlanning')->references('idPlanning')->on('plannings')->onDelete('cascade');
 
             $table->string('idUPPA');
-            $table->foreign('idUPPA')->references('idUPPA')->on('etudiants');
+            $table->foreign('idUPPA')->references('idUPPA')->on('etudiants')->onDelete('cascade');
 
             $table->unsignedInteger('idLecteur');
-            $table->foreign('idLecteur')->references('idPersonnel')->on('personnels');
-
+            $table->foreign('idLecteur')->references('idPersonnel')->on('personnels')->onDelete('cascade');
         });
     }
 
