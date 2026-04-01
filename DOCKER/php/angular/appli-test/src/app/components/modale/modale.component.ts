@@ -8,10 +8,10 @@ import { CommonModule } from "@angular/common";
   styleUrls: ['./modale.component.css']
 })
 export class ModaleComponent {
-
+  @Input() visible = false;
   @Input() title: string = '';
   @Input() hasValue: boolean = true;
-  // @Input() submitLabel: string = 'Valider';
+  @Input() submitLabel: string = 'Valider';
 
   @Output() submit = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();

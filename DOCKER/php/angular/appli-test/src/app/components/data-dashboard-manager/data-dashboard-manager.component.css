@@ -43,7 +43,12 @@
     color: #a40a0a;
 }
 
-.categories-gestion
+.categories-gestion {
+    height: 50vh;
+    align-content: center;
+}
+
+.categories-gestion__content
 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
