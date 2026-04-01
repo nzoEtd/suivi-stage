@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
+    "name": "nzoetd/suivi-stage",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "The Laravel backend for the suivi-stage project.",
     "keywords": [
         "framework",
         "laravel"

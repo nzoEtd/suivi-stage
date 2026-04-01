@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\FicheDescriptive;
+use App\Models\FicheDescriptive;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Exception;
@@ -13,6 +14,7 @@ class FicheDescriptiveControllerTest extends TestCase
 {
     /**
      * Recréer les tables avec les seeders
+     *
      *
      * @return void
      */
@@ -37,6 +39,7 @@ class FicheDescriptiveControllerTest extends TestCase
 
     /**
      * La méthode update doit retourner une confirmation 200 et les données de la fiche descriptive
+     *
      *
      * @return void
      */
@@ -90,6 +93,7 @@ class FicheDescriptiveControllerTest extends TestCase
 
     /**
      * La méthode update doit retourner une erreur 404 car la fiche descriptive n'existe pas
+     *
      *
      * @return void
      */
@@ -162,6 +166,7 @@ class FicheDescriptiveControllerTest extends TestCase
 
     /**
      * La méthode index doit retourner une confirmation 200 et la liste de toutes les fiches descriptives
+     *
      *
      * @return void
      */
@@ -243,6 +248,8 @@ class FicheDescriptiveControllerTest extends TestCase
 
         $response = $this->get('/api/fiche-descriptive/' . $idFiche);
 
+        $response = $this->get('/api/fiche-descriptive/' . $idFiche);
+
         $response
             ->assertStatus(404)
             ->assertJson(['message' => 'Fiche descriptive non trouvée']);
@@ -292,6 +299,7 @@ class FicheDescriptiveControllerTest extends TestCase
     /**
      * La méthode destroy doit retourner une erreur 404 si la fiche descriptive n'a pas été trouvée
      *
+     *
      * @return void
      */
     public function test_destroy_renvoie_une_erreur_non_trouvee_en_cas_de_fiche_non_trouvee()
@@ -300,6 +308,9 @@ class FicheDescriptiveControllerTest extends TestCase
 
         $response = $this->delete('/api/fiche-descriptive/delete/' . $idFiche);
 
+        $response
+            ->assertStatus(404)
+            ->assertJson(['message' => 'Aucune fiche descriptive trouvée']);
         $response
             ->assertStatus(404)
             ->assertJson(['message' => 'Aucune fiche descriptive trouvée']);

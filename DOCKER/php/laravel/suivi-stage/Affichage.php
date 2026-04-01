@@ -2,7 +2,7 @@
 
 namespace App\AlgorithmeAttribution;
 
-class Affichage 
+class Affichage
 {
     /**
      * Calcule la somme des valeurs pour chaque professeur en excluant certaines colonnes,
@@ -11,7 +11,7 @@ class Affichage
      * @param array $data Tableau associatif contenant les données des professeurs
      * @return array Tableau trié par la somme des critères (ordre décroissant)
      */
-    public static function maxProf(array $data): array 
+    public static function maxProf(array $data): array
     {
         // Parcourir chaque professeur
         foreach ($data as $nom => &$criteres) {
@@ -27,15 +27,14 @@ class Affichage
                 $criteres['SOMME'] = $somme;
             }
         }
-        unset($criteres); // Détacher la référence
+        unset($criteres);  // Détacher la référence
 
         // Trier le tableau par la somme en ordre décroissant
-        uasort($data, function($a, $b) {
+        uasort($data, function ($a, $b) {
             return $b['SOMME'] <=> $a['SOMME'];
         });
 
-
-        $result = array_map(function($row) {
+        $result = array_map(function ($row) {
             return $row;
         }, $data);
 
@@ -49,7 +48,7 @@ class Affichage
      * @param array $criteres Liste des critères à évaluer
      * @return array Matrice remplie avec des valeurs aléatoires
      */
-    public static function aleatoire(array $matrice, array $criteres): array 
+    public static function aleatoire(array $matrice, array $criteres): array
     {
         foreach ($matrice as &$prof) {
             $somme = 0;
@@ -62,7 +61,7 @@ class Affichage
             }
             $prof['SOMME'] = $somme;
         }
-        unset($prof); // Détacher la référence
+        unset($prof);  // Détacher la référence
 
         return $matrice;
     }

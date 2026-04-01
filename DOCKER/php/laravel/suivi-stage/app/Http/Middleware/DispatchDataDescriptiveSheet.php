@@ -2,19 +2,19 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use App\Models\Etudiant;
-use App\Models\TuteurEntreprise;
-use App\Models\Entreprise;
-use App\Models\FicheDescriptive;
-use App\Http\Controllers\EtudiantController;
 use App\Http\Controllers\EntrepriseController;
+use App\Http\Controllers\EtudiantController;
 use App\Http\Controllers\FicheDescriptiveController;
 use App\Http\Controllers\TuteurEntrepriseController;
-use Illuminate\Support\Facades\Log;
+use App\Models\Entreprise;
+use App\Models\Etudiant;
+use App\Models\FicheDescriptive;
+use App\Models\TuteurEntreprise;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response;
+use Closure;
 
 class DispatchDataDescriptiveSheet
 {
@@ -27,7 +27,6 @@ class DispatchDataDescriptiveSheet
         'adresseEtudiant' => 'adresse',
         'codePostalEtudiant' => 'codePostal',
         'villeEtudiant' => 'ville',
-
         // Entreprise
         'raisonSocialeEntreprise' => 'raisonSociale',
         'adresseEntreprise' => 'adresse',
@@ -40,21 +39,18 @@ class DispatchDataDescriptiveSheet
         'statutJuridiqueEntreprise' => 'statutJuridique',
         'effectifEntreprise' => 'effectif',
         'typeEtablissementEntreprise' => 'typeEtablissement',
-
         // Représentant de l'entreprise
         'nomRepresentantEntreprise' => 'nomRepresentant',
         'prenomRepresentantEntreprise' => 'prenomRepresentant',
         'telephoneRepresentantEntreprise' => 'telephoneRepresentant',
         'adresseMailRepresentantEntreprise' => 'adresseMailRepresentant',
         'fonctionRepresentantEntreprise' => 'fonctionRepresentant',
-
         // Tuteur Entreprise
         'nomTuteurEntreprise' => 'nom',
         'prenomTuteurEntreprise' => 'prenom',
         'telephoneTuteurEntreprise' => 'telephone',
         'adresseMailTuteurEntreprise' => 'adresseMail',
         'fonctionTuteurEntreprise' => 'fonction',
-
         // Fiche Descriptive
         'statutFicheDescriptive' => 'statut',
         'serviceEntrepriseFicheDescriptive' => 'serviceEntreprise',
@@ -88,8 +84,7 @@ class DispatchDataDescriptiveSheet
     public function handle(Request $request, Closure $next): Response
     {
         try {
-
-            if ($request->getContent() != "" && is_null(json_decode($request->getContent(), true))) {
+            if ($request->getContent() != '' && is_null(json_decode($request->getContent(), true))) {
                 return response()->json(['message' => 'Le format JSON est invalide'], 400);
             }
 
@@ -110,9 +105,8 @@ class DispatchDataDescriptiveSheet
 
             return $next($request);
         } catch (\Exception $e) {
-
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'exception' => $e->getMessage()
             ], 500);
         }
@@ -120,7 +114,7 @@ class DispatchDataDescriptiveSheet
 
     /**
      * Création d'une fiche descriptive.
-     * 
+     *
      * @param Request $request
      * @return Response
      */
@@ -169,7 +163,7 @@ class DispatchDataDescriptiveSheet
             if ($entreprise) {
                 // L'entreprise existe déjà, donc tu récupères son ID pour l'utiliser plus tard
                 $triData['tuteurEntreprise']['idEntreprise'] = $entreprise->idEntreprise;
-                Log::debug("Entreprise existante - ID : " . $entreprise->idEntreprise);
+                Log::debug('Entreprise existante - ID : ' . $entreprise->idEntreprise);
 
                 // Appel de la méthode show pour récupérer les données de l'entreprise existante
                 $entrepriseController = new EntrepriseController();
@@ -179,12 +173,12 @@ class DispatchDataDescriptiveSheet
                 $entrepriseData = $response->getData();
                 // Tu peux ensuite les utiliser comme bon te semble
             } else {
-                Log::error("Entreprise non trouvée avec le SIRET : " . $numSIRET . " ou la raison sociale : " . $raisonSociale);
+                Log::error('Entreprise non trouvée avec le SIRET : ' . $numSIRET . ' ou la raison sociale : ' . $raisonSociale);
                 return response()->json(['message' => "L'entreprise avec ce SIRET ou cette raison sociale n'existe pas"], 404);
             }
         } else {
-            Log::error("Numéro SIRET et raison sociale manquants");
-            return response()->json(['message' => "Le numéro SIRET ou la raison sociale est obligatoire"], 400);
+            Log::error('Numéro SIRET et raison sociale manquants');
+            return response()->json(['message' => 'Le numéro SIRET ou la raison sociale est obligatoire'], 400);
         }
         // **5️⃣ Création du Tuteur Entreprise s'il n'existe pas**
         if (!empty($triData['tuteurEntreprise'])) {
@@ -218,13 +212,12 @@ class DispatchDataDescriptiveSheet
 
     /**
      * Mise à jour de la fiche descriptive.
-     * 
+     *
      * @param Request $request
      * @param int $id
-     * 
+     *
      * @return Response
      */
-
     public function handleSheetUpdate(Request $request, $id)
     {
         // **1️⃣ Récupération de la fiche descriptive**
@@ -279,7 +272,7 @@ class DispatchDataDescriptiveSheet
             if ($entreprise) {
                 $entreprise->update($validatedData['entreprise']);
             } else {
-                \Log::error("Entreprise non trouvée pour ID: " . $idEntreprise);
+                \Log::error('Entreprise non trouvée pour ID: ' . $idEntreprise);
             }
         }
 
@@ -290,7 +283,7 @@ class DispatchDataDescriptiveSheet
             if ($tuteur) {
                 $tuteur->update($validatedData['tuteurEntreprise']);
             } else {
-                \Log::error("Tuteur entreprise non trouvé pour ID: " . $idTuteurEntreprise);
+                \Log::error('Tuteur entreprise non trouvé pour ID: ' . $idTuteurEntreprise);
             }
         }
 
@@ -305,14 +298,14 @@ class DispatchDataDescriptiveSheet
     /**
      * Récupération d'une fiche descriptive.
      * Envoie de la fiche descriptive au front pour affichage.
-     * 
+     *
      * @param Request $request
      * @return Response
      */
     public function handleSheetGet(Request $request)
     {
         // Logique pour récupérer ou manipuler les données
-        $id = $request->route('id'); // Vous pouvez récupérer l'ID de la route
+        $id = $request->route('id');  // Vous pouvez récupérer l'ID de la route
 
         // Exemple : récupérez les données d'une fiche descriptive, d'un tuteur, ou d'une entreprise
         $ficheDescriptive = FicheDescriptive::find($id);
@@ -339,7 +332,7 @@ class DispatchDataDescriptiveSheet
 
         // Construire le tableau des données à renvoyer
         $data = [
-            //Informations Fiche Descriptive
+            // Informations Fiche Descriptive
             'idFicheDescriptive' => [
                 'value' => $ficheDescriptive->idFicheDescriptive,
                 'type' => 'ficheDescriptive',
@@ -464,7 +457,7 @@ class DispatchDataDescriptiveSheet
                 'value' => $ficheDescriptive->idTuteurEntreprise,
                 'type' => 'ficheDescriptive',
             ],
-            //Informations étudiant 
+            // Informations étudiant
             'idUPPA' => [
                 'value' => $etudiant->idUPPA,
                 'type' => 'etudiant',
@@ -481,7 +474,6 @@ class DispatchDataDescriptiveSheet
                 'value' => $etudiant->telephone,
                 'type' => 'etudiant',
             ],
-
             // Informations du tuteur
             'nomTuteurEntreprise' => [
                 'value' => $tuteur->nom,
@@ -503,7 +495,6 @@ class DispatchDataDescriptiveSheet
                 'value' => $tuteur->fonction,
                 'type' => 'tuteurEntreprise',
             ],
-
             // Informations de l'entreprise
             'numSIRETEntreprise' => [
                 'value' => $entreprise->numSIRET,
@@ -569,7 +560,6 @@ class DispatchDataDescriptiveSheet
                 'value' => $entreprise->fonctionRepresentant,
                 'type' => 'entreprise',
             ],
-
         ];
 
         // Retourner la réponse JSON

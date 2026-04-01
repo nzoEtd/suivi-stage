@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { environment } from "../../environments/environment";
-import { Planning, PlanningCreate } from "../models/planning.model";
+import { Planning, PlanningCreate, PlanningUpdate } from "../models/planning.model";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Observable, catchError, tap, of } from "rxjs";
 import { Salle } from "../models/salle.model";
@@ -24,7 +24,6 @@ export class PlanningService {
     return this.http
       .get<Planning[]>(`${this.apiUrl}/api/planning`, { params })
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, undefined))
       );
   }
@@ -43,7 +42,6 @@ export class PlanningService {
     return this.http
       .get<Planning>(`${this.apiUrl}/api/planning/${id}`, { params })
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, undefined))
       );
   }
@@ -88,16 +86,16 @@ export class PlanningService {
         httpOptions
       )
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, null))
       );
   }
 
   //Mise à jour d'un planning
-  updatePlanning(planning: Planning): Observable<null> {
+  updatePlanning(planning: Planning | PlanningUpdate): Observable<null> {
     const httpOptions = {
       headers: new HttpHeaders({ "Content-type": "application/json" }),
     };
+    console.log("le planning à modifier :", planning)
 
     return this.http
       .put(
@@ -106,7 +104,6 @@ export class PlanningService {
         httpOptions
       )
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, null))
       );
   }
@@ -116,14 +113,8 @@ export class PlanningService {
     return this.http
       .delete(`${this.apiUrl}/api/planning/delete/${planning.idPlanning}`)
       .pipe(
-        tap((response) => this.log(response)),
         catchError((error) => this.handleError(error, null))
       );
-  }
-
-  //Log la réponse de l'API
-  private log(response: any) {
-    console.table(response);
   }
 
   //Retourne l'erreur en cas de problème avec l'API

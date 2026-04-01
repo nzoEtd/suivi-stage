@@ -23,7 +23,6 @@ export class InternshipSearchService {
     }
 
     return this.http.get<InternshipSearch[]>(`${this.apiUrl}/api/recherches-stages`, {params}).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, undefined))
     );
   }
@@ -37,7 +36,6 @@ export class InternshipSearchService {
     }
 
     return this.http.get<InternshipSearch>(`${this.apiUrl}/api/recherches-stages/${idSearch}`, {params}).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, undefined))
     );
   }
@@ -51,7 +49,6 @@ export class InternshipSearchService {
     }
 
     return this.http.get<InternshipSearch[]>(`${this.apiUrl}/api/etudiants/${studentId}/recherches-stages`, {params}).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, undefined))
     );
   }
@@ -64,7 +61,6 @@ export class InternshipSearchService {
 
 
     return this.http.post<InternshipSearch>(`${this.apiUrl}/api/recherches-stages/create`, search, httpOptions).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );
   }
@@ -76,7 +72,6 @@ export class InternshipSearchService {
     };
 
     return this.http.put(`${this.apiUrl}/api/recherches-stages/update/${search.idRecherche}`, search, httpOptions).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );
   }
@@ -84,15 +79,8 @@ export class InternshipSearchService {
   //Supression d'une recherche de stage
   deleteSearch(search: InternshipSearch): Observable<null> {
     return this.http.delete(`${this.apiUrl}/api/recherches-stages/delete/${search.idRecherche}`).pipe(
-      tap(() => this.searchDeletedSubject.next()),
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );
-  }
-
-  //Log la réponse de l'API
-  private log(response: any) {
-    console.table(response);
   }
 
   //Retourne l'erreur en cas de problème avec l'API

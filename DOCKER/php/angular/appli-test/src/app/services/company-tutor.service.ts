@@ -20,7 +20,6 @@ export class CompanyTutorService {
     }
 
     return this.http.get<CompanyTutor[]>(`${this.apiUrl}/api/tuteur-entreprise`, {params}).pipe(
-        tap(response => this.log(response)),
         catchError(error => this.handleError(error, []))
     );
     }
@@ -33,14 +32,8 @@ export class CompanyTutorService {
     }
 
     return this.http.get<CompanyTutor>(`${this.apiUrl}/api/tuteur-entreprise/${idCompanyTutor}`, {params}).pipe(
-        tap(response => this.log(response)),
         catchError((error) => this.handleError(error, undefined))
     );
-    }
-
-    //Log la réponse de l'API
-    private log(response: any) {
-    console.table(response);
     }
 
     //Retourne l'erreur en cas de problème avec l'API

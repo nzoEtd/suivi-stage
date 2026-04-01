@@ -1,11 +1,15 @@
 <div class="slot"
     [style.top.%]="slot.topPercent"
-    (click)="onSlotClick()">
-    <!-- [style.height.%]="slot.heightPercent" -->
+    (click)="onSlotClick()"
+    [style.background-color]="getBackgroundColor(slot.idReferent)"
+    [style.color]="getTextColor(slot.idReferent)">
 
-    <b>{{ slot.dateDebut | date:'HH:mm' }} - {{ slot.dateFin | date:'HH:mm' }}</b>
+    <div class="slot-header">
+        <b>{{ slot.dateDebut ? (slot.dateDebut | date:'HH:mm') : getDurationMinutes(slot.duree) }}{{ slot.dateFin ? ' - ' : '' }}{{ slot.dateFin ? (slot.dateFin | date:'HH:mm') : '' }}</b>
+        <b>{{slot.tierTemps ? 'TT' : ''}}</b>
+    </div>
     <p><b>Etudiant :</b> {{slot.etudiant}}</p>
     <p><b>Référent :</b> {{slot.referent}}</p>
     <p><b>Entreprise :</b> {{slot.entreprise}}</p>
-    <p><b>Lecteur :</b> {{slot.lecteur}}</p>
+    <p><b>Lecteur :</b> {{slot.lecteur ? slot.lecteur : '...'}}</p>
 </div>

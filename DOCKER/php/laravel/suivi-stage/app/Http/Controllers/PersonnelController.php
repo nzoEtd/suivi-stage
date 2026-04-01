@@ -59,20 +59,19 @@ class PersonnelController extends Controller
     {
         try {
             $donneesValidees = $request->validate([
-                'login'             => 'bail|required|string|max:50',
-                'roles'             => 'bail|required|string|in:Gestionnaire,Enseignant',
-                'nom'               => 'bail|required|string|max:50',
-                'prenom'            => 'bail|required|string|max:50',
-                'adresse'           => 'nullable|string|max:100',
-                'ville'             => 'nullable|string|max:50',
-                'codePostal'        => ['nullable', 'string', 'regex:/^[0-9]{5}$/'],
-                'telephone'         => ['nullable', 'string', 'regex:/^(\+33|0)\d{9}$/m'],
-                'adresseMail'       => 'bail|required|string|email|max:50',
-                'longitudeAdresse'  => 'nullable|string|max:20',
-                'latitudeAdresse'   => 'nullable|string|max:20',
-                'quotaEtudiant'     => 'required|integer',
+                'login' => 'bail|required|string|max:50',
+                'roles' => 'bail|required|string|in:Gestionnaire,Enseignant',
+                'nom' => 'bail|required|string|max:50',
+                'prenom' => 'bail|required|string|max:50',
+                'adresse' => 'nullable|string|max:100',
+                'ville' => 'nullable|string|max:50',
+                'codePostal' => ['nullable', 'string', 'regex:/^[0-9]{5}$/'],
+                'telephone' => ['nullable', 'string', 'regex:/^(\+33|0)\d{9}$/m'],
+                'adresseMail' => 'bail|required|string|email|max:50',
+                'longitudeAdresse' => 'nullable|string|max:20',
+                'latitudeAdresse' => 'nullable|string|max:20',
+                'quotaEtudiant' => 'required|integer',
                 'estTechnique' => 'bail|nullable|boolean',
-
             ]);
 
             $unPersonnel = Personnel::create($donneesValidees);
@@ -85,7 +84,7 @@ class PersonnelController extends Controller
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'exception' => $e->getMessage()
             ], 500);
         }
@@ -114,7 +113,7 @@ class PersonnelController extends Controller
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'exception' => $e->getMessage()
             ], 500);
         }
@@ -139,20 +138,19 @@ class PersonnelController extends Controller
     {
         try {
             $donneesValidees = $request->validate([
-                'login'             => 'bail|required|string|max:50',
-                'roles'             => 'bail|required|string|in:Gestionnaire,Enseignant',
-                'nom'               => 'bail|required|string|max:50',
-                'prenom'            => 'bail|required|string|max:50',
-                'adresse'           => 'nullable|string|max:100',
-                'ville'             => 'nullable|string|max:50',
-                'codePostal'        => ['nullable', 'string', 'regex:/^[0-9]{5}$/'],
-                'telephone'         => ['nullable', 'string', 'regex:/^(\+33|0)\d{9}$/m'],
-                'adresseMail'       => 'bail|required|string|email|max:50',
-                'longitudeAdresse'  => 'nullable|string|max:20',
-                'latitudeAdresse'   => 'nullable|string|max:20',
-                'quotaEtudiant'     => 'required|integer',
+                'login' => 'bail|required|string|max:50',
+                'roles' => 'bail|required|string|in:Gestionnaire,Enseignant',
+                'nom' => 'bail|required|string|max:50',
+                'prenom' => 'bail|required|string|max:50',
+                'adresse' => 'nullable|string|max:100',
+                'ville' => 'nullable|string|max:50',
+                'codePostal' => ['nullable', 'string', 'regex:/^[0-9]{5}$/'],
+                'telephone' => ['nullable', 'string', 'regex:/^(\+33|0)\d{9}$/m'],
+                'adresseMail' => 'bail|required|string|email|max:50',
+                'longitudeAdresse' => 'nullable|string|max:20',
+                'latitudeAdresse' => 'nullable|string|max:20',
+                'quotaEtudiant' => 'required|integer',
                 'estTechnique' => 'bail|nullable|boolean',
-
             ]);
 
             $unPersonnel = Personnel::findOrFail($id);
@@ -170,7 +168,7 @@ class PersonnelController extends Controller
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'exception' => $e->getMessage()
             ], 500);
         }
@@ -203,7 +201,7 @@ class PersonnelController extends Controller
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Une erreur s\'est produite :',
+                'message' => "Une erreur s'est produite :",
                 'exception' => $e->getMessage()
             ], 500);
         }

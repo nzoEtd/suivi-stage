@@ -39,3 +39,14 @@ export class Soutenance {
   idLecteur: number| null;
   idPlanning: number| null;
 }
+
+export interface SoutenanceUpdate {
+  idSoutenance: number;
+  date: string | null;
+  nomSalle: number | null;
+  heureDebut: string| null;
+  heureFin: string| null;
+  idUPPA: string| null;
+  idLecteur: number| null;
+  idPlanning: number| null;
+}

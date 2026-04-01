@@ -19,7 +19,7 @@ class CreateTPSTable extends Migration
             $table->tinyIncrements('idTP');
 
             // Attributs
-            $table->string('libelle',4);
+            $table->string('libelle', 4);
         });
     }
 

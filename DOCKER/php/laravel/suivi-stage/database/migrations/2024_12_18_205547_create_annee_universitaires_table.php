@@ -17,9 +17,9 @@ class CreateAnneeUniversitairesTable extends Migration
             $table->engine = 'InnoDB';
             // Clé primaire
             $table->increments('idAnneeUniversitaire');
-            
+
             // Attributs
-            $table->string('libelle',10);
+            $table->string('libelle', 10);
         });
     }
 

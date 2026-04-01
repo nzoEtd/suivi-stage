@@ -5,18 +5,12 @@
       }
       @else{
         <app-add-update-schedule
-            [isEditMode]="true"
-            [planning]="planning"
-            [slots]="slots"
-            [salles]="sallesDispo"
-            [jours]="jours"></app-add-update-schedule>
-            <!-- (editSlot)="openEditModal($event)" -->
+          [isEditMode]="true"
+          [planning]="planning"
+          [slots]="slots"
+          [salles]="sallesDispo"
+          [jours]="jours"
+        ></app-add-update-schedule>
       }
     </div>
   </div>
-
-  <!-- <app-modale-soutenance
-    *ngIf="isEditModalOpen"
-    (cancel)="isEditModalOpen = false"/> -->
-    <!-- [soutenance]="selectedSoutenance"
-    (save)="onSoutenanceSaved($event)" -->

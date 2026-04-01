@@ -4,3 +4,5 @@
 *.env
 mysql_data*
 .DS_STORE
+/DOCKER/.scannerwork
+.scannerwork

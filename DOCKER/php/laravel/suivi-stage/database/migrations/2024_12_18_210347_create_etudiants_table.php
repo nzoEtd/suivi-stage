@@ -29,7 +29,6 @@ class CreateEtudiantsTable extends Migration
             $table->string('adresseMail', 100);
             $table->boolean('tierTemps')->default(false);
 
-
             // Clé étrangère
             $table->unsignedTinyInteger('idDepartement');
             $table->foreign('idDepartement')->references('idDepartement')->on('departement_i_u_t_s');

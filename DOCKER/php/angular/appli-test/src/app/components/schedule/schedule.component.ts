@@ -82,6 +82,7 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
   idSoutenance?: number;
   slots: SlotItem[] = [];
   timeBlocks: TimeBlockConfig[] = [];
+  planningByDay: Record<string, SlotItem[]> = {};
 
   isExporting: boolean = false;
 
@@ -124,9 +125,6 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
       this.allAcademicYears = data.academicYears;
       this.allReferents = data.referents;
       this.allSalles = data.salles;
-
-      console.log("les referents et autre :", this.allReferents);
-      console.log("les academic year et autre :", this.allAcademicYears);
 
       this.sallesDispo = data.salles
         .filter((s) => s.estDisponible)
@@ -171,6 +169,7 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
       this.slots,
     );
   }
+
   async export() {
     if (!this.selectedPlanning || !this.jours.length) return;
 
@@ -274,9 +273,8 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
   }
 
   openModal(slot: SlotItem) {
-    console.log("le slot sélectionné : ", slot);
     this.selectedSoutenance = slot!;
-    this.idSoutenance = this.selectedSoutenance!.id;
+    this.idSoutenance = this.selectedSoutenance!.id as number;
     this.isModalSoutenanceOpen = true;
   }
 
@@ -326,17 +324,21 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
       this.slots = await loadSoutenancesForPlanning(
         this.selectedPlanning,
         this.allSoutenances,
-        this.slots,
         this.allStudents,
         this.allStaff,
         this.allCompanies,
         this.allTutors,
         this.allReferents,
         this.allTrainingAcademicYears,
-        this.allAcademicYears,
         this.cdRef,
       );
-      console.log("les slots ?", this.slots);
+      this.slots.forEach((slot) => {
+        const dayKey = slot.dateDebut
+          ? slot.dateDebut.toISOString().slice(0, 10)
+          : "attente"; // "YYYY-MM-DD"
+        if (!this.planningByDay[dayKey]) this.planningByDay[dayKey] = [];
+        this.planningByDay[dayKey].push(slot);
+      });
       //Recherche de toutes les salles réellement utilisées
       this.sallesAffiches = getAllSallesUsed(
         this.sallesDispo,
