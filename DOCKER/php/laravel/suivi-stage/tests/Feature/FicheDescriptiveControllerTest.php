@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\FicheDescriptive;
-use App\Models\FicheDescriptive;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Exception;
