@@ -55,19 +55,20 @@
         <!-- Zone matin -->
         @for (block of blocks; track block; let last = $last) {
             @if (block.type === 'morning') {
-                <div class="time-row" [style.min-height.px]="block.heightPercent * 3">
+                <div class="time-row" [style.min-height.px]="block.heightPx">
                     <div class="hours">
-                        <div *ngFor="let h of getHours(block.startMin, block.endMin); let i = index"
-                        class="hour-item"
-                        [style.height.%]="115 / getHours(block.startMin, block.endMin).length">
-                            {{ h }}h
+                        <div *ngFor="let hourPos of getHourPositions(block)"
+                             class="hour-item"
+                             [style.top.%]="hourPos.top"
+                             [style.height.%]="hourPos.height">
+                            {{ hourPos.hour }}h
                         </div>
                     </div>
                     <div class="body-planning">
                         @for(salle of sallesDispo; track salle){
                             <div class="salle-cell"
                             [attr.data-salle]="salle"
-                            [style.height.px]="block.heightPercent * 3">
+                            [style.height.px]="block.heightPx">
                                 <div *ngIf="isRendering">
                                     @for(slot of slotsInBlock(block); track slot){
                                         @if(slot.salle === salle && checkSameDay(slot.dateDebut!, jourActuel)){
@@ -94,9 +95,9 @@
                                         }
                                     }
                                     <div class="time-grid">
-                                        @for(mark of [].constructor(getQuarterHourMarks(block)); track $index){
+                                        @for(position of getQuarterHourPositions(block); track position){
                                             <div class="quarter-mark"
-                                            [style.top.%]="($index / getQuarterHourMarks(block)) * 100">
+                                                [style.top.%]="position">
                                             </div>
                                         }
                                     </div>
@@ -114,19 +115,20 @@
         <!-- Zones aprem -->
         @for (block of blocks; track block; let last = $last) {
             @if (block.type === 'afternoon') {
-                <div class="time-row" [style.min-height.px]="block.heightPercent * 3">
+                <div class="time-row" [style.min-height.px]="block.heightPx">
                     <div class="hours">
-                        <div *ngFor="let h of getHours(block.startMin, block.endMin); let i = index"
-                        class="hour-item"
-                        [style.height.%]="115 / getHours(block.startMin, block.endMin).length">
-                            {{ h }}h
+                        <div *ngFor="let hourPos of getHourPositions(block)"
+                             class="hour-item"
+                             [style.top.%]="hourPos.top"
+                             [style.height.%]="hourPos.height">
+                            {{ hourPos.hour }}h
                         </div>
                     </div>
                     <div class="body-planning">
                         @for(salle of sallesDispo; track salle){
                             <div class="salle-cell"
                             [attr.data-salle]="salle"
-                            [style.height.px]="block.heightPercent * 3">
+                            [style.height.px]="block.heightPx">
                                 <div *ngIf="isRendering">
                                     @for(slot of slotsInBlock(block); track slot){
                                         @if(slot.salle === salle && checkSameDay(slot.dateDebut!, jourActuel)){
@@ -154,9 +156,9 @@
                                         }
                                     }
                                     <div class="time-grid">
-                                        @for(mark of [].constructor(getQuarterHourMarks(block)); track $index){
+                                        @for(position of getQuarterHourPositions(block); track position){
                                             <div class="quarter-mark"
-                                            [style.top.%]="($index / getQuarterHourMarks(block)) * 100">
+                                                [style.top.%]="position">
                                             </div>
                                         }
                                     </div>

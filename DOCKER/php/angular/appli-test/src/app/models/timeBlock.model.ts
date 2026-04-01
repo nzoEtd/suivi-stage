@@ -12,5 +12,6 @@ export interface TimeBlock {
   startMin: number;
   endMin: number;
   duration: number;
-  heightPercent: number;
+  heightPercent?: number;
+  heightPx: number;
 }

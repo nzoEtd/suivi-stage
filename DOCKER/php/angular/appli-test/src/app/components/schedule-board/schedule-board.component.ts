@@ -160,34 +160,34 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
         this.allStaff = staff;
       },
     );
-    // Toujours commencer les blocs à une heure 'pile' donc sans minutes
+
+    const PX_PER_HOUR = 100 /60;
+    
     const converted = this.timeBlocks.map((b: TimeBlockConfig) => {
       const startMin = this.toMinutes(b.start);
-      const endMin =
-        b.end.split(":").map(Number)[1] == 0
-          ? this.toMinutes(b.end)
-          : this.toMinutes(b.end) + 60;
+      const endMin = this.toMinutes(b.end);
       const duration = endMin - startMin;
+      const heightPx = duration * PX_PER_HOUR;
 
       return {
         ...b,
         startMin,
         endMin,
         duration,
-        heightPercent: 0,
+        heightPx,
       };
     });
 
     // Total minutes (pauses exclues)
     const totalMinutes =
-      converted.reduce((sum, b) => sum + (b.duration ?? 0), 0) +
-      this.PAUSE_HEIGHT;
+      converted.reduce((sum, b) => sum + (b.duration ?? 0), 0) /*+
+      this.PAUSE_HEIGHT*/;
 
     // Pourcentage de hauteur de chaque bloc
-    this.blocks = converted.map((b) => ({
+    this.blocks = converted/*.map((b) => ({
       ...b,
       heightPercent: (b.duration / totalMinutes) * 100,
-    }));
+    }))*/;
 
     this.blocks.forEach((block) => {
       this.slotsCache.set(
@@ -229,7 +229,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
 
   toMinutes(str: string): number {
     const [h, m] = str.split(":").map(Number);
-    return h * 60 /*+ m*/;
+    return h * 60 + m;
   }
 
   getHours(startMin: number, endMin: number): string[] {
@@ -245,9 +245,61 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     return hours;
   }
 
-  getQuarterHourMarks(block: TimeBlock): number {
-    // Nombre de quarts d'heure dans le bloc (durée du bloc en minutes / 15)
-    return Math.floor(block.duration / 15);
+  // getQuarterHourMarks(block: TimeBlock): number {
+  //   // Nombre de quarts d'heure dans le bloc (durée du bloc en minutes / 15)
+  //   return Math.floor(block.duration / 15);
+  // }
+
+  getQuarterHourPositions(block: TimeBlock): number[] {
+    const positions: number[] = [];
+    const startMin = block.startMin;
+    const endMin = block.endMin;
+    const duration = block.duration;
+    
+    // Trouver le premier quart d'heure après le début
+    const firstQuarter = Math.ceil(startMin / 15) * 15;
+    
+    // Générer les positions de tous les quarts d'heure dans le bloc
+    for (let min = firstQuarter; min <= endMin; min += 15) {
+      const offsetFromStart = min - startMin;
+      const percentage = (offsetFromStart / duration) * 100;
+      positions.push(percentage);
+    }
+    
+    return positions;
+  }
+
+  // Calculer la position et hauteur de chaque heure
+  getHourPositions(block: TimeBlock): {hour: string, top: number, height: number}[] {
+    const positions: {hour: string, top: number, height: number}[] = [];
+    const startMin = block.startMin;
+    const endMin = block.endMin;
+    const duration = block.duration;
+    
+    const startH = Math.floor(startMin / 60);
+    const endH = Math.floor(endMin / 60);
+    
+    for (let h = startH; h <= endH; h++) {
+      const hourStartMin = h * 60;
+      const hourEndMin = (h + 1) * 60;
+      
+      // Calculer quelle portion de cette heure est visible dans le bloc
+      const visibleStart = Math.max(hourStartMin, startMin);
+      const visibleEnd = Math.min(hourEndMin, endMin);
+      
+      if (visibleEnd > visibleStart) {
+        const top = ((visibleStart - startMin) / duration) * 100;
+        const height = ((visibleEnd - visibleStart) / duration) * 100;
+        
+        positions.push({
+          hour: h.toString().padStart(2, "0"),
+          top,
+          height
+        });
+      }
+    }
+    
+    return positions;
   }
 
   calculateSlotsInBlock(block: TimeBlock, slots: SlotItem[]): SlotItem[] {

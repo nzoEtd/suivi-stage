@@ -73,21 +73,25 @@
 .hours {
   width: 35px;
   border-right: 1px solid #ddd;
+  position: relative;
 }
 
 .hour-item {
+  margin-top: -15px;
   width: 35px;
-  flex: 1; 
-  min-height: 80px; 
+  /* flex: 1;  */
+  position: absolute;
+  /* min-height: 80px;  */
   display: flex;
   align-items: flex-start;
   padding: 4px 2px;
+  box-sizing: border-box;
 }
 
-.hour-item:last-child {
+/* .hour-item:last-child {
   max-height: 20px !important;
   margin-bottom: 20px;
-}
+} */
 
 .body-planning {
   background-color: #F7F7F7; 
