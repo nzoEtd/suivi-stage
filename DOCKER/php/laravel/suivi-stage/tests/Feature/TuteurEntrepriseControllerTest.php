@@ -10,7 +10,7 @@ use Tests\TestCase;
 
 class TuteurEntrepriseControllerTest extends TestCase
 {
-/**
+    /**
      * Recréer les tables avec les seeders
      * 
      * @return void
@@ -20,6 +20,13 @@ class TuteurEntrepriseControllerTest extends TestCase
         parent::setUp();
         $this->artisan('migrate:fresh');
         $this->artisan('db:seed');
+    }
+
+
+    protected function tearDown(): void
+    {
+        \Mockery::close();
+        parent::tearDown();
     }
 
     /*
@@ -40,7 +47,7 @@ class TuteurEntrepriseControllerTest extends TestCase
         $response = $this->get('/api/tuteur-entreprise');
 
         $response->assertStatus(200)
-                 ->assertJson($desTuteursEntreprises->toArray());
+            ->assertJson($desTuteursEntreprises->toArray());
     }
 
     /*
@@ -54,13 +61,14 @@ class TuteurEntrepriseControllerTest extends TestCase
      * 
      * @return void
      */
-    public function test_show_renvoie_une_confirmation_et_le_tuteur_entreprise_demande(){
+    public function test_show_renvoie_une_confirmation_et_le_tuteur_entreprise_demande()
+    {
         $unTuteurEntreprise = TuteurEntreprise::first();
 
-        $response = $this->get('/api/tuteur-entreprise/'.$unTuteurEntreprise->idTuteur);
+        $response = $this->get('/api/tuteur-entreprise/' . $unTuteurEntreprise->idTuteur);
 
         $response->assertStatus(200)
-                 ->assertJson($unTuteurEntreprise->toArray());
+            ->assertJson($unTuteurEntreprise->toArray());
     }
 
     /**
@@ -68,7 +76,8 @@ class TuteurEntrepriseControllerTest extends TestCase
      * 
      * @return void
      */
-    public function test_show_renvoie_une_confirmation_404_si_le_tuteur_entreprise_n_existe_pas(){
+    public function test_show_renvoie_une_confirmation_404_si_le_tuteur_entreprise_n_existe_pas()
+    {
         $response = $this->get('/api/tuteur-entreprise/1000');
 
         $response->assertStatus(404);
@@ -81,20 +90,19 @@ class TuteurEntrepriseControllerTest extends TestCase
      * La méthode show va retourner une confirmation 500 si une erreur survient
      * 
      * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function test_show_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        // Mock du modèle TuteurEntreprise pour déclencher une exception
-        $this->mock(\App\Http\Controllers\TuteurEntreprise::class, function ($mock) {
-            $mock->shouldReceive('show')->andThrow(new \Exception('Erreur simulée'));
-        });
+        \Mockery::mock('alias:App\Models\TuteurEntreprise')
+            ->shouldReceive('findOrFail')
+            ->andThrow(new \Exception('Erreur simulée'));
 
-        $unTuteur = TuteurEntreprise::first();
-
-        $response = $this->get('/api/tuteur-entreprise/'.$unTuteur->idTuteur);
+        $response = $this->get('/api/tuteur-entreprise/1');
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => 'Une erreur s\'est produite']);
+            ->assertJson(['message' => 'Une erreur s\'est produite']);
     }
 
     /*
@@ -109,7 +117,8 @@ class TuteurEntrepriseControllerTest extends TestCase
      * @return void
      */
 
-    public function test_store_renvoie_une_confirmation_et_le_tuteur_entreprise_cree(){
+    public function test_store_renvoie_une_confirmation_et_le_tuteur_entreprise_cree()
+    {
         $data = [
             'nom' => 'Doe',
             'prenom' => 'John',
@@ -121,7 +130,7 @@ class TuteurEntrepriseControllerTest extends TestCase
 
         $response = $this->postJson('/api/tuteur-entreprise/create', $data);
         $response->assertStatus(201)
-                 ->assertJson($data);
+            ->assertJson($data);
     }
 
 
@@ -130,7 +139,8 @@ class TuteurEntrepriseControllerTest extends TestCase
      * 
      * @return void
      */
-    public function test_store_renvoie_une_erreur_422_si_les_donnees_ne_sont_pas_valides(){
+    public function test_store_renvoie_une_erreur_422_si_les_donnees_ne_sont_pas_valides()
+    {
         $data = [
             'nom' => 'Doe',
             'prenom' => 'John',
@@ -148,13 +158,14 @@ class TuteurEntrepriseControllerTest extends TestCase
      * La méthode store va retourner une confirmation 500 si une erreur survient
      * 
      * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function test_store_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        // Mock du modèle TuteurEntreprise pour déclencher une exception
-        $this->mock(\App\Http\Controllers\TuteurEntreprise::class, function ($mock) {
-            $mock->shouldReceive('store')->andThrow(new \Exception('Erreur simulée'));
-        });
+        \Mockery::mock('alias:App\Models\TuteurEntreprise')
+            ->shouldReceive('create')
+            ->andThrow(new \Exception('Erreur simulée'));
 
         $data = [
             'nom' => 'Doe',
@@ -165,10 +176,10 @@ class TuteurEntrepriseControllerTest extends TestCase
             'idEntreprise' => 3
         ];
 
-        $response = $this->get('/api/tuteur-entreprise/create', $data);
+        $response = $this->postJson('/api/tuteur-entreprise/create', $data);
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => 'Une erreur s\'est produite']);
+            ->assertJson(['message' => 'Une erreur s\'est produite']);
     }
     
     /*
@@ -182,7 +193,8 @@ class TuteurEntrepriseControllerTest extends TestCase
      * 
      * @return void
      */
-    public function test_update_renvoie_une_confirmation_et_le_tuteur_entreprise_modifie(){
+    public function test_update_renvoie_une_confirmation_et_le_tuteur_entreprise_modifie()
+    {
         $unTuteurEntreprise = TuteurEntreprise::first();
 
         $data = [
@@ -193,9 +205,9 @@ class TuteurEntrepriseControllerTest extends TestCase
             'fonction' => 'Responsable RH'
         ];
 
-        $response = $this->putJson('/api/tuteur-entreprise/update/'.$unTuteurEntreprise->idTuteur, $data);
+        $response = $this->putJson('/api/tuteur-entreprise/update/' . $unTuteurEntreprise->idTuteur, $data);
         $response->assertStatus(200)
-                 ->assertJson($data);
+            ->assertJson($data);
     }
 
     /**
@@ -203,7 +215,8 @@ class TuteurEntrepriseControllerTest extends TestCase
      * On n'envoie pas d'email alors qu'il est nécessaire
      * @return void
      */
-    public function test_update_renvoie_une_erreur_422_si_les_donnees_ne_sont_pas_valides(){
+    public function test_update_renvoie_une_erreur_422_si_les_donnees_ne_sont_pas_valides()
+    {
         $unTuteurEntreprise = TuteurEntreprise::first();
 
         $data = [
@@ -214,7 +227,7 @@ class TuteurEntrepriseControllerTest extends TestCase
             'fonction' => 'Responsable RH'
         ];
 
-        $response = $this->putJson('/api/tuteur-entreprise/update/'.$unTuteurEntreprise->idTuteur, $data);
+        $response = $this->putJson('/api/tuteur-entreprise/update/' . $unTuteurEntreprise->idTuteur, $data);
         $response->assertStatus(422);
     }
 
@@ -222,15 +235,16 @@ class TuteurEntrepriseControllerTest extends TestCase
      * La méthode update va retourner une confirmation 500 si une erreur survient
      * 
      * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
+
     public function test_update_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        // Mock du modèle TuteurEntreprise pour déclencher une exception
-        $this->mock(\App\Http\Controllers\TuteurEntreprise::class, function ($mock) {
-            $mock->shouldReceive('update')->andThrow(new \Exception('Erreur simulée'));
-        });
+        $mock = \Mockery::mock('alias:App\Models\TuteurEntreprise');
 
-        $unTuteurEntreprise = TuteurEntreprise::first();
+        $mock->shouldReceive('findOrFail')
+            ->andThrow(new \Exception('Erreur simulée'));
 
         $data = [
             'nom' => 'Doe',
@@ -240,9 +254,9 @@ class TuteurEntrepriseControllerTest extends TestCase
             'fonction' => 'Responsable RH'
         ];
 
-        $response = $this->putJson('/api/tuteur-entreprise/update/'.$unTuteurEntreprise->idTuteur, $data);
+        $response = $this->putJson('/api/tuteur-entreprise/update/1', $data);
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => 'Une erreur s\'est produite']);
+            ->assertJson(['message' => 'Une erreur s\'est produite :']);
     }
 }
