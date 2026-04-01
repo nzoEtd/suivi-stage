@@ -20,7 +20,7 @@ export class ModaleComponent {
     this.submit.emit();
   }
 
-  onCancel() {
+  onCancel(event?: MouseEvent) {
     this.cancel.emit(); 
 }
 }

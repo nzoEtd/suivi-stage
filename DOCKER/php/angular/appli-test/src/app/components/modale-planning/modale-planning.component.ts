@@ -222,7 +222,8 @@ export class ModalePlanningComponent implements OnInit {
     }
   }
 
-  onCancel(event?: MouseEvent) {
+  onCancel() {
+    this.isModalOpen = false;
     this.cancel.emit(); 
-}
+  }
 }
