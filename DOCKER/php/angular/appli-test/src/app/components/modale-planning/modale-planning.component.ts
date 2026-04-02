@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -34,18 +34,11 @@ import { DataStoreService } from "../../services/data.service";
 
 @Component({
   selector: "app-modale-planning",
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    OverlayModule,
-    ModaleComponent,
-  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, OverlayModule],
   templateUrl: "./modale-planning.component.html",
   styleUrls: ["./modale-planning.component.css"],
 })
 export class ModalePlanningComponent implements OnInit {
-  @Input() isModalOpen: boolean = false;
   @Output() cancel = new EventEmitter<void>();
   toastr = inject(ToastrService);
 
@@ -232,8 +225,7 @@ export class ModalePlanningComponent implements OnInit {
     }
   }
 
-  onCancel() {
-    this.isModalOpen = false;
+  onCancel(event?: MouseEvent) {
     this.cancel.emit();
   }
 }
