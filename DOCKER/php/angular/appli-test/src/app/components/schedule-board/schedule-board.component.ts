@@ -634,7 +634,24 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
 
         this.rebuildSlotsCache();
         this.cdRef.detectChanges();
-      } else {
+      } else if (newRoom == 0){
+        // Le slot revient à sa place
+        this.dropError.forEach((e) => {
+          this.toastr.error("Plage horaire introuvable", "Impossible de placer la soutenance.");
+        });
+
+        this.isRendering = false;
+        this.cdRef.detectChanges();
+
+        // ça détruit et refait le planning donc c'est pas beau, chercher mieux
+        setTimeout(() => {
+          this.isRendering = true;
+          this.rebuildSlotsCache();
+          this.cdRef.detectChanges();
+        }, 0);
+        return;
+      }
+      else {
         // S'il y a une salle le slot est droppé dans la salle au bon endroit
         if (duration == null) {
           duration = draggedSlot.duree;
@@ -782,6 +799,20 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     const result = this.findBlockAndRowFromY(event.dropPoint.y);
 
     if (!result) {
+      // Le slot revient à sa place
+      this.dropError.forEach((e) => {
+        this.toastr.error("Plage horaire introuvable", "Impossible de placer la soutenance.");
+      });
+
+      this.isRendering = false;
+      this.cdRef.detectChanges();
+
+      // ça détruit et refait le planning donc c'est pas beau, chercher mieux
+      setTimeout(() => {
+        this.isRendering = true;
+        this.rebuildSlotsCache();
+        this.cdRef.detectChanges();
+      }, 0);
       return;
     }
 
@@ -906,59 +937,49 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     day: Date,
     duree: number,
   ): [Date, TimeBlock] {
-    const blocConfig = {
-      morning: {
-        start: this.blocks.find((b) => b.type == "morning")?.startMin! / 60,
-        end: this.blocks.find((b) => b.type == "morning")?.endMin! / 60,
-      },
-      afternoon: {
-        start: this.blocks.find((b) => b.type == "afternoon")?.startMin! / 60,
-        end: this.blocks.find((b) => b.type == "afternoon")?.endMin! / 60,
-      },
-    };
-
-    const { start, end } = blocConfig[bloc];
     let timeBloc = this.blocks.find((b) => b.type == bloc);
+    
+    if (!timeBloc) {
+      throw new Error(`Bloc ${bloc} introuvable`);
+    }
+  
     const relativeY = mouseY - containerTop;
     const ratio = relativeY / containerHeight;
-    const hour = start! + ratio * (end! - start!);
-
-    let h = Math.floor(hour);
-    // Arrondissement à 5min (drop possible toutes les 5 minutes)
-    let m = (Math.round(((hour - h) * 60) / 5) * 5) % 60;
-
-    // Vérifications que les slots sont bien dans les bons blocs et ne dépasse pas
-    // Réglage du matin pour éviter avant début (sécurité mais pas forcément utile)
-    if (h < start && bloc == "morning") {
-      h = start;
-      m = 0;
+  
+    // Calculer les minutes
+    const startMin = timeBloc.startMin;
+    const endMin = timeBloc.endMin;
+    
+    // Position en minutes dans le bloc
+    const currentMin = startMin + ratio * (endMin - startMin);
+    
+    // Arrondir aux 5 minutes près
+    let roundedMin = Math.round(currentMin / 5) * 5;
+    
+    // Vérifier que le slot ne dépasse pas la fin du bloc
+    if (roundedMin + duree > endMin) {
+      // Ajuster pour que la fin du slot soit à endMin
+      roundedMin = endMin - duree;
+      
+      // Si ça dépasse quand même le début, c'est qu'il n'y a pas assez de place
+      if (roundedMin < startMin) {
+        roundedMin = startMin;
+      }
     }
-    // Passage du matin à l'après-midi
-    else if (h >= end && bloc == "morning") {
-      h = h + (blocConfig["afternoon"].start - end);
-      timeBloc = this.blocks.find((b) => b.type == "afternoon");
-    }
-    // Passage de l'après-midi au matin
-    else if (h < start && bloc == "afternoon") {
-      h = h - (start - blocConfig["morning"].end);
-      timeBloc = this.blocks.find((b) => b.type == "morning");
-    }
-    // Réglage pour éviter que le slot commence avant et finisse après la fin d'un bloc
-    else if (h < end && h * 60 + duree + m > end * 60) {
-      const hour = (end * 60 - duree) / 60;
-      h = Math.floor(hour);
-      m = (Math.round(((hour - h) * 60) / 5) * 5) % 60;
-    }
-    // Réglage de l'après-midi pour éviter qu'il commence après la fin du bloc (sécurité mais pas forcément utile)
-    else if (h >= end && bloc == "afternoon") {
-      const hour = (end * 60 - duree) / 60;
-      h = Math.floor(hour);
-      m = (Math.round(((hour - h) * 60) / 5) * 5) % 60;
-    }
-
+    
+    // Limiter aux bornes du bloc
+    roundedMin = Math.max(startMin, Math.min(endMin - duree, roundedMin));
+    
+    // Arrondir à nouveau aux 5 minutes après ajustement
+    roundedMin = Math.round(roundedMin / 5) * 5;
+  
+    const h = Math.floor(roundedMin / 60);
+    const m = roundedMin % 60;
+  
     const d = new Date(day);
     d.setHours(h, m, 0, 0);
-    return [d, timeBloc!];
+    
+    return [d, timeBloc];
   }
 
   xToRoom(mouseX: number): number | null {
@@ -971,6 +992,9 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
       const rect = cell.getBoundingClientRect();
       if (mouseX >= rect.left && mouseX <= rect.right) {
         return Number(cell.dataset["salle"]) ?? null;
+      }
+      else if(mouseX > rect.right){
+        return 0;
       }
     }
 
@@ -1026,8 +1050,14 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     }
   }
 
-  onDragMoved(event: any) {
+  onDragMoved(event: any, slot: SlotItem) {
     if (!this.isDragging) return;
+
+    let duration =
+      slot.dateDebut && slot.dateFin
+        ? (slot.dateFin.getTime() - slot.dateDebut.getTime()) / 1000 / 60
+        : null;
+    console.log("duree slot ?", duration)
 
     const mouseY = event.pointerPosition.y;
 
@@ -1048,22 +1078,26 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     const relativeY = mouseY - rowRect.top;
     const ratio = relativeY / rowRect.height;
 
-    // Calculer l'heure
-    const startH = block.startMin / 60;
-    const endH = block.endMin / 60;
-    const hour = startH + ratio * (endH - startH);
-
-    let h = Math.floor(hour);
-    let m = (Math.round(((hour - h) * 60) / 5) * 5) % 60; // Arrondi à 5 min
-
-    // Ajuster si dépasse les limites
-    if (h < startH) {
-      h = startH;
-      m = 0;
-    } else if (h >= endH - 1) {
-      h = endH - 1;
-      m = 0;
+    // Calculer les minutes
+    const startMin = block.startMin; 
+    const endMin = block.endMin;   
+    
+    // Position en minutes dans le bloc
+    let currentMin = startMin + ratio * (endMin - startMin);
+    
+    if (duration && currentMin >= endMin - duration) {
+      currentMin = endMin - duration;
     }
+    
+    // Arrondir aux 5 minutes près
+    const roundedMin = Math.round(currentMin / 5) * 5;
+    
+    // Limiter aux bornes du bloc
+    const clampedMin = Math.max(startMin, Math.min(endMin, roundedMin));
+    
+    // Convertir en heures et minutes
+    const h = Math.floor(clampedMin / 60);
+    const m = clampedMin % 60;
 
     // Position Y de la ligne (relative au viewport)
     this.guideLineY = mouseY;

@@ -23,7 +23,7 @@
           cdkDrag
           [cdkDragData]="item"
           (cdkDragStarted)="onDragStarted($event, item)"
-          (cdkDragMoved)="onDragMoved($event)"
+          (cdkDragMoved)="onDragMoved($event, item)"
           (cdkDragEnded)="onDragEnded($event)"
         >
           <app-slot
@@ -97,7 +97,7 @@
                         [cdkDragDisabled]="onlyDisplay"
                         [cdkDragData]="slot"
                         (cdkDragStarted)="onDragStarted($event, slot)"
-                        (cdkDragMoved)="onDragMoved($event)"
+                        (cdkDragMoved)="onDragMoved($event, slot)"
                         (cdkDragEnded)="onDragEnded($event)"
                         (pointerdown)="onPointerDown($event)"
                         (pointermove)="onPointerMove($event)"
@@ -167,7 +167,7 @@
                         [cdkDragDisabled]="onlyDisplay"
                         [cdkDragData]="slot"
                         (cdkDragStarted)="onDragStarted($event, slot)"
-                        (cdkDragMoved)="onDragMoved($event)"
+                        (cdkDragMoved)="onDragMoved($event, slot)"
                         (cdkDragEnded)="onDragEnded($event)"
                         (pointerdown)="onPointerDown($event)"
                         (pointermove)="onPointerMove($event)"
