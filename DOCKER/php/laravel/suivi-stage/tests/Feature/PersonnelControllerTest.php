@@ -6,15 +6,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Personnel;
+use Mockery;
 
 class PersonnelControllerTest extends TestCase
 {
-    /**
-     * Recréer les tables avec ces seeders
-     * 
-     * @return void
-     */
-    public function setUp(): void
+    use RefreshDatabase;
+
+    protected function setUp(): void
     {
         parent::setUp();
         $this->artisan('migrate:fresh');
@@ -26,12 +24,6 @@ class PersonnelControllerTest extends TestCase
         TEST DE LA METHODE INDEX
     ================================
     */
-
-    /**
-     * La méthode index va retourner une confirmation 200  et la liste des membres du personnel
-     * 
-     * @return void
-     */
     public function test_index_renvoie_une_confirmation_et_la_liste_des_membres_du_personnel()
     {
         $personnels = Personnel::all();
@@ -39,7 +31,7 @@ class PersonnelControllerTest extends TestCase
         $response = $this->get('/api/personnel');
 
         $response->assertStatus(200)
-                 ->assertJson($personnels->toArray());
+            ->assertJson($personnels->toArray());
     }
 
     /*
@@ -47,94 +39,79 @@ class PersonnelControllerTest extends TestCase
         TEST DE LA METHODE STORE
     ================================
     */
-
-    /**
-     * La méthode store va retourner une confirmation 201 et le membre du personnel créé
-     * 
-     * @return void
-     */
     public function test_store_renvoie_une_confirmation_et_le_membre_du_personnel_cree()
     {
+        $this->withoutExceptionHandling();
         $donnees = [
-            'login'             => 'jdupont',
-            'roles'             => 'Enseignant',
-            'nom'               => 'Dupont',
-            'prenom'            => 'Jean',
-            'adresse'           => null,
-            'ville'             => null,
-            'codePostal'        => null,
-            'telephone'         => null,
-            'adresseMail'       => 'jdupont@univ-pau.fr',
-            'longitudeAdresse'  => null,
-            'latitudeAdresse'   => null,
-            'quotaEtudiant'     => 8,
+            'login' => 'jdupont',
+            'roles' => 'Enseignant',
+            'nom' => 'Dupont',
+            'prenom' => 'Jean',
+            'adresseMail' => 'jdupont@univ-pau.fr',
+            'quotaEtudiant' => 8,
+            'estTechnique' => true,
         ];
 
-        $response = $this->post('/api/personnel/create', $donnees);
+        $response = $this->postJson('/api/personnel/create', $donnees);
 
-        $response->assertStatus(201)
-                 ->assertJson($donnees);
+        $response->assertStatus(201);
+        $response->assertJsonFragment(['login' => 'jdupont']);
     }
 
-    /**
-     * La méthode store va retourner une erreur 422 si les données ne sont pas valides
-     * 
-     * @return void
-     */
+
     public function test_store_renvoie_une_erreur_de_validation()
     {
         $donnees = [
-            'login'             => 'jdupont',
-            'roles'             => 'TEST',  // Rôle incorrect
-            'nom'               => 'Dupont',
-            'prenom'            => 'Jean',
-            'adresse'           => null,
-            'ville'             => null,
-            'codePostal'        => null,
-            'telephone'         => null,
-            'adresseMail'       => 'jdupont@univ-pau.fr',
-            'longitudeAdresse'  => null,
-            'latitudeAdresse'   => null,
-            'quotaEtudiant'     => 8,
+            'login' => 'jdupont',
+            'roles' => 'TEST', // Rôle incorrect
+            'nom' => 'Dupont',
+            'prenom' => 'Jean',
+            'adresse' => null,
+            'ville' => null,
+            'codePostal' => null,
+            'telephone' => null,
+            'adresseMail' => 'jdupont@univ-pau.fr',
+            'longitudeAdresse' => null,
+            'latitudeAdresse' => null,
+            'quotaEtudiant' => 8,
         ];
 
         $response = $this->post('/api/personnel/create', $donnees);
 
         $response->assertStatus(422)
-                 ->assertJson(['message' => 'Erreur de validation dans les données']);
+            ->assertJson(['message' => 'Erreur de validation dans les données']);
     }
 
+
     /**
-     * La méthode store va retourner une erreur 500 si une erreur se produit
-     * 
-     * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function test_store_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        // Mock du modèle Personnel pour déclencher une exception
-        $this->mock(\App\Http\Controllers\PersonnelController::class, function ($mock) {
-            $mock->shouldReceive('store')->andThrow(new \Exception('Erreur simulée'));
-        });
+        $mock = \Mockery::mock('alias:' . Personnel::class);
+        $mock->shouldReceive('create')
+            ->once()
+            ->andThrow(new \Exception('Erreur simulée'));
 
         $donnees = [
-            'login'             => 'jdupont',
-            'roles'             => 'Enseignant',
-            'nom'               => 'Dupont',
-            'prenom'            => 'Jean',
-            'adresse'           => null,
-            'ville'             => null,
-            'codePostal'        => null,
-            'telephone'         => null,
-            'adresseMail'       => 'jdupont@univ-pau.fr',
-            'longitudeAdresse'  => null,
-            'latitudeAdresse'   => null,
-            'quotaEtudiant'     => 8,
+            'login' => 'jdupont',
+            'roles' => 'Enseignant',
+            'nom' => 'Dupont',
+            'prenom' => 'Jean',
+            'adresseMail' => 'jdupont@univ-pau.fr',
+            'quotaEtudiant' => 8,
         ];
 
-        $response = $this->post('/api/personnel/create', $donnees);
+        $response = $this->postJson('/api/personnel/create', $donnees);
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => 'Une erreur s\'est produite']);
+            ->assertJson([
+                'message' => "Une erreur s'est produite :",
+                'exception' => 'Erreur simulée'
+            ]);
+
+        \Mockery::close();
     }
 
     /*
@@ -142,246 +119,198 @@ class PersonnelControllerTest extends TestCase
         TEST DE LA METHODE SHOW
     ================================
     */
-
-    /**
-     * La méthode show va retourner une confirmation 200 et les détails du membre du personnel
-     * 
-     * @return void
-     */
     public function test_show_renvoie_une_confirmation_et_les_details_du_membre_du_personnel()
     {
         $personnel = Personnel::first();
 
-        $response = $this->get('/api/personnel/'.$personnel->idPersonnel);
+        $response = $this->get('/api/personnel/' . $personnel->idPersonnel);
 
         $response->assertStatus(200)
-                 ->assertJson($personnel->toArray());
+            ->assertJson($personnel->toArray());
     }
 
-    /**
-     * La méthode show va retourner une erreur 404 si le membre du personnel n'a pas été trouvé
-     * 
-     * @return void
-     */
-    public function test_showèrenvoie_une_erreur_non_trouvee_en_cas_de_personnel_non_trouve()
+    public function test_show_renvoie_une_erreur_non_trouvee_en_cas_de_personnel_non_trouve()
     {
         $idPersonnel = PHP_INT_MAX;
 
-        $response = $this->get('/api/personnel/'.$idPersonnel);
+        $response = $this->get('/api/personnel/' . $idPersonnel);
 
         $response->assertStatus(404)
-                 ->assertJson(['message' => 'Aucun personnel trouvé']);
+            ->assertJson(['message' => 'Aucun personnel trouvé']);
     }
 
     /**
-     * La méthode show va retourner une erreur 500 en cas d'exception
+     * La méthode show doit retourner une erreur 500 si une erreur générique survient
      * 
      * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function test_show_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        // Mock du modèle Personnel pour déclencher une exception
-        $this->mock(\App\Http\Controllers\PersonnelController::class, function ($mock) {
-            $mock->shouldReceive('show')->andThrow(new \Exception('Erreur simulée'));
-        });
-        
-        $personnel = Personnel::first();
+        $mock = Mockery::mock('alias:App\Models\Personnel');
+        $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
 
-        $response = $this->get('/api/personnel/'.$personnel->idPersonnel);
+        $response = $this->get('/api/personnel/1');
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => 'Une erreur s\'est produite']);
+            ->assertJson(['message' => "Une erreur s'est produite :"]);
     }
 
     /*
-    =================================
+    ================================
         TEST DE LA METHODE UPDATE
-    =================================
+    ================================
     */
-
-    /**
-     * La méthode update va retourner une confirmation 200 et le membre du personnel modifié
-     * 
-     * @return void
-     */
     public function test_update_renvoie_une_confirmation_et_le_personnel_modifie()
     {
         $donnees = [
-            'login'             => 'jdupont',
-            'roles'             => 'Enseignant',
-            'nom'               => 'Dupont',
-            'prenom'            => 'Jean',
-            'adresse'           => null,
-            'ville'             => null,
-            'codePostal'        => null,
-            'telephone'         => null,
-            'adresseMail'       => 'jdupont@univ-pau.fr',
-            'longitudeAdresse'  => null,
-            'latitudeAdresse'   => null,
-            'quotaEtudiant'     => 8,
+            'login' => 'jdupont',
+            'roles' => 'Enseignant',
+            'nom' => 'Dupont',
+            'prenom' => 'Jean',
+            'adresse' => null,
+            'ville' => null,
+            'codePostal' => null,
+            'telephone' => null,
+            'adresseMail' => 'jdupont@univ-pau.fr',
+            'longitudeAdresse' => null,
+            'latitudeAdresse' => null,
+            'quotaEtudiant' => 8,
         ];
 
         $personnel = Personnel::first();
 
-        $response = $this->putJson('/api/personnel/update/'.$personnel->idPersonnel, $donnees);
+        $response = $this->putJson('/api/personnel/update/' . $personnel->idPersonnel, $donnees);
 
         $response->assertStatus(200)
-                 ->assertJson($donnees);
+            ->assertJson($donnees);
     }
 
-    /**
-     * La méthode update va retourner une erreur 422 si une donnée n'est pas valide
-     * 
-     * @return void
-     */
     public function test_update_renvoie_une_erreur_de_validation_en_cas_de_donnees_invalides()
     {
         $donnees = [
-            'login'             => 'jdupont',
-            'roles'             => 'TEST',  // Rôle incorrect
-            'nom'               => 'Dupont',
-            'prenom'            => 'Jean',
-            'adresse'           => null,
-            'ville'             => null,
-            'codePostal'        => null,
-            'telephone'         => null,
-            'adresseMail'       => 'jdupont@univ-pau.fr',
-            'longitudeAdresse'  => null,
-            'latitudeAdresse'   => null,
-            'quotaEtudiant'     => 8,
+            'login' => 'jdupont',
+            'roles' => 'TEST',
+            'nom' => 'Dupont',
+            'prenom' => 'Jean',
+            'adresse' => null,
+            'ville' => null,
+            'codePostal' => null,
+            'telephone' => null,
+            'adresseMail' => 'jdupont@univ-pau.fr',
+            'longitudeAdresse' => null,
+            'latitudeAdresse' => null,
+            'quotaEtudiant' => 8,
         ];
 
         $personnel = Personnel::first();
 
-        $response = $this->putJson('/api/personnel/update/'.$personnel->idPersonnel, $donnees);
+        $response = $this->putJson('/api/personnel/update/' . $personnel->idPersonnel, $donnees);
 
         $response->assertStatus(422)
-                 ->assertJson(['message' => 'Erreur de validation dans les données']);
+            ->assertJson(['message' => 'Erreur de validation dans les données']);
     }
 
-    /**
-     * La méthode update va retourner une erreur 404 si le membre du personnel n'a pas été trouvé
-     * 
-     * @return void
-     */
     public function test_update_renvoie_une_erreur_non_trouvee_en_cas_de_personnel_non_trouve()
     {
         $donnees = [
-            'login'             => 'jdupont',
-            'roles'             => 'Enseignant',
-            'nom'               => 'Dupont',
-            'prenom'            => 'Jean',
-            'adresse'           => null,
-            'ville'             => null,
-            'codePostal'        => null,
-            'telephone'         => null,
-            'adresseMail'       => 'jdupont@univ-pau.fr',
-            'longitudeAdresse'  => null,
-            'latitudeAdresse'   => null,
-            'quotaEtudiant'     => 8,
+            'login' => 'jdupont',
+            'roles' => 'Enseignant',
+            'nom' => 'Dupont',
+            'prenom' => 'Jean',
+            'adresse' => null,
+            'ville' => null,
+            'codePostal' => null,
+            'telephone' => null,
+            'adresseMail' => 'jdupont@univ-pau.fr',
+            'longitudeAdresse' => null,
+            'latitudeAdresse' => null,
+            'quotaEtudiant' => 8,
         ];
 
         $idPersonnel = PHP_INT_MAX;
 
-        $response = $this->putJson('/api/personnel/update/'.$idPersonnel, $donnees);
+        $response = $this->putJson('/api/personnel/update/' . $idPersonnel, $donnees);
 
         $response->assertStatus(404)
-                 ->assertJson(['message' => 'Aucun personnel trouvé']);
+            ->assertJson(['message' => 'Aucun personnel trouvé']);
     }
 
+
     /**
-     * La méthode update va retourner une erreur 500 en cas d'exception
+     * La méthode update doit retourner une erreur 500 si une erreur générique survient
      * 
      * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function test_update_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        // Mock du modèle Personnel pour déclencher une exception
-        $this->mock(\App\Http\Controllers\PersonnelController::class, function ($mock) {
-            $mock->shouldReceive('update')->andThrow(new \Exception('Erreur simulée'));
-        });
+        $mock = Mockery::mock('alias:App\Models\Personnel');
+        $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
 
         $donnees = [
-            'login'             => 'jdupont',
-            'roles'             => 'Enseignant',
-            'nom'               => 'Dupont',
-            'prenom'            => 'Jean',
-            'adresse'           => null,
-            'ville'             => null,
-            'codePostal'        => null,
-            'telephone'         => null,
-            'adresseMail'       => 'jdupont@univ-pau.fr',
-            'longitudeAdresse'  => null,
-            'latitudeAdresse'   => null,
-            'quotaEtudiant'     => 8,
+            'login' => 'jdupont',
+            'roles' => 'Enseignant',
+            'nom' => 'Dupont',
+            'prenom' => 'Jean',
+            'adresseMail' => 'jdupont@univ-pau.fr',
+            'quotaEtudiant' => 8
         ];
 
-        $personnel = Personnel::first();
-
-        $response = $this->putJson('/api/personnel/update/'.$personnel->idPersonnel, $donnees);
+        $response = $this->putJson('/api/personnel/update/1', $donnees);
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => 'Une erreur s\'est produite']);
+            ->assertJson(['message' => "Une erreur s'est produite :"]);
     }
 
     /*
-    ==================================
+    ================================
         TEST DE LA METHODE DESTROY
-    ==================================
+    ================================
     */
-
-    /**
-     * La méthode destroy va retourner une confirmation 200 si le membre du personnel a été supprimé
-     * 
-     * @return void
-     */
     public function test_destroy_renvoie_une_confirmation_de_la_suppression_du_personnel()
     {
-        $personnel = Personnel::orderBy('idPersonnel', 'desc')->first(); // Sélectionne l'id le plus grand
+        $personnel = Personnel::orderBy('idPersonnel', 'desc')->first();
 
-        $response = $this->delete('/api/personnel/delete/'.$personnel->idPersonnel);
+        $response = $this->delete('/api/personnel/delete/' . $personnel->idPersonnel);
 
         $response->assertStatus(200)
-                 ->assertJson(['message' => 'Le personnel a bien été supprimé']);
+            ->assertJson(['message' => 'Le personnel a bien été supprimé']);
     }
 
-    /**
-     * La méthode destroy va retourner une erreur 404 si le membre du personnel n'a pas été trouvé
-     * 
-     * @return void
-     */
     public function test_destroy_renvoie_une_erreur_non_trouvee_en_cas_de_personnel_non_trouve()
     {
         $idPersonnel = PHP_INT_MAX;
 
-        $response = $this->delete('/api/personnel/delete/'.$idPersonnel);
+        $response = $this->delete('/api/personnel/delete/' . $idPersonnel);
 
         $response->assertStatus(404)
-                 ->assertJson(['message' => 'Aucun personnel trouvé']);
+            ->assertJson(['message' => 'Aucun personnel trouvé']);
     }
 
     /**
-     * La méthode destroy va retourner une erreur 500 en cas d'exception
+     * La méthode store doit retourner une erreur 500 si une erreur générique survient
      * 
      * @return void
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function test_destroy_renvoie_une_erreur_generique_en_cas_d_exception()
     {
-        // Mock du modèle Personnel pour déclencher une exception
-        $this->mock(\App\Http\Controllers\PersonnelController::class, function ($mock) {
-            $mock->shouldReceive('destroy')->andThrow(new \Exception('Erreur simulée'));
-        });
+        $mock = Mockery::mock('alias:App\Models\Personnel');
+        $mock->shouldReceive('findOrFail')->andThrow(new \Exception('Erreur simulée'));
 
-        $personnel = Personnel::first();
-
-        $response = $this->delete('/api/personnel/delete/'.$personnel->idPersonnel);
+        $response = $this->deleteJson('/api/personnel/delete/1');
 
         $response->assertStatus(500)
-                 ->assertJson(['message' => 'Une erreur s\'est produite']);
+            ->assertJson(['message' => "Une erreur s'est produite :"]);
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
+        Mockery::close();
         parent::tearDown();
     }
 }

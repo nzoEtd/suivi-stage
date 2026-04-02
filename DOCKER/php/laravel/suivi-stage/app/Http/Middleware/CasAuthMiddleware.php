@@ -32,6 +32,9 @@ class CasAuthMiddleware
             config('auth.cas.server.basename'),
         );
 
+        \phpCAS::setFixedServiceURL(env('APP_URL') . '/public/api/cas-auth');
+
+
         if (app()->environment() !== 'production') {
             \phpCAS::setNoCasServerValidation();
         }

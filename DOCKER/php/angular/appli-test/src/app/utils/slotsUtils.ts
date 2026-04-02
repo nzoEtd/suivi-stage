@@ -1,4 +1,4 @@
-import { CreneauDisponible } from "../utils/types";
+import { CreneauDisponible } from "./types";
 
 // sort by day, then room, then hours
 export function sortCreneaux(
