@@ -635,10 +635,9 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
         this.rebuildSlotsCache();
         this.cdRef.detectChanges();
       } else if (newRoom == 0){
+        console.log("Plage horaire introuvable")
         // Le slot revient à sa place
-        this.dropError.forEach((e) => {
-          this.toastr.error("Plage horaire introuvable", "Impossible de placer la soutenance.");
-        });
+        this.toastr.error("Plage horaire introuvable", "Impossible de placer la soutenance.");
 
         this.isRendering = false;
         this.cdRef.detectChanges();
@@ -800,9 +799,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
 
     if (!result) {
       // Le slot revient à sa place
-      this.dropError.forEach((e) => {
-        this.toastr.error("Plage horaire introuvable", "Impossible de placer la soutenance.");
-      });
+      this.toastr.error("Plage horaire introuvable", "Impossible de placer la soutenance.");
 
       this.isRendering = false;
       this.cdRef.detectChanges();
@@ -987,15 +984,17 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     const salleCells = Array.from(
       document.querySelectorAll<HTMLElement>(".salle-cell"),
     );
+    let lastRect;
 
     for (const cell of salleCells) {
       const rect = cell.getBoundingClientRect();
       if (mouseX >= rect.left && mouseX <= rect.right) {
         return Number(cell.dataset["salle"]) ?? null;
       }
-      else if(mouseX > rect.right){
-        return 0;
-      }
+      lastRect = rect;
+    }
+    if(lastRect && mouseX > lastRect?.right){
+      return 0;
     }
 
     return null;
@@ -1057,7 +1056,6 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
       slot.dateDebut && slot.dateFin
         ? (slot.dateFin.getTime() - slot.dateDebut.getTime()) / 1000 / 60
         : null;
-    console.log("duree slot ?", duration)
 
     const mouseY = event.pointerPosition.y;
 
