@@ -267,7 +267,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
         isHour: min % 60 === 0,
       });
     }
-    console.log("quarter :", result)
+    // console.log("quarter :", result)
     
     return result;
   }
@@ -303,13 +303,18 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
             top,
             height
           });
+          if(Number(block.start.split(':')[1]) > 52){
+            h++;
+          }
         }
         else if(h + 1 >= endMin / 60){
-          positions.push({
-            hour: h.toString().padStart(2, "0"),
-            top,
-            height
-          });
+          if(Number(block.end.split(':')[1]) > 7){
+            positions.push({
+              hour: h.toString().padStart(2, "0"),
+              top,
+              height
+            });
+          }
           positions.push({
             hour: block.end.split(':')[0],
             min: endMin % 60 != 0 ? block.end.split(':')[1] : "",
@@ -326,7 +331,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
         }
       }
     }
-    console.log("positions :", positions)
+    // console.log("positions :", positions)
     
     return positions;
   }
