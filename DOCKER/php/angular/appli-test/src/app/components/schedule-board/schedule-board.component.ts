@@ -923,7 +923,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     if (dx > 5 || dy > 5) {
       this.pointerDown = false;
       this.toastr.error(
-        "Veuillez cliquer sur le bouton \"modifier\".",
+        'Veuillez cliquer sur le bouton "modifier".',
         "Le drag and drop n'est pas utilisable en mode affichage.",
       );
     }
