@@ -6,3 +6,4 @@ mysql_data*
 .DS_STORE
 /DOCKER/.scannerwork
 .scannerwork
+/DOCKER/php/laravel/suivi-stage/storage/debugbar/

@@ -25,18 +25,23 @@ import {
   formatDateToYYYYMMDD,
   minutesToHHMM,
   timeStringToMinutes,
-  dateToHeureStr,
+  dateToHoursStr,
 } from "../../utils/timeManagement";
 import { ToastrService } from "ngx-toastr";
-import { CreneauDisponible } from "../../utils/types";
-import { isOverlap, referentEstTechnique } from "../../utils/fonctions";
-import { sortCreneaux } from "../../utils/slotsUtils";
+import { AvailableSlot } from "../../utils/types";
+import { isOverlap, referentIsTechnical } from "../../utils/fonctions";
+import { sortSlots } from "../../utils/slotsUtils";
 import { ModaleComponent } from "../modale/modale.component";
 
 @Component({
   selector: "app-modale-soutenance",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LoadingComponent, ModaleComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    LoadingComponent,
+    ModaleComponent,
+  ],
   templateUrl: "./modale-soutenance.component.html",
   styleUrls: ["./modale-soutenance.component.css"],
 })
@@ -57,7 +62,7 @@ export class ModaleSoutenanceComponent implements OnInit {
 
   soutenanceForm!: FormGroup;
   enseignantsLecteurs: Staff[] = [];
-  creneauxDisponibles: CreneauDisponible[] = [];
+  availableSlots: AvailableSlot[] = [];
   newSoutenance: Soutenance = new Soutenance();
   title: string = "";
 
@@ -72,7 +77,7 @@ export class ModaleSoutenanceComponent implements OnInit {
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.creneauxDisponibles = this.getCreneauxDisponibles();
+    this.availableSlots = this.getAvailableSlots();
 
     const currentCreneauKey = this.getCurrentCreneauValue();
 
@@ -83,20 +88,20 @@ export class ModaleSoutenanceComponent implements OnInit {
     this.initialFormValue = this.soutenanceForm.value;
 
     this.soutenanceForm.get("creneau")?.valueChanges.subscribe((value) => {
-      this.updateLecteursDisponibles(value, false);
+      this.updateAvailableReaders(value, false);
     });
 
-    this.updateLecteursDisponibles(currentCreneauKey, true);
+    this.updateAvailableReaders(currentCreneauKey, true);
     this.title = `Soutenance ${formatDate(this.soutenance.dateDebut!, "Heure")} - ${formatDate(this.soutenance.dateFin!, "Heure")} S${this.soutenance.salle}`;
     this.isDataLoaded = true;
   }
 
   getCurrentCreneauValue(): string {
-    return `${formatDateToYYYYMMDD(this.soutenance.dateDebut!)}|${this.soutenance.salle}|${dateToHeureStr(this.soutenance.dateDebut!)}`;
+    return `${formatDateToYYYYMMDD(this.soutenance.dateDebut!)}|${this.soutenance.salle}|${dateToHoursStr(this.soutenance.dateDebut!)}`;
   }
 
-  // Génère tous les créneaux possibles par jour, salle et bloc
-  private generateAllCreneaux(): {
+  // Generates all possible time slots per day, room and block
+  private generateAllSlots(): {
     date: string;
     salle: number;
     heureDebut: string;
@@ -104,7 +109,7 @@ export class ModaleSoutenanceComponent implements OnInit {
     heureDebutDate: Date;
     heureFinDate: Date;
   }[] {
-    const dureeMinutes =
+    const durationInMinute =
       (this.soutenance.dateFin!.getTime() -
         this.soutenance.dateDebut!.getTime()) /
       60000;
@@ -112,7 +117,7 @@ export class ModaleSoutenanceComponent implements OnInit {
 
     return Object.entries(this.soutenancesJour).flatMap(
       ([date, soutenances]) => {
-        const sallesDuJour = Array.from(
+        const roomOfTheDay = Array.from(
           new Set(
             soutenances
               .map((s) => s.salle)
@@ -120,24 +125,26 @@ export class ModaleSoutenanceComponent implements OnInit {
           ),
         );
 
-        return sallesDuJour.flatMap((salle) =>
+        return roomOfTheDay.flatMap((salle) =>
           this.timeBlocks.flatMap((block) => {
             const blockStart = timeStringToMinutes(block.start);
             const blockEnd = timeStringToMinutes(block.end);
             const minutesList: number[] = [];
-            for (let m = blockStart; m + dureeMinutes <= blockEnd; m += pas)
+            for (let m = blockStart; m + durationInMinute <= blockEnd; m += pas)
               minutesList.push(m);
 
-            return minutesList.map((minutesDebut) => {
-              const heureDebutStr = minutesToHHMM(minutesDebut);
-              const heureFinStr = minutesToHHMM(minutesDebut + dureeMinutes);
+            return minutesList.map((minutesStart) => {
+              const hoursStartStr = minutesToHHMM(minutesStart);
+              const hoursEndStr = minutesToHHMM(
+                minutesStart + durationInMinute,
+              );
               return {
                 date,
                 salle,
-                heureDebut: heureDebutStr,
-                heureFin: heureFinStr,
-                heureDebutDate: buildDate(date, heureDebutStr),
-                heureFinDate: buildDate(date, heureFinStr),
+                heureDebut: hoursStartStr,
+                heureFin: hoursEndStr,
+                heureDebutDate: buildDate(date, hoursStartStr),
+                heureFinDate: buildDate(date, hoursEndStr),
               };
             });
           }),
@@ -146,9 +153,9 @@ export class ModaleSoutenanceComponent implements OnInit {
     );
   }
 
-  // Filtre créneaux selon chevauchement, salle, référent et l'existance de lecteurs
-  private filterCreneauxValides(
-    creneaux: {
+  // Filter slots based on overlap, room, referent, and the existence of readers
+  private filterValidSlots(
+    slots: {
       date: string;
       salle: number;
       heureDebut: string;
@@ -156,28 +163,27 @@ export class ModaleSoutenanceComponent implements OnInit {
       heureDebutDate: Date;
       heureFinDate: Date;
     }[],
-    autresSoutenances: SlotItem[],
-  ): CreneauDisponible[] {
-    return creneaux
+    otherSlots: SlotItem[],
+  ): AvailableSlot[] {
+    return slots
       .filter(({ salle, heureDebutDate, heureFinDate }) => {
-        const chevauchantes = autresSoutenances.filter((s) =>
+        const overlapped = otherSlots.filter((s) =>
           isOverlap(heureDebutDate, heureFinDate, s.dateDebut!, s.dateFin!),
         );
 
-        // Salle occupée ?
-        if (chevauchantes.some((s) => s.salle === salle)) return false;
+        // Room available ?
+        if (overlapped.some((s) => s.salle === salle)) return false;
 
-        // Référent occupé ?
-        const enseignantsOccupes = chevauchantes.flatMap((s) => [
+        // Referent available ?
+        const enseignantsOccupes = overlapped.flatMap((s) => [
           s.idLecteur,
           s.idReferent,
         ]);
         if (enseignantsOccupes.includes(this.soutenance.idReferent))
           return false;
 
-        // Lecteurs disponibles ?
-        if (this.getLecteursDisponibles(chevauchantes).length === 0)
-          return false;
+        // Reader available ?
+        if (this.getAvailableReaders(overlapped).length === 0) return false;
 
         return true;
       })
@@ -189,43 +195,51 @@ export class ModaleSoutenanceComponent implements OnInit {
       }));
   }
 
-  getCreneauxDisponibles(): CreneauDisponible[] {
-    const allCreneaux = this.generateAllCreneaux();
+  // Get all available slots compare to the one chosen
+  getAvailableSlots(): AvailableSlot[] {
+    const allSlots = this.generateAllSlots();
 
-    // toutes les soutenances sauf celle actuelle
-    const autresSoutenances = Object.values(this.soutenancesJour).flatMap(
-      (sout) => sout.filter((s) => s.id !== this.soutenance.id),
+    // All slots except the current one
+    const otherSlots = Object.values(this.soutenancesJour).flatMap((sout) =>
+      sout.filter((s) => s.id !== this.soutenance.id),
     );
 
-    // filtrage des créneaux valides
-    let creneaux = this.filterCreneauxValides(allCreneaux, autresSoutenances);
+    // Filter valid slots
+    let validSlots = this.filterValidSlots(allSlots, otherSlots);
 
-    // ajouter le créneau actuel s’il n’est pas déjà présent
-    const currentKey = this.getCurrentCreneauValue();
-    if (
-      !creneaux.some(
-        (c) => `${c.date}|${c.salle}|${c.heureDebut}` === currentKey,
-      )
-    ) {
-      creneaux.unshift({
-        date: formatDateToYYYYMMDD(this.soutenance.dateDebut!),
-        salle: this.soutenance.salle!,
-        heureDebut: dateToHeureStr(this.soutenance.dateDebut!),
-        heureFin: dateToHeureStr(this.soutenance.dateFin!),
-      });
-    }
+    // Add current slot if not already present
+    this.addCurrentSlotIfMissing(validSlots);
 
-    // tri final
-    return sortCreneaux(creneaux);
+    // Final sort
+    return sortSlots(validSlots);
   }
 
-  getLecteursDisponibles(chevauchements: SlotItem[]): Staff[] {
+  // Add current slot to the given list if not already present
+  private addCurrentSlotIfMissing(validSlots: AvailableSlot[]): void {
+    const currentKey = this.getCurrentCreneauValue();
+
+    const isAlreadyPresent = validSlots.some(
+      (c) => `${c.date}|${c.salle}|${c.heureDebut}` === currentKey,
+    );
+
+    if (!isAlreadyPresent) {
+      validSlots.unshift({
+        date: formatDateToYYYYMMDD(this.soutenance.dateDebut!),
+        salle: this.soutenance.salle!,
+        heureDebut: dateToHoursStr(this.soutenance.dateDebut!),
+        heureFin: dateToHoursStr(this.soutenance.dateFin!),
+      });
+    }
+  }
+
+  // Get all reader available for the chosen slot
+  getAvailableReaders(chevauchements: SlotItem[]): Staff[] {
     const idNonDisponibles = chevauchements.flatMap((s) => [
       s.idLecteur,
       s.idReferent,
     ]);
 
-    const referentTechnique = referentEstTechnique(
+    const referentTechnique = referentIsTechnical(
       this.soutenance.idReferent,
       this.allStaff,
     );
@@ -238,44 +252,44 @@ export class ModaleSoutenanceComponent implements OnInit {
     });
   }
 
-  updateLecteursDisponibles(creneauValue: string, keepCurrentLecteur = false) {
+  updateAvailableReaders(creneauValue: string, keepCurrentLecteur = false) {
     const [date, salleStr, heureDebut] = creneauValue.split("|");
     const salle = Number(salleStr);
-    const creneau = this.creneauxDisponibles.find(
+    const creneau = this.availableSlots.find(
       (c) =>
         c.date === date && c.salle === salle && c.heureDebut === heureDebut,
     );
     if (!creneau) return;
 
-    const heureDebutDate = buildDate(creneau.date, creneau.heureDebut);
-    const heureFinDate = buildDate(creneau.date, creneau.heureFin);
+    const hourStartDate = buildDate(creneau.date, creneau.heureDebut);
+    const hourEndDate = buildDate(creneau.date, creneau.heureFin);
 
-    const soutenances = this.soutenancesJour[date] || [];
+    const slots = this.soutenancesJour[date] || [];
 
-    const chevauchements = soutenances.filter(
+    const overlaps = slots.filter(
       (s) =>
         s.id !== this.soutenance.id &&
-        isOverlap(heureDebutDate, heureFinDate, s.dateDebut!, s.dateFin!),
+        isOverlap(hourStartDate, hourEndDate, s.dateDebut!, s.dateFin!),
     );
 
-    this.enseignantsLecteurs = this.getLecteursDisponibles(chevauchements);
+    this.enseignantsLecteurs = this.getAvailableReaders(overlaps);
 
     const lecteurCtrl = this.soutenanceForm?.get("lecteur");
     if (!lecteurCtrl) return;
 
     if (keepCurrentLecteur) {
-      const lecteurActuelDispo = this.enseignantsLecteurs.some(
+      const currentReaderAvailable = this.enseignantsLecteurs.some(
         (e) => e.idPersonnel === this.soutenance.idLecteur,
       );
-      if (!lecteurActuelDispo) {
+      if (!currentReaderAvailable) {
         lecteurCtrl.setValue(this.enseignantsLecteurs[0]?.idPersonnel ?? null);
       }
     } else {
       const currentLecteur = Number(lecteurCtrl.value);
-      const toujoursDispo = this.enseignantsLecteurs.some(
+      const stillAvailable = this.enseignantsLecteurs.some(
         (e) => e.idPersonnel === currentLecteur,
       );
-      if (!toujoursDispo) {
+      if (!stillAvailable) {
         lecteurCtrl.setValue(this.enseignantsLecteurs[0]?.idPersonnel ?? null);
         this.toastr.warning(
           "L'enseignant lecteur précédent n'est pas disponible sur ce créneau\nUn autre lecteur a été sélectionné automatiquement.",
@@ -296,7 +310,7 @@ export class ModaleSoutenanceComponent implements OnInit {
     const form = this.soutenanceForm.value;
     const [date, salleStr, heureDebut] = form.creneau.split("|");
     const salle = Number(salleStr);
-    const creneau = this.creneauxDisponibles.find(
+    const creneau = this.availableSlots.find(
       (c) =>
         c.date === date && c.salle === salle && c.heureDebut === heureDebut,
     );
