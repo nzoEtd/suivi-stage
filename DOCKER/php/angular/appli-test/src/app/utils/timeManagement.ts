@@ -92,7 +92,7 @@ export function passWeekends(
   return [new Date(NaN), daysToPass, lastWeekend];
 }
 
-export function dateToHeureStr(d: Date): string {
+export function dateToHoursStr(d: Date): string {
   return (
     String(d.getHours()).padStart(2, "0") +
     ":" +
@@ -105,7 +105,7 @@ export function buildDate(dateStr: string, heureStr: string): Date {
 }
 
 export function formatDate(pDate: Date, mode: "Date" | "Heure"): string {
-  return mode === "Date" ? formatDateToYYYYMMDD(pDate) : dateToHeureStr(pDate);
+  return mode === "Date" ? formatDateToYYYYMMDD(pDate) : dateToHoursStr(pDate);
 }
 
 export function formatStringDate(pDate: string): string {

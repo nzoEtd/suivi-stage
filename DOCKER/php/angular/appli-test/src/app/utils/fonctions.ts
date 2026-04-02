@@ -2,15 +2,18 @@ import { ChangeDetectorRef } from "@angular/core";
 import { Company } from "../models/company.model";
 import { Planning } from "../models/planning.model";
 import { SlotItem } from "../models/slotItem.model";
-import { Soutenance, SoutenanceCreate } from "../models/soutenance.model";
+import { Soutenance } from "../models/soutenance.model";
 import { Staff } from "../models/staff.model";
 import { Student } from "../models/student.model";
-import { buildDate, formatDate, getDateHeure, isSameDay } from "./timeManagement";
+import {
+  buildDate,
+  formatDate,
+  getDateHeure,
+  isSameDay,
+} from "./timeManagement";
 import { CompanyTutor } from "../models/company-tutor.model";
 import { Student_TrainingYear_AcademicYear } from "../models/student-trainingYear-academicYear.model";
 import { Student_Staff_AcademicYear_String } from "../models/student-staff-academicYear-string.model";
-import { CreneauDisponible } from "./types";
-import { FormGroup } from "@angular/forms";
 
 export async function loadSoutenancesForPlanning(
   planning: Planning,
@@ -137,7 +140,7 @@ export function getAllSallesUsed(
       }
     });
   });
-  if(newSlots){
+  if (newSlots) {
     newSlots.forEach((slot) => {
       sallesDispo.forEach((salle) => {
         if (
@@ -153,17 +156,31 @@ export function getAllSallesUsed(
   return salles;
 }
 
-export function createSlotsFromStudents(allStudents: Student[], allCompanies: Company[], allTutors: CompanyTutor[], referents: Student_Staff_AcademicYear_String[], academicYearId: number|null, slotDuration: number, slotDurationTierTemps: number): SlotItem[] {
+export function createSlotsFromStudents(
+  allStudents: Student[],
+  allCompanies: Company[],
+  allTutors: CompanyTutor[],
+  referents: Student_Staff_AcademicYear_String[],
+  academicYearId: number | null,
+  slotDuration: number,
+  slotDurationTierTemps: number,
+): SlotItem[] {
   const slots: SlotItem[] = [];
-  allStudents.forEach(student => {
-    const referent = academicYearId? referents.find(r => r.idUPPA === student?.idUPPA && r.idAnneeUniversitaire === academicYearId): undefined;
-    const company = student?.idEntreprise 
-      ? allCompanies.find(c => c.idEntreprise === student.idEntreprise)
+  allStudents.forEach((student) => {
+    const referent = academicYearId
+      ? referents.find(
+          (r) =>
+            r.idUPPA === student?.idUPPA &&
+            r.idAnneeUniversitaire === academicYearId,
+        )
+      : undefined;
+    const company = student?.idEntreprise
+      ? allCompanies.find((c) => c.idEntreprise === student.idEntreprise)
       : null;
-    const tutor = student?.idTuteur 
-    ? allTutors.find(f => f.idTuteur === student.idTuteur)
-    : null;
-    
+    const tutor = student?.idTuteur
+      ? allTutors.find((f) => f.idTuteur === student.idTuteur)
+      : null;
+
     const slot = {
       id: crypto.randomUUID(),
       topPercent: 0,
@@ -171,29 +188,46 @@ export function createSlotsFromStudents(allStudents: Student[], allCompanies: Co
       dateDebut: null,
       dateFin: null,
       idUPPA: student ? student.idUPPA : "Numéro étudiant inconnu",
-      etudiant: student ? `${student.nom} ${student.prenom}` : "Étudiant inconnu",
+      etudiant: student
+        ? `${student.nom} ${student.prenom}`
+        : "Étudiant inconnu",
       tierTemps: student?.tierTemps ? student.tierTemps : false,
       idReferent: referent ? referent?.idPersonnel : 0,
-      referent: referent ? `${referent.prenomPersonnel![0]}. ${referent.nomPersonnel}` : "Pas de référent",
+      referent: referent
+        ? `${referent.prenomPersonnel![0]}. ${referent.nomPersonnel}`
+        : "Pas de référent",
       idLecteur: -1,
       lecteur: "Pas de lecteur",
       entreprise: company ? company.raisonSociale! : "Pas d'entreprise",
-      tuteur: tutor ? `${tutor.nom} ${tutor.prenom}` : "Tuteur d'entreprise inconnu",
+      tuteur: tutor
+        ? `${tutor.nom} ${tutor.prenom}`
+        : "Tuteur d'entreprise inconnu",
       salle: null,
       duree: student?.tierTemps ? slotDurationTierTemps : slotDuration,
     };
     slots.push(slot);
-  })
+  });
   return slots;
 }
 
-export function updateLecteur(keepCurrentLecteur = false, soutenancesJour: Record<string, SlotItem[]>, soutenance: SlotItem, allStaff: Staff[]): Staff | null {
-  console.log("tt les trucs sont là ?", keepCurrentLecteur, soutenancesJour, soutenance, allStaff)
+export function updateLecteur(
+  keepCurrentLecteur = false,
+  soutenancesJour: Record<string, SlotItem[]>,
+  soutenance: SlotItem,
+  allStaff: Staff[],
+): Staff | null {
+  console.log(
+    "tt les trucs sont là ?",
+    keepCurrentLecteur,
+    soutenancesJour,
+    soutenance,
+    allStaff,
+  );
   const dateDeb = formatDate(soutenance.dateDebut!, "Date");
   const heureDeb = formatDate(soutenance.dateDebut!, "Heure");
   const heureFin = formatDate(soutenance.dateFin!, "Heure");
-  console.log("les dates ?", dateDeb, heureDeb, heureFin)
-  
+  console.log("les dates ?", dateDeb, heureDeb, heureFin);
+
   const heureDebutDate = buildDate(dateDeb, heureDeb);
   const heureFinDate = buildDate(dateDeb, heureFin);
 
@@ -203,41 +237,36 @@ export function updateLecteur(keepCurrentLecteur = false, soutenancesJour: Recor
     .filter(
       (s) =>
         s.id !== soutenance.id &&
-        isOverlap(
-          heureDebutDate,
-          heureFinDate,
-          s.dateDebut!,
-          s.dateFin!,
-        ),
+        isOverlap(heureDebutDate, heureFinDate, s.dateDebut!, s.dateFin!),
     )
     .flatMap((s) => [s.idLecteur, s.idReferent]);
 
-  const referentTechnique = referentEstTechnique(
+  const referentTechnique = referentIsTechnical(
     soutenance.idReferent,
     allStaff,
   );
 
   let enseignantsLecteurs = allStaff.filter((s) => {
     if (idNonDisponibles.includes(s.idPersonnel)) {
-      console.log("non dispo :", s.nom)
+      console.log("non dispo :", s.nom);
       return false;
     }
     if (s.idPersonnel === soutenance.idReferent) {
-      console.log("c déjà le référent :", s.nom)
+      console.log("c déjà le référent :", s.nom);
       return false;
     }
     if (!referentTechnique && !s.estTechnique) {
-      console.log("le référent est pas technique et lui non plus :", s.nom)
+      console.log("le référent est pas technique et lui non plus :", s.nom);
       return false;
     }
-    console.log("c tt bon :", s.nom)
+    console.log("c tt bon :", s.nom);
     return true;
   });
-  console.log("lecteurs après leur truc ?", enseignantsLecteurs)
+  console.log("lecteurs après leur truc ?", enseignantsLecteurs);
 
-  let lecteur = enseignantsLecteurs.find(
-    (e) => e.idPersonnel === soutenance.idLecteur,
-  ) ?? null;
+  let lecteur =
+    enseignantsLecteurs.find((e) => e.idPersonnel === soutenance.idLecteur) ??
+    null;
 
   if (keepCurrentLecteur) {
     const lecteurActuelDispo = enseignantsLecteurs.some(
@@ -257,11 +286,19 @@ export function updateLecteur(keepCurrentLecteur = false, soutenancesJour: Recor
   return lecteur;
 }
 
-export function isOverlap(start1: Date, end1: Date, start2: Date, end2: Date): boolean {
+export function isOverlap(
+  start1: Date,
+  end1: Date,
+  start2: Date,
+  end2: Date,
+): boolean {
   return start1 < end2 && end1 > start2;
 }
 
-export function referentEstTechnique(idReferent: number, allStaff: Staff[]): boolean {
+export function referentIsTechnical(
+  idReferent: number,
+  allStaff: Staff[],
+): boolean {
   const enseignant = allStaff.find((s) => s.idPersonnel === idReferent);
   return enseignant?.estTechnique || false;
 }
