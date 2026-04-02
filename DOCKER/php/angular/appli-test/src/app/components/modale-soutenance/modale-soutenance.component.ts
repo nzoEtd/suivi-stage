@@ -59,6 +59,7 @@ export class ModaleSoutenanceComponent implements OnInit {
   enseignantsLecteurs: Staff[] = [];
   creneauxDisponibles: CreneauDisponible[] = [];
   newSoutenance: Soutenance = new Soutenance();
+  title: string = "";
 
   isDataLoaded = false;
   isSubmitting = false;
@@ -86,6 +87,7 @@ export class ModaleSoutenanceComponent implements OnInit {
     });
 
     this.updateLecteursDisponibles(currentCreneauKey, true);
+    this.title = `Soutenance ${formatDate(this.soutenance.dateDebut!, "Heure")} - ${formatDate(this.soutenance.dateFin!, "Heure")} S${this.soutenance.salle}`;
     this.isDataLoaded = true;
   }
 

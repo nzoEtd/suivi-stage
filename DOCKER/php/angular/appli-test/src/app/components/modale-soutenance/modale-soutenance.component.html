@@ -1,9 +1,10 @@
 <app-modale
   *ngIf="isModalOpen" 
-  title="Générer un planning"
+  [title]="title"
   (submit)="onSubmit()"
   (cancel)="onCancel()"
-  [hasValue]="!(!isFormChanged() || soutenanceForm.invalid)">
+  [hasValue]="!(!isFormChanged() || soutenanceForm.invalid)"
+  [onlyDisplay]="!editMode">
 
     @if (isSubmitting || !isDataLoaded) {
       <div class="loading-overlay">
