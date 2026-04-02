@@ -25,7 +25,7 @@ import {
   getAllSallesUsed,
   loadSoutenancesForPlanning,
 } from "../../utils/fonctions";
-import { getDatesBetween } from "../../utils/timeManagement";
+import { getDatesUsed } from "../../utils/timeManagement";
 import { CompanyTutor } from "../../models/company-tutor.model";
 import { Student_TrainingYear_AcademicYear } from "../../models/student-trainingYear-academicYear.model";
 import { AcademicYear } from "../../models/academic-year.model";
@@ -294,15 +294,6 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
       this.selectedPlanning.heureDebutAprem &&
       this.selectedPlanning.heureFinAprem
     ) {
-      // Générer les dates pour ce planning uniquement
-      this.jours = getDatesBetween(
-        this.selectedPlanning.dateDebut,
-        this.selectedPlanning.dateFin,
-      );
-
-      // Sélectionner le premier jour par défaut
-      this.selectedJour = this.jours[0];
-
       //mettre en place les timeBlocks
       this.timeBlocks = [];
       const newTimeBlocks: TimeBlockConfig[] = [
@@ -332,9 +323,16 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
         this.allTrainingAcademicYears,
         this.cdRef,
       );
+      // Générer les dates pour ce planning uniquement
+      this.jours = getDatesUsed(this.slots);
+      console.log("les jours :", this.jours)
+
+      // Sélectionner le premier jour par défaut
+      this.selectedJour = this.jours[0];
+
       this.slots.forEach((slot) => {
         const dayKey = slot.dateDebut
-          ? slot.dateDebut.toISOString().slice(0, 10)
+          ? slot.dateDebut.toLocaleDateString('fr-CA').slice(0, 10)
           : "attente"; // "YYYY-MM-DD"
         if (!this.planningByDay[dayKey]) this.planningByDay[dayKey] = [];
         this.planningByDay[dayKey].push(slot);

@@ -174,7 +174,7 @@ export class AddUpdateScheduleComponent
             slot.id = idSlotTemp;
           }
           const dayKey = slot.dateDebut
-            ? slot.dateDebut.toISOString().slice(0, 10)
+            ? slot.dateDebut.toLocaleDateString('fr-CA').slice(0, 10)
             : "attente"; // "YYYY-MM-DD"
           if (!this.planningByDay[dayKey]) this.planningByDay[dayKey] = [];
           this.planningByDay[dayKey].push(slot);
@@ -267,12 +267,12 @@ export class AddUpdateScheduleComponent
     this.newDay = this.planningForm.value;
     if (this.newDay) {
       const date = new Date(this.newDay.date);
-      const dayKey = date.toISOString().slice(0, 10);
+      const dayKey = date.toLocaleDateString('fr-CA').slice(0, 10);
       this.planningByDay = {
         ...this.planningByDay,
         [dayKey]: this.planningByDay[dayKey] || [],
       };
-      if (!this.jours.some((j) => j.toISOString().slice(0, 10) === dayKey)) {
+      if (!this.jours.some((j) => j.toLocaleDateString('fr-CA').slice(0, 10) === dayKey)) {
         this.jours = [...this.jours, date].sort(
           (a, b) => a.getTime() - b.getTime(),
         );
@@ -498,7 +498,7 @@ export class AddUpdateScheduleComponent
         if (!this.itemsToAdd.some((i) => i.id == s.id)) {
           soutenances.push({
             idSoutenance: s.id as number,
-            date: s.dateDebut!.toISOString().slice(0, 10),
+            date: s.dateDebut!.toLocaleDateString('fr-CA').slice(0, 10),
             nomSalle: s.salle,
             heureDebut:
               s.dateDebut!.getHours().toString().padStart(2, "0") +
@@ -518,7 +518,7 @@ export class AddUpdateScheduleComponent
       if (this.itemsToAdd.length != 0) {
         this.itemsToAdd.forEach((i) => {
           soutenancesToAdd.push({
-            date: i.dateDebut!.toISOString().slice(0, 10),
+            date: i.dateDebut!.toLocaleDateString('fr-CA').slice(0, 10),
             nomSalle: i.salle,
             heureDebut:
               i.dateDebut!.getHours().toString().padStart(2, "0") +

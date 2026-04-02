@@ -1,15 +1,16 @@
-export function getDatesBetween(start: Date, end: Date): Date[] {
-  const dates: Date[] = [];
-  const currentDate = new Date(start);
-  const endDate = new Date(end);
+import { SlotItem } from "../models/slotItem.model";
 
-  while (currentDate <= endDate) {
-    const day = currentDate.getDay();
-    if (day !== 0 && day !== 6) {
-      dates.push(new Date(currentDate));
+export function getDatesUsed(slot: SlotItem[]): Date[] {
+  const dates: Date[] = [];
+  
+  slot.forEach(s => {
+    const date = new Date(s.dateDebut!.toLocaleDateString('fr-CA').slice(0, 10));
+    date.setHours(0, 0, 0, 0);
+    if(!dates.some(d => d.getTime() == date.getTime())){
+      dates.push(date);
     }
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
+  });
+  dates.sort((a, b) => a.getTime() - b.getTime());
 
   return dates;
 }
