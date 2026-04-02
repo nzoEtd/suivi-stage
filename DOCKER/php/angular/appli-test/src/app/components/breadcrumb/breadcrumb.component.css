@@ -29,12 +29,12 @@
 .breadcrumb li:not(:first-child)::before {
   content: "/";
   padding: 0 0.2rem;
-  color: #ababab;
+  color: grey;
   flex-shrink: 0;
 }
 
 .breadcrumb a {
-  color: #ababab;
+  color: grey;
   text-decoration: none;
 }
 

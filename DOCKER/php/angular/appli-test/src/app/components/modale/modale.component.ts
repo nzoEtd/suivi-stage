@@ -8,7 +8,7 @@ import { CommonModule } from "@angular/common";
   styleUrls: ['./modale.component.css']
 })
 export class ModaleComponent {
-
+  @Input() visible = false;
   @Input() title: string = '';
   @Input() hasValue: boolean = true;
   @Input() submitLabel: string = 'Valider';
