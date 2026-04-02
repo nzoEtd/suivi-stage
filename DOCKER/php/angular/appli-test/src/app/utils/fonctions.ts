@@ -125,6 +125,7 @@ export function getAllSallesUsed(
   slots: SlotItem[],
   newSlots?: SlotItem[],
 ): number[] {
+  console.log("jour getallsallesused ?", jour)
   const salles: number[] = [];
   slots.forEach((slot) => {
     sallesDispo.forEach((salle) => {

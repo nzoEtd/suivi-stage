@@ -193,7 +193,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
         block,
         this.calculateSlotsInBlock(
           block,
-          this.planningByDay[this.jourActuel.toISOString().slice(0, 10)],
+          this.planningByDay[this.jourActuel.toLocaleDateString('fr-CA').slice(0, 10)],
         ),
       );
     });
@@ -588,7 +588,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
     block: TimeBlock,
   ) {
     const draggedSlot = event.item.data as SlotItem;
-    const dayKey = targetDay.toISOString().slice(0, 10);
+    const dayKey = targetDay.toLocaleDateString('fr-CA').slice(0, 10);
     this.planningByDay[dayKey] ??= [];
 
     const prevState = {
@@ -606,7 +606,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
         ? draggedSlot.dateFin.getTime() - draggedSlot.dateDebut.getTime()
         : null;
     const lastDate = draggedSlot.dateDebut
-      ? draggedSlot.dateDebut.toISOString().slice(0, 10)
+      ? draggedSlot.dateDebut.toLocaleDateString('fr-CA').slice(0, 10)
       : null;
 
     if (container && targetDay && block) {
@@ -985,7 +985,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
         block,
         this.calculateSlotsInBlock(
           block,
-          this.planningByDay[this.jourActuel.toISOString().slice(0, 10)],
+          this.planningByDay[this.jourActuel.toLocaleDateString('fr-CA').slice(0, 10)],
         ),
       );
     }

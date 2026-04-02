@@ -17,7 +17,7 @@ import { StudentService } from "../../services/student.service";
 import { CompanyService } from "../../services/company.service";
 import { Staff } from "../../models/staff.model";
 import { Company } from "../../models/company.model";
-import { getDatesBetween, passWeekends } from "../../utils/timeManagement";
+import { getDatesUsed, passWeekends } from "../../utils/timeManagement";
 import { SalleService } from "../../services/salle.service";
 import { CompanyTutorService } from "../../services/company-tutor.service";
 import { StudentTrainingYearAcademicYearService } from "../../services/student-trainingYear-academicYear.service";
@@ -109,11 +109,6 @@ export class AddScheduleComponent implements OnInit {
         );
       }
 
-      this.jours = getDatesBetween(
-        this.planning.dateDebut!,
-        this.planning.dateFin!
-      );
-
       this.slots = await convertSoutenancesToSlots(
         this.soutenance$,
         result.students,
@@ -124,6 +119,9 @@ export class AddScheduleComponent implements OnInit {
         result.trainingAcademicYear,
         this.planning.idAnneeUniversitaire
       );
+
+      this.jours = getDatesUsed(this.slots);
+      
       this.sallesDispo = result.salles
         .filter((s) => s.estDisponible)
         .map((s) => s.nomSalle);
