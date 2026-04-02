@@ -10,7 +10,6 @@ class FicheDescriptive extends Model
     use HasFactory;
     // Définit les attributs pouvant être remplis
     protected $fillable = [
-        'idFicheDescriptive',
         'dateCreation',
         'dateDerniereModification',
         'contenuStage',

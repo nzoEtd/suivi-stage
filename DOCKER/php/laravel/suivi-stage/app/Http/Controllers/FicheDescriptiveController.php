@@ -149,13 +149,44 @@ class FicheDescriptiveController extends Controller
                 'dateFinInterruption' => 'nullable|date|date-format:Y-m-d',
                 'personnelTechniqueDisponible' => 'nullable||boolean',
                 'materielPrete' => 'nullable|string',
+                'contenuStage' => 'nullable|string',
+                'thematique' => 'nullable|string|max:50',
+                'sujet' => 'nullable|string|max:50',
+                'fonctions' => 'nullable|string',
+                'taches' => 'nullable|string',
+                'competences' => 'nullable|string',
+                'details' => 'nullable|string',
+                'debutStage' => 'nullable|date|date-format:Y-m-d',
+                'finStage' => 'nullable|date|date-format:Y-m-d',
+                'nbJourSemaine' => 'nullable|integer',
+                'nbHeureSemaine' => 'nullable|integer',
+                'clauseConfidentialite' => 'nullable|boolean',
+                'serviceEntreprise' => 'nullable|string|max:100',
+                'adresseMailStage' => 'nullable|string|email|max:100',
+                'telephoneStage' => ['nullable', 'string', 'regex:/^(\+33|0)\d{9}$/m', 'max:20'],
+                'adresseStage' => 'nullable|string|max:100',
+                'codePostalStage' => ['nullable', 'string', 'regex:/^\d{5}$/'],
+                'villeStage' => 'nullable|string|max:50',
+                'paysStage' => 'nullable|string|max:50',
+                'longitudeStage' => 'nullable|string|max:20',
+                'latitudeStage' => 'nullable|string|max:20',
+                'statut' => 'bail|required|string|in:En cours,Validee,Refusée',
+                'numeroConvention' => 'nullable|string|max:50',
+                'interruptionStage' => 'nullable|boolean',
+                'dateDebutInterruption' => 'nullable|date|date-format:Y-m-d',
+                'dateFinInterruption' => 'nullable|date|date-format:Y-m-d',
+                'personnelTechniqueDisponible' => 'nullable||boolean',
+                'materielPrete' => 'nullable|string',
             ]);
 
             // Récupération et mise à jour en une seule ligne
             $validatedData['dateDerniereModification'] = Carbon::now()->format('Y-m-d');
             FicheDescriptive::findOrFail($id)->update($validatedData);
 
-            return response()->json($validatedData, 200);
+            $fiche = FicheDescriptive::findOrFail($id);
+            $validatedData['dateDerniereModification'] = Carbon::now()->format('Y-m-d');
+            $fiche->update($validatedData);
+            return response()->json($fiche->fresh(), 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Erreur de validation dans les données',
@@ -163,7 +194,7 @@ class FicheDescriptiveController extends Controller
             ], 422);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
-                'message' => 'Fiche Descriptive non trouvée',
+                'message' => 'Fiche descriptive non trouvée',
                 'erreurs' => $e->getMessage()
             ], 404);
         } catch (\Illuminate\Database\QueryException $e) {
@@ -254,4 +285,3 @@ class FicheDescriptiveController extends Controller
         }
     }
 }
-?>

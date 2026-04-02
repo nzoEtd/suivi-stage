@@ -83,28 +83,33 @@ class DispatchDataDescriptiveSheet
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $data = $request->json()->all();
+        try {
+            if ($request->getContent() != '' && is_null(json_decode($request->getContent(), true))) {
+                return response()->json(['message' => 'Le format JSON est invalide'], 400);
+            }
 
-        if (!is_array($data)) {
-            return response()->json(['message' => 'Invalid JSON format'], 400);
+            // Vérifiez si la route demandée correspond à celle de handleSheetCreation
+            if ($request->is('api/fiche-descriptive/create')) {
+                return $this->handleSheetCreation($request);
+            }
+
+            // Pour la mise à jour d'une fiche descriptive
+            if ($request->is('api/fiche-descriptive/update/*') && $request->route('id')) {
+                return $this->handleSheetUpdate($request, $request->route('id'));
+            }
+
+            // Pour le renvoi d'une fiche descriptive
+            if ($request->is('api/fiche-descriptive/*') && $request->route('id')) {
+                return $this->handleSheetGet($request, $request->route('id'));
+            }
+
+            return $next($request);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => "Une erreur s'est produite :",
+                'exception' => $e->getMessage()
+            ], 500);
         }
-
-        // Vérifiez si la route demandée correspond à celle de handleSheetCreation
-        if ($request->is('api/fiche-descriptive/create')) {
-            return $this->handleSheetCreation($request);
-        }
-
-        // Pour la mise à jour d'une fiche descriptive
-        if ($request->is('api/fiche-descriptive/update/*') && $request->route('id')) {
-            return $this->handleSheetUpdate($request, $request->route('id'));
-        }
-
-        // Pour le renvoie d'une fiche descriptive
-        if ($request->is('api/fiche-descriptive/*') && $request->route('id')) {
-            return $this->handleSheetGet($request, $request->route('id'));
-        }
-
-        return $next($request);
     }
 
     /**

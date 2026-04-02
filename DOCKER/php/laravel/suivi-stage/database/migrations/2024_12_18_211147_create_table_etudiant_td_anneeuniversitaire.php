@@ -21,13 +21,13 @@ class CreateTableEtudiantTdAnneeuniversitaire extends Migration
 
             // Clé étrangère
             $table->string('idUPPA');
-            $table->foreign('idUPPA')->references('idUPPA')->on('etudiants');
+            $table->foreign('idUPPA')->references('idUPPA')->on('etudiants')->onDelete('cascade');
 
             $table->unsignedTinyInteger('idTD');
-            $table->foreign('idTD')->references('idTD')->on('t_d_s');
+            $table->foreign('idTD')->references('idTD')->on('t_d_s')->onDelete('cascade');
 
             $table->unsignedInteger('idAnneeUniversitaire');
-            $table->foreign('idAnneeUniversitaire')->references('idAnneeUniversitaire')->on('annee_universitaires');
+            $table->foreign('idAnneeUniversitaire')->references('idAnneeUniversitaire')->on('annee_universitaires')->onDelete('cascade');
         });
     }
 
