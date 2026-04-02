@@ -1,0 +1,1258 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>stage-management-iut documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">stage-management-iut documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  SearchDetailsComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/components/search-details/search-details.component.ts</code>
+</p>
+
+
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.io/api/core/OnInit" target="_blank" >OnInit</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-search-details</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                                <code><a href="https://angular.io/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                <code><a href="../components/LoadingComponent.html" target="_self" >LoadingComponent</a></code>
+                                <code><a href="../components/BreadcrumbComponent.html" target="_self" >BreadcrumbComponent</a></code>
+                </td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./search-details.component.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./search-details.component.css</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#company" >company</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#currentUserRole" >currentUserRole</a>
+                            </li>
+                            <li>
+                                <a href="#dataLoaded" >dataLoaded</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#search" >search</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#selectedStudent" >selectedStudent</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#getStatusClass" >getStatusClass</a>
+                            </li>
+                            <li>
+                                <a href="#goBack" >goBack</a>
+                            </li>
+                            <li>
+                                <a href="#goToDashboard" >goToDashboard</a>
+                            </li>
+                            <li>
+                                <a href="#goToEdit" >goToEdit</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#loadCompanyDetails" >loadCompanyDetails</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(route: <a href="https://angular.io/api/router/ActivatedRoute" target="_blank">ActivatedRoute</a>, authService: <a href="../injectables/AuthService.html" target="_self">AuthService</a>, internshipSearchService: <a href="../injectables/InternshipSearchService.html" target="_self">InternshipSearchService</a>, companyService: <a href="../injectables/CompanyService.html" target="_self">CompanyService</a>, navigationService: <a href="../injectables/NavigationService.html" target="_self">NavigationService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/app/components/search-details/search-details.component.ts:26</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>route</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.io/api/router/ActivatedRoute" target="_blank" >ActivatedRoute</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>authService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/AuthService.html" target="_self" >AuthService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>internshipSearchService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/InternshipSearchService.html" target="_self" >InternshipSearchService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>companyService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/CompanyService.html" target="_self" >CompanyService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>navigationService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/NavigationService.html" target="_self" >NavigationService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getStatusClass"></a>
+                    <span class="name">
+                        <span ><b>getStatusClass</b></span>
+                        <a href="#getStatusClass"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getStatusClass(status: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="93"
+                                    class="link-to-prism">src/app/components/search-details/search-details.component.ts:93</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Returns the CSS class for the search status badge</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>status</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <ul>
+<li>The status string to map to a CSS class</li>
+</ul>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                <p>The corresponding CSS class for the status</p>
+
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="goBack"></a>
+                    <span class="name">
+                        <span ><b>goBack</b></span>
+                        <a href="#goBack"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>goBack()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="122"
+                                    class="link-to-prism">src/app/components/search-details/search-details.component.ts:122</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Navigates back to the previous page</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="goToDashboard"></a>
+                    <span class="name">
+                        <span ><b>goToDashboard</b></span>
+                        <a href="#goToDashboard"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>goToDashboard()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="106"
+                                    class="link-to-prism">src/app/components/search-details/search-details.component.ts:106</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Navigates to the dashboard page</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="goToEdit"></a>
+                    <span class="name">
+                        <span ><b>goToEdit</b></span>
+                        <a href="#goToEdit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>goToEdit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="113"
+                                    class="link-to-prism">src/app/components/search-details/search-details.component.ts:113</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Navigates to the edit form for the current search</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadCompanyDetails"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>loadCompanyDetails</b></span>
+                        <a href="#loadCompanyDetails"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>loadCompanyDetails(companyId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="79"
+                                    class="link-to-prism">src/app/components/search-details/search-details.component.ts:79</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Loads company details based on the provided company ID</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>companyId</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <ul>
+<li>The ID of the company to load</li>
+</ul>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="42"
+                                    class="link-to-prism">src/app/components/search-details/search-details.component.ts:42</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Initializes the component by:</p>
+<ol>
+<li>Setting up the current user role</li>
+<li>Loading the selected student from session storage</li>
+<li>Retrieving search details based on the URL parameter</li>
+</ol>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="company"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>company</b></span>
+                        <a href="#company"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/Company.html" target="_self" >Company</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">src/app/components/search-details/search-details.component.ts:25</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentUserRole"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>currentUserRole</b></span>
+                        <a href="#currentUserRole"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="23" class="link-to-prism">src/app/components/search-details/search-details.component.ts:23</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="dataLoaded"></a>
+                    <span class="name">
+                        <span ><b>dataLoaded</b></span>
+                        <a href="#dataLoaded"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/app/components/search-details/search-details.component.ts:26</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="search"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>search</b></span>
+                        <a href="#search"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/InternshipSearch.html" target="_self" >InternshipSearch</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/app/components/search-details/search-details.component.ts:24</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="selectedStudent"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>selectedStudent</b></span>
+                        <a href="#selectedStudent"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/Student.html" target="_self" >Student</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="22" class="link-to-prism">src/app/components/search-details/search-details.component.ts:22</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { ActivatedRoute } from &#x27;@angular/router&#x27;;
+import { Student } from &#x27;../../models/student.model&#x27;;
+import { InternshipSearch } from &#x27;../../models/internship-search.model&#x27;;
+import { Company } from &#x27;../../models/company.model&#x27;;
+import { AuthService } from &#x27;../../services/auth.service&#x27;;
+import { InternshipSearchService } from &#x27;../../services/internship-search.service&#x27;;
+import { CompanyService } from &#x27;../../services/company.service&#x27;;
+import { NavigationService } from &#x27;../../services/navigation.service&#x27;;
+import { LoadingComponent } from &#x27;../loading/loading.component&#x27;;
+import { BreadcrumbComponent } from &quot;../breadcrumb/breadcrumb.component&quot;;
+
+@Component({
+    selector: &#x27;app-search-details&#x27;,
+    standalone: true,
+    imports: [CommonModule, LoadingComponent, BreadcrumbComponent],
+    templateUrl: &#x27;./search-details.component.html&#x27;,
+    styleUrl: &#x27;./search-details.component.css&#x27;
+})
+export class SearchDetailsComponent implements OnInit {
+    selectedStudent?: Student;
+    currentUserRole?: string;
+    search?: InternshipSearch;
+    company?: Company;
+    dataLoaded: boolean &#x3D; false;
+
+    constructor(
+        private readonly route: ActivatedRoute,
+        private readonly authService: AuthService,
+        private readonly internshipSearchService: InternshipSearchService,
+        private readonly companyService: CompanyService,
+        private readonly navigationService: NavigationService
+    ) {}
+
+    /**
+     * Initializes the component by:
+     * 1. Setting up the current user role
+     * 2. Loading the selected student from session storage
+     * 3. Retrieving search details based on the URL parameter
+     */
+    ngOnInit() {
+        let currentUser;
+        const user &#x3D; sessionStorage.getItem(&#x27;currentUser&#x27;);
+        if (user) {
+            currentUser &#x3D; JSON.parse(user);
+        }
+
+        if (this.authService.isStudent(currentUser)) {
+            this.currentUserRole &#x3D; &#x27;STUDENT&#x27;;
+        }
+        else if (this.authService.isStaff(currentUser)) {
+            this.currentUserRole &#x3D; &#x27;INTERNSHIP_MANAGER&#x27;;
+        }
+
+        const selectedStudent &#x3D; sessionStorage.getItem(&#x27;selectedStudent&#x27;);
+        if (selectedStudent) {
+            this.selectedStudent &#x3D; JSON.parse(selectedStudent);
+        }
+
+        const searchId &#x3D; Number(this.route.snapshot.paramMap.get(&#x27;idSearch&#x27;));
+        
+        if (searchId) {
+            this.internshipSearchService.getSearchById(searchId).subscribe(
+                search &#x3D;&gt; {
+                    if (search) {
+                        this.search &#x3D; search;
+                        this.loadCompanyDetails(search.idEntreprise!);
+                    }
+                }
+            );
+        }
+    }
+
+    /**
+     * Loads company details based on the provided company ID
+     * @param companyId - The ID of the company to load
+     */
+    private loadCompanyDetails(companyId: number) {
+        this.companyService.getCompanyById(companyId, [&#x27;idEntreprise&#x27;, &#x27;raisonSociale&#x27;, &#x27;adresse&#x27;, &#x27;codePostal&#x27;, &#x27;ville&#x27;]).subscribe(
+            company &#x3D;&gt; {
+                this.company &#x3D; company;
+                this.dataLoaded &#x3D; true;
+            }
+        );
+    }
+
+    /**
+     * Returns the CSS class for the search status badge
+     * @param status - The status string to map to a CSS class
+     * @returns The corresponding CSS class for the status
+     */
+    getStatusClass(status: string): string {
+        const statusMap: Record&lt;string, string&gt; &#x3D; {
+            &#x27;Relancé&#x27;: &#x27;status-badge relance&#x27;,
+            &#x27;Validé&#x27;: &#x27;status-badge valide&#x27;,
+            &#x27;En cours&#x27;: &#x27;status-badge en-attente&#x27;,
+            &#x27;Refusé&#x27;: &#x27;status-badge refuse&#x27;
+        };
+        return statusMap[status] || &#x27;status-badge&#x27;;
+    }
+
+    /**
+     * Navigates to the dashboard page
+     */
+    goToDashboard() {
+        this.navigationService.navigateToDashboard();
+    }
+
+    /**
+     * Navigates to the edit form for the current search
+     */
+    goToEdit() {
+        if (this.search) {
+            this.navigationService.navigateToSearchEditForm(this.search.idRecherche);
+        }
+    }
+
+    /**
+     * Navigates back to the previous page
+     */
+    goBack() {
+        this.navigationService.goBack();
+    }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div *ngIf&#x3D;&quot;!dataLoaded&quot;&gt;
+    &lt;app-loading/&gt;
+&lt;/div&gt;
+&lt;div *ngIf&#x3D;&quot;dataLoaded&quot; class&#x3D;&quot;container&quot;&gt;
+    &lt;div class&#x3D;&quot;content-wrapper&quot;&gt;
+        &lt;app-breadcrumb [currentUserRole]&#x3D;&quot;currentUserRole&quot; [selectedStudent]&#x3D;&quot;selectedStudent&quot;/&gt;
+        &lt;div class&#x3D;&quot;form&quot;&gt;
+            &lt;!-- En-tête avec le statut --&gt;
+            &lt;div class&#x3D;&quot;status-section&quot;&gt;
+                &lt;h3&gt;&lt;b&gt;Détails de la recherche&lt;/b&gt;&lt;/h3&gt;
+                &lt;span [class]&#x3D;&quot;getStatusClass(search?.statut || &#x27;&#x27;)&quot;&gt;
+                    {{ search?.statut }}
+                &lt;/span&gt;
+            &lt;/div&gt;
+
+            &lt;div class&#x3D;&quot;form-grid&quot;&gt;
+                &lt;!-- Type de contact --&gt;
+                &lt;div class&#x3D;&quot;form-group&quot;&gt;
+                    &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+                        &lt;label&gt;Type de contact&lt;/label&gt;
+                        &lt;p class&#x3D;&quot;info-text&quot;&gt;{{ search?.typeContact }}&lt;/p&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+
+                &lt;!-- Date 1er contact --&gt;
+                &lt;div class&#x3D;&quot;form-group&quot;&gt;
+                    &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+                        &lt;label&gt;Date du premier contact&lt;/label&gt;
+                        &lt;p class&#x3D;&quot;info-text&quot;&gt;{{ search?.date1erContact | date:&#x27;dd/MM/yyyy&#x27; }}&lt;/p&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+
+                &lt;!-- Nom de l&#x27;entreprise --&gt;
+                &lt;div class&#x3D;&quot;form-group&quot;&gt;
+                    &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+                        &lt;label&gt;Nom de l&#x27;entreprise&lt;/label&gt;
+                        &lt;p class&#x3D;&quot;info-text&quot;&gt;{{ company?.raisonSociale }}&lt;/p&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+
+                &lt;!-- Adresse --&gt;
+                &lt;div class&#x3D;&quot;form-group&quot;&gt;
+                    &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+                        &lt;label&gt;Numéro et Rue&lt;/label&gt;
+                        &lt;p class&#x3D;&quot;info-text&quot;&gt;{{ company?.adresse }}&lt;/p&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+
+                &lt;!-- Code Postal --&gt;
+                &lt;div class&#x3D;&quot;form-group&quot;&gt;
+                    &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+                        &lt;label&gt;Code Postal&lt;/label&gt;
+                        &lt;p class&#x3D;&quot;info-text&quot;&gt;{{ company?.codePostal }}&lt;/p&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+
+                &lt;!-- Ville --&gt;
+                &lt;div class&#x3D;&quot;form-group&quot;&gt;
+                    &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+                        &lt;label&gt;Ville&lt;/label&gt;
+                        &lt;p class&#x3D;&quot;info-text&quot;&gt;{{ company?.ville }}&lt;/p&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;hr class&#x3D;&quot;separator&quot;&gt;
+            &lt;h3&gt;&lt;b&gt;Informations contact&lt;/b&gt;&lt;/h3&gt;
+
+            &lt;div class&#x3D;&quot;form-grid&quot;&gt;
+                &lt;!-- Nom du contact --&gt;
+                &lt;div class&#x3D;&quot;form-group&quot;&gt;
+                    &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+                        &lt;label&gt;Nom du contact&lt;/label&gt;
+                        &lt;p class&#x3D;&quot;info-text&quot;&gt;{{ search?.nomContact }}&lt;/p&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+
+                &lt;!-- Prénom du contact --&gt;
+                &lt;div class&#x3D;&quot;form-group&quot;&gt;
+                    &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+                        &lt;label&gt;Prénom du contact&lt;/label&gt;
+                        &lt;p class&#x3D;&quot;info-text&quot;&gt;{{ search?.prenomContact }}&lt;/p&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+
+                &lt;!-- Téléphone contact --&gt;
+                &lt;div class&#x3D;&quot;form-group&quot;&gt;
+                    &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+                        &lt;label&gt;Téléphone&lt;/label&gt;
+                        &lt;p class&#x3D;&quot;info-text&quot;&gt;{{ search?.telephoneContact }}&lt;/p&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+
+                &lt;!-- Mail contact --&gt;
+                &lt;div class&#x3D;&quot;form-group&quot;&gt;
+                    &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+                        &lt;label&gt;Email&lt;/label&gt;
+                        &lt;p class&#x3D;&quot;info-text&quot;&gt;{{ search?.adresseMailContact }}&lt;/p&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;!-- Fonction du contact --&gt;
+            &lt;div class&#x3D;&quot;form-group fonction-contact-group&quot;&gt;
+                &lt;div class&#x3D;&quot;input-wrapper&quot;&gt;
+                    &lt;label&gt;Fonction du contact&lt;/label&gt;
+                    &lt;p class&#x3D;&quot;info-text&quot;&gt;{{ search?.fonctionContact }}&lt;/p&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;hr class&#x3D;&quot;separator&quot;&gt;
+
+            &lt;!-- Dates importantes --&gt;
+            &lt;div class&#x3D;&quot;dates-section&quot;&gt;
+                &lt;h3&gt;&lt;b&gt;Dates importantes&lt;/b&gt;&lt;/h3&gt;
+                &lt;div class&#x3D;&quot;dates-grid&quot;&gt;
+                    &lt;div class&#x3D;&quot;date-item&quot;&gt;
+                        &lt;label&gt;Création&lt;/label&gt;
+                        &lt;p class&#x3D;&quot;info-text&quot;&gt;{{ search?.dateCreation | date:&#x27;dd/MM/yyyy&#x27; }}&lt;/p&gt;
+                    &lt;/div&gt;
+                    &lt;div class&#x3D;&quot;date-item&quot;&gt;
+                        &lt;label&gt;Modification&lt;/label&gt;
+                        &lt;p class&#x3D;&quot;info-text&quot;&gt;{{ search?.dateModification | date:&#x27;dd/MM/yyyy&#x27; }}&lt;/p&gt;
+                    &lt;/div&gt;
+                    @if (search?.dateRelance) {
+                        &lt;div class&#x3D;&quot;date-item&quot;&gt;
+                            &lt;label&gt;Relance&lt;/label&gt;
+                            &lt;p class&#x3D;&quot;info-text&quot;&gt;{{ search?.dateRelance | date:&#x27;dd/MM/yyyy&#x27; }}&lt;/p&gt;
+                        &lt;/div&gt;
+                    }
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;hr class&#x3D;&quot;separator&quot;&gt;
+
+            &lt;!-- Observations --&gt;
+            &lt;div class&#x3D;&quot;observations-section&quot;&gt;
+                &lt;h3&gt;&lt;b&gt;Observations&lt;/b&gt;&lt;/h3&gt;
+                &lt;p class&#x3D;&quot;observations&quot;&gt;{{ search?.observations || &#x27;Aucune observation&#x27; }}&lt;/p&gt;
+            &lt;/div&gt;
+
+            &lt;!-- Boutons d&#x27;action --&gt;
+            &lt;div *ngIf&#x3D;&quot;currentUserRole &#x3D;&#x3D;&#x3D; &#x27;STUDENT&#x27;&quot; class&#x3D;&quot;action-buttons&quot;&gt;
+                &lt;button class&#x3D;&quot;cancel-button&quot; (click)&#x3D;&quot;goToDashboard()&quot;&gt;Retour&lt;/button&gt;
+                &lt;button class&#x3D;&quot;edit-button&quot; (click)&#x3D;&quot;goToEdit()&quot;&gt;Modifier&lt;/button&gt;
+            &lt;/div&gt;
+            &lt;div *ngIf&#x3D;&quot;currentUserRole &#x3D;&#x3D;&#x3D; &#x27;INTERNSHIP_MANAGER&#x27;&quot; class&#x3D;&quot;action-buttons&quot;&gt;
+                &lt;button class&#x3D;&quot;cancel-button&quot; (click)&#x3D;&quot;goBack()&quot;&gt;Retour&lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+    </div>
+
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div *ngIf="!dataLoaded">    <app-loading/></div><div *ngIf="dataLoaded" class="container">    <div class="content-wrapper">        <app-breadcrumb [currentUserRole]="currentUserRole" [selectedStudent]="selectedStudent"/>        <div class="form">            <!-- En-tête avec le statut -->            <div class="status-section">                <h3><b>Détails de la recherche</b></h3>                <span [class]="getStatusClass(search?.statut || \'\')">                    {{ search?.statut }}                </span>            </div>            <div class="form-grid">                <!-- Type de contact -->                <div class="form-group">                    <div class="input-wrapper">                        <label>Type de contact</label>                        <p class="info-text">{{ search?.typeContact }}</p>                    </div>                </div>                <!-- Date 1er contact -->                <div class="form-group">                    <div class="input-wrapper">                        <label>Date du premier contact</label>                        <p class="info-text">{{ search?.date1erContact | date:\'dd/MM/yyyy\' }}</p>                    </div>                </div>                <!-- Nom de l\'entreprise -->                <div class="form-group">                    <div class="input-wrapper">                        <label>Nom de l\'entreprise</label>                        <p class="info-text">{{ company?.raisonSociale }}</p>                    </div>                </div>                <!-- Adresse -->                <div class="form-group">                    <div class="input-wrapper">                        <label>Numéro et Rue</label>                        <p class="info-text">{{ company?.adresse }}</p>                    </div>                </div>                <!-- Code Postal -->                <div class="form-group">                    <div class="input-wrapper">                        <label>Code Postal</label>                        <p class="info-text">{{ company?.codePostal }}</p>                    </div>                </div>                <!-- Ville -->                <div class="form-group">                    <div class="input-wrapper">                        <label>Ville</label>                        <p class="info-text">{{ company?.ville }}</p>                    </div>                </div>            </div>            <hr class="separator">            <h3><b>Informations contact</b></h3>            <div class="form-grid">                <!-- Nom du contact -->                <div class="form-group">                    <div class="input-wrapper">                        <label>Nom du contact</label>                        <p class="info-text">{{ search?.nomContact }}</p>                    </div>                </div>                <!-- Prénom du contact -->                <div class="form-group">                    <div class="input-wrapper">                        <label>Prénom du contact</label>                        <p class="info-text">{{ search?.prenomContact }}</p>                    </div>                </div>                <!-- Téléphone contact -->                <div class="form-group">                    <div class="input-wrapper">                        <label>Téléphone</label>                        <p class="info-text">{{ search?.telephoneContact }}</p>                    </div>                </div>                <!-- Mail contact -->                <div class="form-group">                    <div class="input-wrapper">                        <label>Email</label>                        <p class="info-text">{{ search?.adresseMailContact }}</p>                    </div>                </div>            </div>            <!-- Fonction du contact -->            <div class="form-group fonction-contact-group">                <div class="input-wrapper">                    <label>Fonction du contact</label>                    <p class="info-text">{{ search?.fonctionContact }}</p>                </div>            </div>            <hr class="separator">            <!-- Dates importantes -->            <div class="dates-section">                <h3><b>Dates importantes</b></h3>                <div class="dates-grid">                    <div class="date-item">                        <label>Création</label>                        <p class="info-text">{{ search?.dateCreation | date:\'dd/MM/yyyy\' }}</p>                    </div>                    <div class="date-item">                        <label>Modification</label>                        <p class="info-text">{{ search?.dateModification | date:\'dd/MM/yyyy\' }}</p>                    </div>                    @if (search?.dateRelance) {                        <div class="date-item">                            <label>Relance</label>                            <p class="info-text">{{ search?.dateRelance | date:\'dd/MM/yyyy\' }}</p>                        </div>                    }                </div>            </div>            <hr class="separator">            <!-- Observations -->            <div class="observations-section">                <h3><b>Observations</b></h3>                <p class="observations">{{ search?.observations || \'Aucune observation\' }}</p>            </div>            <!-- Boutons d\'action -->            <div *ngIf="currentUserRole === \'STUDENT\'" class="action-buttons">                <button class="cancel-button" (click)="goToDashboard()">Retour</button>                <button class="edit-button" (click)="goToEdit()">Modifier</button>            </div>            <div *ngIf="currentUserRole === \'INTERNSHIP_MANAGER\'" class="action-buttons">                <button class="cancel-button" (click)="goBack()">Retour</button>            </div>        </div>    </div></div></div>'
+    var COMPONENTS = [{'name': 'AddFactsheetComponent', 'selector': 'app-add-factsheet'},{'name': 'AddFactsheets1Component', 'selector': 'app-add-factsheets-1'},{'name': 'AddFactsheets2Component', 'selector': 'app-add-factsheets-2'},{'name': 'AddFactsheets3Component', 'selector': 'app-add-factsheets-3'},{'name': 'AddFactsheets4Component', 'selector': 'app-add-factsheets-4'},{'name': 'AddFactsheets5Component', 'selector': 'app-add-factsheets-5'},{'name': 'AddFactsheets6Component', 'selector': 'app-add-factsheets-6'},{'name': 'AddFactsheets7Component', 'selector': 'app-add-factsheets-7'},{'name': 'AddFactsheets8Component', 'selector': 'app-add-factsheets-8'},{'name': 'AddFactsheets9Component', 'selector': 'app-add-factsheets-9'},{'name': 'AddScheduleComponent', 'selector': 'app-add-schedule'},{'name': 'AddSearchFormComponent', 'selector': 'app-add-search-form'},{'name': 'AddUpdateScheduleComponent', 'selector': 'app-add-update-schedule'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'BackConfirmationModalComponent', 'selector': 'app-back-confirmation-modal'},{'name': 'BreadcrumbComponent', 'selector': 'app-breadcrumb'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'DeleteConfirmationModalComponent', 'selector': 'app-delete-confirmation-modal'},{'name': 'FactsheetsComponent', 'selector': 'app-factsheets'},{'name': 'FactsheetsStudentTabComponent', 'selector': 'app-factsheets-student-tab'},{'name': 'HeaderComponent', 'selector': 'app-header'},{'name': 'ListStudentTabComponent', 'selector': 'app-list-student-tab'},{'name': 'LoadingComponent', 'selector': 'app-loading'},{'name': 'ModaleComponent', 'selector': 'app-modale'},{'name': 'ModalePlanningComponent', 'selector': 'app-modale-planning'},{'name': 'ModaleSoutenanceComponent', 'selector': 'app-modale-soutenance'},{'name': 'NavigationTabsComponent', 'selector': 'app-navigation-tabs'},{'name': 'ScheduleBoardComponent', 'selector': 'app-schedule-board'},{'name': 'ScheduleComponent', 'selector': 'app-schedule'},{'name': 'SearchDetailsComponent', 'selector': 'app-search-details'},{'name': 'SearchesStudentTabComponent', 'selector': 'app-searches-student-tab'},{'name': 'SheetDetailsComponent', 'selector': 'app-sheet-details'},{'name': 'SlotComponent', 'selector': 'app-slot'},{'name': 'StatsCardsComponent', 'selector': 'app-stats-cards'},{'name': 'StudentDashboardManagerComponent', 'selector': 'app-student-dashboard-manager'},{'name': 'StudentFactsheetsManagerComponent', 'selector': 'app-student-factsheets-manager'},{'name': 'TutorAttributionModalComponent', 'selector': 'app-tutor-attribution-modal'},{'name': 'UnderDevelopmentComponent', 'selector': 'app-under-development'},{'name': 'UpdateFactsheet1Component', 'selector': 'app-update-factsheets-1'},{'name': 'UpdateFactsheetComponent', 'selector': 'app-update-factsheet'},{'name': 'UpdateFactsheets2Component', 'selector': 'app-update-factsheets-2'},{'name': 'UpdateFactsheets3Component', 'selector': 'app-update-factsheets-3'},{'name': 'UpdateFactsheets4Component', 'selector': 'app-update-factsheets-4'},{'name': 'UpdateFactsheets5Component', 'selector': 'app-update-factsheets-5'},{'name': 'UpdateFactsheets6Component', 'selector': 'app-update-factsheets-6'},{'name': 'UpdateFactsheets7Component', 'selector': 'app-update-factsheets-7'},{'name': 'UpdateFactsheets8Component', 'selector': 'app-update-factsheets-8'},{'name': 'UpdateFactsheets9Component', 'selector': 'app-update-factsheets-9'},{'name': 'UpdateScheduleComponent', 'selector': 'app-update-schedule'},{'name': 'UpdateSearchComponent', 'selector': 'app-update-search'},{'name': 'WelcomeComponent', 'selector': 'app-welcome-card'}];
+    var DIRECTIVES = [];
+    var ACTUAL_COMPONENT = {'name': 'SearchDetailsComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'SearchDetailsComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

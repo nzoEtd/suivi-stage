@@ -1,0 +1,2449 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>stage-management-iut documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">stage-management-iut documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  ListStudentTabComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/components/list-student-tab/list-student-tab.component.ts</code>
+</p>
+
+
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.io/api/core/OnInit" target="_blank" >OnInit</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-list-student-tab</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                                <code><a href="https://angular.io/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                <code><a href="https://angular.io/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+                </td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./list-student-tab.component.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./list-student-tab.component.css</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#academicYear" >academicYear</a>
+                            </li>
+                            <li>
+                                <a href="#currentDateFilter" >currentDateFilter</a>
+                            </li>
+                            <li>
+                                <a href="#currentNbSearchesFilter" >currentNbSearchesFilter</a>
+                            </li>
+                            <li>
+                                <a href="#currentStatusFilter" >currentStatusFilter</a>
+                            </li>
+                            <li>
+                                <a href="#currentStudyYearFilter" >currentStudyYearFilter</a>
+                            </li>
+                            <li>
+                                <a href="#currentTdGroupFilter" >currentTdGroupFilter</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#datasStudentTdAcademicYear" >datasStudentTdAcademicYear</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#datasStudentTrainingYearAcademicYear" >datasStudentTrainingYearAcademicYear</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#factsheetsDatas" >factsheetsDatas</a>
+                            </li>
+                            <li>
+                                <a href="#filteredFactsheetsDatas" >filteredFactsheetsDatas</a>
+                            </li>
+                            <li>
+                                <a href="#filteredStudentsDatas" >filteredStudentsDatas</a>
+                            </li>
+                            <li>
+                                <a href="#isFactsheetView" >isFactsheetView</a>
+                            </li>
+                            <li>
+                                <a href="#originalStudentsDatas" >originalStudentsDatas</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#searches" >searches</a>
+                            </li>
+                            <li>
+                                <a href="#searchTerm" >searchTerm</a>
+                            </li>
+                            <li>
+                                <a href="#searchTermSubject" >searchTermSubject</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#studentsData" >studentsData</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#tds" >tds</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#trainingYears" >trainingYears</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#applyFilters" >applyFilters</a>
+                            </li>
+                            <li>
+                                <a href="#clearSearchTerm" >clearSearchTerm</a>
+                            </li>
+                            <li>
+                                <a href="#getFilteredStudentsWithTdAndStudyYear" >getFilteredStudentsWithTdAndStudyYear</a>
+                            </li>
+                            <li>
+                                <a href="#goToStudentDashboardManagerView" >goToStudentDashboardManagerView</a>
+                            </li>
+                            <li>
+                                <a href="#goToStudentFactsheetsManagerView" >goToStudentFactsheetsManagerView</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#loadData" >loadData</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <a href="#onSearchTermChange" >onSearchTermChange</a>
+                            </li>
+                            <li>
+                                <a href="#setStudyYearFilter" >setStudyYearFilter</a>
+                            </li>
+                            <li>
+                                <a href="#setTdGroupFilter" >setTdGroupFilter</a>
+                            </li>
+                            <li>
+                                <a href="#toggleDateSort" >toggleDateSort</a>
+                            </li>
+                            <li>
+                                <a href="#toggleNbSearchesSort" >toggleNbSearchesSort</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Outputs</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#dataLoaded" >dataLoaded</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(studentService: <a href="../injectables/StudentService.html" target="_self">StudentService</a>, internshipSearchService: <a href="../injectables/InternshipSearchService.html" target="_self">InternshipSearchService</a>, tdService: <a href="../injectables/TDService.html" target="_self">TDService</a>, trainingYearService: <a href="../injectables/TrainingYearService.html" target="_self">TrainingYearService</a>, academicYearService: <a href="../injectables/AcademicYearService.html" target="_self">AcademicYearService</a>, studentTdAcademicYearService: <a href="../injectables/StudentTdAcademicYearService.html" target="_self">StudentTdAcademicYearService</a>, studentTrainingYearAcademicYearService: <a href="../injectables/StudentTrainingYearAcademicYearService.html" target="_self">StudentTrainingYearAcademicYearService</a>, navigationService: <a href="../injectables/NavigationService.html" target="_self">NavigationService</a>, factsheetsService: <a href="../injectables/FactsheetsService.html" target="_self">FactsheetsService</a>, router: <a href="https://angular.io/api/router/Router" target="_blank">Router</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="51" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:51</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Initializes component services and sets up search debouncing
+Determines if the current view is for factsheets based on URL</p>
+</div>
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>studentService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/StudentService.html" target="_self" >StudentService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>internshipSearchService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/InternshipSearchService.html" target="_self" >InternshipSearchService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>tdService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/TDService.html" target="_self" >TDService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>trainingYearService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/TrainingYearService.html" target="_self" >TrainingYearService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>academicYearService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/AcademicYearService.html" target="_self" >AcademicYearService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>studentTdAcademicYearService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/StudentTdAcademicYearService.html" target="_self" >StudentTdAcademicYearService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>studentTrainingYearAcademicYearService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/StudentTrainingYearAcademicYearService.html" target="_self" >StudentTrainingYearAcademicYearService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>navigationService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/NavigationService.html" target="_self" >NavigationService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>factsheetsService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/FactsheetsService.html" target="_self" >FactsheetsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>router</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.io/api/router/Router" target="_blank" >Router</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+    <section data-compodoc="block-outputs">
+    <h3 id="outputs">Outputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="dataLoaded"></a>
+                        <b>dataLoaded</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.io/api/core/EventEmitter" target="_blank" >EventEmitter</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="32" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:32</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="applyFilters"></a>
+                    <span class="name">
+                        <span ><b>applyFilters</b></span>
+                        <a href="#applyFilters"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>applyFilters()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="197"
+                                    class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:197</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Applies all active filters to the student data
+Handles text search, study year, TD group, and view-specific filters
+Updates the filtered student data list</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="clearSearchTerm"></a>
+                    <span class="name">
+                        <span ><b>clearSearchTerm</b></span>
+                        <a href="#clearSearchTerm"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>clearSearchTerm()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="272"
+                                    class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:272</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Resets the search term and triggers a new search</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getFilteredStudentsWithTdAndStudyYear"></a>
+                    <span class="name">
+                        <span ><b>getFilteredStudentsWithTdAndStudyYear</b></span>
+                        <a href="#getFilteredStudentsWithTdAndStudyYear"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getFilteredStudentsWithTdAndStudyYear()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="145"
+                                    class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:145</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Creates filtered list of students with their TD groups and study years
+Maps student data with their corresponding searches or factsheets
+Calculates number of searches and last search date for each student</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="goToStudentDashboardManagerView"></a>
+                    <span class="name">
+                        <span ><b>goToStudentDashboardManagerView</b></span>
+                        <a href="#goToStudentDashboardManagerView"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>goToStudentDashboardManagerView(studentId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="341"
+                                    class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:341</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Navigates to student dashboard view for internship search management</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>studentId</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>ID of the selected student</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="goToStudentFactsheetsManagerView"></a>
+                    <span class="name">
+                        <span ><b>goToStudentFactsheetsManagerView</b></span>
+                        <a href="#goToStudentFactsheetsManagerView"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>goToStudentFactsheetsManagerView(factsheetId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="349"
+                                    class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:349</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Navigates to student factsheets view for factsheet management</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>factsheetId</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>ID of the selected factsheet</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadData"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>loadData</b></span>
+                        <a href="#loadData"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>loadData()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="90"
+                                    class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:90</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Loads all necessary data for the student listing table
+Handles both factsheet and internship search views
+Makes parallel API calls using forkJoin</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="81"
+                                    class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:81</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Initializes component by loading required data</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onSearchTermChange"></a>
+                    <span class="name">
+                        <span ><b>onSearchTermChange</b></span>
+                        <a href="#onSearchTermChange"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onSearchTermChange(event: <a href="https://angular.io/api/router/Event" target="_blank">Event</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="261"
+                                    class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:261</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Handles search input changes
+Triggers debounced search term subject</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                            <code><a href="https://angular.io/api/router/Event" target="_blank" >Event</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>Input event containing the search term</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="setStudyYearFilter"></a>
+                    <span class="name">
+                        <span ><b>setStudyYearFilter</b></span>
+                        <a href="#setStudyYearFilter"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>setStudyYearFilter(filter: "all" | "BUT 1" | "BUT 2" | "BUT 3", selectElement: HTMLSelectElement)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="282"
+                                    class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:282</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Updates study year filter and refreshes the filtered list</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>filter</td>
+                                            <td>
+                                                        <code>&quot;all&quot; | &quot;BUT 1&quot; | &quot;BUT 2&quot; | &quot;BUT 3&quot;</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>Selected study year filter option</p>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                                <td>selectElement</td>
+                                            <td>
+                                                        <code>HTMLSelectElement</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>HTML select element to blur after selection</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="setTdGroupFilter"></a>
+                    <span class="name">
+                        <span ><b>setTdGroupFilter</b></span>
+                        <a href="#setTdGroupFilter"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>setTdGroupFilter(filter: <a href="../classes/TD.html" target="_self">&quot;all&quot; | &quot;TD 1&quot; | &quot;TD 2&quot; | &quot;TD 3&quot;</a>, selectElement: HTMLSelectElement)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="293"
+                                    class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:293</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Updates TD group filter and refreshes the filtered list</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>filter</td>
+                                            <td>
+                                                            <code><a href="../classes/TD.html" target="_self" >&quot;all&quot; | &quot;TD 1&quot; | &quot;TD 2&quot; | &quot;TD 3&quot;</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>Selected TD group filter option</p>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                                <td>selectElement</td>
+                                            <td>
+                                                        <code>HTMLSelectElement</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>HTML select element to blur after selection</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="toggleDateSort"></a>
+                    <span class="name">
+                        <span ><b>toggleDateSort</b></span>
+                        <a href="#toggleDateSort"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>toggleDateSort()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="303"
+                                    class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:303</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Toggles date sorting order (default -&gt; ascending -&gt; descending)
+Updates filtered list with new sort order</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="toggleNbSearchesSort"></a>
+                    <span class="name">
+                        <span ><b>toggleNbSearchesSort</b></span>
+                        <a href="#toggleNbSearchesSort"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>toggleNbSearchesSort()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="322"
+                                    class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:322</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Toggles search count sorting order (default -&gt; ascending -&gt; descending)
+Updates filtered list with new sort order</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="academicYear"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>academicYear</b></span>
+                        <a href="#academicYear"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/AcademicYear.html" target="_self" >AcademicYear</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="37" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:37</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentDateFilter"></a>
+                    <span class="name">
+                        <span ><b>currentDateFilter</b></span>
+                        <a href="#currentDateFilter"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>&quot;default&quot; | &quot;date_asc&quot; | &quot;date_desc&quot;</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;default&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="46" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:46</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentNbSearchesFilter"></a>
+                    <span class="name">
+                        <span ><b>currentNbSearchesFilter</b></span>
+                        <a href="#currentNbSearchesFilter"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>&quot;default&quot; | &quot;nb_asc&quot; | &quot;nb_desc&quot;</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;default&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="47" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:47</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentStatusFilter"></a>
+                    <span class="name">
+                        <span ><b>currentStatusFilter</b></span>
+                        <a href="#currentStatusFilter"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>&quot;all&quot; | &quot;En cours&quot; | &quot;Validée&quot; | &quot;Rejetée&quot;</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;all&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="51" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:51</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentStudyYearFilter"></a>
+                    <span class="name">
+                        <span ><b>currentStudyYearFilter</b></span>
+                        <a href="#currentStudyYearFilter"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>&quot;all&quot; | &quot;BUT 1&quot; | &quot;BUT 2&quot; | &quot;BUT 3&quot;</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;all&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="44" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:44</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentTdGroupFilter"></a>
+                    <span class="name">
+                        <span ><b>currentTdGroupFilter</b></span>
+                        <a href="#currentTdGroupFilter"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/TD.html" target="_self" >&quot;all&quot; | &quot;TD 1&quot; | &quot;TD 2&quot; | &quot;TD 3&quot;</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;all&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="45" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:45</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="datasStudentTdAcademicYear"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>datasStudentTdAcademicYear</b></span>
+                        <a href="#datasStudentTdAcademicYear"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Student_TD_AcademicYear[]</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="39" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:39</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="datasStudentTrainingYearAcademicYear"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>datasStudentTrainingYearAcademicYear</b></span>
+                        <a href="#datasStudentTrainingYearAcademicYear"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Student_TrainingYear_AcademicYear[]</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="38" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:38</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="factsheetsDatas"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>factsheetsDatas</b></span>
+                        <a href="#factsheetsDatas"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/Factsheets.html" target="_self" >Factsheets[]</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="49" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:49</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="filteredFactsheetsDatas"></a>
+                    <span class="name">
+                        <span ><b>filteredFactsheetsDatas</b></span>
+                        <a href="#filteredFactsheetsDatas"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/Factsheets.html" target="_self" >Factsheets[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="50" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:50</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="filteredStudentsDatas"></a>
+                    <span class="name">
+                        <span ><b>filteredStudentsDatas</b></span>
+                        <a href="#filteredStudentsDatas"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>literal type[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="42" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:42</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isFactsheetView"></a>
+                    <span class="name">
+                        <span ><b>isFactsheetView</b></span>
+                        <a href="#isFactsheetView"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="48" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:48</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="originalStudentsDatas"></a>
+                    <span class="name">
+                        <span ><b>originalStudentsDatas</b></span>
+                        <a href="#originalStudentsDatas"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>literal type[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="43" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:43</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="searches"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>searches</b></span>
+                        <a href="#searches"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/InternshipSearch.html" target="_self" >InternshipSearch[]</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="34" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:34</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="searchTerm"></a>
+                    <span class="name">
+                        <span ><b>searchTerm</b></span>
+                        <a href="#searchTerm"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="40" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:40</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="searchTermSubject"></a>
+                    <span class="name">
+                        <span ><b>searchTermSubject</b></span>
+                        <a href="#searchTermSubject"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Subject&lt;string&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="41" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:41</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="studentsData"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>studentsData</b></span>
+                        <a href="#studentsData"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/Student.html" target="_self" >Student[]</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="33" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:33</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="tds"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>tds</b></span>
+                        <a href="#tds"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/TD.html" target="_self" >TD[]</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="35" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:35</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="trainingYears"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>trainingYears</b></span>
+                        <a href="#trainingYears"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/TrainingYear.html" target="_self" >TrainingYear[]</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="36" class="link-to-prism">src/app/components/list-student-tab/list-student-tab.component.ts:36</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit, Output, EventEmitter } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { FormsModule } from &#x27;@angular/forms&#x27;;
+import { InternshipSearch } from &#x27;../../models/internship-search.model&#x27;;
+import { Student } from &#x27;../../models/student.model&#x27;;
+import { TD } from &#x27;../../models/td.model&#x27;;
+import { TrainingYear } from &#x27;../../models/training-year.model&#x27;;
+import { AcademicYear } from &#x27;../../models/academic-year.model&#x27;;
+import { Student_TD_AcademicYear } from &#x27;../../models/student-td-academicYear.model&#x27;;
+import { Student_TrainingYear_AcademicYear } from &#x27;../../models/student-trainingYear-academicYear.model&#x27;;
+import { NavigationService } from &#x27;../../services/navigation.service&#x27;;
+import { InternshipSearchService } from &#x27;../../services/internship-search.service&#x27;;
+import { StudentService } from &#x27;../../services/student.service&#x27;;
+import { TDService } from &#x27;../../services/td.service&#x27;;
+import { AcademicYearService } from &#x27;../../services/academic-year.service&#x27;;
+import { TrainingYearService } from &#x27;../../services/training-year.service&#x27;;
+import { StudentTdAcademicYearService } from &#x27;../../services/student-td-academicYear.service&#x27;;
+import { StudentTrainingYearAcademicYearService } from &#x27;../../services/student-trainingYear-academicYear.service&#x27;;
+import { FactsheetsService } from &#x27;../../services/description-sheet.service&#x27;;
+import { Factsheets } from &#x27;../../models/description-sheet.model&#x27;;
+import { Subject, debounceTime, distinctUntilChanged, firstValueFrom, forkJoin, tap } from &#x27;rxjs&#x27;;
+import { Router } from &#x27;@angular/router&#x27;;
+
+@Component({
+    selector: &#x27;app-list-student-tab&#x27;,
+    standalone: true,
+    imports: [CommonModule, FormsModule],
+    templateUrl: &#x27;./list-student-tab.component.html&#x27;,
+    styleUrl: &#x27;./list-student-tab.component.css&#x27;
+})
+export class ListStudentTabComponent implements OnInit {
+    @Output() dataLoaded &#x3D; new EventEmitter&lt;void&gt;();
+    studentsData?: Student[];
+    searches?: InternshipSearch[];
+    tds?: TD[];
+    trainingYears?: TrainingYear[];
+    academicYear?: AcademicYear;
+    datasStudentTrainingYearAcademicYear?: Student_TrainingYear_AcademicYear[];
+    datasStudentTdAcademicYear?: Student_TD_AcademicYear[];
+    searchTerm: string &#x3D; &#x27;&#x27;;
+    searchTermSubject &#x3D; new Subject&lt;string&gt;();
+    filteredStudentsDatas: { student: Student; countSearches: number; lastSearchDate: Date | null; studyYear: string | null | undefined; TdGroup: string | null | undefined}[] &#x3D; [];
+    originalStudentsDatas: { student: Student; countSearches: number; lastSearchDate: Date | null; studyYear: string | null | undefined; TdGroup: string | null | undefined}[] &#x3D; [];
+    currentStudyYearFilter: &#x27;all&#x27; | &#x27;BUT 1&#x27; | &#x27;BUT 2&#x27; | &#x27;BUT 3&#x27; &#x3D; &#x27;all&#x27;;
+    currentTdGroupFilter: &#x27;all&#x27; | &#x27;TD 1&#x27; | &#x27;TD 2&#x27; | &#x27;TD 3&#x27; &#x3D; &#x27;all&#x27;;
+    currentDateFilter: &#x27;default&#x27; | &#x27;date_asc&#x27; | &#x27;date_desc&#x27; &#x3D; &#x27;default&#x27;;
+    currentNbSearchesFilter: &#x27;default&#x27; | &#x27;nb_asc&#x27; | &#x27;nb_desc&#x27; &#x3D; &#x27;default&#x27;;
+    isFactsheetView &#x3D; false;
+    factsheetsDatas?: Factsheets[];
+    filteredFactsheetsDatas: Factsheets[] &#x3D; [];
+    currentStatusFilter: &#x27;all&#x27; | &#x27;En cours&#x27; | &#x27;Validée&#x27; | &#x27;Rejetée&#x27; &#x3D; &#x27;all&#x27;;
+
+    /**
+     * Initializes component services and sets up search debouncing
+     * Determines if the current view is for factsheets based on URL
+     */
+    constructor(
+        private readonly studentService: StudentService,
+        private readonly internshipSearchService: InternshipSearchService,
+        private readonly tdService: TDService,
+        private readonly trainingYearService: TrainingYearService,
+        private readonly academicYearService: AcademicYearService,
+        private readonly studentTdAcademicYearService: StudentTdAcademicYearService,
+        private readonly studentTrainingYearAcademicYearService: StudentTrainingYearAcademicYearService,
+        private readonly navigationService: NavigationService,
+        private readonly factsheetsService: FactsheetsService,
+        private readonly router: Router
+    ) {
+        this.isFactsheetView &#x3D; this.router.url.includes(&#x27;factsheets&#x27;);
+        this.searchTermSubject.pipe(
+            debounceTime(800),
+            distinctUntilChanged()
+        ).subscribe(() &#x3D;&gt; {
+            this.applyFilters();
+        });
+    }
+
+    /**
+     * Initializes component by loading required data
+     */
+    ngOnInit() {
+        this.loadData();
+    }
+
+    /**
+     * Loads all necessary data for the student listing table
+     * Handles both factsheet and internship search views
+     * Makes parallel API calls using forkJoin
+     */
+    async loadData() {
+        if (this.isFactsheetView) {
+            return firstValueFrom(forkJoin({
+                students: this.studentService.getStudents([&#x27;idUPPA&#x27;,&#x27;nom&#x27;, &#x27;prenom&#x27;]),
+                factsheets: this.factsheetsService.getSheets(),
+                tds: this.tdService.getTDs(),
+                trainingYears: this.trainingYearService.getTrainingYears(),
+                academicYear: this.academicYearService.getCurrentAcademicYear(),
+                datasStudentTrainingYearAcademicYear: this.studentTrainingYearAcademicYearService.getStudentsTrainingYearsAcademicYears(),
+                datasStudentTdAcademicYear: this.studentTdAcademicYearService.getStudentsTDsAcademicYears()
+            }).pipe(
+                tap(({ students, factsheets, tds, trainingYears, academicYear, datasStudentTrainingYearAcademicYear, datasStudentTdAcademicYear }) &#x3D;&gt; {
+                    this.studentsData &#x3D; students;
+                    this.factsheetsDatas &#x3D; factsheets;
+                    this.tds &#x3D; tds;
+                    this.trainingYears &#x3D; trainingYears;
+                    this.academicYear &#x3D; academicYear;
+                    this.datasStudentTrainingYearAcademicYear &#x3D; datasStudentTrainingYearAcademicYear;
+                    this.datasStudentTdAcademicYear &#x3D; datasStudentTdAcademicYear;
+                    this.getFilteredStudentsWithTdAndStudyYear();
+                    this.dataLoaded.emit();
+                    this.filteredFactsheetsDatas &#x3D; [...factsheets];
+                })
+            ));
+        }
+        else {
+            return firstValueFrom(forkJoin({
+                students: this.studentService.getStudents([&#x27;idUPPA&#x27;,&#x27;nom&#x27;, &#x27;prenom&#x27;]),
+                searches: this.internshipSearchService.getSearches([&#x27;idRecherche&#x27;, &#x27;dateCreation&#x27;, &#x27;idUPPA&#x27;]),
+                tds: this.tdService.getTDs(),
+                trainingYears: this.trainingYearService.getTrainingYears(),
+                academicYear: this.academicYearService.getCurrentAcademicYear(),
+                datasStudentTrainingYearAcademicYear: this.studentTrainingYearAcademicYearService.getStudentsTrainingYearsAcademicYears(),
+                datasStudentTdAcademicYear: this.studentTdAcademicYearService.getStudentsTDsAcademicYears()
+            }).pipe(
+                tap(({ students, searches, tds, trainingYears, academicYear, datasStudentTrainingYearAcademicYear, datasStudentTdAcademicYear }) &#x3D;&gt; {
+                    this.studentsData &#x3D; students;
+                    this.searches &#x3D; searches;
+                    this.tds &#x3D; tds;
+                    this.trainingYears &#x3D; trainingYears;
+                    this.academicYear &#x3D; academicYear;
+                    this.datasStudentTrainingYearAcademicYear &#x3D; datasStudentTrainingYearAcademicYear;
+                    this.datasStudentTdAcademicYear &#x3D; datasStudentTdAcademicYear;
+                    this.getFilteredStudentsWithTdAndStudyYear();
+                    this.dataLoaded.emit();
+                })
+            ));
+        }
+    }
+
+    /**
+     * Creates filtered list of students with their TD groups and study years
+     * Maps student data with their corresponding searches or factsheets
+     * Calculates number of searches and last search date for each student
+     */
+    getFilteredStudentsWithTdAndStudyYear() {
+        if (this.studentsData &amp;&amp; this.tds &amp;&amp; this.trainingYears &amp;&amp; this.academicYear &amp;&amp; 
+            this.datasStudentTrainingYearAcademicYear &amp;&amp; this.datasStudentTdAcademicYear) {
+            
+            this.originalStudentsDatas &#x3D; this.studentsData.map(student &#x3D;&gt; {
+                // Get student data based on view type
+                const studentData &#x3D; this.isFactsheetView ? 
+                    this.factsheetsDatas?.filter(sheet &#x3D;&gt; sheet.idUPPA &#x3D;&#x3D;&#x3D; student.idUPPA) :
+                    this.searches?.filter(search &#x3D;&gt; search.idUPPA &#x3D;&#x3D;&#x3D; student.idUPPA);
+
+                // Get student TD and training year (same for both views)
+                const studentTD &#x3D; this.tds!.find(td &#x3D;&gt;
+                    this.datasStudentTdAcademicYear!.some(data &#x3D;&gt;
+                        data.idUPPA &#x3D;&#x3D;&#x3D; student.idUPPA &amp;&amp;
+                        data.idAcademicYear &#x3D;&#x3D;&#x3D; this.academicYear!.idAnneeUniversitaire &amp;&amp;
+                        data.idTD &#x3D;&#x3D;&#x3D; td.idTD
+                    )
+                );
+                const studentTrainingYear &#x3D; this.trainingYears!.find(trainingYear &#x3D;&gt;
+                    this.datasStudentTrainingYearAcademicYear!.some(data &#x3D;&gt;
+                        data.idUPPA &#x3D;&#x3D;&#x3D; student.idUPPA &amp;&amp;
+                        data.idAcademicYear &#x3D;&#x3D;&#x3D; this.academicYear?.idAnneeUniversitaire &amp;&amp;
+                        data.idTrainingYear &#x3D;&#x3D;&#x3D; trainingYear.idAnneeFormation
+                    )
+                );
+
+                return {
+                    student,
+                    countSearches: studentData?.length ?? 0,
+                    lastSearchDate: studentData?.length ? new Date(Math.max(...studentData.map(s &#x3D;&gt; {
+                        if (this.isFactsheetView) {
+                            // Pour les fiches, on utilise dateModification
+                            return new Date((s as Factsheets).dateDerniereModification!).getTime();
+                        } else {
+                            // Pour les recherches, on garde dateCreation
+                            return new Date((s as InternshipSearch).dateCreation!).getTime();
+                        }
+                    }))) : null,
+                    studyYear: studentTrainingYear?.libelle,
+                    TdGroup: studentTD?.libelle
+                };
+            });
+    
+            this.applyFilters();
+        }
+    }
+
+    /**
+     * Applies all active filters to the student data
+     * Handles text search, study year, TD group, and view-specific filters
+     * Updates the filtered student data list
+     */
+    applyFilters() {
+        if (!this.originalStudentsDatas) return;
+
+        let filteredDatas &#x3D; [...this.originalStudentsDatas];
+        const searchTermLower &#x3D; this.searchTerm.toLowerCase().trim();
+    
+        // Recherche commune pour les deux vues
+        if (searchTermLower) {
+            filteredDatas &#x3D; filteredDatas.filter(data &#x3D;&gt;
+                data.student.nom!.toLowerCase().includes(searchTermLower) ||
+                data.student.prenom!.toLowerCase().includes(searchTermLower) ||
+                data.studyYear?.toLowerCase().includes(searchTermLower) ||
+                data.TdGroup?.toLowerCase().includes(searchTermLower)
+            );
+        }
+    
+        // Filtres communs
+        if (this.currentStudyYearFilter !&#x3D;&#x3D; &#x27;all&#x27;) {
+            filteredDatas &#x3D; filteredDatas.filter(data &#x3D;&gt; data.studyYear &#x3D;&#x3D;&#x3D; this.currentStudyYearFilter);
+        }
+
+        if (this.currentTdGroupFilter !&#x3D;&#x3D; &#x27;all&#x27;) {
+            filteredDatas &#x3D; filteredDatas.filter(data &#x3D;&gt; data.TdGroup &#x3D;&#x3D;&#x3D; this.currentTdGroupFilter);
+        }
+    
+        // Tri spécifique selon la vue
+        if (this.isFactsheetView) {
+            if (this.currentStatusFilter !&#x3D;&#x3D; &#x27;all&#x27;) {
+                filteredDatas &#x3D; filteredDatas.filter(data &#x3D;&gt; {
+                    const studentFiche &#x3D; this.factsheetsDatas?.find(
+                        fiche &#x3D;&gt; fiche.idUPPA &#x3D;&#x3D;&#x3D; data.student.idUPPA
+                    );
+                    return studentFiche !&#x3D;&#x3D; undefined;
+                });
+            }
+        } else {
+            // Tri par date
+            if (this.currentDateFilter !&#x3D;&#x3D; &#x27;default&#x27;) {
+                filteredDatas.sort((a, b) &#x3D;&gt; {
+                    if (!a.lastSearchDate) return 1;
+                    if (!b.lastSearchDate) return -1;
+                    return this.currentDateFilter &#x3D;&#x3D;&#x3D; &#x27;date_asc&#x27;
+                        ? a.lastSearchDate.getTime() - b.lastSearchDate.getTime()
+                        : b.lastSearchDate.getTime() - a.lastSearchDate.getTime();
+                });
+            }
+            // Tri par nombre de recherches
+            if (this.currentNbSearchesFilter !&#x3D;&#x3D; &#x27;default&#x27;) {
+                filteredDatas.sort((a, b) &#x3D;&gt; {
+                    return this.currentNbSearchesFilter &#x3D;&#x3D;&#x3D; &#x27;nb_asc&#x27;
+                        ? a.countSearches - b.countSearches
+                        : b.countSearches - a.countSearches;
+                });
+            }
+        }
+    
+        this.filteredStudentsDatas &#x3D; filteredDatas;
+    }
+
+    /**
+     * Handles search input changes
+     * Triggers debounced search term subject
+     * @param event Input event containing the search term
+     */
+    onSearchTermChange(event: Event) {
+        const target &#x3D; event.target as HTMLInputElement;
+        if (target) {
+            this.searchTerm &#x3D; target.value;
+            this.searchTermSubject.next(this.searchTerm);
+        }
+    }
+
+    /**
+     * Resets the search term and triggers a new search
+     */
+    clearSearchTerm() {
+        this.searchTerm &#x3D; &#x27;&#x27;;
+        this.searchTermSubject.next(this.searchTerm);
+    }
+
+    /**
+     * Updates study year filter and refreshes the filtered list
+     * @param filter Selected study year filter option
+     * @param selectElement HTML select element to blur after selection
+     */
+    setStudyYearFilter(filter: &#x27;all&#x27; | &#x27;BUT 1&#x27; | &#x27;BUT 2&#x27; | &#x27;BUT 3&#x27;, selectElement: HTMLSelectElement) {
+        this.currentStudyYearFilter &#x3D; filter;
+        this.applyFilters();
+        selectElement.blur();
+    }
+
+    /**
+     * Updates TD group filter and refreshes the filtered list
+     * @param filter Selected TD group filter option
+     * @param selectElement HTML select element to blur after selection
+     */
+    setTdGroupFilter(filter: &#x27;all&#x27; | &#x27;TD 1&#x27; | &#x27;TD 2&#x27; | &#x27;TD 3&#x27;, selectElement: HTMLSelectElement) {
+        this.currentTdGroupFilter &#x3D; filter;
+        this.applyFilters();
+        selectElement.blur();
+    }
+
+    /**
+     * Toggles date sorting order (default -&gt; ascending -&gt; descending)
+     * Updates filtered list with new sort order
+     */
+    toggleDateSort() {
+        switch (this.currentDateFilter) {
+            case &#x27;default&#x27;:
+                this.currentDateFilter &#x3D; &#x27;date_asc&#x27;;
+                break;
+            case &#x27;date_asc&#x27;:
+                this.currentDateFilter &#x3D; &#x27;date_desc&#x27;;
+                break;
+            case &#x27;date_desc&#x27;:
+                this.currentDateFilter &#x3D; &#x27;default&#x27;;
+                break;
+        }
+        this.applyFilters();
+    }
+
+    /**
+     * Toggles search count sorting order (default -&gt; ascending -&gt; descending)
+     * Updates filtered list with new sort order
+     */
+    toggleNbSearchesSort() {
+        switch (this.currentNbSearchesFilter) {
+            case &#x27;default&#x27;:
+                this.currentNbSearchesFilter &#x3D; &#x27;nb_asc&#x27;;
+                break;
+            case &#x27;nb_asc&#x27;:
+                this.currentNbSearchesFilter &#x3D; &#x27;nb_desc&#x27;;
+                break;
+            case &#x27;nb_desc&#x27;:
+                this.currentNbSearchesFilter &#x3D; &#x27;default&#x27;;
+                break;
+        }
+        this.applyFilters();
+    }
+
+    /**
+     * Navigates to student dashboard view for internship search management
+     * @param studentId ID of the selected student
+     */
+    goToStudentDashboardManagerView(studentId: string) {
+        this.navigationService.navigateToStudentDashboardManagerView(studentId);
+    }
+
+    /**
+     * Navigates to student factsheets view for factsheet management
+     * @param factsheetId ID of the selected factsheet
+     */
+    goToStudentFactsheetsManagerView(factsheetId: string) {
+        this.navigationService.navigateToStudentFactsheetsManagerView(factsheetId);
+    }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;content-box&quot;&gt;
+  &lt;div class&#x3D;&quot;title&quot;&gt;
+    &lt;h3&gt;&lt;b&gt;Liste des étudiants&lt;/b&gt;&lt;/h3&gt;
+  &lt;/div&gt;
+
+  &lt;div class&#x3D;&quot;searchBarAndfilters&quot;&gt;
+    &lt;div class&#x3D;&quot;search-container&quot;&gt;
+      &lt;input
+        type&#x3D;&quot;text&quot;
+        [(ngModel)]&#x3D;&quot;searchTerm&quot;
+        (input)&#x3D;&quot;onSearchTermChange($event)&quot;
+        placeholder&#x3D;&quot;Rechercher...&quot;
+        class&#x3D;&quot;search-input&quot;
+      /&gt;
+      @if (searchTerm) {
+        &lt;button (click)&#x3D;&quot;clearSearchTerm()&quot; class&#x3D;&quot;clear-button&quot;&gt;X&lt;/button&gt;
+      }
+    &lt;/div&gt;
+
+    &lt;div class&#x3D;&quot;filter-buttons&quot;&gt;
+      @if (!isFactsheetView) {
+        &lt;button
+          class&#x3D;&quot;filter-button&quot;
+          [class]&#x3D;&quot;currentNbSearchesFilter&quot;
+          (click)&#x3D;&quot;toggleNbSearchesSort()&quot;
+        &gt;
+          Nombre de recherches
+        &lt;/button&gt;
+
+        &lt;button
+          class&#x3D;&quot;filter-button&quot;
+          [class]&#x3D;&quot;currentDateFilter&quot;
+          (click)&#x3D;&quot;toggleDateSort()&quot;
+        &gt;
+          Date dernière recherche
+        &lt;/button&gt;
+      }
+
+      &lt;select
+        #statutSelect
+        [(ngModel)]&#x3D;&quot;currentStudyYearFilter&quot;
+        (change)&#x3D;&quot;setStudyYearFilter(currentStudyYearFilter, statutSelect)&quot;
+        class&#x3D;&quot;filter-button&quot;
+      &gt;
+        &lt;option value&#x3D;&quot;all&quot;&gt;Toutes les promos&lt;/option&gt;
+        &lt;option value&#x3D;&quot;BUT 1&quot;&gt;BUT 1&lt;/option&gt;
+        &lt;option value&#x3D;&quot;BUT 2&quot;&gt;BUT 2&lt;/option&gt;
+        &lt;option value&#x3D;&quot;BUT 3&quot;&gt;BUT 3&lt;/option&gt;
+      &lt;/select&gt;
+
+      &lt;select
+        #citySelect
+        [(ngModel)]&#x3D;&quot;currentTdGroupFilter&quot;
+        (change)&#x3D;&quot;setTdGroupFilter(currentTdGroupFilter, citySelect)&quot;
+        class&#x3D;&quot;filter-button&quot;
+      &gt;
+        &lt;option value&#x3D;&quot;all&quot;&gt;Tous les TDs&lt;/option&gt;
+        &lt;option value&#x3D;&quot;TD 1&quot;&gt;TD 1&lt;/option&gt;
+        &lt;option value&#x3D;&quot;TD 2&quot;&gt;TD 2&lt;/option&gt;
+        &lt;option value&#x3D;&quot;TD 3&quot;&gt;TD 3&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Vue tableau pour desktop --&gt;
+  &lt;div class&#x3D;&quot;table-view&quot;&gt;
+    &lt;div class&#x3D;&quot;table-container&quot;&gt;
+      &lt;table&gt;
+        &lt;caption class&#x3D;&quot;visually-hidden&quot;&gt;
+          Liste des fiches des étudiants
+        &lt;/caption&gt;
+        &lt;thead&gt;
+          &lt;tr&gt;
+            &lt;th&gt;Étudiant&lt;/th&gt;
+            &lt;th&gt;
+              {{
+                isFactsheetView ? &quot;Nombre de fiches&quot; : &quot;Nombre de recherches&quot;
+              }}
+            &lt;/th&gt;
+            &lt;th&gt;
+              {{
+                isFactsheetView ? &quot;Dernière modification&quot; : &quot;Dernière recherche&quot;
+              }}
+            &lt;/th&gt;
+            &lt;th&gt;Année formation&lt;/th&gt;
+            &lt;th&gt;Groupe de TD&lt;/th&gt;
+          &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+          @for (item of filteredStudentsDatas; track item.student.idUPPA) {
+            &lt;tr
+              (click)&#x3D;&quot;
+                isFactsheetView
+                  ? goToStudentFactsheetsManagerView(item.student.idUPPA)
+                  : goToStudentDashboardManagerView(item.student.idUPPA)
+              &quot;
+            &gt;
+              &lt;td class&#x3D;&quot;firstTd&quot;&gt;
+                {{ item.student.prenom }} {{ item.student.nom }}
+              &lt;/td&gt;
+              &lt;td&gt;{{ item.countSearches }}&lt;/td&gt;
+              &lt;td&gt;
+                {{
+                  item.lastSearchDate
+                    ? (item.lastSearchDate | date: &quot;dd/MM/yyyy&quot;)
+                    : isFactsheetView
+                      ? &quot;Aucune fiche&quot;
+                      : &quot;Aucune recherche&quot;
+                }}
+              &lt;/td&gt;
+              &lt;td&gt;{{ item.studyYear }}&lt;/td&gt;
+              &lt;td class&#x3D;&quot;lastTd&quot;&gt;{{ item.TdGroup }}&lt;/td&gt;
+            &lt;/tr&gt;
+          }
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Vue cards pour mobile --&gt;
+  &lt;div class&#x3D;&quot;cards-view&quot;&gt;
+    @for (item of filteredStudentsDatas; track item.student.idUPPA) {
+      &lt;div
+        class&#x3D;&quot;search-card&quot;
+        (click)&#x3D;&quot;
+          isFactsheetView
+            ? goToStudentFactsheetsManagerView(item.student.idUPPA)
+            : goToStudentDashboardManagerView(item.student.idUPPA)
+        &quot;
+      &gt;
+        &lt;div class&#x3D;&quot;card-header&quot;&gt;
+          &lt;h4&gt;{{ item.student.prenom }} {{ item.student.nom }}&lt;/h4&gt;
+          &lt;span&gt;{{ item.studyYear }}&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class&#x3D;&quot;card-content&quot;&gt;
+          &lt;p class&#x3D;&quot;nbSearches&quot;&gt;
+            &lt;span class&#x3D;&quot;label&quot;&gt;{{
+              isFactsheetView ? &quot;Nombre de fiches :&quot; : &quot;Nombre de recherches :&quot;
+            }}&lt;/span&gt;
+            &lt;span&gt;{{ item.countSearches }}&lt;/span&gt;
+          &lt;/p&gt;
+          &lt;p class&#x3D;&quot;dateLastSearch&quot;&gt;
+            &lt;span class&#x3D;&quot;label&quot;&gt;{{
+              isFactsheetView
+                ? &quot;Dernière modification :&quot;
+                : &quot;Dernière recherche :&quot;
+            }}&lt;/span&gt;
+            &lt;span&gt;{{
+              item.lastSearchDate
+                ? (item.lastSearchDate | date: &quot;dd/MM/yyyy&quot;)
+                : isFactsheetView
+                  ? &quot;Aucune fiche&quot;
+                  : &quot;Aucune recherche&quot;
+            }}&lt;/span&gt;
+          &lt;/p&gt;
+          &lt;p class&#x3D;&quot;tdGroup&quot;&gt;
+            &lt;span class&#x3D;&quot;label&quot;&gt;Groupe de TD :&lt;/span&gt;
+            &lt;span&gt;{{ item.TdGroup }}&lt;/span&gt;
+          &lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    }
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+    </div>
+
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="content-box">  <div class="title">    <h3><b>Liste des étudiants</b></h3>  </div>  <div class="searchBarAndfilters">    <div class="search-container">      <input        type="text"        [(ngModel)]="searchTerm"        (input)="onSearchTermChange($event)"        placeholder="Rechercher..."        class="search-input"      />      @if (searchTerm) {        <button (click)="clearSearchTerm()" class="clear-button">X</button>      }    </div>    <div class="filter-buttons">      @if (!isFactsheetView) {        <button          class="filter-button"          [class]="currentNbSearchesFilter"          (click)="toggleNbSearchesSort()"        >          Nombre de recherches        </button>        <button          class="filter-button"          [class]="currentDateFilter"          (click)="toggleDateSort()"        >          Date dernière recherche        </button>      }      <select        #statutSelect        [(ngModel)]="currentStudyYearFilter"        (change)="setStudyYearFilter(currentStudyYearFilter, statutSelect)"        class="filter-button"      >        <option value="all">Toutes les promos</option>        <option value="BUT 1">BUT 1</option>        <option value="BUT 2">BUT 2</option>        <option value="BUT 3">BUT 3</option>      </select>      <select        #citySelect        [(ngModel)]="currentTdGroupFilter"        (change)="setTdGroupFilter(currentTdGroupFilter, citySelect)"        class="filter-button"      >        <option value="all">Tous les TDs</option>        <option value="TD 1">TD 1</option>        <option value="TD 2">TD 2</option>        <option value="TD 3">TD 3</option>      </select>    </div>  </div>  <!-- Vue tableau pour desktop -->  <div class="table-view">    <div class="table-container">      <table>        <caption class="visually-hidden">          Liste des fiches des étudiants        </caption>        <thead>          <tr>            <th>Étudiant</th>            <th>              {{                isFactsheetView ? "Nombre de fiches" : "Nombre de recherches"              }}            </th>            <th>              {{                isFactsheetView ? "Dernière modification" : "Dernière recherche"              }}            </th>            <th>Année formation</th>            <th>Groupe de TD</th>          </tr>        </thead>        <tbody>          @for (item of filteredStudentsDatas; track item.student.idUPPA) {            <tr              (click)="                isFactsheetView                  ? goToStudentFactsheetsManagerView(item.student.idUPPA)                  : goToStudentDashboardManagerView(item.student.idUPPA)              "            >              <td class="firstTd">                {{ item.student.prenom }} {{ item.student.nom }}              </td>              <td>{{ item.countSearches }}</td>              <td>                {{                  item.lastSearchDate                    ? (item.lastSearchDate | date: "dd/MM/yyyy")                    : isFactsheetView                      ? "Aucune fiche"                      : "Aucune recherche"                }}              </td>              <td>{{ item.studyYear }}</td>              <td class="lastTd">{{ item.TdGroup }}</td>            </tr>          }        </tbody>      </table>    </div>  </div>  <!-- Vue cards pour mobile -->  <div class="cards-view">    @for (item of filteredStudentsDatas; track item.student.idUPPA) {      <div        class="search-card"        (click)="          isFactsheetView            ? goToStudentFactsheetsManagerView(item.student.idUPPA)            : goToStudentDashboardManagerView(item.student.idUPPA)        "      >        <div class="card-header">          <h4>{{ item.student.prenom }} {{ item.student.nom }}</h4>          <span>{{ item.studyYear }}</span>        </div>        <div class="card-content">          <p class="nbSearches">            <span class="label">{{              isFactsheetView ? "Nombre de fiches :" : "Nombre de recherches :"            }}</span>            <span>{{ item.countSearches }}</span>          </p>          <p class="dateLastSearch">            <span class="label">{{              isFactsheetView                ? "Dernière modification :"                : "Dernière recherche :"            }}</span>            <span>{{              item.lastSearchDate                ? (item.lastSearchDate | date: "dd/MM/yyyy")                : isFactsheetView                  ? "Aucune fiche"                  : "Aucune recherche"            }}</span>          </p>          <p class="tdGroup">            <span class="label">Groupe de TD :</span>            <span>{{ item.TdGroup }}</span>          </p>        </div>      </div>    }  </div></div></div>'
+    var COMPONENTS = [{'name': 'AddFactsheetComponent', 'selector': 'app-add-factsheet'},{'name': 'AddFactsheets1Component', 'selector': 'app-add-factsheets-1'},{'name': 'AddFactsheets2Component', 'selector': 'app-add-factsheets-2'},{'name': 'AddFactsheets3Component', 'selector': 'app-add-factsheets-3'},{'name': 'AddFactsheets4Component', 'selector': 'app-add-factsheets-4'},{'name': 'AddFactsheets5Component', 'selector': 'app-add-factsheets-5'},{'name': 'AddFactsheets6Component', 'selector': 'app-add-factsheets-6'},{'name': 'AddFactsheets7Component', 'selector': 'app-add-factsheets-7'},{'name': 'AddFactsheets8Component', 'selector': 'app-add-factsheets-8'},{'name': 'AddFactsheets9Component', 'selector': 'app-add-factsheets-9'},{'name': 'AddScheduleComponent', 'selector': 'app-add-schedule'},{'name': 'AddSearchFormComponent', 'selector': 'app-add-search-form'},{'name': 'AddUpdateScheduleComponent', 'selector': 'app-add-update-schedule'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'BackConfirmationModalComponent', 'selector': 'app-back-confirmation-modal'},{'name': 'BreadcrumbComponent', 'selector': 'app-breadcrumb'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'DeleteConfirmationModalComponent', 'selector': 'app-delete-confirmation-modal'},{'name': 'FactsheetsComponent', 'selector': 'app-factsheets'},{'name': 'FactsheetsStudentTabComponent', 'selector': 'app-factsheets-student-tab'},{'name': 'HeaderComponent', 'selector': 'app-header'},{'name': 'ListStudentTabComponent', 'selector': 'app-list-student-tab'},{'name': 'LoadingComponent', 'selector': 'app-loading'},{'name': 'ModaleComponent', 'selector': 'app-modale'},{'name': 'ModalePlanningComponent', 'selector': 'app-modale-planning'},{'name': 'ModaleSoutenanceComponent', 'selector': 'app-modale-soutenance'},{'name': 'NavigationTabsComponent', 'selector': 'app-navigation-tabs'},{'name': 'ScheduleBoardComponent', 'selector': 'app-schedule-board'},{'name': 'ScheduleComponent', 'selector': 'app-schedule'},{'name': 'SearchDetailsComponent', 'selector': 'app-search-details'},{'name': 'SearchesStudentTabComponent', 'selector': 'app-searches-student-tab'},{'name': 'SheetDetailsComponent', 'selector': 'app-sheet-details'},{'name': 'SlotComponent', 'selector': 'app-slot'},{'name': 'StatsCardsComponent', 'selector': 'app-stats-cards'},{'name': 'StudentDashboardManagerComponent', 'selector': 'app-student-dashboard-manager'},{'name': 'StudentFactsheetsManagerComponent', 'selector': 'app-student-factsheets-manager'},{'name': 'TutorAttributionModalComponent', 'selector': 'app-tutor-attribution-modal'},{'name': 'UnderDevelopmentComponent', 'selector': 'app-under-development'},{'name': 'UpdateFactsheet1Component', 'selector': 'app-update-factsheets-1'},{'name': 'UpdateFactsheetComponent', 'selector': 'app-update-factsheet'},{'name': 'UpdateFactsheets2Component', 'selector': 'app-update-factsheets-2'},{'name': 'UpdateFactsheets3Component', 'selector': 'app-update-factsheets-3'},{'name': 'UpdateFactsheets4Component', 'selector': 'app-update-factsheets-4'},{'name': 'UpdateFactsheets5Component', 'selector': 'app-update-factsheets-5'},{'name': 'UpdateFactsheets6Component', 'selector': 'app-update-factsheets-6'},{'name': 'UpdateFactsheets7Component', 'selector': 'app-update-factsheets-7'},{'name': 'UpdateFactsheets8Component', 'selector': 'app-update-factsheets-8'},{'name': 'UpdateFactsheets9Component', 'selector': 'app-update-factsheets-9'},{'name': 'UpdateScheduleComponent', 'selector': 'app-update-schedule'},{'name': 'UpdateSearchComponent', 'selector': 'app-update-search'},{'name': 'WelcomeComponent', 'selector': 'app-welcome-card'}];
+    var DIRECTIVES = [];
+    var ACTUAL_COMPONENT = {'name': 'ListStudentTabComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'ListStudentTabComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

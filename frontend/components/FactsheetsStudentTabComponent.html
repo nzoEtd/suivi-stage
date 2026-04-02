@@ -1,0 +1,2976 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>stage-management-iut documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">stage-management-iut documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  FactsheetsStudentTabComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts</code>
+</p>
+
+
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.io/api/core/OnInit" target="_blank" >OnInit</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-factsheets-student-tab</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                                <code><a href="https://angular.io/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                <code><a href="https://angular.io/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+                                <code><a href="../components/DeleteConfirmationModalComponent.html" target="_self" >DeleteConfirmationModalComponent</a></code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./factsheets-student-tab.component.css</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./factsheets-student-tab.component.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#allDataLoaded" >allDataLoaded</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#companies" >companies</a>
+                            </li>
+                            <li>
+                                <a href="#currentDateFilter" >currentDateFilter</a>
+                            </li>
+                            <li>
+                                <a href="#currentStatutFilter" >currentStatutFilter</a>
+                            </li>
+                            <li>
+                                <a href="#filteredSheetsWithCompanies" >filteredSheetsWithCompanies</a>
+                            </li>
+                            <li>
+                                <a href="#isDeleting" >isDeleting</a>
+                            </li>
+                            <li>
+                                <a href="#isStudent" >isStudent</a>
+                            </li>
+                            <li>
+                                <a href="#originalSheetsWithCompanies" >originalSheetsWithCompanies</a>
+                            </li>
+                            <li>
+                                <a href="#searchTerm" >searchTerm</a>
+                            </li>
+                            <li>
+                                <a href="#searchTermSubject" >searchTermSubject</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#sheets" >sheets</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#sheetToDelete" >sheetToDelete</a>
+                            </li>
+                            <li>
+                                <a href="#showDeleteModal" >showDeleteModal</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Optional</span>
+                                <a href="#studentData" >studentData</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#applyFilters" >applyFilters</a>
+                            </li>
+                            <li>
+                                <a href="#clearSearchTerm" >clearSearchTerm</a>
+                            </li>
+                            <li>
+                                <a href="#getStatusClass" >getStatusClass</a>
+                            </li>
+                            <li>
+                                <a href="#getStatusLabel" >getStatusLabel</a>
+                            </li>
+                            <li>
+                                <a href="#goToAddFactSheetForm" >goToAddFactSheetForm</a>
+                            </li>
+                            <li>
+                                <a href="#goToSheetDetails" >goToSheetDetails</a>
+                            </li>
+                            <li>
+                                <a href="#goToUpdateFactsheetFormView" >goToUpdateFactsheetFormView</a>
+                            </li>
+                            <li>
+                                <a href="#loadData" >loadData</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <a href="#onCancelDelete" >onCancelDelete</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#onConfirmDelete" >onConfirmDelete</a>
+                            </li>
+                            <li>
+                                <a href="#onSearchTermChange" >onSearchTermChange</a>
+                            </li>
+                            <li>
+                                <a href="#openDeleteModal" >openDeleteModal</a>
+                            </li>
+                            <li>
+                                <a href="#setStatutFilter" >setStatutFilter</a>
+                            </li>
+                            <li>
+                                <a href="#toggleDateSort" >toggleDateSort</a>
+                            </li>
+                            <li>
+                                <a href="#viewSearchDetails" >viewSearchDetails</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Inputs</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#currentUserRole" >currentUserRole</a>
+                            </li>
+                            <li>
+                                <a href="#student" >student</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Outputs</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#dataLoaded" >dataLoaded</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(navigationService: <a href="../injectables/NavigationService.html" target="_self">NavigationService</a>, factsheetsService: <a href="../injectables/FactsheetsService.html" target="_self">FactsheetsService</a>, companyService: <a href="../injectables/CompanyService.html" target="_self">CompanyService</a>, cdr: <a href="https://angular.io/api/core/ChangeDetectorRef" target="_blank">ChangeDetectorRef</a>, authService: <a href="../injectables/AuthService.html" target="_self">AuthService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="39" class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:39</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>navigationService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/NavigationService.html" target="_self" >NavigationService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>factsheetsService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/FactsheetsService.html" target="_self" >FactsheetsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>companyService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/CompanyService.html" target="_self" >CompanyService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>cdr</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.io/api/core/ChangeDetectorRef" target="_blank" >ChangeDetectorRef</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>authService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/AuthService.html" target="_self" >AuthService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+    <section data-compodoc="block-inputs">
+    <h3 id="inputs">Inputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="currentUserRole"></a>
+                        <b>currentUserRole</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:24</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="student"></a>
+                        <b>student</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/Student.html" target="_self" >Student</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="23" class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:23</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+    <section data-compodoc="block-outputs">
+    <h3 id="outputs">Outputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="dataLoaded"></a>
+                        <b>dataLoaded</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.io/api/core/EventEmitter" target="_blank" >EventEmitter</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:25</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="applyFilters"></a>
+                    <span class="name">
+                        <span ><b>applyFilters</b></span>
+                        <a href="#applyFilters"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>applyFilters()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="141"
+                                    class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:141</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Applies all active filters and search terms to the factsheets list</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="clearSearchTerm"></a>
+                    <span class="name">
+                        <span ><b>clearSearchTerm</b></span>
+                        <a href="#clearSearchTerm"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>clearSearchTerm()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="194"
+                                    class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:194</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Clears the current search term and reapplies filters</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getStatusClass"></a>
+                    <span class="name">
+                        <span ><b>getStatusClass</b></span>
+                        <a href="#getStatusClass"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getStatusClass(status: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="105"
+                                    class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:105</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Returns the CSS class for a given status</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>status</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>The status to get the class for</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getStatusLabel"></a>
+                    <span class="name">
+                        <span ><b>getStatusLabel</b></span>
+                        <a href="#getStatusLabel"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getStatusLabel(status: <a href="../miscellaneous/typealiases.html#SheetStatus" target="_self">SheetStatus</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="129"
+                                    class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:129</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Gets the display label for a given status</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>status</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#SheetStatus" target="_self" >SheetStatus</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>The status to get the label for</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="goToAddFactSheetForm"></a>
+                    <span class="name">
+                        <span ><b>goToAddFactSheetForm</b></span>
+                        <a href="#goToAddFactSheetForm"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>goToAddFactSheetForm()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="225"
+                                    class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:225</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Navigates to the add factsheet form</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="goToSheetDetails"></a>
+                    <span class="name">
+                        <span ><b>goToSheetDetails</b></span>
+                        <a href="#goToSheetDetails"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>goToSheetDetails(sheetId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="278"
+                                    class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:278</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Navigates to the factsheet details view</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>sheetId</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>The ID of the sheet to view</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="goToUpdateFactsheetFormView"></a>
+                    <span class="name">
+                        <span ><b>goToUpdateFactsheetFormView</b></span>
+                        <a href="#goToUpdateFactsheetFormView"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>goToUpdateFactsheetFormView(idFicheDescriptive: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="233"
+                                    class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:233</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Navigates to the update factsheet form view</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>idFicheDescriptive</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>The ID of the factsheet to edit</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadData"></a>
+                    <span class="name">
+                        <span ><b>loadData</b></span>
+                        <a href="#loadData"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>loadData()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="75"
+                                    class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:75</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Loads student data, their internship searches and related companies</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                <p>Promise that resolves when all data is loaded</p>
+
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="52"
+                                    class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:52</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Initialize the search configuration with debounce and loads initial data</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onCancelDelete"></a>
+                    <span class="name">
+                        <span ><b>onCancelDelete</b></span>
+                        <a href="#onCancelDelete"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onCancelDelete()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="269"
+                                    class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:269</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Cancels the deletion operation and closes the modal</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onConfirmDelete"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>onConfirmDelete</b></span>
+                        <a href="#onConfirmDelete"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onConfirmDelete()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="249"
+                                    class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:249</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Handles the confirmation of factsheet deletion</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onSearchTermChange"></a>
+                    <span class="name">
+                        <span ><b>onSearchTermChange</b></span>
+                        <a href="#onSearchTermChange"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onSearchTermChange(event: <a href="https://angular.io/api/router/Event" target="_blank">Event</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="182"
+                                    class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:182</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Handles changes to the search term</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                            <code><a href="https://angular.io/api/router/Event" target="_blank" >Event</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>The input event</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openDeleteModal"></a>
+                    <span class="name">
+                        <span ><b>openDeleteModal</b></span>
+                        <a href="#openDeleteModal"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>openDeleteModal(sheet: <a href="../classes/Factsheets.html" target="_self">Factsheets</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="241"
+                                    class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:241</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Opens the delete confirmation modal for a factsheet</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>sheet</td>
+                                            <td>
+                                                            <code><a href="../classes/Factsheets.html" target="_self" >Factsheets</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>The factsheet to delete</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="setStatutFilter"></a>
+                    <span class="name">
+                        <span ><b>setStatutFilter</b></span>
+                        <a href="#setStatutFilter"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>setStatutFilter(filter: "all" | "Refusée" | "Validee" | "En cours", selectElement: HTMLSelectElement)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="119"
+                                    class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:119</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Sets the status filter and applies filters</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>filter</td>
+                                            <td>
+                                                        <code>&quot;all&quot; | &quot;Refusée&quot; | &quot;Validee&quot; | &quot;En cours&quot;</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>The filter to apply</p>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                                <td>selectElement</td>
+                                            <td>
+                                                        <code>HTMLSelectElement</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>The select element to blur</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="toggleDateSort"></a>
+                    <span class="name">
+                        <span ><b>toggleDateSort</b></span>
+                        <a href="#toggleDateSort"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>toggleDateSort()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="203"
+                                    class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:203</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Toggles the date sort order between ascending, descending and none</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="viewSearchDetails"></a>
+                    <span class="name">
+                        <span ><b>viewSearchDetails</b></span>
+                        <a href="#viewSearchDetails"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>viewSearchDetails(searchId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="218"
+                                    class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:218</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Navigates to the search details view</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>searchId</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>The ID of the search to view</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="allDataLoaded"></a>
+                    <span class="name">
+                        <span ><b>allDataLoaded</b></span>
+                        <a href="#allDataLoaded"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="35" class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:35</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="companies"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>companies</b></span>
+                        <a href="#companies"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/Company.html" target="_self" >Company[]</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="27" class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:27</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentDateFilter"></a>
+                    <span class="name">
+                        <span ><b>currentDateFilter</b></span>
+                        <a href="#currentDateFilter"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>&quot;all&quot; | &quot;date_asc&quot; | &quot;date_desc&quot;</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;all&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="33" class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:33</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentStatutFilter"></a>
+                    <span class="name">
+                        <span ><b>currentStatutFilter</b></span>
+                        <a href="#currentStatutFilter"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>&quot;all&quot; | &quot;Refusée&quot; | &quot;Validee&quot; | &quot;En cours&quot;</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;all&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="34" class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:34</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="filteredSheetsWithCompanies"></a>
+                    <span class="name">
+                        <span ><b>filteredSheetsWithCompanies</b></span>
+                        <a href="#filteredSheetsWithCompanies"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>literal type[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="31" class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:31</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isDeleting"></a>
+                    <span class="name">
+                        <span ><b>isDeleting</b></span>
+                        <a href="#isDeleting"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="38" class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:38</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isStudent"></a>
+                    <span class="name">
+                        <span ><b>isStudent</b></span>
+                        <a href="#isStudent"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="39" class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:39</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="originalSheetsWithCompanies"></a>
+                    <span class="name">
+                        <span ><b>originalSheetsWithCompanies</b></span>
+                        <a href="#originalSheetsWithCompanies"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>literal type[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="32" class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:32</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="searchTerm"></a>
+                    <span class="name">
+                        <span ><b>searchTerm</b></span>
+                        <a href="#searchTerm"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="29" class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:29</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="searchTermSubject"></a>
+                    <span class="name">
+                        <span ><b>searchTermSubject</b></span>
+                        <a href="#searchTermSubject"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Subject&lt;string&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="30" class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:30</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="sheets"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>sheets</b></span>
+                        <a href="#sheets"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/Factsheets.html" target="_self" >Factsheets[]</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="28" class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:28</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="sheetToDelete"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>sheetToDelete</b></span>
+                        <a href="#sheetToDelete"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/Factsheets.html" target="_self" >Factsheets</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="36" class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:36</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="showDeleteModal"></a>
+                    <span class="name">
+                        <span ><b>showDeleteModal</b></span>
+                        <a href="#showDeleteModal"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="37" class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:37</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="studentData"></a>
+                    <span class="name">
+                            <span class="modifier">Optional</span>
+                        <span ><b>studentData</b></span>
+                        <a href="#studentData"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../classes/Student.html" target="_self" >Student</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/app/components/factsheets-student-tab/factsheets-student-tab.component.ts:26</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { FormsModule } from &#x27;@angular/forms&#x27;;
+import { Student } from &#x27;../../models/student.model&#x27;;
+import { Company } from &#x27;../../models/company.model&#x27;;
+import { Factsheets, SheetStatus } from &#x27;../../models/description-sheet.model&#x27;;
+import { DeleteConfirmationModalComponent } from &#x27;../delete-confirmation-modal/delete-confirmation-modal.component&#x27;;
+import { NavigationService } from &#x27;../../services/navigation.service&#x27;;
+import { CompanyService } from &#x27;../../services/company.service&#x27;;
+import { FactsheetsService } from &#x27;../../services/description-sheet.service&#x27;;
+import { AuthService } from &#x27;../../services/auth.service&#x27;;
+import { Subject, debounceTime, distinctUntilChanged, forkJoin, firstValueFrom, tap } from &#x27;rxjs&#x27;;
+
+
+@Component({
+    selector: &#x27;app-factsheets-student-tab&#x27;,
+    standalone: true,
+    imports: [CommonModule, FormsModule, DeleteConfirmationModalComponent],
+    templateUrl: &#x27;./factsheets-student-tab.component.html&#x27;,
+    styleUrls: [&#x27;./factsheets-student-tab.component.css&#x27;],
+})
+export class FactsheetsStudentTabComponent implements OnInit {
+    @Input() student!: Student;
+    @Input() currentUserRole?: string
+    @Output() dataLoaded &#x3D; new EventEmitter&lt;void&gt;()
+    studentData?: Student
+    companies?: Company[]
+    sheets?: Factsheets[]
+    searchTerm: string &#x3D; &#x27;&#x27;
+    searchTermSubject &#x3D; new Subject&lt;string&gt;()
+    filteredSheetsWithCompanies: { sheet: Factsheets; company: Company }[] &#x3D; []
+    originalSheetsWithCompanies: { sheet: Factsheets; company: Company }[] &#x3D; []
+    currentDateFilter: &#x27;all&#x27; | &#x27;date_asc&#x27; | &#x27;date_desc&#x27; &#x3D; &#x27;all&#x27;
+    currentStatutFilter: &#x27;all&#x27; | &#x27;Refusée&#x27; | &#x27;Validee&#x27; | &#x27;En cours&#x27; &#x3D; &#x27;all&#x27;
+    allDataLoaded: boolean &#x3D; false
+    sheetToDelete?: Factsheets
+    showDeleteModal &#x3D; false
+    isDeleting &#x3D; false
+    isStudent: boolean &#x3D; false;
+
+    constructor(
+        private readonly navigationService: NavigationService,
+        private readonly factsheetsService: FactsheetsService,
+        private readonly companyService: CompanyService,
+        private readonly cdr: ChangeDetectorRef,
+        private readonly authService: AuthService,
+    ) {}
+
+    /**
+     * Initialize the search configuration with debounce and loads initial data
+     */
+    ngOnInit() {
+        this.authService.getAuthenticatedUser().subscribe(user &#x3D;&gt;
+            this.isStudent &#x3D; this.authService.isStudent(user)
+        );
+
+        // Configuration de la recherche avec debounce
+        this.searchTermSubject.pipe(
+            debounceTime(800), 
+            distinctUntilChanged()
+        ).subscribe(() &#x3D;&gt; {
+            this.applyFilters();
+        });
+
+        // Charger les données
+        this.loadData().then(() &#x3D;&gt; {
+            this.allDataLoaded &#x3D; true
+        });
+    }
+
+    /**
+     * Loads student data, their internship searches and related companies
+     * @returns Promise that resolves when all data is loaded
+     */
+    loadData() {
+        return firstValueFrom(
+            forkJoin({
+                companies: this.companyService.getCompanies([&#x27;idEntreprise&#x27;, &#x27;raisonSociale&#x27;, &#x27;ville&#x27;]),
+                sheet: this.factsheetsService.getSheetsByStudentId(this.student.idUPPA),
+            }).pipe(
+                tap(({ companies, sheet }) &#x3D;&gt; {
+                    this.companies &#x3D; companies
+                    this.sheets &#x3D; sheet
+                    if (this.sheets &amp;&amp; this.sheets.length &gt; 0) {
+                        const sheetsWithCompanies &#x3D; this.sheets.map((sheet) &#x3D;&gt; {
+                            const company &#x3D; this.companies!.find((c) &#x3D;&gt; c.idEntreprise &#x3D;&#x3D;&#x3D; sheet.idEntreprise);
+                            return { sheet, company: company! };
+                        });
+                        this.originalSheetsWithCompanies &#x3D; [...sheetsWithCompanies];
+                        this.filteredSheetsWithCompanies &#x3D; [...sheetsWithCompanies];
+                        this.applyFilters();
+                    } else {
+                        this.filteredSheetsWithCompanies &#x3D; []
+                    }
+                    this.dataLoaded.emit()
+                })
+            )
+        )
+    }
+
+    /**
+     * Returns the CSS class for a given status
+     * @param status The status to get the class for
+     */
+    getStatusClass(status: string): string {
+        const statusMap: Record&lt;string, string&gt; &#x3D; {
+            Validee: &#x27;status-badge valide&#x27;,
+            &#x27;En cours&#x27;: &#x27;status-badge en-attente&#x27;,
+            Refusée: &#x27;status-badge refuse&#x27;,
+        }
+        return statusMap[status] || &#x27;status-badge&#x27;
+    }
+
+    /**
+     * Sets the status filter and applies filters
+     * @param filter The filter to apply
+     * @param selectElement The select element to blur
+     */
+    setStatutFilter(filter: &#x27;all&#x27; | &#x27;Refusée&#x27; | &#x27;Validee&#x27; | &#x27;En cours&#x27;, selectElement: HTMLSelectElement) {
+        this.currentStatutFilter &#x3D; filter
+        this.applyFilters()
+        selectElement.blur()
+    }
+
+    /**
+     * Gets the display label for a given status
+     * @param status The status to get the label for
+     */
+    getStatusLabel(status: SheetStatus): string {
+        const labels: Record&lt;SheetStatus, string&gt; &#x3D; {
+            &#x27;En cours&#x27;: &#x27;En cours&#x27;,
+            Validee: &#x27;Validée&#x27;,
+            Refusée: &#x27;Refusée&#x27;,
+        }
+        return labels[status]
+    }
+
+    /**
+     * Applies all active filters and search terms to the factsheets list
+     */
+    applyFilters() {
+        let filteredSearches &#x3D; [...this.originalSheetsWithCompanies];
+        const searchTermLower &#x3D; this.searchTerm.toLowerCase().trim()
+
+        // Convertir les dates de création en objets Date si nécessaire
+        filteredSearches.forEach((s) &#x3D;&gt; {
+            if (!(s.sheet.dateCreation instanceof Date)) {
+                s.sheet.dateCreation &#x3D; new Date(s.sheet.dateCreation!)
+            }
+        })
+
+        // Appliquer le filtre de recherche textuelle
+        if (searchTermLower) {
+            filteredSearches &#x3D; filteredSearches.filter(
+                (s) &#x3D;&gt;
+                    s.company.raisonSociale!.toLowerCase().includes(searchTermLower) ||
+                    s.company.ville!.toLowerCase().includes(searchTermLower) ||
+                    this.getStatusLabel(s.sheet.statut!).toLowerCase().includes(searchTermLower)
+            )
+        }
+
+        // Appliquer le filtre de statut
+        if (this.currentStatutFilter !&#x3D;&#x3D; &#x27;all&#x27;) {
+            filteredSearches &#x3D; filteredSearches.filter((s) &#x3D;&gt; s.sheet.statut &#x3D;&#x3D;&#x3D; this.currentStatutFilter)
+        }
+
+        // Appliquer les filtres de tri par date
+        if (this.currentDateFilter &#x3D;&#x3D;&#x3D; &#x27;date_asc&#x27;) {
+            filteredSearches.sort((a, b) &#x3D;&gt; a.sheet.dateCreation!.getTime() - b.sheet.dateCreation!.getTime())
+        } else if (this.currentDateFilter &#x3D;&#x3D;&#x3D; &#x27;date_desc&#x27;) {
+            filteredSearches.sort((a, b) &#x3D;&gt; b.sheet.dateCreation!.getTime() - a.sheet.dateCreation!.getTime())
+        }
+
+        // Mettre à jour les résultats filtrés
+        this.filteredSheetsWithCompanies &#x3D; filteredSearches
+    }
+
+    /**
+     * Handles changes to the search term
+     * @param event The input event
+     */
+    onSearchTermChange(event: Event) {
+        const target &#x3D; event.target as HTMLInputElement
+        if (target) {
+            this.searchTerm &#x3D; target.value
+            this.searchTermSubject.next(this.searchTerm)
+            this.applyFilters()
+        }
+    }
+
+    /**
+     * Clears the current search term and reapplies filters
+     */
+    clearSearchTerm() {
+        this.searchTerm &#x3D; &#x27;&#x27;
+        this.searchTermSubject.next(this.searchTerm)
+        this.applyFilters()
+    }
+
+    /**
+     * Toggles the date sort order between ascending, descending and none
+     */
+    toggleDateSort() {
+        if (this.currentDateFilter &#x3D;&#x3D;&#x3D; &#x27;date_asc&#x27;) {
+            this.currentDateFilter &#x3D; &#x27;date_desc&#x27;
+        } else if (this.currentDateFilter &#x3D;&#x3D;&#x3D; &#x27;date_desc&#x27;) {
+            this.currentDateFilter &#x3D; &#x27;all&#x27;
+        } else {
+            this.currentDateFilter &#x3D; &#x27;date_asc&#x27;
+        }
+        this.applyFilters()
+    }
+
+    /**
+     * Navigates to the search details view
+     * @param searchId The ID of the search to view
+     */
+    viewSearchDetails(searchId: number) {
+        this.navigationService.navigateToSearchView(searchId)
+    }
+
+    /**
+     * Navigates to the add factsheet form
+     */
+    goToAddFactSheetForm() {
+        this.navigationService.navigateToAddFactSheetForm()
+    }
+
+    /**
+     * Navigates to the update factsheet form view
+     * @param idFicheDescriptive The ID of the factsheet to edit
+     */
+    goToUpdateFactsheetFormView(idFicheDescriptive: number) {
+        this.navigationService.navigateToDescriptiveSheetEditForm(idFicheDescriptive);
+    }
+
+    /**
+     * Opens the delete confirmation modal for a factsheet
+     * @param sheet The factsheet to delete
+     */
+    openDeleteModal(sheet: Factsheets) {
+        this.sheetToDelete &#x3D; sheet
+        this.showDeleteModal &#x3D; true
+    }
+
+    /**
+     * Handles the confirmation of factsheet deletion
+     */
+    async onConfirmDelete() {
+        if (this.sheetToDelete) {
+            try {
+                this.isDeleting &#x3D; true
+                await firstValueFrom(this.factsheetsService.deleteSheet(this.sheetToDelete))
+                await this.loadData()
+                this.cdr.detectChanges()
+            } catch (error) {
+                console.error(&#x27;Erreur lors de la suppression de la recherche:&#x27;, error)
+            } finally {
+                this.isDeleting &#x3D; false
+                this.showDeleteModal &#x3D; false
+                this.sheetToDelete &#x3D; undefined
+            }
+        }
+    }
+
+    /**
+     * Cancels the deletion operation and closes the modal
+     */
+    onCancelDelete() {
+        this.showDeleteModal &#x3D; false
+        this.sheetToDelete &#x3D; undefined
+    }
+
+    /**
+     * Navigates to the factsheet details view
+     * @param sheetId The ID of the sheet to view
+     */
+    goToSheetDetails(sheetId: number) {
+        this.navigationService.navigateToSheetView(sheetId);
+    }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;content-box&quot;&gt;
+  &lt;div class&#x3D;&quot;titleAndAddSearchButton&quot;&gt;
+    &lt;h3&gt;&lt;b&gt;Fiches descriptives&lt;/b&gt;&lt;/h3&gt;
+    @if (isStudent) {
+      &lt;button (click)&#x3D;&quot;goToAddFactSheetForm()&quot;&gt;
+        Ajouter une fiche descriptive
+      &lt;/button&gt;
+    }
+  &lt;/div&gt;
+  &lt;div class&#x3D;&quot;searchBarAndfilters&quot;&gt;
+    &lt;div class&#x3D;&quot;search-container&quot;&gt;
+      &lt;input
+        type&#x3D;&quot;text&quot;
+        [(ngModel)]&#x3D;&quot;searchTerm&quot;
+        (input)&#x3D;&quot;onSearchTermChange($event)&quot;
+        placeholder&#x3D;&quot;Rechercher sur un des champs...&quot;
+        class&#x3D;&quot;search-input&quot;
+      /&gt;
+      @if (searchTerm) {
+        &lt;button (click)&#x3D;&quot;clearSearchTerm()&quot; class&#x3D;&quot;clear-button&quot;&gt;X&lt;/button&gt;
+      }
+    &lt;/div&gt;
+
+    &lt;div class&#x3D;&quot;filter-buttons&quot;&gt;
+      &lt;button
+        class&#x3D;&quot;filter-button&quot;
+        [class]&#x3D;&quot;currentDateFilter&quot;
+        (click)&#x3D;&quot;toggleDateSort()&quot;
+      &gt;
+        Date
+      &lt;/button&gt;
+      &lt;select
+        #statutSelect
+        [(ngModel)]&#x3D;&quot;currentStatutFilter&quot;
+        (change)&#x3D;&quot;setStatutFilter(currentStatutFilter, statutSelect)&quot;
+        class&#x3D;&quot;filter-button&quot;
+      &gt;
+        &lt;option value&#x3D;&quot;all&quot;&gt;Tous les statuts&lt;/option&gt;
+        &lt;option value&#x3D;&quot;Validee&quot;&gt;Valide&lt;/option&gt;
+        &lt;option value&#x3D;&quot;En cours&quot;&gt;En révision&lt;/option&gt;
+        &lt;option value&#x3D;&quot;Refusée&quot;&gt;Refusé&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Vue tableau pour desktop --&gt;
+  &lt;div class&#x3D;&quot;table-view&quot;&gt;
+    &lt;div class&#x3D;&quot;table-container&quot;&gt;
+      &lt;table&gt;
+        &lt;caption class&#x3D;&quot;visually-hidden&quot;&gt;
+          Liste des Recherches de stages
+        &lt;/caption&gt;
+        &lt;thead&gt;
+          &lt;tr&gt;
+            &lt;th&gt;Entreprise&lt;/th&gt;
+            &lt;th&gt;Date création&lt;/th&gt;
+            &lt;th&gt;Date modification&lt;/th&gt;
+            &lt;th&gt;Statut&lt;/th&gt;
+            @if (isStudent) {
+              &lt;th&gt;Action&lt;/th&gt;
+            }
+          &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+          @for (
+            item of filteredSheetsWithCompanies;
+            track item.sheet.idFicheDescriptive
+          ) {
+            &lt;tr (click)&#x3D;&quot;goToSheetDetails(item.sheet.idFicheDescriptive)&quot;&gt;
+              &lt;td class&#x3D;&quot;firstTd&quot;&gt;{{ item.company.raisonSociale }}&lt;/td&gt;
+              &lt;td&gt;{{ item.sheet.dateCreation | date: &quot;dd/MM/yyyy&quot; }}&lt;/td&gt;
+              &lt;td&gt;
+                {{ item.sheet.dateDerniereModification | date: &quot;dd/MM/yyyy&quot; }}
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;span [class]&#x3D;&quot;getStatusClass(item.sheet.statut!)&quot;&gt;
+                  {{ getStatusLabel(item.sheet.statut!) }}
+                &lt;/span&gt;
+              &lt;/td&gt;
+              @if (isStudent) {
+                &lt;td class&#x3D;&quot;lastTd&quot;&gt;
+                  &lt;div class&#x3D;&quot;action-icons&quot;&gt;
+                    &lt;svg
+                      (click)&#x3D;&quot;
+                        $event.stopPropagation();
+                        goToUpdateFactsheetFormView(
+                          item.sheet.idFicheDescriptive
+                        )
+                      &quot;
+                      class&#x3D;&quot;edit-icon&quot;
+                      width&#x3D;&quot;24&quot;
+                      height&#x3D;&quot;24&quot;
+                      viewBox&#x3D;&quot;0 0 24 24&quot;
+                      fill&#x3D;&quot;none&quot;
+                      stroke&#x3D;&quot;currentColor&quot;
+                      stroke-width&#x3D;&quot;2&quot;
+                      stroke-linecap&#x3D;&quot;round&quot;
+                      stroke-linejoin&#x3D;&quot;round&quot;
+                    &gt;
+                      &lt;path
+                        d&#x3D;&quot;M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z&quot;
+                      /&gt;
+                    &lt;/svg&gt;
+
+                    &lt;svg
+                      (click)&#x3D;&quot;
+                        $event.stopPropagation(); openDeleteModal(item.sheet)
+                      &quot;
+                      class&#x3D;&quot;delete-icon&quot;
+                      width&#x3D;&quot;24&quot;
+                      height&#x3D;&quot;24&quot;
+                      viewBox&#x3D;&quot;0 0 24 24&quot;
+                      fill&#x3D;&quot;none&quot;
+                      stroke&#x3D;&quot;currentColor&quot;
+                      stroke-width&#x3D;&quot;2&quot;
+                      stroke-linecap&#x3D;&quot;round&quot;
+                      stroke-linejoin&#x3D;&quot;round&quot;
+                    &gt;
+                      &lt;path d&#x3D;&quot;M3 6h18&quot; /&gt;
+                      &lt;path d&#x3D;&quot;M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6&quot; /&gt;
+                      &lt;path d&#x3D;&quot;M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2&quot; /&gt;
+                    &lt;/svg&gt;
+                  &lt;/div&gt;
+                &lt;/td&gt;
+              }
+            &lt;/tr&gt;
+          }
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Vue cards pour mobile --&gt;
+  &lt;div class&#x3D;&quot;cards-view&quot;&gt;
+    @for (
+      item of filteredSheetsWithCompanies;
+      track item.sheet.idFicheDescriptive
+    ) {
+      &lt;div
+        class&#x3D;&quot;search-card&quot;
+        (click)&#x3D;&quot;goToSheetDetails(item.sheet.idFicheDescriptive)&quot;
+      &gt;
+        &lt;div class&#x3D;&quot;card-header&quot;&gt;
+          &lt;h4&gt;{{ item.company.raisonSociale }}&lt;/h4&gt;
+          &lt;span [class]&#x3D;&quot;getStatusClass(item.sheet.statut!)&quot;&gt;
+            {{ getStatusLabel(item.sheet.statut!) }}
+          &lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class&#x3D;&quot;card-content&quot;&gt;
+          &lt;p class&#x3D;&quot;location&quot;&gt;
+            &lt;span class&#x3D;&quot;label&quot;&gt;Date création:&lt;/span&gt;
+            {{ item.sheet.dateCreation | date: &quot;dd/MM/yyyy&quot; }}
+          &lt;/p&gt;
+          &lt;p class&#x3D;&quot;date&quot;&gt;
+            &lt;span class&#x3D;&quot;label&quot;&gt;Date modification:&lt;/span&gt;
+            {{ item.sheet.dateDerniereModification | date: &quot;dd/MM/yyyy&quot; }}
+          &lt;/p&gt;
+        &lt;/div&gt;
+        &lt;hr class&#x3D;&quot;card-separator&quot; /&gt;
+        &lt;div class&#x3D;&quot;card-actions&quot;&gt;
+          @if (isStudent) {
+            &lt;svg
+              (click)&#x3D;&quot;
+                $event.stopPropagation();
+                goToUpdateFactsheetFormView(item.sheet.idFicheDescriptive)
+              &quot;
+              class&#x3D;&quot;edit-icon&quot;
+              width&#x3D;&quot;20&quot;
+              height&#x3D;&quot;20&quot;
+              viewBox&#x3D;&quot;0 0 24 24&quot;
+              fill&#x3D;&quot;none&quot;
+              stroke&#x3D;&quot;currentColor&quot;
+              stroke-width&#x3D;&quot;2&quot;
+              stroke-linecap&#x3D;&quot;round&quot;
+              stroke-linejoin&#x3D;&quot;round&quot;
+            &gt;
+              &lt;path
+                d&#x3D;&quot;M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z&quot;
+              /&gt;
+            &lt;/svg&gt;
+
+            &lt;svg
+              (click)&#x3D;&quot;$event.stopPropagation(); openDeleteModal(item.sheet)&quot;
+              class&#x3D;&quot;delete-icon&quot;
+              width&#x3D;&quot;20&quot;
+              height&#x3D;&quot;20&quot;
+              viewBox&#x3D;&quot;0 0 24 24&quot;
+              fill&#x3D;&quot;none&quot;
+              stroke&#x3D;&quot;currentColor&quot;
+              stroke-width&#x3D;&quot;2&quot;
+              stroke-linecap&#x3D;&quot;round&quot;
+              stroke-linejoin&#x3D;&quot;round&quot;
+            &gt;
+              &lt;path d&#x3D;&quot;M3 6h18&quot; /&gt;
+              &lt;path d&#x3D;&quot;M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6&quot; /&gt;
+              &lt;path d&#x3D;&quot;M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2&quot; /&gt;
+            &lt;/svg&gt;
+          }
+        &lt;/div&gt;
+      &lt;/div&gt;
+    }
+  &lt;/div&gt;
+
+  @if (showDeleteModal) {
+    &lt;app-delete-confirmation-modal
+      [isDeleting]&#x3D;&quot;isDeleting&quot;
+      (confirm)&#x3D;&quot;onConfirmDelete()&quot;
+      (cancel)&#x3D;&quot;onCancelDelete()&quot;
+    /&gt;
+  }
+&lt;/div&gt;
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./factsheets-student-tab.component.css</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">/* Container principal */
+.content-box {
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  display: block;
+  padding: 20px;
+  margin-top: 15px;
+}
+
+/* En-tête avec titre et bouton */
+.titleAndAddSearchButton {
+  padding: 5px 0 5px 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.titleAndAddSearchButton h3 {
+  color: #08a28a;
+}
+
+.titleAndAddSearchButton button {
+  padding: 5px 8px 7px;
+  border-radius: 8px;
+  background-color: #0a63a4;
+  color: white;
+}
+
+.titleAndAddSearchButton button:active {
+  background-color: #338ccd;
+  transform: translate(1px, 1px);
+}
+
+/* Barre de recherche et filtres */
+.searchBarAndfilters {
+  padding: 0 5px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.search-container {
+  position: relative;
+  margin-bottom: 16px;
+  min-width: 250px;
+  flex: 1;
+  max-width: 300px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 12px;
+  padding-right: 40px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.clear-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.clear-button .icon {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  color: #9ca3af;
+}
+
+/* Boutons de filtres */
+.filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 2;
+}
+
+.filter-button {
+  padding: 8px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 9999px;
+  background: white;
+  min-width: 100px;
+  max-width: 150px;
+  font-size: 14px;
+  font-weight: 500;
+  justify-content: center;
+  flex: 1;
+  appearance: none;
+  -webkit-appearance: none;
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 1em;
+  padding-right: 32px;
+}
+
+/* Styles spécifiques pour le bouton de tri par date */
+.filter-button.date_asc {
+  background-image: url(&quot;data:image/svg+xml;charset&#x3D;UTF-8,%3csvg xmlns&#x3D;&#x27;http://www.w3.org/2000/svg&#x27; viewBox&#x3D;&#x27;0 0 24 24&#x27; fill&#x3D;&#x27;none&#x27; stroke&#x3D;&#x27;currentColor&#x27; stroke-width&#x3D;&#x27;2&#x27; stroke-linecap&#x3D;&#x27;round&#x27; stroke-linejoin&#x3D;&#x27;round&#x27;%3e%3cpolyline points&#x3D;&#x27;6 9 12 15 18 9&#x27;%3e%3c/polyline%3e%3c/svg%3e&quot;);
+}
+
+.filter-button.date_desc {
+  background-image: url(&quot;data:image/svg+xml;charset&#x3D;UTF-8,%3csvg xmlns&#x3D;&#x27;http://www.w3.org/2000/svg&#x27; viewBox&#x3D;&#x27;0 0 24 24&#x27; fill&#x3D;&#x27;none&#x27; stroke&#x3D;&#x27;currentColor&#x27; stroke-width&#x3D;&#x27;2&#x27; stroke-linecap&#x3D;&#x27;round&#x27; stroke-linejoin&#x3D;&#x27;round&#x27;%3e%3cpolyline points&#x3D;&#x27;18 15 12 9 6 15&#x27;%3e%3c/polyline%3e%3c/svg%3e&quot;);
+}
+
+.filter-button.default {
+  background-image: none;
+}
+
+.filter-button.active {
+  background-color: #f3f4f6;
+}
+
+select.filter-button {
+  cursor: pointer;
+  background-image: url(&quot;data:image/svg+xml;charset&#x3D;UTF-8,%3csvg xmlns&#x3D;&#x27;http://www.w3.org/2000/svg&#x27; viewBox&#x3D;&#x27;0 0 24 24&#x27; fill&#x3D;&#x27;none&#x27; stroke&#x3D;&#x27;currentColor&#x27; stroke-width&#x3D;&#x27;2&#x27; stroke-linecap&#x3D;&#x27;round&#x27; stroke-linejoin&#x3D;&#x27;round&#x27;%3e%3cpolyline points&#x3D;&#x27;6 9 12 15 18 9&#x27;%3e%3c/polyline%3e%3c/svg%3e&quot;);
+}
+
+select.filter-button:not(:focus) {
+  background-image: url(&quot;data:image/svg+xml;charset&#x3D;UTF-8,%3csvg xmlns&#x3D;&#x27;http://www.w3.org/2000/svg&#x27; viewBox&#x3D;&#x27;0 0 24 24&#x27; fill&#x3D;&#x27;none&#x27; stroke&#x3D;&#x27;currentColor&#x27; stroke-width&#x3D;&#x27;2&#x27; stroke-linecap&#x3D;&#x27;round&#x27; stroke-linejoin&#x3D;&#x27;round&#x27;%3e%3cpolyline points&#x3D;&#x27;9 18 15 12 9 6&#x27;%3e%3c/polyline%3e%3c/svg%3e&quot;);
+}
+
+/* Tableau */
+.table-container {
+  overflow-x: auto;
+  margin: 0 5px;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 5px;
+  min-width: 800px;
+}
+
+th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+tbody td {
+  background-clip: padding-box;
+  padding: 15px;
+}
+
+.firstTd {
+  border-radius: 16px 0 0 16px;
+}
+
+.lastTd {
+  padding-left: 1rem !important;
+  text-align: left;
+  border-radius: 0 16px 16px 0;
+}
+
+tbody tr {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+/* Couleurs de base */
+tbody tr:nth-child(odd) td {
+  background-color: #eee4ff;
+}
+
+tbody tr:nth-child(even) td {
+  background-color: #d7ebff;
+}
+
+/* Couleurs au survol pour les lignes impaires */
+tbody tr:nth-child(odd):hover td {
+  background-color: #dcc6ff !important;
+}
+
+tbody tr:nth-child(odd):hover::after {
+  content: &quot;&quot;;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid #c094ff;
+  border-radius: 16px;
+  pointer-events: none;
+}
+
+/* Couleurs au survol pour les lignes paires */
+tbody tr:nth-child(even):hover td {
+  background-color: #b8dcff !important;
+}
+
+tbody tr:nth-child(even):hover::after {
+  content: &quot;&quot;;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid #4a8fd0;
+  border-radius: 16px;
+  pointer-events: none;
+}
+
+/* Badges de statut */
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.status-badge.relance {
+  background-color: #d6b1fe;
+}
+
+.status-badge.valide {
+  background-color: #9bfdbe;
+}
+
+.status-badge.en-attente {
+  background-color: #a4ccff;
+}
+
+.status-badge.refuse {
+  background-color: #fda6a6;
+}
+
+/* Vue cards */
+.table-view {
+  display: block;
+}
+
+.cards-view {
+  display: none;
+  padding: 0 16px;
+  margin-top: 20px;
+}
+
+.search-card {
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 3px solid transparent;
+}
+
+.search-card:hover {
+  border: 3px solid #4a8fd0;
+  background-color: #b8dcff;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.card-header h4 {
+  margin: 0;
+  color: #2d3748;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.card-content {
+  margin-bottom: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.card-content p {
+  margin: 0;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.card-content .label {
+  font-weight: 500;
+  color: #4a5568;
+  margin-right: 8px;
+  min-width: 45px;
+}
+
+/* Media Queries */
+@media (max-width: 950px) {
+  .table-view {
+    display: none;
+  }
+
+  .cards-view {
+    display: block;
+  }
+
+  .searchBarAndfilters {
+    flex-direction: column;
+    gap: 10px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .search-container {
+    width: 100%;
+    max-width: none;
+    margin-bottom: 10px;
+  }
+
+  .filter-buttons {
+    width: 100%;
+    display: flex;
+    align-items: start;
+    justify-content: start;
+  }
+
+  .filter-button {
+    width: 100%;
+    min-width: 135px;
+    padding: 6px 12px;
+  }
+
+  .search-card {
+    position: relative;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card-separator {
+    margin: 1rem 0;
+    border: none;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .card-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 1rem;
+    gap: 1rem;
+  }
+
+  .card-actions .edit-icon,
+  .card-actions .delete-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .card-actions .edit-icon:hover,
+  .card-actions .delete-icon:hover {
+    transform: translateY(-2px); /* Même effet sur mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .searchBarAndfilters {
+    padding: 0 8px;
+  }
+
+  .filter-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-button {
+    max-width: 150px;
+    min-width: 135px;
+  }
+
+  .search-input {
+    font-size: 14px;
+  }
+
+  .card-content {
+    grid-template-columns: 1fr;
+  }
+
+  .card-header {
+    flex-direction: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .status-badge {
+    align-self: flex-start;
+  }
+}
+
+/* Style pour les icônes d&#x27;action */
+.action-icons {
+  display: flex;
+  justify-content: flex-start;
+  gap: 40%;
+  width: 100%;
+}
+
+.edit-icon,
+.delete-icon {
+  cursor: pointer;
+  transition: all 0.2s ease; /* Ajout de la transition pour tous les effets */
+}
+
+.edit-icon {
+  color: #0a63a4;
+}
+
+.edit-icon:hover {
+  color: #338ccd;
+  transform: translateY(-3px); /* Effet de surélévation */
+}
+
+.delete-icon {
+  color: #dc2626;
+}
+
+.delete-icon:hover {
+  color: #ef4444;
+  transform: translateY(-3px); /* Effet de surélévation */
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="content-box">  <div class="titleAndAddSearchButton">    <h3><b>Fiches descriptives</b></h3>    @if (isStudent) {      <button (click)="goToAddFactSheetForm()">        Ajouter une fiche descriptive      </button>    }  </div>  <div class="searchBarAndfilters">    <div class="search-container">      <input        type="text"        [(ngModel)]="searchTerm"        (input)="onSearchTermChange($event)"        placeholder="Rechercher sur un des champs..."        class="search-input"      />      @if (searchTerm) {        <button (click)="clearSearchTerm()" class="clear-button">X</button>      }    </div>    <div class="filter-buttons">      <button        class="filter-button"        [class]="currentDateFilter"        (click)="toggleDateSort()"      >        Date      </button>      <select        #statutSelect        [(ngModel)]="currentStatutFilter"        (change)="setStatutFilter(currentStatutFilter, statutSelect)"        class="filter-button"      >        <option value="all">Tous les statuts</option>        <option value="Validee">Valide</option>        <option value="En cours">En révision</option>        <option value="Refusée">Refusé</option>      </select>    </div>  </div>  <!-- Vue tableau pour desktop -->  <div class="table-view">    <div class="table-container">      <table>        <caption class="visually-hidden">          Liste des Recherches de stages        </caption>        <thead>          <tr>            <th>Entreprise</th>            <th>Date création</th>            <th>Date modification</th>            <th>Statut</th>            @if (isStudent) {              <th>Action</th>            }          </tr>        </thead>        <tbody>          @for (            item of filteredSheetsWithCompanies;            track item.sheet.idFicheDescriptive          ) {            <tr (click)="goToSheetDetails(item.sheet.idFicheDescriptive)">              <td class="firstTd">{{ item.company.raisonSociale }}</td>              <td>{{ item.sheet.dateCreation | date: "dd/MM/yyyy" }}</td>              <td>                {{ item.sheet.dateDerniereModification | date: "dd/MM/yyyy" }}              </td>              <td>                <span [class]="getStatusClass(item.sheet.statut!)">                  {{ getStatusLabel(item.sheet.statut!) }}                </span>              </td>              @if (isStudent) {                <td class="lastTd">                  <div class="action-icons">                    <svg                      (click)="                        $event.stopPropagation();                        goToUpdateFactsheetFormView(                          item.sheet.idFicheDescriptive                        )                      "                      class="edit-icon"                      width="24"                      height="24"                      viewBox="0 0 24 24"                      fill="none"                      stroke="currentColor"                      stroke-width="2"                      stroke-linecap="round"                      stroke-linejoin="round"                    >                      <path                        d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"                      />                    </svg>                    <svg                      (click)="                        $event.stopPropagation(); openDeleteModal(item.sheet)                      "                      class="delete-icon"                      width="24"                      height="24"                      viewBox="0 0 24 24"                      fill="none"                      stroke="currentColor"                      stroke-width="2"                      stroke-linecap="round"                      stroke-linejoin="round"                    >                      <path d="M3 6h18" />                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />                    </svg>                  </div>                </td>              }            </tr>          }        </tbody>      </table>    </div>  </div>  <!-- Vue cards pour mobile -->  <div class="cards-view">    @for (      item of filteredSheetsWithCompanies;      track item.sheet.idFicheDescriptive    ) {      <div        class="search-card"        (click)="goToSheetDetails(item.sheet.idFicheDescriptive)"      >        <div class="card-header">          <h4>{{ item.company.raisonSociale }}</h4>          <span [class]="getStatusClass(item.sheet.statut!)">            {{ getStatusLabel(item.sheet.statut!) }}          </span>        </div>        <div class="card-content">          <p class="location">            <span class="label">Date création:</span>            {{ item.sheet.dateCreation | date: "dd/MM/yyyy" }}          </p>          <p class="date">            <span class="label">Date modification:</span>            {{ item.sheet.dateDerniereModification | date: "dd/MM/yyyy" }}          </p>        </div>        <hr class="card-separator" />        <div class="card-actions">          @if (isStudent) {            <svg              (click)="                $event.stopPropagation();                goToUpdateFactsheetFormView(item.sheet.idFicheDescriptive)              "              class="edit-icon"              width="20"              height="20"              viewBox="0 0 24 24"              fill="none"              stroke="currentColor"              stroke-width="2"              stroke-linecap="round"              stroke-linejoin="round"            >              <path                d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"              />            </svg>            <svg              (click)="$event.stopPropagation(); openDeleteModal(item.sheet)"              class="delete-icon"              width="20"              height="20"              viewBox="0 0 24 24"              fill="none"              stroke="currentColor"              stroke-width="2"              stroke-linecap="round"              stroke-linejoin="round"            >              <path d="M3 6h18" />              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />            </svg>          }        </div>      </div>    }  </div>  @if (showDeleteModal) {    <app-delete-confirmation-modal      [isDeleting]="isDeleting"      (confirm)="onConfirmDelete()"      (cancel)="onCancelDelete()"    />  }</div></div>'
+    var COMPONENTS = [{'name': 'AddFactsheetComponent', 'selector': 'app-add-factsheet'},{'name': 'AddFactsheets1Component', 'selector': 'app-add-factsheets-1'},{'name': 'AddFactsheets2Component', 'selector': 'app-add-factsheets-2'},{'name': 'AddFactsheets3Component', 'selector': 'app-add-factsheets-3'},{'name': 'AddFactsheets4Component', 'selector': 'app-add-factsheets-4'},{'name': 'AddFactsheets5Component', 'selector': 'app-add-factsheets-5'},{'name': 'AddFactsheets6Component', 'selector': 'app-add-factsheets-6'},{'name': 'AddFactsheets7Component', 'selector': 'app-add-factsheets-7'},{'name': 'AddFactsheets8Component', 'selector': 'app-add-factsheets-8'},{'name': 'AddFactsheets9Component', 'selector': 'app-add-factsheets-9'},{'name': 'AddScheduleComponent', 'selector': 'app-add-schedule'},{'name': 'AddSearchFormComponent', 'selector': 'app-add-search-form'},{'name': 'AddUpdateScheduleComponent', 'selector': 'app-add-update-schedule'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'BackConfirmationModalComponent', 'selector': 'app-back-confirmation-modal'},{'name': 'BreadcrumbComponent', 'selector': 'app-breadcrumb'},{'name': 'DashboardComponent', 'selector': 'app-dashboard'},{'name': 'DeleteConfirmationModalComponent', 'selector': 'app-delete-confirmation-modal'},{'name': 'FactsheetsComponent', 'selector': 'app-factsheets'},{'name': 'FactsheetsStudentTabComponent', 'selector': 'app-factsheets-student-tab'},{'name': 'HeaderComponent', 'selector': 'app-header'},{'name': 'ListStudentTabComponent', 'selector': 'app-list-student-tab'},{'name': 'LoadingComponent', 'selector': 'app-loading'},{'name': 'ModaleComponent', 'selector': 'app-modale'},{'name': 'ModalePlanningComponent', 'selector': 'app-modale-planning'},{'name': 'ModaleSoutenanceComponent', 'selector': 'app-modale-soutenance'},{'name': 'NavigationTabsComponent', 'selector': 'app-navigation-tabs'},{'name': 'ScheduleBoardComponent', 'selector': 'app-schedule-board'},{'name': 'ScheduleComponent', 'selector': 'app-schedule'},{'name': 'SearchDetailsComponent', 'selector': 'app-search-details'},{'name': 'SearchesStudentTabComponent', 'selector': 'app-searches-student-tab'},{'name': 'SheetDetailsComponent', 'selector': 'app-sheet-details'},{'name': 'SlotComponent', 'selector': 'app-slot'},{'name': 'StatsCardsComponent', 'selector': 'app-stats-cards'},{'name': 'StudentDashboardManagerComponent', 'selector': 'app-student-dashboard-manager'},{'name': 'StudentFactsheetsManagerComponent', 'selector': 'app-student-factsheets-manager'},{'name': 'TutorAttributionModalComponent', 'selector': 'app-tutor-attribution-modal'},{'name': 'UnderDevelopmentComponent', 'selector': 'app-under-development'},{'name': 'UpdateFactsheet1Component', 'selector': 'app-update-factsheets-1'},{'name': 'UpdateFactsheetComponent', 'selector': 'app-update-factsheet'},{'name': 'UpdateFactsheets2Component', 'selector': 'app-update-factsheets-2'},{'name': 'UpdateFactsheets3Component', 'selector': 'app-update-factsheets-3'},{'name': 'UpdateFactsheets4Component', 'selector': 'app-update-factsheets-4'},{'name': 'UpdateFactsheets5Component', 'selector': 'app-update-factsheets-5'},{'name': 'UpdateFactsheets6Component', 'selector': 'app-update-factsheets-6'},{'name': 'UpdateFactsheets7Component', 'selector': 'app-update-factsheets-7'},{'name': 'UpdateFactsheets8Component', 'selector': 'app-update-factsheets-8'},{'name': 'UpdateFactsheets9Component', 'selector': 'app-update-factsheets-9'},{'name': 'UpdateScheduleComponent', 'selector': 'app-update-schedule'},{'name': 'UpdateSearchComponent', 'selector': 'app-update-search'},{'name': 'WelcomeComponent', 'selector': 'app-welcome-card'}];
+    var DIRECTIVES = [];
+    var ACTUAL_COMPONENT = {'name': 'FactsheetsStudentTabComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'FactsheetsStudentTabComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
