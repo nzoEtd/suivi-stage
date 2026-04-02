@@ -11,7 +11,8 @@ export class ModaleComponent {
 
   @Input() title: string = '';
   @Input() hasValue: boolean = true;
-  // @Input() submitLabel: string = 'Valider';
+  @Input() submitLabel: string = 'Valider';
+  @Input() onlyDisplay: boolean = false;
 
   @Output() submit = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();

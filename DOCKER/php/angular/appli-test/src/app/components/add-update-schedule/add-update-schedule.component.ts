@@ -347,7 +347,7 @@ export class AddUpdateScheduleComponent
             this.dataStore.refreshKeys(["plannings"]);
             this.toastr.success(
               "La modification du planning a bien été prise en compte.",
-              `Nouvelle date de ${this.hasNewStart ? "début" : "fin"} enregistré.`,
+              `Nouvelle date de ${this.hasNewStart ? "début" : "fin"} enregistrée.`,
             );
           },
           error: (err) => {
@@ -378,8 +378,8 @@ export class AddUpdateScheduleComponent
           .subscribe({
             next: () => {
               this.toastr.success(
-                "L'ajout a bien été prises en comptes.",
-                "Nouvelles soutenances enregistré.",
+                "L'ajout a bien été pris en compte.",
+                "Nouvelles soutenances enregistrées.",
               );
             },
             error: (err) => {
@@ -400,7 +400,7 @@ export class AddUpdateScheduleComponent
           this.dataStore.refreshKeys(["soutenances"]);
           this.isValidating = false;
           this.toastr.success(
-            "Les modifications ont bien été prises en comptes.",
+            "Les modifications ont bien été prises en compte.",
             "Planning enregistré.",
           );
 
@@ -456,7 +456,7 @@ export class AddUpdateScheduleComponent
             this.dataStore.refreshKeys(["plannings", "soutenances"]);
             this.isValidating = false;
             this.toastr.success(
-              "L'ajout a bien été pris en comptes.",
+              "L'ajout a bien été pris en compte.",
               "Planning enregistré.",
             );
 

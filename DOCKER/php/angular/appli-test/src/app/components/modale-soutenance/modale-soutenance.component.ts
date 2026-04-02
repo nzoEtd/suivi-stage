@@ -31,11 +31,12 @@ import { ToastrService } from "ngx-toastr";
 import { CreneauDisponible } from "../../utils/types";
 import { isOverlap, referentEstTechnique } from "../../utils/fonctions";
 import { sortCreneaux } from "../../utils/slotsUtils";
+import { ModaleComponent } from "../modale/modale.component";
 
 @Component({
   selector: "app-modale-soutenance",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LoadingComponent],
+  imports: [CommonModule, ReactiveFormsModule, LoadingComponent, ModaleComponent],
   templateUrl: "./modale-soutenance.component.html",
   styleUrls: ["./modale-soutenance.component.css"],
 })
@@ -48,6 +49,7 @@ export class ModaleSoutenanceComponent implements OnInit {
   @Input() soutenancesJour!: Record<string, SlotItem[]>;
   @Input() allStaff: Staff[] = [];
   @Input() timeBlocks: TimeBlockConfig[] = [];
+  @Input() isModalOpen: boolean = false;
 
   @Output() close = new EventEmitter<void>();
 
@@ -57,6 +59,7 @@ export class ModaleSoutenanceComponent implements OnInit {
   enseignantsLecteurs: Staff[] = [];
   creneauxDisponibles: CreneauDisponible[] = [];
   newSoutenance: Soutenance = new Soutenance();
+  title: string = "";
 
   isDataLoaded = false;
   isSubmitting = false;
@@ -84,6 +87,7 @@ export class ModaleSoutenanceComponent implements OnInit {
     });
 
     this.updateLecteursDisponibles(currentCreneauKey, true);
+    this.title = `Soutenance ${formatDate(this.soutenance.dateDebut!, "Heure")} - ${formatDate(this.soutenance.dateFin!, "Heure")} S${this.soutenance.salle}`;
     this.isDataLoaded = true;
   }
 
@@ -281,7 +285,7 @@ export class ModaleSoutenanceComponent implements OnInit {
     }
   }
 
-  onCancel(event?: MouseEvent) {
+  onCancel() {
     this.close.emit();
   }
 
@@ -327,7 +331,7 @@ export class ModaleSoutenanceComponent implements OnInit {
           salle,
         });
       }
-      this.toastr.success("Les modifications ont bien été prises en comptes.");
+      this.toastr.success("Les modifications ont bien été prises en compte.");
       break;
     }
 
