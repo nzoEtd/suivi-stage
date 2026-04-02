@@ -443,7 +443,6 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
           s.estDisponible &&
           !this.sallesDispo.some((salle) => s.nomSalle == salle),
       );
-      console.log("salles selectionnables :", this.selectedSalles);
     });
 
     this.title = "Ajouter une salle pour ce jour";
@@ -452,12 +451,13 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
   }
 
   addRoom() {
-    console.log("salles sélectionnées fin : ", this.selectedSalles);
     this.selectedSalles.forEach((salle) => {
       if (!this.sallesDispo.some((s) => s == salle.nomSalle)) {
         this.sallesDispo.push(salle.nomSalle);
       }
     });
+
+    this.sallesDispo.sort((a, b) => a - b);
 
     this.rebuildSlotsCache();
     this.cdRef.detectChanges();
@@ -536,7 +536,6 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
       .valueChanges.subscribe((idPromo) => {
         if (idPromo) {
           this.loadStudents(idPromo);
-          console.log("des étudiants ?", this.students);
           this.planningForm.get("etudiants")?.setValue(this.students);
         } else {
           this.students = [];
@@ -567,14 +566,12 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
       this.slotDuration,
       this.slotDurationTierTemps,
     );
-    console.log("les nouveaux slots :", newSlots);
     newSlots.forEach((slot) => {
       this.newItems.push(slot);
     });
     // this.planningItemsService.addToWaiting(this.newItems);
     this.items = [...this.items, ...this.newItems];
     this.itemsToAdd = [...this.itemsToAdd, ...this.newItems];
-    console.log("slot ajoutés à enregistrer : ", this.itemsToAdd);
     this.modalOpen = false;
     this.submitted = false;
   }

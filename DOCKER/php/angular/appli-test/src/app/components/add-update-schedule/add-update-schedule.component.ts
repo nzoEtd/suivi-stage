@@ -167,6 +167,7 @@ export class AddUpdateScheduleComponent
           this.slots,
           this.itemsToAdd,
         );
+        this.sallesAffiches.sort((a, b) => a - b);
         let idSlotTemp = 0;
         this.slots.forEach((slot) => {
           idSlotTemp++;
@@ -234,6 +235,7 @@ export class AddUpdateScheduleComponent
       this.slots,
       this.itemsToAdd,
     );
+    this.sallesAffiches.sort((a, b) => a - b);
   }
 
   exit() {

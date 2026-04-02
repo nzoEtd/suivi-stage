@@ -130,6 +130,9 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
         .filter((s) => s.estDisponible)
         .map((s) => s.nomSalle);
 
+      
+      this.sallesDispo.sort((a, b) => a - b);
+
       const planningNames = data.plannings
         .map((p) => p.nom)
         .filter((nom): nom is string => nom !== null);
@@ -168,6 +171,8 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
       this.selectedJour,
       this.slots,
     );
+    
+    this.sallesAffiches.sort((a, b) => a - b);
   }
 
   async export() {
@@ -343,6 +348,8 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
         this.selectedJour,
         this.slots,
       );
+      
+      this.sallesAffiches.sort((a, b) => a - b);
       this.allDataLoaded = true;
     } else {
       this.jours = [];
