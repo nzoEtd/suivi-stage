@@ -1802,7 +1802,7 @@ import {
   getAllSallesUsed,
   loadSoutenancesForPlanning,
 } from &quot;../../utils/fonctions&quot;;
-import { getDatesBetween } from &quot;../../utils/timeManagement&quot;;
+import { getDatesUsed } from &quot;../../utils/timeManagement&quot;;
 import { CompanyTutor } from &quot;../../models/company-tutor.model&quot;;
 import { Student_TrainingYear_AcademicYear } from &quot;../../models/student-trainingYear-academicYear.model&quot;;
 import { AcademicYear } from &quot;../../models/academic-year.model&quot;;
@@ -2071,15 +2071,6 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
       this.selectedPlanning.heureDebutAprem &amp;&amp;
       this.selectedPlanning.heureFinAprem
     ) {
-      // Générer les dates pour ce planning uniquement
-      this.jours &#x3D; getDatesBetween(
-        this.selectedPlanning.dateDebut,
-        this.selectedPlanning.dateFin,
-      );
-
-      // Sélectionner le premier jour par défaut
-      this.selectedJour &#x3D; this.jours[0];
-
       //mettre en place les timeBlocks
       this.timeBlocks &#x3D; [];
       const newTimeBlocks: TimeBlockConfig[] &#x3D; [
@@ -2109,9 +2100,16 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
         this.allTrainingAcademicYears,
         this.cdRef,
       );
+      // Générer les dates pour ce planning uniquement
+      this.jours &#x3D; getDatesUsed(this.slots);
+      console.log(&quot;les jours :&quot;, this.jours)
+
+      // Sélectionner le premier jour par défaut
+      this.selectedJour &#x3D; this.jours[0];
+
       this.slots.forEach((slot) &#x3D;&gt; {
         const dayKey &#x3D; slot.dateDebut
-          ? slot.dateDebut.toISOString().slice(0, 10)
+          ? slot.dateDebut.toLocaleDateString(&#x27;fr-CA&#x27;).slice(0, 10)
           : &quot;attente&quot;; // &quot;YYYY-MM-DD&quot;
         if (!this.planningByDay[dayKey]) this.planningByDay[dayKey] &#x3D; [];
         this.planningByDay[dayKey].push(slot);

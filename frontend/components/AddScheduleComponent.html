@@ -995,7 +995,7 @@ import { StudentService } from &quot;../../services/student.service&quot;;
 import { CompanyService } from &quot;../../services/company.service&quot;;
 import { Staff } from &quot;../../models/staff.model&quot;;
 import { Company } from &quot;../../models/company.model&quot;;
-import { getDatesBetween, passWeekends } from &quot;../../utils/timeManagement&quot;;
+import { getDatesUsed, passWeekends } from &quot;../../utils/timeManagement&quot;;
 import { SalleService } from &quot;../../services/salle.service&quot;;
 import { CompanyTutorService } from &quot;../../services/company-tutor.service&quot;;
 import { StudentTrainingYearAcademicYearService } from &quot;../../services/student-trainingYear-academicYear.service&quot;;
@@ -1087,11 +1087,6 @@ export class AddScheduleComponent implements OnInit {
         );
       }
 
-      this.jours &#x3D; getDatesBetween(
-        this.planning.dateDebut!,
-        this.planning.dateFin!
-      );
-
       this.slots &#x3D; await convertSoutenancesToSlots(
         this.soutenance$,
         result.students,
@@ -1102,6 +1097,9 @@ export class AddScheduleComponent implements OnInit {
         result.trainingAcademicYear,
         this.planning.idAnneeUniversitaire
       );
+
+      this.jours &#x3D; getDatesUsed(this.slots);
+      
       this.sallesDispo &#x3D; result.salles
         .filter((s) &#x3D;&gt; s.estDisponible)
         .map((s) &#x3D;&gt; s.nomSalle);

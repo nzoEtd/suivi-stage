@@ -1185,7 +1185,7 @@ import { Company } from &#x27;../../models/company.model&#x27;;
 import { SlotItem } from &#x27;../../models/slotItem.model&#x27;;
 import { TimeBlockConfig } from &#x27;../../models/timeBlock.model&#x27;;
 import { convertSoutenancesToSlots } from &#x27;../../utils/fonctions&#x27;;
-import { getDatesBetween } from &#x27;../../utils/timeManagement&#x27;;
+import { getDatesUsed } from &#x27;../../utils/timeManagement&#x27;;
 import { CompanyTutor } from &#x27;../../models/company-tutor.model&#x27;;
 import { CompanyTutorService } from &#x27;../../services/company-tutor.service&#x27;;
 import { StudentStaffAcademicYearService } from &#x27;../../services/student-staff-academicYear.service&#x27;;
@@ -1274,11 +1274,6 @@ export class UpdateScheduleComponent implements AfterViewInit {
         this.allTrainingAcademicYears &#x3D; result.trainingAcademicYears;
         this.allAcademicYears &#x3D; result.academicYear;
         this.allReferents &#x3D; result.referent;
-        this.jours &#x3D; getDatesBetween(
-          this.planning.dateDebut!, 
-          this.planning.dateFin!
-        );
-        console.log(&quot;les jours&quot;,this.jours)
         this.allSoutenances &#x3D; (result.soutenance.filter(s &#x3D;&gt; s.idPlanning &#x3D;&#x3D; this.planning.idPlanning));
 
         this.sallesDispo &#x3D; (result.salles.filter(s &#x3D;&gt; s.estDisponible).map(s &#x3D;&gt; s.nomSalle));
@@ -1286,6 +1281,8 @@ export class UpdateScheduleComponent implements AfterViewInit {
         this.allStaff &#x3D; result.staff;
         this.allCompanies &#x3D;result.companies;
         this.slots &#x3D; await convertSoutenancesToSlots(this.allSoutenances, this.allStudents, this.allStaff, this.allCompanies,this.allTutors, this.allReferents, this.allTrainingAcademicYears, this.planning.idAnneeUniversitaire);
+        this.jours &#x3D; getDatesUsed(this.slots);
+        console.log(&quot;les jours&quot;,this.jours)
         
         this.allDataLoaded &#x3D; true;
         this.cdRef.detectChanges(); 
