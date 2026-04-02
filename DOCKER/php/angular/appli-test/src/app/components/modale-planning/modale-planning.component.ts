@@ -10,8 +10,8 @@ import { Router } from "@angular/router";
 import { forkJoin } from "rxjs";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { ToastrService } from 'ngx-toastr';
-import { inject } from '@angular/core';
+import { ToastrService } from "ngx-toastr";
+import { inject } from "@angular/core";
 
 import { PlanningService } from "../../services/planning.service";
 import { TrainingYearService } from "../../services/training-year.service";
@@ -29,6 +29,8 @@ import {
   timeStringToMinutes,
 } from "../../utils/timeManagement";
 import { Planning } from "../../models/planning.model";
+import { ModaleComponent } from "../modale/modale.component";
+import { DataStoreService } from "../../services/data.service";
 
 @Component({
   selector: "app-modale-planning",
@@ -55,24 +57,24 @@ export class ModalePlanningComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private planningService: PlanningService,
-    private trainingYearService: TrainingYearService,
-    private salleService: SalleService,
-    private academicYearService: AcademicYearService,
+    private dataStore: DataStoreService,
   ) {}
 
   ngOnInit(): void {
     this.initForm();
 
-    forkJoin({
-      promos: this.trainingYearService.getTrainingYears(),
-      salles: this.salleService.getSalles(),
-      academicYear: this.academicYearService.getCurrentAcademicYear(),
-    }).subscribe(({ promos, salles, academicYear }) => {
-      this.promos = promos;
-      this.salles = salles.filter((s) => s.estDisponible);
-      this.selectedSalles = [...this.salles];
-      this.currentAcademicYearId = academicYear?.idAnneeUniversitaire || 0;
-    });
+    this.dataStore.ensureDataLoaded(["salles", "trainingYears", "currentYear"]);
+
+    this.dataStore
+      .getData(["salles", "trainingYears", "currentYear"])
+      .subscribe(({ salles, trainingYears, currentYear }) => {
+        this.promos = trainingYears;
+        this.salles = salles.filter((s) => s.estDisponible);
+        this.selectedSalles = [...this.salles];
+        this.currentAcademicYearId = currentYear?.idAnneeUniversitaire || 0;
+
+        console.log("Promos chargées :", this.promos);
+      });
   }
 
   initForm() {
@@ -207,7 +209,10 @@ export class ModalePlanningComponent implements OnInit {
             }
           },
           error: (error) => {
-            this.toastr.error(error, "Erreur lors de la génération du planning.");
+            this.toastr.error(
+              error,
+              "Erreur lors de la génération du planning.",
+            );
             this.isSubmitting = false;
           },
           complete: () => {
@@ -221,6 +226,6 @@ export class ModalePlanningComponent implements OnInit {
   }
 
   onCancel(event?: MouseEvent) {
-    this.cancel.emit(); 
+    this.cancel.emit();
   }
 }

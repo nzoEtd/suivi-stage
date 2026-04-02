@@ -23,7 +23,8 @@ import { Salle } from "../models/salle.model";
 import { Student_TrainingYear_AcademicYear } from "../models/student-trainingYear-academicYear.model";
 import { AcademicYear } from "../models/academic-year.model";
 import { Student_Staff_AcademicYear_String } from "../models/student-staff-academicYear-string.model";
-
+import { TrainingYear } from "../models/training-year.model";
+import { TrainingYearService } from "./training-year.service";
 
 export type AppDataKeys =
   | "students"
@@ -35,7 +36,9 @@ export type AppDataKeys =
   | "salles"
   | "trainingAcademicYears"
   | "referents"
-  | "academicYears";
+  | "academicYears"
+  | "currentYear"
+  | "trainingYears";
 
 interface AppData {
   students: Student[];
@@ -46,8 +49,10 @@ interface AppData {
   plannings: Planning[];
   salles: Salle[];
   trainingAcademicYears: Student_TrainingYear_AcademicYear[];
+  trainingYears: TrainingYear[];
   referents: Student_Staff_AcademicYear_String[];
   academicYears: AcademicYear[];
+  currentYear: AcademicYear | null;
   loaded: boolean;
   loading: boolean;
   error: any;
@@ -64,10 +69,11 @@ type AppDataMap = {
   trainingAcademicYears: Student_TrainingYear_AcademicYear[];
   referents: Student_Staff_AcademicYear_String[];
   academicYears: AcademicYear[];
+  currentYear: AcademicYear | null;
+  trainingYears: TrainingYear[];
 };
 
 type FetchResult = Partial<Pick<AppData, AppDataKeys>>;
-
 
 @Injectable({ providedIn: "root" })
 export class DataStoreService {
@@ -80,6 +86,8 @@ export class DataStoreService {
     plannings: [],
     salles: [],
     trainingAcademicYears: [],
+    trainingYears: [],
+    currentYear: null,
     referents: [],
     academicYears: [],
     loaded: false,
@@ -102,9 +110,9 @@ export class DataStoreService {
     private tutorService: CompanyTutorService,
     private studentTrainingAcademicYearService: StudentTrainingYearAcademicYearService,
     private referentService: StudentStaffAcademicYearService,
-    private academicYearService: AcademicYearService
+    private academicYearService: AcademicYearService,
+    private trainingYearService: TrainingYearService,
   ) {}
-
 
   // Charge les données initiales si pas chargées (sauf si forceRefresh)
   initializeData(forceRefresh = false): void {
@@ -117,12 +125,11 @@ export class DataStoreService {
     this.fetchData([], forceRefresh);
   }
 
-  
   // S'assurer que toutes les données nécessaires sont chargées
   ensureDataLoaded(keys: AppDataKeys[], forceRefresh = false): void {
-    const keysToLoad = forceRefresh 
-      ? keys 
-      : keys.filter(k => !this.loadedKeys.has(k));
+    const keysToLoad = forceRefresh
+      ? keys
+      : keys.filter((k) => !this.loadedKeys.has(k));
 
     if (keysToLoad.length === 0) {
       return;
@@ -131,33 +138,38 @@ export class DataStoreService {
     this.fetchData(keysToLoad, true);
   }
 
-
   //Recharge certaines data qui auraient changées
   refreshKeys(keys: AppDataKeys[]): void {
     this.fetchData(keys, true);
   }
-
 
   //Recharge tout
   refreshAll(): void {
     this.fetchData([], true);
   }
 
-
   private fetchData(keys: AppDataKeys[] = [], forceRefresh = false): void {
-    const currentData = this.dataSubject.value;
-
     // Si aucune clé spécifiée on charge tout
-    const keysToFetch: AppDataKeys[] = keys.length === 0 
-      ? [
-          "students", "staff", "companies", "tutors", 
-          "soutenances", "plannings", "salles", 
-          "trainingAcademicYears", "referents", "academicYears"
-        ]
-      : keys;
+    const keysToFetch: AppDataKeys[] =
+      keys.length === 0
+        ? [
+            "students",
+            "staff",
+            "companies",
+            "tutors",
+            "soutenances",
+            "plannings",
+            "salles",
+            "trainingAcademicYears",
+            "referents",
+            "academicYears",
+            "currentYear",
+            "trainingYears",
+          ]
+        : keys;
 
     this.dataSubject.next({
-      ...currentData,
+      ...this.dataSubject.value,
       loading: true,
       error: null,
     });
@@ -203,7 +215,9 @@ export class DataStoreService {
       observables.trainingAcademicYears =
         this.studentTrainingAcademicYearService
           .getStudentsTrainingYearsAcademicYears()
-          .pipe(catchError(() => of([] as Student_TrainingYear_AcademicYear[])));
+          .pipe(
+            catchError(() => of([] as Student_TrainingYear_AcademicYear[])),
+          );
 
     if (keysToFetch.includes("referents"))
       observables.referents = this.referentService
@@ -215,14 +229,25 @@ export class DataStoreService {
         .getAcademicYears()
         .pipe(catchError(() => of([] as AcademicYear[])));
 
+    if (keysToFetch.includes("currentYear")) {
+      observables.currentYear = this.academicYearService
+        .getCurrentAcademicYear()
+        .pipe(catchError(() => of(null)));
+    }
+
+    if (keysToFetch.includes("trainingYears"))
+      observables.trainingYears = this.trainingYearService
+        .getTrainingYears()
+        .pipe(catchError(() => of([] as TrainingYear[])));
+
     forkJoin(observables as Record<AppDataKeys, Observable<any>>)
       .pipe(
         tap((result: FetchResult) => {
           // Marquer les clés comme chargées
-          keysToFetch.forEach(k => this.loadedKeys.add(k));
+          keysToFetch.forEach((k) => this.loadedKeys.add(k));
 
           this.dataSubject.next({
-            ...currentData,
+            ...this.dataSubject.value,
             ...result,
             loaded: true,
             loading: false,
@@ -231,12 +256,12 @@ export class DataStoreService {
         }),
         catchError((err) => {
           this.dataSubject.next({
-            ...currentData,
+            ...this.dataSubject.value,
             loading: false,
             error: err,
           });
           return of(null);
-        })
+        }),
       )
       .subscribe();
   }
@@ -290,10 +315,17 @@ export class DataStoreService {
     return this.data$.pipe(map((d) => d.error));
   }
 
+  currentYear$() {
+    return this.data$.pipe(map((d) => d.currentYear));
+  }
+
+  trainingYears$() {
+    return this.data$.pipe(map((d) => d.trainingYears));
+  }
 
   // Récuperer des types de données
   getData<const K extends readonly AppDataKeys[]>(
-    keys: K
+    keys: K,
   ): Observable<{ [P in K[number]]: AppDataMap[P] }> {
     return this.data$.pipe(
       map((data) => {
@@ -304,11 +336,7 @@ export class DataStoreService {
         }
 
         return result;
-      })
+      }),
     );
   }
-
-
-
-
 }
