@@ -21,7 +21,6 @@ export class TrainingYearService {
         }
 
         return this.http.get<TrainingYear[]>(`${this.apiUrl}/api/annee-form`, {params}).pipe(
-        tap(response => this.log(response)),
         catchError(error => this.handleError(error, null))
         );
 
@@ -36,7 +35,6 @@ export class TrainingYearService {
         }
 
         return this.http.get<TrainingYear>(`${this.apiUrl}/api/annee-form/${TrainingYearId}`, {params}).pipe(
-        tap(response => this.log(response)),
         catchError(error => this.handleError(error, null))
         );
     }
@@ -49,7 +47,6 @@ export class TrainingYearService {
         };
     
         return this.http.post<TrainingYear>(`${this.apiUrl}/api/annee-form`, ty, httpOptions).pipe(
-          tap((response) => this.log(response)),
           catchError((error) => this.handleError(error, null)),
         );
       }
@@ -63,7 +60,6 @@ export class TrainingYearService {
         return this.http
           .put(`${this.apiUrl}/api/annee-form/update/${ty.idAnneeFormation}`, ty, httpOptions)
           .pipe(
-            tap((response) => this.log(response)),
             catchError((error) => this.handleError(error, null)),
           );
       }
@@ -71,16 +67,9 @@ export class TrainingYearService {
       //Supression d'une année de formation
       deleteTrainingYear(ty: TrainingYear): Observable<null> {
         return this.http.delete(`${this.apiUrl}/api/annee-form/delete/${ty.idAnneeFormation}`).pipe(
-          tap((response) => this.log(response)),
           catchError((error) => this.handleError(error, null)),
         );
       }
-
-
-    //Log la réponse de l'API
-    private log(response: any) {
-        console.table(response);
-    }
 
     //Retourne l'erreur en cas de problème avec l'API
     private handleError(error: Error, errorValue: any) {

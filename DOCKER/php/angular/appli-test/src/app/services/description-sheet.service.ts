@@ -20,7 +20,6 @@ export class FactsheetsService {
     }
 
     return this.http.get<Factsheets[]>(`${this.apiUrl}/api/fiche-descriptive`, {params}).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );
   }
@@ -35,7 +34,6 @@ export class FactsheetsService {
       `${this.apiUrl}/api/fiche-descriptive/${idFicheDescriptive}`,
       httpOptions
     ).pipe(
-      tap(response => this.log(response)),
       catchError(error => {
         console.error('Erreur lors de la récupération de la fiche:', error);
         throw error;
@@ -52,7 +50,6 @@ export class FactsheetsService {
 
     
     return this.http.get<Factsheets[]>(`${this.apiUrl}/api/etudiants/${studentId}/fiches-descriptives`, {params}).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );
   }
@@ -63,7 +60,6 @@ export class FactsheetsService {
     };
 
     return this.http.post<any>(`${this.apiUrl}/api/fiche-descriptive/create`, data, httpOptions).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );
   }
@@ -74,21 +70,14 @@ export class FactsheetsService {
     };
 
     return this.http.put<any>(`${this.apiUrl}/api/fiche-descriptive/update/${idFicheDescriptive}`, sheet, httpOptions).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );
   }
 
   deleteSheet(sheet: Factsheets): Observable<void> {
     return this.http.delete(`${this.apiUrl}/api/fiche-descriptive/delete/${sheet.idFicheDescriptive}`).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );
-  }
-
-  //Log la réponse de l'API
-  private log(response: any) {
-    console.table(response);
   }
 
   //Retourne l'erreur en cas de problème avec l'API

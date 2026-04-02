@@ -2,41 +2,39 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 // Import du contrôleur
-use App\Http\Controllers\RechercheStageController;
-use App\Http\Controllers\EntrepriseController;
-use App\Http\Controllers\FicheDescriptiveController;
-use App\Http\Controllers\EtudiantController;
 use App\Http\Controllers\AuthController;
-
+use App\Http\Controllers\EntrepriseController;
+use App\Http\Controllers\EtudiantController;
+use App\Http\Controllers\FicheDescriptiveController;
+use App\Http\Controllers\RechercheStageController;
 // Import du middleware du CAS
-use App\Http\Middleware\CasAuthMiddleware;
-use App\Http\Controllers\ParcoursController;
-use App\Http\Controllers\TuteurEntrepriseController;
-use App\Http\Controllers\AnneeUniversitaireController;
-use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\AffectationEnseignantController;
-use App\Http\Middleware\DispatchDataDescriptiveSheet;
 use App\Http\Controllers\AlgorithmeController;
 use App\Http\Controllers\AnneeFormationController;
+use App\Http\Controllers\AnneeUniversitaireController;
 use App\Http\Controllers\EtudiantAnneeformAnneeunivController;
 use App\Http\Controllers\EtudiantTdAnneeUnivController;
+use App\Http\Controllers\ParcoursController;
+use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\PlanningController;
 use App\Http\Controllers\SalleController;
 use App\Http\Controllers\SoutenanceController;
 use App\Http\Controllers\TDController;
+use App\Http\Controllers\TuteurEntrepriseController;
+use App\Http\Middleware\CasAuthMiddleware;
+use App\Http\Middleware\DispatchDataDescriptiveSheet;
 
 /*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+ * |--------------------------------------------------------------------------
+ * | API Routes
+ * |--------------------------------------------------------------------------
+ * |
+ * | Here is where you can register API routes for your application. These
+ * | routes are loaded by the RouteServiceProvider within a group which
+ * | is assigned the "api" middleware group. Enjoy building your API!
+ * |
+ */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -91,6 +89,7 @@ Route::get('/etudiants/{id}/fiches-descriptives', [EtudiantController::class, 'i
 Route::get('/etudiants', [EtudiantController::class, 'index'])->name('etudiants.index');
 Route::get('/etudiants/{id}', [EtudiantController::class, 'show'])->name('etudiants.show');
 Route::get('/etudiants/{id}/parcours', [EtudiantController::class, 'indexParcours'])->name('etudiants.indexParcours');
+Route::get('/etudiants/promos/{idPromo}', [EtudiantController::class, 'indexPromo'])->name('etudiants.indexPromo');
 
 // Route pour le Controller Parcours
 Route::get('/parcours', [ParcoursController::class, 'index'])->name('parcours.index');
@@ -128,6 +127,7 @@ Route::resource('salle', SalleController::class);
 
 // Route pour le Controller Planning
 Route::resource('planning', PlanningController::class);
+Route::put('/planning/update/{idPlanning}', [PlanningController::class, 'update'])->name('planning.update');
 
 // Route pour le Controller Soutenance
 Route::put('/soutenance/update/{idSoutenance}', [SoutenanceController::class, 'update'])->name('soutenance.update');
@@ -136,17 +136,16 @@ Route::post('soutenance/create-many', [SoutenanceController::class, 'storeMany']
 Route::put('/soutenances/update-many', [SoutenanceController::class, 'updateMany']);
 
 // Routes pour le Controller EtudiantAnneeformAnneeunivController
-Route::get('/etudiants-annee-formation',[EtudiantAnneeformAnneeunivController::class, 'index']);
-Route::post('/etudiants-annee-formation',[EtudiantAnneeformAnneeunivController::class, 'store']);
-Route::get('/etudiants-annee-formation/filter',[EtudiantAnneeformAnneeunivController::class, 'filter']);
-Route::delete('/etudiants-annee-formation',[EtudiantAnneeformAnneeunivController::class, 'destroy']);
+Route::get('/etudiants-annee-formation', [EtudiantAnneeformAnneeunivController::class, 'index']);
+Route::post('/etudiants-annee-formation', [EtudiantAnneeformAnneeunivController::class, 'store']);
+Route::get('/etudiants-annee-formation/filter', [EtudiantAnneeformAnneeunivController::class, 'filter']);
+Route::delete('/etudiants-annee-formation', [EtudiantAnneeformAnneeunivController::class, 'destroy']);
 
 // Routes pour le Controller EtudiantTdAnneeUnivController
-Route::get('/etudiants-td-annee-univ',[EtudiantTdAnneeUnivController::class, 'index']);
-Route::post('/etudiants-td-annee-univ',[EtudiantTdAnneeUnivController::class, 'store']);
-Route::get('/etudiants-td-annee-univ/filter',[EtudiantTdAnneeUnivController::class, 'filter']);
-Route::delete('/etudiants-td-annee-univ',[EtudiantTdAnneeUnivController::class, 'destroy']);
-
+Route::get('/etudiants-td-annee-univ', [EtudiantTdAnneeUnivController::class, 'index']);
+Route::post('/etudiants-td-annee-univ', [EtudiantTdAnneeUnivController::class, 'store']);
+Route::get('/etudiants-td-annee-univ/filter', [EtudiantTdAnneeUnivController::class, 'filter']);
+Route::delete('/etudiants-td-annee-univ', [EtudiantTdAnneeUnivController::class, 'destroy']);
 
 // Routes pour le Controller TDController
 Route::resource('tds', TDController::class);

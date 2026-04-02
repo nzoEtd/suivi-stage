@@ -20,7 +20,7 @@ class CreatePersonnelsTable extends Migration
 
             // Attributs
             $table->string('login', 50)->unique();
-            $table->enum('roles', ['Gestionnaire','Enseignant']);
+            $table->enum('roles', ['Gestionnaire', 'Enseignant']);
             $table->string('nom', 50);
             $table->string('prenom', 50);
             $table->string('adresse', 100)->nullable();

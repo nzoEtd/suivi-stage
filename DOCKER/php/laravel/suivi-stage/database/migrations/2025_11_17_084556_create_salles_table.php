@@ -14,7 +14,7 @@ class CreateSallesTable extends Migration
     public function up()
     {
         Schema::create('salles', function (Blueprint $table) {
-             $table->engine = 'InnoDB';
+            $table->engine = 'InnoDB';
             // Clé primaire
             $table->unsignedInteger('nomSalle', 10);
 

@@ -1,0 +1,19 @@
+<div class="modal-backdrop" (click)="onCancel($event)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2  class="modal-title">{{ title }}</h2>
+        <button type="button" class="close-button" (click)="onCancel()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <ng-content></ng-content>
+      </div>
+  
+      @if(!onlyDisplay){
+          <div class="modal-footer" >
+            <button class="cancel-button" (click)="onCancel()">Annuler</button>
+            <button class="generate-button" (click)="onSubmit()" [disabled]="!hasValue">{{ submitLabel }}</button>
+          </div>
+      }
+    </div>
+</div>

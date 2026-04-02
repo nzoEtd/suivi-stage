@@ -17,17 +17,17 @@ class CreateTablePersonnelRoleDepartementIUT extends Migration
         Schema::create('table_personnel_role_departement', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             // Clé primaire
-            $table->primary(['idPersonnel','idRole','idDepartement'],'personnel_role_departement_primary');
+            $table->primary(['idPersonnel', 'idRole', 'idDepartement'], 'personnel_role_departement_primary');
 
             // Clé étrangère
             $table->unsignedInteger('idPersonnel');
-            $table->foreign('idPersonnel')->references('idPersonnel')->on('personnels');
+            $table->foreign('idPersonnel')->references('idPersonnel')->on('personnels')->onDelete('cascade');
 
             $table->unsignedTinyInteger('idRole');
-            $table->foreign('idRole')->references('idRole')->on('roles');
+            $table->foreign('idRole')->references('idRole')->on('roles')->onDelete('cascade');
 
             $table->unsignedTinyInteger('idDepartement');
-            $table->foreign('idDepartement')->references('idDepartement')->on('departement_i_u_t_s');
+            $table->foreign('idDepartement')->references('idDepartement')->on('departement_i_u_t_s')->onDelete('cascade');
         });
     }
 

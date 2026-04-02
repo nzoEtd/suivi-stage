@@ -20,7 +20,6 @@ export class StudentService {
     }
 
     return this.http.get<Student[]>(`${this.apiUrl}/api/etudiants`, {params}).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );
   }
@@ -33,14 +32,20 @@ export class StudentService {
     }
 
     return this.http.get<Student>(`${this.apiUrl}/api/etudiants/${studentId}`, {params}).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, null))
     );
   }
 
-  //Log la réponse de l'API
-  private log(response: any) {
-    console.table(response);
+  getStudentsByPromo(promoId: number, fields?: string[]): Observable<Student[]>{
+    let params = new HttpParams();
+
+    if (fields && fields.length > 0) {
+      params = params.set('fields', fields.join(','));
+    }
+
+    return this.http.get<Student[]>(`${this.apiUrl}/api/etudiants/promos/${promoId}`, {params}).pipe(
+      catchError(error => this.handleError(error, null))
+    );
   }
 
   //Retourne l'erreur en cas de problème avec l'API

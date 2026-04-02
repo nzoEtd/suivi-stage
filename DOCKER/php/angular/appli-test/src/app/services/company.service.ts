@@ -20,7 +20,6 @@ export class CompanyService {
     }
 
     return this.http.get<Company[]>(`${this.apiUrl}/api/entreprises`, {params}).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, []))
     );
   }
@@ -33,7 +32,6 @@ export class CompanyService {
     }
 
     return this.http.get<Company>(`${this.apiUrl}/api/entreprises/${idCompany}`, {params}).pipe(
-      tap(response => this.log(response)),
       catchError((error) => this.handleError(error, undefined))
     );
   }
@@ -44,14 +42,8 @@ export class CompanyService {
     };
 
     return this.http.post<Company>(`${this.apiUrl}/api/entreprises/create`, enterprise, httpOptions).pipe(
-      tap(response => this.log(response)),
       catchError(error => this.handleError(error, undefined))
     );
-  }
-
-  //Log la réponse de l'API
-  private log(response: any) {
-    console.table(response);
   }
 
   //Retourne l'erreur en cas de problème avec l'API

@@ -5,14 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Etudiant;
 use App\Models\EtudiantAnneeformAnneeuniv;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AlgorithmeController extends Controller
 {
     /**
      * Execute the algorithm
-     * 
+     *
      * @param int $idUPPA
      * @param int $idFicheDescriptive
      * @return string
@@ -21,11 +21,10 @@ class AlgorithmeController extends Controller
     {
         $scriptPath = base_path(env('ALGO_AFFECTATION_URL'));
 
-        $command = "php " . escapeshellarg($scriptPath) . " " . escapeshellarg($idUPPA) . " " . escapeshellarg($idFicheDescriptive);
+        $command = 'php ' . escapeshellarg($scriptPath) . ' ' . escapeshellarg($idUPPA) . ' ' . escapeshellarg($idFicheDescriptive);
         $output = shell_exec($command);
         return $output;
     }
-
 
     /**
      * Récupère tous les enseignants
@@ -44,7 +43,6 @@ class AlgorithmeController extends Controller
         })->toArray();
     }
 
-
     /**
      * Récupère les étudiants d'une année de formation spécifique
      * et d'une année universitaire donnée
@@ -55,18 +53,16 @@ class AlgorithmeController extends Controller
      */
     public function getStudentsForFormationYear(int $idStudentFormationYear, int $idAcademicYear): array
     {
-
         // Récupérer les liens avec les étudiants de l'année de formation et universiatire passées
         $relations = EtudiantAnneeformAnneeuniv::where('idAnneeFormation', $idStudentFormationYear)
             ->where('idAnneeUniversitaire', $idAcademicYear)
             ->get();
-        Log::info("EtudiantAnneeformAnneeuniv " . $relations);
+        Log::info('EtudiantAnneeformAnneeuniv ' . $relations);
         // Récupérer les profs référents des étudiants trouvés
         $referents = DB::table('table_personnel_etudiant_anneeuniv')
             ->where('idAnneeUniversitaire', $idAcademicYear)
             ->pluck('idPersonnel', 'idUPPA');
-        Log::info("Profs référents " . $referents);
-
+        Log::info('Profs référents ' . $referents);
 
         // Récupérer les informations des étudiants trouvés
         $students = $relations->map(function ($rel) use ($referents) {
@@ -82,8 +78,6 @@ class AlgorithmeController extends Controller
 
         return $students;
     }
-
-
 
     public function runPlanning(Request $request)
     {
@@ -104,7 +98,7 @@ class AlgorithmeController extends Controller
 
         $cmd = $binaryPath . ' ' . implode(' ', $args);
 
-        Log::info("CMD ".$cmd);
+        Log::info('CMD ' . $cmd);
 
         $stdinTeachers = $this->getTeachers();
         $idStudentFormationYear = $data['idStudentFormationYear'];
@@ -114,22 +108,21 @@ class AlgorithmeController extends Controller
         $stdinRooms =
             array_map(
                 fn($salle) => [
-                    'id'  => $salle['nomSalle'],
+                    'id' => $salle['nomSalle'],
                     'tag' => (string) $salle['nomSalle'],
                 ],
                 $data['sallesDispo']
             );
 
-
         $stdinContent = json_encode($stdinStudents) . "\n"
             . json_encode($stdinTeachers) . "\n"
             . json_encode($stdinRooms) . "\n";
 
-        Log::info("stdinContent ".$stdinContent);
+        Log::info('stdinContent ' . $stdinContent);
 
         $descriptorSpecs = [
-            0 => ['pipe', 'r'], // stdin
-            1 => ['pipe', 'w'], // stdout
+            0 => ['pipe', 'r'],  // stdin
+            1 => ['pipe', 'w'],  // stdout
             2 => ['pipe', 'w']  // stderr
         ];
 

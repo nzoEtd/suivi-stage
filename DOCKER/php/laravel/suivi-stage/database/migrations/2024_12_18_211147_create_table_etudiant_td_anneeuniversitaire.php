@@ -16,18 +16,18 @@ class CreateTableEtudiantTdAnneeuniversitaire extends Migration
         // Changement du nom de table : "table_etudiant_td_anneeuniversitaire" (trop long) en "table_etudiant_td_anneeuniv"
         Schema::create('table_etudiant_td_anneeuniv', function (Blueprint $table) {
             $table->engine = 'InnoDB';
-             // Clé primaire
-            $table->primary(['idUPPA','idTD','idAnneeUniversitaire'],'etudiant_td_anneeUniv_primary');
+            // Clé primaire
+            $table->primary(['idUPPA', 'idTD', 'idAnneeUniversitaire'], 'etudiant_td_anneeUniv_primary');
 
             // Clé étrangère
             $table->string('idUPPA');
-            $table->foreign('idUPPA')->references('idUPPA')->on('etudiants');
+            $table->foreign('idUPPA')->references('idUPPA')->on('etudiants')->onDelete('cascade');
 
             $table->unsignedTinyInteger('idTD');
-            $table->foreign('idTD')->references('idTD')->on('t_d_s');
+            $table->foreign('idTD')->references('idTD')->on('t_d_s')->onDelete('cascade');
 
             $table->unsignedInteger('idAnneeUniversitaire');
-            $table->foreign('idAnneeUniversitaire')->references('idAnneeUniversitaire')->on('annee_universitaires');
+            $table->foreign('idAnneeUniversitaire')->references('idAnneeUniversitaire')->on('annee_universitaires')->onDelete('cascade');
         });
     }
 

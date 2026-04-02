@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Log;
 use App\Models\Etudiant;
 use App\Models\Personnel;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -45,11 +45,10 @@ class AuthController extends Controller
 
             $user = $model::find($userId);
 
-            return $user 
+            return $user
                 ? response()->json($user, 200)
                 : response()->json(['error' => 'Utilisateur non trouvé'], 404);
-        } 
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Erreur lors du décryptage des cookies : ' . $e->getMessage());
             return response()->json(['error' => 'Cookie invalide ou corrompu'], 400);
         }

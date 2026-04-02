@@ -28,18 +28,15 @@ import {
   dateToHeureStr,
 } from "../../utils/timeManagement";
 import { ToastrService } from "ngx-toastr";
-
-type CreneauDisponible = {
-  date: string;
-  salle: number;
-  heureDebut: string;
-  heureFin: string;
-};
+import { CreneauDisponible } from "../../utils/types";
+import { isOverlap, referentEstTechnique } from "../../utils/fonctions";
+import { sortCreneaux } from "../../utils/slotsUtils";
+import { ModaleComponent } from "../modale/modale.component";
 
 @Component({
   selector: "app-modale-soutenance",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LoadingComponent],
+  imports: [CommonModule, ReactiveFormsModule, LoadingComponent, ModaleComponent],
   templateUrl: "./modale-soutenance.component.html",
   styleUrls: ["./modale-soutenance.component.css"],
 })
@@ -52,6 +49,7 @@ export class ModaleSoutenanceComponent implements OnInit {
   @Input() soutenancesJour!: Record<string, SlotItem[]>;
   @Input() allStaff: Staff[] = [];
   @Input() timeBlocks: TimeBlockConfig[] = [];
+  @Input() isModalOpen: boolean = false;
 
   @Output() close = new EventEmitter<void>();
 
@@ -61,6 +59,7 @@ export class ModaleSoutenanceComponent implements OnInit {
   enseignantsLecteurs: Staff[] = [];
   creneauxDisponibles: CreneauDisponible[] = [];
   newSoutenance: Soutenance = new Soutenance();
+  title: string = "";
 
   isDataLoaded = false;
   isSubmitting = false;
@@ -88,6 +87,7 @@ export class ModaleSoutenanceComponent implements OnInit {
     });
 
     this.updateLecteursDisponibles(currentCreneauKey, true);
+    this.title = `Soutenance ${formatDate(this.soutenance.dateDebut!, "Heure")} - ${formatDate(this.soutenance.dateFin!, "Heure")} S${this.soutenance.salle}`;
     this.isDataLoaded = true;
   }
 
@@ -95,94 +95,118 @@ export class ModaleSoutenanceComponent implements OnInit {
     return `${formatDateToYYYYMMDD(this.soutenance.dateDebut!)}|${this.soutenance.salle}|${dateToHeureStr(this.soutenance.dateDebut!)}`;
   }
 
-  getCreneauxDisponibles(): CreneauDisponible[] {
-    const dureeMs =
-      this.soutenance.dateFin!.getTime() - this.soutenance.dateDebut!.getTime();
-    const dureeMinutes = dureeMs / 60000;
-
+  // Génère tous les créneaux possibles par jour, salle et bloc
+  private generateAllCreneaux(): {
+    date: string;
+    salle: number;
+    heureDebut: string;
+    heureFin: string;
+    heureDebutDate: Date;
+    heureFinDate: Date;
+  }[] {
+    const dureeMinutes =
+      (this.soutenance.dateFin!.getTime() -
+        this.soutenance.dateDebut!.getTime()) /
+      60000;
     const pas = 30;
-    const currentKey = this.getCurrentCreneauValue();
-    const creneaux: CreneauDisponible[] = [];
 
-    for (const [date, soutenances] of Object.entries(this.soutenancesJour)) {
-      const autresSoutenances = soutenances.filter(
-        (s) => s.id !== this.soutenance.id,
-      );
+    return Object.entries(this.soutenancesJour).flatMap(
+      ([date, soutenances]) => {
+        const sallesDuJour = Array.from(
+          new Set(
+            soutenances
+              .map((s) => s.salle)
+              .filter((s): s is number => s != null),
+          ),
+        );
 
-      const sallesDuJour = [
-        ...new Set(
-          soutenances.map((s) => s.salle).filter((s): s is number => s != null),
-        ),
-      ];
+        return sallesDuJour.flatMap((salle) =>
+          this.timeBlocks.flatMap((block) => {
+            const blockStart = timeStringToMinutes(block.start);
+            const blockEnd = timeStringToMinutes(block.end);
+            const minutesList: number[] = [];
+            for (let m = blockStart; m + dureeMinutes <= blockEnd; m += pas)
+              minutesList.push(m);
 
-      for (const salle of sallesDuJour) {
-        for (const block of this.timeBlocks) {
-          const blockStart = timeStringToMinutes(block.start);
-          const blockEnd = timeStringToMinutes(block.end);
-
-          for (
-            let minutesDebut = blockStart;
-            minutesDebut + dureeMinutes <= blockEnd;
-            minutesDebut += pas
-          ) {
-            const heureDebutStr = minutesToHHMM(minutesDebut);
-            const heureFinStr = minutesToHHMM(minutesDebut + dureeMinutes);
-
-            const heureDebut = buildDate(date, heureDebutStr);
-            const heureFin = buildDate(date, heureFinStr);
-
-            const soutenancesChevauchantes = autresSoutenances.filter((s) =>
-              this.isOverlap(heureDebut, heureFin, s.dateDebut!, s.dateFin!),
-            );
-
-            // room available ?
-            if (soutenancesChevauchantes.some((s) => s.salle === salle))
-              continue;
-
-            // Referent teacher available
-            const enseignantsOccupes = soutenancesChevauchantes.flatMap((s) => [
-              s.idLecteur,
-              s.idReferent,
-            ]);
-
-            if (enseignantsOccupes.includes(this.soutenance.idReferent))
-              continue;
-
-            // Readers available ?
-            const lecteursDisponibles = this.getLecteursDisponibles(
-              soutenancesChevauchantes,
-            );
-
-            if (lecteursDisponibles.length === 0) continue;
-
-            creneaux.push({
-              date,
-              salle,
-              heureDebut: heureDebutStr,
-              heureFin: heureFinStr,
+            return minutesList.map((minutesDebut) => {
+              const heureDebutStr = minutesToHHMM(minutesDebut);
+              const heureFinStr = minutesToHHMM(minutesDebut + dureeMinutes);
+              return {
+                date,
+                salle,
+                heureDebut: heureDebutStr,
+                heureFin: heureFinStr,
+                heureDebutDate: buildDate(date, heureDebutStr),
+                heureFinDate: buildDate(date, heureFinStr),
+              };
             });
-          }
-        }
-      }
-    }
+          }),
+        );
+      },
+    );
+  }
 
-    // sort by day, then room, then hours
-    creneaux.sort((a, b) => {
-      if (a.date !== b.date) {
-        return a.date.localeCompare(b.date);
-      }
+  // Filtre créneaux selon chevauchement, salle, référent et l'existance de lecteurs
+  private filterCreneauxValides(
+    creneaux: {
+      date: string;
+      salle: number;
+      heureDebut: string;
+      heureFin: string;
+      heureDebutDate: Date;
+      heureFinDate: Date;
+    }[],
+    autresSoutenances: SlotItem[],
+  ): CreneauDisponible[] {
+    return creneaux
+      .filter(({ salle, heureDebutDate, heureFinDate }) => {
+        const chevauchantes = autresSoutenances.filter((s) =>
+          isOverlap(heureDebutDate, heureFinDate, s.dateDebut!, s.dateFin!),
+        );
 
-      if (a.salle !== b.salle) {
-        return a.salle - b.salle;
-      }
-      return a.heureDebut.localeCompare(b.heureDebut);
-    });
+        // Salle occupée ?
+        if (chevauchantes.some((s) => s.salle === salle)) return false;
 
-    const alreadyInList = creneaux.some(
-      (c) => `${c.date}|${c.salle}|${c.heureDebut}` === currentKey,
+        // Référent occupé ?
+        const enseignantsOccupes = chevauchantes.flatMap((s) => [
+          s.idLecteur,
+          s.idReferent,
+        ]);
+        if (enseignantsOccupes.includes(this.soutenance.idReferent))
+          return false;
+
+        // Lecteurs disponibles ?
+        if (this.getLecteursDisponibles(chevauchantes).length === 0)
+          return false;
+
+        return true;
+      })
+      .map(({ date, salle, heureDebut, heureFin }) => ({
+        date,
+        salle,
+        heureDebut,
+        heureFin,
+      }));
+  }
+
+  getCreneauxDisponibles(): CreneauDisponible[] {
+    const allCreneaux = this.generateAllCreneaux();
+
+    // toutes les soutenances sauf celle actuelle
+    const autresSoutenances = Object.values(this.soutenancesJour).flatMap(
+      (sout) => sout.filter((s) => s.id !== this.soutenance.id),
     );
 
-    if (!alreadyInList) {
+    // filtrage des créneaux valides
+    let creneaux = this.filterCreneauxValides(allCreneaux, autresSoutenances);
+
+    // ajouter le créneau actuel s’il n’est pas déjà présent
+    const currentKey = this.getCurrentCreneauValue();
+    if (
+      !creneaux.some(
+        (c) => `${c.date}|${c.salle}|${c.heureDebut}` === currentKey,
+      )
+    ) {
       creneaux.unshift({
         date: formatDateToYYYYMMDD(this.soutenance.dateDebut!),
         salle: this.soutenance.salle!,
@@ -191,7 +215,8 @@ export class ModaleSoutenanceComponent implements OnInit {
       });
     }
 
-    return creneaux;
+    // tri final
+    return sortCreneaux(creneaux);
   }
 
   getLecteursDisponibles(chevauchements: SlotItem[]): Staff[] {
@@ -200,8 +225,9 @@ export class ModaleSoutenanceComponent implements OnInit {
       s.idReferent,
     ]);
 
-    const referentTechnique = this.referentEstTechnique(
+    const referentTechnique = referentEstTechnique(
       this.soutenance.idReferent,
+      this.allStaff,
     );
 
     return this.allStaff.filter((s) => {
@@ -229,7 +255,7 @@ export class ModaleSoutenanceComponent implements OnInit {
     const chevauchements = soutenances.filter(
       (s) =>
         s.id !== this.soutenance.id &&
-        this.isOverlap(heureDebutDate, heureFinDate, s.dateDebut!, s.dateFin!),
+        isOverlap(heureDebutDate, heureFinDate, s.dateDebut!, s.dateFin!),
     );
 
     this.enseignantsLecteurs = this.getLecteursDisponibles(chevauchements);
@@ -257,15 +283,6 @@ export class ModaleSoutenanceComponent implements OnInit {
         );
       }
     }
-  }
-
-  referentEstTechnique(idReferent: number): boolean {
-    const enseignant = this.allStaff.find((s) => s.idPersonnel === idReferent);
-    return enseignant?.estTechnique || false;
-  }
-
-  isOverlap(start1: Date, end1: Date, start2: Date, end2: Date): boolean {
-    return start1 < end2 && end1 > start2;
   }
 
   onCancel() {
@@ -314,7 +331,7 @@ export class ModaleSoutenanceComponent implements OnInit {
           salle,
         });
       }
-      this.toastr.success("Les modifications ont bien été prises en comptes.");
+      this.toastr.success("Les modifications ont bien été prises en compte.");
       break;
     }
 

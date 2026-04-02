@@ -1,12 +1,10 @@
-<div class="modal-overlay">
-  <div class="modal">
-    <div class="modal-topbar">
-      <button type="button" (click)="onCancel()" class="close-button">x</button>
-      <h1 class="modal-title">
-        Soutenance {{ formatDate(soutenance.dateDebut!, "Heure") }} -
-        {{ formatDate(soutenance.dateFin!, "Heure") }} S{{ soutenance.salle }}
-      </h1>
-    </div>
+<app-modale
+  *ngIf="isModalOpen" 
+  [title]="title"
+  (submit)="onSubmit()"
+  (cancel)="onCancel()"
+  [hasValue]="!(!isFormChanged() || soutenanceForm.invalid)"
+  [onlyDisplay]="!editMode">
 
     @if (isSubmitting || !isDataLoaded) {
       <div class="loading-overlay">
@@ -106,21 +104,7 @@
             </p>
           }
         </div>
-
-        <!-- Boutons -->
-        <div *ngIf="editMode" class="modal-buttons">
-          <button type="button" (click)="onCancel()" class="cancel-button">
-            Annuler
-          </button>
-          <button
-            type="submit"
-            class="validate-button"
-            [disabled]="!isFormChanged() || soutenanceForm.invalid"
-          >
-            Valider
-          </button>
-        </div>
       </form>
     }
-  </div>
-</div>
+  
+</app-modale>

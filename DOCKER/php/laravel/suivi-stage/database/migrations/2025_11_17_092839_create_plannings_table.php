@@ -26,14 +26,14 @@ class CreatePlanningsTable extends Migration
             $table->time('heureFinMatin');
             $table->time('heureDebutAprem');
             $table->time('heureFinAprem');
-            $table->integer('dureeSoutenance'); // en minutes
+            $table->integer('dureeSoutenance');  // en minutes
 
             // Clés étrangères
             $table->unsignedTinyInteger('idAnneeFormation');
-            $table->foreign('idAnneeFormation')->references('idAnneeFormation')->on('annee_formations');
+            $table->foreign('idAnneeFormation')->references('idAnneeFormation')->on('annee_formations')->onDelete('cascade');
 
             $table->unsignedInteger('idAnneeUniversitaire');
-            $table->foreign('idAnneeUniversitaire')->references('idAnneeUniversitaire')->on('annee_universitaires');
+            $table->foreign('idAnneeUniversitaire')->references('idAnneeUniversitaire')->on('annee_universitaires')->onDelete('cascade');
         });
     }
 
