@@ -1,0 +1,1058 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>stage-management-iut documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">stage-management-iut documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content interface">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Interfaces</li>
+  <li class="breadcrumb-item"
+  >
+  algorithmResponse</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/app/components/factsheets-details/factsheets-details.component.ts</code>
+        </p>
+
+
+
+
+        <section data-compodoc="block-index">
+            <h3 id="index">Index</h3>
+            <table class="table table-sm table-bordered index-table">
+                <tbody>
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Properties</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                            <span class="modifier">Optional</span>
+                                        <a href="#compteurEtudiant" 
+>
+                                            compteurEtudiant
+                                        </a>
+                                </li>
+                                <li>
+                                            <span class="modifier">Optional</span>
+                                        <a href="#distanceGpsProfEntreprise" 
+>
+                                            distanceGpsProfEntreprise
+                                        </a>
+                                </li>
+                                <li>
+                                            <span class="modifier">Optional</span>
+                                        <a href="#equiteDeuxTroisAnnees" 
+>
+                                            equiteDeuxTroisAnnees
+                                        </a>
+                                </li>
+                                <li>
+                                            <span class="modifier">Optional</span>
+                                        <a href="#etudiantPresentEntreprise" 
+>
+                                            etudiantPresentEntreprise
+                                        </a>
+                                </li>
+                                <li>
+                                            <span class="modifier">Optional</span>
+                                        <a href="#etudiantPresentVille" 
+>
+                                            etudiantPresentVille
+                                        </a>
+                                </li>
+                                <li>
+                                            <span class="modifier">Optional</span>
+                                        <a href="#idPersonnel" 
+>
+                                            idPersonnel
+                                        </a>
+                                </li>
+                                <li>
+                                            <span class="modifier">Optional</span>
+                                        <a href="#nom" 
+>
+                                            nom
+                                        </a>
+                                </li>
+                                <li>
+                                            <span class="modifier">Optional</span>
+                                        <a href="#prenom" 
+>
+                                            prenom
+                                        </a>
+                                </li>
+                                <li>
+                                            <span class="modifier">Optional</span>
+                                        <a href="#somme" 
+>
+                                            somme
+                                        </a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+
+            <section data-compodoc="block-properties">
+                <h3 id="inputs">Properties</h3>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="compteurEtudiant"></a>
+                                        <span class="name "><b>compteurEtudiant</b>
+                                            <a href="#compteurEtudiant">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>compteurEtudiant:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Optional</i>
+                                        </td>
+                                    </tr>
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="distanceGpsProfEntreprise"></a>
+                                        <span class="name "><b>distanceGpsProfEntreprise</b>
+                                            <a href="#distanceGpsProfEntreprise">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>distanceGpsProfEntreprise:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Optional</i>
+                                        </td>
+                                    </tr>
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="equiteDeuxTroisAnnees"></a>
+                                        <span class="name "><b>equiteDeuxTroisAnnees</b>
+                                            <a href="#equiteDeuxTroisAnnees">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>equiteDeuxTroisAnnees:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Optional</i>
+                                        </td>
+                                    </tr>
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="etudiantPresentEntreprise"></a>
+                                        <span class="name "><b>etudiantPresentEntreprise</b>
+                                            <a href="#etudiantPresentEntreprise">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>etudiantPresentEntreprise:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Optional</i>
+                                        </td>
+                                    </tr>
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="etudiantPresentVille"></a>
+                                        <span class="name "><b>etudiantPresentVille</b>
+                                            <a href="#etudiantPresentVille">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>etudiantPresentVille:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Optional</i>
+                                        </td>
+                                    </tr>
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="idPersonnel"></a>
+                                        <span class="name "><b>idPersonnel</b>
+                                            <a href="#idPersonnel">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>idPersonnel:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Optional</i>
+                                        </td>
+                                    </tr>
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="nom"></a>
+                                        <span class="name "><b>nom</b>
+                                            <a href="#nom">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>nom:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Optional</i>
+                                        </td>
+                                    </tr>
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="prenom"></a>
+                                        <span class="name "><b>prenom</b>
+                                            <a href="#prenom">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>prenom:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Optional</i>
+                                        </td>
+                                    </tr>
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="somme"></a>
+                                        <span class="name "><b>somme</b>
+                                            <a href="#somme">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>somme:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Optional</i>
+                                        </td>
+                                    </tr>
+
+
+
+
+                        </tbody>
+                    </table>
+            </section>
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit } from &quot;@angular/core&quot;;
+import { CommonModule } from &quot;@angular/common&quot;;
+import { ActivatedRoute } from &quot;@angular/router&quot;;
+import { Student } from &quot;../../models/student.model&quot;;
+import { Company } from &quot;../../models/company.model&quot;;
+import { Factsheets } from &quot;../../models/description-sheet.model&quot;;
+import { AcademicYear } from &quot;../../models/academic-year.model&quot;;
+import { Staff } from &quot;../../models/staff.model&quot;;
+import { Student_Staff_AcademicYear } from &quot;../../models/student-staff-academicYear.model&quot;;
+import { CompanyTutor } from &quot;../../models/company-tutor.model&quot;;
+import { LoadingComponent } from &quot;../loading/loading.component&quot;;
+import { BreadcrumbComponent } from &quot;../breadcrumb/breadcrumb.component&quot;;
+import { TutorAttributionModalComponent } from &quot;../tutor-attribution-modal/tutor-attribution-modal.component&quot;;
+import { AuthService } from &quot;../../services/auth.service&quot;;
+import { FactsheetsService } from &quot;../../services/description-sheet.service&quot;;
+import { CompanyService } from &quot;../../services/company.service&quot;;
+import { NavigationService } from &quot;../../services/navigation.service&quot;;
+import { StudentStaffAcademicYearService } from &quot;../../services/student-staff-academicYear.service&quot;;
+import { AcademicYearService } from &quot;../../services/academic-year.service&quot;;
+import { StaffService } from &quot;../../services/staff.service&quot;;
+import { CompanyTutorService } from &quot;../../services/company-tutor.service&quot;;
+import { StudentService } from &quot;../../services/student.service&quot;;
+import { of, Observable, forkJoin, switchMap, map } from &quot;rxjs&quot;;
+
+export interface algorithmResponse {
+  idPersonnel?: number;
+  nom?: string;
+  prenom?: string;
+  compteurEtudiant?: number;
+  distanceGpsProfEntreprise?: number;
+  etudiantPresentVille?: boolean;
+  etudiantPresentEntreprise?: boolean;
+  equiteDeuxTroisAnnees?: boolean;
+  somme?: number;
+}
+
+@Component({
+  selector: &quot;app-sheet-details&quot;,
+  standalone: true,
+  imports: [
+    CommonModule,
+    LoadingComponent,
+    BreadcrumbComponent,
+    TutorAttributionModalComponent,
+  ],
+  templateUrl: &quot;./factsheets-details.component.html&quot;,
+  styleUrl: &quot;./factsheets-details.component.css&quot;,
+})
+export class SheetDetailsComponent implements OnInit {
+  selectedStudent?: Student;
+  currentUserRole?: string;
+  detailsSheet?: Factsheets;
+  company?: Company;
+  companyTutor?: CompanyTutor;
+  teacherTutor: Staff | null &#x3D; null;
+  affectation?: Student_Staff_AcademicYear &#x3D; undefined;
+  dataLoaded: boolean &#x3D; false;
+  showAttributionModal: Boolean &#x3D; false;
+  teachers?: algorithmResponse[];
+  currentAcademicYear?: AcademicYear;
+  isLoading: boolean &#x3D; false;
+
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly authService: AuthService,
+    private readonly factsheetsService: FactsheetsService,
+    private readonly companyService: CompanyService,
+    private readonly navigationService: NavigationService,
+    private readonly studentStaffAcademicYearService: StudentStaffAcademicYearService,
+    private readonly academicYearService: AcademicYearService,
+    private readonly companyTutorService: CompanyTutorService,
+    private readonly staffService: StaffService,
+    private readonly studentService: StudentService,
+  ) {}
+
+  ngOnInit() {
+    let currentUser;
+    const user &#x3D; sessionStorage.getItem(&quot;currentUser&quot;);
+    if (user) {
+      currentUser &#x3D; JSON.parse(user);
+    }
+
+    if (this.authService.isStudent(currentUser)) {
+      this.currentUserRole &#x3D; &quot;STUDENT&quot;;
+    } else if (this.authService.isStaff(currentUser)) {
+      this.currentUserRole &#x3D; &quot;INTERNSHIP_MANAGER&quot;;
+    }
+
+    const selectedStudent &#x3D; sessionStorage.getItem(&quot;selectedStudent&quot;);
+    if (selectedStudent) {
+      this.selectedStudent &#x3D; JSON.parse(selectedStudent);
+    } else {
+      const currentUser &#x3D; sessionStorage.getItem(&quot;currentUser&quot;);
+      if (currentUser) {
+        this.selectedStudent &#x3D; JSON.parse(currentUser);
+      }
+    }
+
+    this.loadData().subscribe(() &#x3D;&gt; {
+      this.dataLoaded &#x3D; true;
+    });
+  }
+
+  private loadData() {
+    const sheetId &#x3D; Number(this.route.snapshot.paramMap.get(&quot;idSheet&quot;));
+    if (!sheetId) return of(null);
+
+    return this.academicYearService.getCurrentAcademicYear().pipe(
+      switchMap((year) &#x3D;&gt; {
+        if (year) {
+          this.currentAcademicYear &#x3D; year;
+          return this.factsheetsService.getSheetById(sheetId);
+        }
+        return of(null);
+      }),
+      switchMap((sheet) &#x3D;&gt; {
+        if (!sheet) return of(null);
+
+        // Transformer la fiche
+        const transformedSheet: any &#x3D; {};
+        const fieldMappings: { [key: string]: string } &#x3D; {
+          adresseMailStageFicheDescriptive: &quot;adresseMailStage&quot;,
+          adresseStageFicheDescriptive: &quot;adresseStage&quot;,
+          clauseConfidentialiteFicheDescriptive: &quot;clauseConfidentialite&quot;,
+          codePostalStageFicheDescriptive: &quot;codePostalStage&quot;,
+          competencesFicheDescriptive: &quot;competences&quot;,
+          contenuStageFicheDescriptive: &quot;contenuStage&quot;,
+          dateCreationFicheDescriptive: &quot;dateCreation&quot;,
+          dateDebutInterruptionFicheDescriptive: &quot;dateDebutInterruption&quot;,
+          dateDerniereModificationFicheDescriptive: &quot;dateDerniereModification&quot;,
+          dateFinInterruptionFicheDescriptive: &quot;dateFinInterruption&quot;,
+          debutStageFicheDescriptive: &quot;debutStage&quot;,
+          detailsFicheDescriptive: &quot;details&quot;,
+          finStageFicheDescriptive: &quot;finStage&quot;,
+          fonctionsFicheDescriptive: &quot;fonctions&quot;,
+          idTuteurEntreprise: &quot;idTuteur&quot;,
+          interruptionStageFicheDescriptive: &quot;interruptionStage&quot;,
+          materielPreteFicheDescriptive: &quot;materielPrete&quot;,
+          nbHeureSemaineFicheDescriptive: &quot;nbHeureParSemaine&quot;,
+          nbJourSemaineFicheDescriptive: &quot;nbJourParSemaine&quot;,
+          numeroConventionFicheDescriptive: &quot;numeroConvention&quot;,
+          paysStageFicheDescriptive: &quot;paysStage&quot;,
+          personnelTechniqueDisponibleFicheDescriptive:
+            &quot;personnelTechniqueDisponible&quot;,
+          serviceEntrepriseFicheDescriptive: &quot;serviceEntreprise&quot;,
+          sujetFicheDescriptive: &quot;sujet&quot;,
+          tachesFicheDescriptive: &quot;taches&quot;,
+          telephoneStageFicheDescriptive: &quot;telephoneStage&quot;,
+          thematiqueFicheDescriptive: &quot;thematique&quot;,
+          villeStageFicheDescriptive: &quot;villeStage&quot;,
+        };
+
+        for (const [key, value] of Object.entries(sheet)) {
+          const newKey &#x3D; fieldMappings[key] || key;
+          if (typeof value &#x3D;&#x3D;&#x3D; &quot;object&quot; &amp;&amp; value !&#x3D;&#x3D; null) {
+            transformedSheet[newKey] &#x3D;
+              &quot;value&quot; in value ? (value as { value: any }).value : value;
+          } else {
+            transformedSheet[newKey] &#x3D; value;
+          }
+        }
+        this.detailsSheet &#x3D; transformedSheet;
+
+        // Créer les observables de base
+        const observables: { [key: string]: Observable&lt;any&gt; } &#x3D; {};
+
+        if (this.detailsSheet?.idEntreprise) {
+          observables[&quot;company&quot;] &#x3D; this.companyService.getCompanyById(
+            this.detailsSheet.idEntreprise,
+            [
+              &quot;idEntreprise&quot;,
+              &quot;raisonSociale&quot;,
+              &quot;adresse&quot;,
+              &quot;codePostal&quot;,
+              &quot;ville&quot;,
+              &quot;pays&quot;,
+              &quot;telephone&quot;,
+              &quot;typeEtablissement&quot;,
+              &quot;numSIRET&quot;,
+              &quot;codeAPE_NAF&quot;,
+              &quot;statutJuridique&quot;,
+              &quot;effectif&quot;,
+            ],
+          );
+        }
+
+        if (this.detailsSheet?.idTuteur) {
+          observables[&quot;companyTutor&quot;] &#x3D;
+            this.companyTutorService.getCompanyTutorById(
+              this.detailsSheet.idTuteur,
+            );
+        }
+
+        // Gérer le tuteur enseignant séparément
+        if (this.detailsSheet?.idUPPA &amp;&amp; this.currentAcademicYear) {
+          return forkJoin(observables).pipe(
+            switchMap((baseResults) &#x3D;&gt; {
+              if (baseResults[&quot;company&quot;]) this.company &#x3D; baseResults[&quot;company&quot;];
+              if (baseResults[&quot;companyTutor&quot;])
+                this.companyTutor &#x3D; baseResults[&quot;companyTutor&quot;];
+
+              // Charger le tuteur enseignant
+              if (
+                !this.detailsSheet?.idUPPA ||
+                !this.currentAcademicYear?.idAnneeUniversitaire
+              ) {
+                return of(null);
+              }
+              return this.studentStaffAcademicYearService
+                .getTutorByUppaAndYear(
+                  this.detailsSheet.idUPPA.toString(),
+                  this.currentAcademicYear.idAnneeUniversitaire,
+                )
+                .pipe(
+                  switchMap((affectation) &#x3D;&gt; {
+                    if (affectation &amp;&amp; affectation.idPersonnel) {
+                      return this.staffService
+                        .getStaffById(affectation.idPersonnel)
+                        .pipe(
+                          map((staff) &#x3D;&gt; {
+                            if (staff) {
+                              this.teacherTutor &#x3D; staff;
+                            }
+                            return baseResults;
+                          }),
+                        );
+                    }
+                    this.teacherTutor &#x3D; null;
+                    return of(baseResults);
+                  }),
+                );
+            }),
+          );
+        }
+
+        return forkJoin(observables);
+      }),
+      map((results) &#x3D;&gt; {
+        return results;
+      }),
+    );
+  }
+
+  getStatusClass(status: string): string {
+    const statusMap: Record&lt;string, string&gt; &#x3D; {
+      Validee: &quot;status-badge valide&quot;,
+      &quot;En cours&quot;: &quot;status-badge en-attente&quot;,
+      Refusée: &quot;status-badge refuse&quot;,
+    };
+    return statusMap[status] || &quot;status-badge&quot;;
+  }
+
+  goToDashboard() {
+    this.navigationService.navigateToDashboard();
+  }
+
+  goToEdit() {
+    if (this.detailsSheet?.idFicheDescriptive) {
+      this.navigationService.navigateToDescriptiveSheetEditForm(
+        this.detailsSheet.idFicheDescriptive,
+      );
+    }
+  }
+
+  goBack() {
+    this.navigationService.goBack();
+  }
+
+  openAttributionModal() {
+    this.showAttributionModal &#x3D; true;
+  }
+
+  onCancelDelete() {
+    this.showAttributionModal &#x3D; false;
+  }
+
+  generateTeacher() {
+    if (this.detailsSheet?.idUPPA &amp;&amp; this.detailsSheet?.idFicheDescriptive) {
+      this.isLoading &#x3D; true;
+      this.studentStaffAcademicYearService
+        .runAlgorithm(
+          this.detailsSheet.idUPPA,
+          this.detailsSheet.idFicheDescriptive,
+        )
+        .subscribe({
+          next: (rawData) &#x3D;&gt; {
+            if (rawData) {
+              let tutorList: algorithmResponse[] &#x3D; Object.entries(rawData).map(
+                ([id, data]: [string, any]) &#x3D;&gt; ({
+                  idPersonnel: Number(id),
+                  nom: data.NOM,
+                  prenom: data.PRENOM,
+                  compteurEtudiant: data.COMPTEUR_ETUDIANT,
+                  distanceGpsProfEntreprise: data.DISTANCE_GPS_PROF_ENTREPRISE,
+                  etudiantPresentVille: !!data.ETUDIANT_DEJA_PRESENT_VILLE,
+                  etudiantPresentEntreprise:
+                    !!data.ETUDIANT_DEJA_PRESENT_ENREPRISE,
+                  equiteDeuxTroisAnnees: !!data.EQUITE_DEUX_TROIS_ANNEE,
+                  somme: data.SOMME,
+                }),
+              );
+              tutorList &#x3D; tutorList.sort((a, b) &#x3D;&gt; {
+                if (b.somme! !&#x3D;&#x3D; a.somme!) {
+                  return b.somme! - a.somme!;
+                }
+                return (a.nom || &quot;&quot;).localeCompare(b.nom || &quot;&quot;);
+              });
+              this.teachers &#x3D; tutorList;
+            }
+          },
+          error: (error) &#x3D;&gt; {
+            console.error(&quot;Erreur lors de la génération des tuteurs&quot;, error);
+            this.isLoading &#x3D; false;
+          },
+          complete: () &#x3D;&gt; {
+            this.isLoading &#x3D; false;
+          },
+        });
+    } else {
+      console.log(&quot;Erreur lors de la génération des tuteurs&quot;);
+    }
+  }
+
+  handleConfirmAttribution(teacherId: number) {
+    if (
+      !this.currentAcademicYear?.idAnneeUniversitaire ||
+      !this.detailsSheet?.idUPPA ||
+      !teacherId
+    ) {
+      return;
+    }
+
+    const selectedTeacher &#x3D; this.teachers?.find(
+      (teacher) &#x3D;&gt; teacher.idPersonnel &#x3D;&#x3D;&#x3D; teacherId,
+    );
+    if (!selectedTeacher) return;
+
+    this.showAttributionModal &#x3D; false;
+    this.isLoading &#x3D; true;
+
+    const affectation: Student_Staff_AcademicYear &#x3D; {
+      idAnneeUniversitaire: this.currentAcademicYear.idAnneeUniversitaire,
+      idUPPA: this.detailsSheet.idUPPA,
+      idPersonnel: teacherId,
+    };
+
+    this.studentStaffAcademicYearService
+      .getTutorByUppaAndYear(
+        this.detailsSheet.idUPPA.toString(),
+        this.currentAcademicYear.idAnneeUniversitaire,
+      )
+      .pipe(
+        switchMap((existing) &#x3D;&gt; {
+          const operation &#x3D; existing
+            ? this.studentStaffAcademicYearService.updateStudentTeacherAssignments(
+                affectation,
+              )
+            : this.studentStaffAcademicYearService.addStudentTeacherAssignments(
+                affectation,
+              );
+          return operation;
+        }),
+      )
+      .subscribe({
+        next: () &#x3D;&gt; {
+          this.teacherTutor &#x3D; {
+            idPersonnel: selectedTeacher.idPersonnel!,
+            nom: selectedTeacher.nom!,
+            prenom: selectedTeacher.prenom!,
+            role: null,
+            adresse: &quot;&quot;,
+            ville: &quot;&quot;,
+            codePostal: &quot;&quot;,
+            telephone: &quot;&quot;,
+            adresseMail: &quot;&quot;,
+            longitudeAdresse: &quot;0&quot;,
+            latitudeAdresse: &quot;0&quot;,
+            quotaEtudiant: 0,
+            estTechnique: false,
+          };
+        },
+        error: (error) &#x3D;&gt; {
+          console.error(&quot;Erreur lors de l&#x27;attribution du tuteur&quot;, error);
+          this.isLoading &#x3D; false;
+        },
+        complete: () &#x3D;&gt; {
+          this.isLoading &#x3D; false;
+        },
+      });
+  }
+
+  handleCancelAttribution() {
+    this.showAttributionModal &#x3D; false;
+  }
+}
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
+            var COMPODOC_CURRENT_PAGE_URL = 'algorithmResponse.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
