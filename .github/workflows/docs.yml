@@ -16,7 +16,7 @@ jobs:
     steps:
       # Checkout repo
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Set up PHP 8.3
       - name: Set up PHP 8.3
@@ -61,14 +61,24 @@ jobs:
           cd DOCKER/php/angular/appli-test
           npx @compodoc/compodoc -p tsconfig.app.json -d ../../../../docs/frontend
 
+      - name: Upload docs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs
+          path: docs
+
   deploy-docs:
     runs-on: ubuntu-latest
-    # only deploy when pushing to main
     if: github.ref == 'refs/heads/main'
     needs: build-docs
+
     steps:
-      - uses: actions/checkout@v3
-      # Deploy to GitHub Pages
+      - name: Download docs artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docs
+          path: docs
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
