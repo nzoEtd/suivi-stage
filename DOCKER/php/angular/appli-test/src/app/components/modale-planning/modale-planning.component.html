@@ -1,9 +1,11 @@
-<app-modale
-  *ngIf="isModalOpen" 
-  title="Générer un planning"
-  (submit)="onSubmit()"
-  (cancel)="onCancel()">
+<div class="modal-overlay" (click)="onCancel($event)">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">Générer un planning</h3>
+      <button type="button" class="close-button" (click)="onCancel()">✕</button>
+    </div>
 
+    <div class="modal-body">
       <form
         class="form"
         [formGroup]="planningForm"
@@ -195,5 +197,20 @@
           La durée est obligatoire.
         </div>
       </form>
-  
-</app-modale>
+    </div>
+
+    <!-- Btn -->
+    <div class="modal-footer">
+      <button type="button" class="cancel-button" (click)="onCancel()">
+        Annuler
+      </button>
+      <button
+        class="generate-button"
+        [disabled]="isSubmitting"
+        (click)="onSubmit()"
+      >
+        Générer
+      </button>
+    </div>
+  </div>
+</div>
