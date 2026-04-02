@@ -308,7 +308,7 @@ export class ScheduleBoardComponent implements OnInit, OnChanges {
           }
         }
         else if(h + 1 >= endMin / 60){
-          if(Number(block.end.split(':')[1]) > 7){
+          if(Number(block.end.split(':')[1]) > 7 || endMin % 60 == 0){
             positions.push({
               hour: h.toString().padStart(2, "0"),
               top,
