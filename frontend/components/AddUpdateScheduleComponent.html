@@ -704,8 +704,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="266"
-                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:266</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="268"
+                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:268</a></div>
                         </td>
                     </tr>
 
@@ -741,8 +741,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="488"
-                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:488</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="494"
+                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:494</a></div>
                         </td>
                     </tr>
 
@@ -815,8 +815,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="484"
-                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:484</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="490"
+                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:490</a></div>
                         </td>
                     </tr>
 
@@ -1067,8 +1067,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="474"
-                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:474</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="480"
+                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:480</a></div>
                         </td>
                     </tr>
 
@@ -1134,8 +1134,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="300"
-                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:300</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="306"
+                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:306</a></div>
                         </td>
                     </tr>
 
@@ -1238,8 +1238,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="257"
-                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:257</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="259"
+                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:259</a></div>
                         </td>
                     </tr>
 
@@ -1342,8 +1342,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="253"
-                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:253</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="255"
+                                    class="link-to-prism">src/app/components/add-update-schedule/add-update-schedule.component.ts:255</a></div>
                         </td>
                     </tr>
 
@@ -2461,7 +2461,7 @@ export class AddUpdateScheduleComponent
             slot.id &#x3D; idSlotTemp;
           }
           const dayKey &#x3D; slot.dateDebut
-            ? slot.dateDebut.toLocaleDateString(&#x27;fr-CA&#x27;).slice(0, 10)
+            ? slot.dateDebut.toLocaleDateString(&quot;fr-CA&quot;).slice(0, 10)
             : &quot;attente&quot;; // &quot;YYYY-MM-DD&quot;
           if (!this.planningByDay[dayKey]) this.planningByDay[dayKey] &#x3D; [];
           this.planningByDay[dayKey].push(slot);
@@ -2528,10 +2528,12 @@ export class AddUpdateScheduleComponent
   }
 
   openEditModal(slot: SlotItem) {
+    console.log(this.items);
     const isInWaitingList &#x3D; this.items.some((i) &#x3D;&gt; i.id &#x3D;&#x3D;&#x3D; slot.id);
     if (isInWaitingList) {
       return;
     }
+
     this.selectedSoutenance &#x3D; slot;
     this.idSoutenance &#x3D; this.selectedSoutenance.id;
     this.isModalOpen &#x3D; true;
@@ -2554,12 +2556,16 @@ export class AddUpdateScheduleComponent
     this.newDay &#x3D; this.planningForm.value;
     if (this.newDay) {
       const date &#x3D; new Date(this.newDay.date);
-      const dayKey &#x3D; date.toLocaleDateString(&#x27;fr-CA&#x27;).slice(0, 10);
+      const dayKey &#x3D; date.toLocaleDateString(&quot;fr-CA&quot;).slice(0, 10);
       this.planningByDay &#x3D; {
         ...this.planningByDay,
         [dayKey]: this.planningByDay[dayKey] || [],
       };
-      if (!this.jours.some((j) &#x3D;&gt; j.toLocaleDateString(&#x27;fr-CA&#x27;).slice(0, 10) &#x3D;&#x3D;&#x3D; dayKey)) {
+      if (
+        !this.jours.some(
+          (j) &#x3D;&gt; j.toLocaleDateString(&quot;fr-CA&quot;).slice(0, 10) &#x3D;&#x3D;&#x3D; dayKey,
+        )
+      ) {
         this.jours &#x3D; [...this.jours, date].sort(
           (a, b) &#x3D;&gt; a.getTime() - b.getTime(),
         );
@@ -2785,7 +2791,7 @@ export class AddUpdateScheduleComponent
         if (!this.itemsToAdd.some((i) &#x3D;&gt; i.id &#x3D;&#x3D; s.id)) {
           soutenances.push({
             idSoutenance: s.id as number,
-            date: s.dateDebut!.toLocaleDateString(&#x27;fr-CA&#x27;).slice(0, 10),
+            date: s.dateDebut!.toLocaleDateString(&quot;fr-CA&quot;).slice(0, 10),
             nomSalle: s.salle,
             heureDebut:
               s.dateDebut!.getHours().toString().padStart(2, &quot;0&quot;) +
@@ -2805,7 +2811,7 @@ export class AddUpdateScheduleComponent
       if (this.itemsToAdd.length !&#x3D; 0) {
         this.itemsToAdd.forEach((i) &#x3D;&gt; {
           soutenancesToAdd.push({
-            date: i.dateDebut!.toLocaleDateString(&#x27;fr-CA&#x27;).slice(0, 10),
+            date: i.dateDebut!.toLocaleDateString(&quot;fr-CA&quot;).slice(0, 10),
             nomSalle: i.salle,
             heureDebut:
               i.dateDebut!.getHours().toString().padStart(2, &quot;0&quot;) +
