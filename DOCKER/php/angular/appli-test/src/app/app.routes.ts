@@ -13,6 +13,8 @@ import { StudentFactsheetsManagerComponent } from './components/student-factshee
 import { ScheduleComponent } from './components/schedule/schedule.component';
 import { AddScheduleComponent } from './components/add-schedule/add-schedule.component';
 import { UpdateScheduleComponent } from './components/update-schedule/update-schedule.component';
+import { DataDashboardManagerComponent } from './components/data-dashboard-manager/data-dashboard-manager.component';
+import DataCategoryManagerComponent from './components/data-category-manager/data-category-manager.component';
 
 export const routes: Routes = [
   { 
@@ -92,6 +94,16 @@ export const routes: Routes = [
   {
     path: 'schedule/update-schedule/:id',
     component: UpdateScheduleComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'data-management',
+    component: DataDashboardManagerComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'data-management/:category',
+    component: DataCategoryManagerComponent,
     canActivate: [authGuard]
   },
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' }

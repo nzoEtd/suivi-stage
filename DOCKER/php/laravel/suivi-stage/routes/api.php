@@ -152,3 +152,6 @@ Route::resource('tds', TDController::class);
 
 // Routes pour le Controller TDController
 Route::resource('annee-form', AnneeFormationController::class);
+
+// Routes pour le Controller DepartementController
+Route::resource('departements', DepartementController::class);

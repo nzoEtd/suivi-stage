@@ -89,6 +89,7 @@ export class BreadcrumbComponent implements OnInit, OnDestroy {
    * @returns Formatted and translated label
    */
   private formatLabel(path: string): string {
+    console.log(this.currentUserRole);
     const translations: { [key: string]: { [key: string]: string } } = {
       STUDENT: {
         dashboard: "journal de bord",
