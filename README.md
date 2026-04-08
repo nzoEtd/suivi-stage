@@ -6,9 +6,11 @@ Projet de SAE pour le suivi des stages des étudiants du BUT Informatique de l'I
 
 ## Table des matières
 
-- [Arborescence](#arborescence-des-dossiers)
-- [Installation](#installation)
-- [Identité collaborateurs](#identité-des-collaborateurs)
+- [suivi-stage](#suivi-stage)
+  - [Table des matières](#table-des-matières)
+  - [Arborescence des dossiers](#arborescence-des-dossiers)
+  - [Installation](#installation)
+  - [Identité des collaborateurs](#identité-des-collaborateurs)
 
 ---
 
@@ -30,6 +32,13 @@ Projet de SAE pour le suivi des stages des étudiants du BUT Informatique de l'I
 
 ## Identité des collaborateurs
 
+**2025-2026**
+- Zélie DAVAUD: [**@Zeddav**](https://github.com/Zeddav)
+- Candice DUTOURNIER: [**@CandiceDut**](https://github.com/CandiceDut)
+- Enzo HAMID: [**@713koukou-naizaa**](https://github.com/713koukou-naizaa), [**@nzoEtd**](https://github.com/nzoEtd)
+- Marylou LOHIER: [**@marylou-lhr**](https://github.com/marylou-lhr)
+
+**2024-2025**
 - Anthony HERRMANN: [**@AnthoHerrmann**](https://github.com/AnthoHerrmann)
 - Gauthier GOUMEAUX: [**@GauthierGmx**](https://github.com/GauthierGmx)
 - Lucas CRUSSIERE: [**@CRUSSIERE**](https://github.com/CRUSSIERE)
