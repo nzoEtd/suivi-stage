@@ -15,36 +15,18 @@ export class AuthService {
   constructor(private readonly http: HttpClient) {}
 
   getAuthenticatedUser(): Observable<Student | Staff | undefined> {
-    // const savedUser = sessionStorage.getItem('currentUser');
-    // if (savedUser && savedUser != "undefined") {
-    //   this.currentUser = JSON.parse(savedUser);
-    //   return of(this.currentUser);
-    // }
-    // else {
-    //   return this.http.get<Student | Staff>(`${this.apiUrl}/api/get-authenticated-user`, { withCredentials: true }).pipe(
-    //     tap(response => sessionStorage.setItem('currentUser', JSON.stringify(response))),
-    //     tap(response => this.log(response)),
-    //     catchError(error => this.handleError(error, []))
-    //   );
-    // }
-    const currentUser: Staff = {
-      idPersonnel: 1,
-      role: "INTERNSHIP_MANAGER",
-      nom: "LOPISTEGUY",
-      prenom: "Philippe",
-      adresse: "1 rue de l'université",
-      ville: "Anglet",
-      codePostal: "64600",
-      telephone: "+33601020304",
-      adresseMail: "philippe.lopisteguy@iutbayonne.univ-pau.fr",
-      longitudeAdresse: "-1.5",
-      latitudeAdresse: "43.5",
-      quotaEtudiant: 16,
-      estTechnique: true,
-    };
-    sessionStorage.setItem("currentUser", JSON.stringify(currentUser));
-
-    return of(currentUser).pipe(delay(300));
+     const savedUser = sessionStorage.getItem('currentUser');
+     if (savedUser && savedUser != "undefined") {
+       this.currentUser = JSON.parse(savedUser);
+       return of(this.currentUser);
+     }
+     else {
+       return this.http.get<Student | Staff>(`${this.apiUrl}/api/get-authenticated-user`, { withCredentials: true }).pipe(
+         tap(response => sessionStorage.setItem('currentUser', JSON.stringify(response))),
+         tap(response => this.log(response)),
+         catchError(error => this.handleError(error, []))
+       );
+     }
   }
 
   logout() {
