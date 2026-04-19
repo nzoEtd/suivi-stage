@@ -22,22 +22,6 @@ class PersonnelDepartementSeeder extends Seeder
             [
                 'idPersonnel' => 2,
                 'idDepartement' => 1
-            ],
-            [
-                'idPersonnel' => 3,
-                'idDepartement' => 1
-            ],
-            [
-                'idPersonnel' => 4,
-                'idDepartement' => 1
-            ],
-            [
-                'idPersonnel' => 5,
-                'idDepartement' => 1
-            ],
-            [
-                'idPersonnel' => 5,
-                'idDepartement' => 2
             ]
         ]);
     }

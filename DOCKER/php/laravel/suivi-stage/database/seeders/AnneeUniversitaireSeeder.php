@@ -16,12 +16,6 @@ class AnneeUniversitaireSeeder extends Seeder
     {
         DB::table('annee_universitaires')->insert([
             [
-                'libelle' => '2023-2024'
-            ],
-            [
-                'libelle' => '2024-2025'
-            ],
-            [
                 'libelle' => '2025-2026'
             ]
         ]);

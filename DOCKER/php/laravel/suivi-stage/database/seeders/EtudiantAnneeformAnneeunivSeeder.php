@@ -18,8 +18,8 @@ class EtudiantAnneeformAnneeunivSeeder extends Seeder
         foreach ($etudiants as $idUPPA) {
             $insertData[] = [
                 'idUPPA' => $idUPPA,
-                'idAnneeFormation' => random_int(2, 3),
-                'idAnneeUniversitaire' => 3,
+                'idAnneeFormation' => 1,  // BUT 3
+                'idAnneeUniversitaire' => 1,  // 2025-2026
             ];
         }
 

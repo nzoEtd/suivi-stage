@@ -12,7 +12,6 @@ class PersonnelEtudiantAnneeunivSeeder extends Seeder
      *
      * @return void
      */
-
     public function run()
     {
         DB::table('table_personnel_etudiant_anneeuniv')->truncate();
@@ -23,9 +22,9 @@ class PersonnelEtudiantAnneeunivSeeder extends Seeder
 
         foreach ($etudiants as $idUPPA) {
             $insertData[] = [
-                'idPersonnel' => random_int(1, 7),
+                'idPersonnel' => 1,
                 'idUPPA' => $idUPPA,
-                'idAnneeUniversitaire' => 3,
+                'idAnneeUniversitaire' => 1,
             ];
         }
 

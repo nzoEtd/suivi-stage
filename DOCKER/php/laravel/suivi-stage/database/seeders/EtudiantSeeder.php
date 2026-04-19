@@ -21,7 +21,7 @@ class EtudiantSeeder extends Seeder
                 'nom' => 'MONTOURO',
                 'prenom' => 'Maxime',
                 'adresseMail' => 'mmontour@iutbayonne.univ-pau.fr',
-                'idDepartement' => 1,
+                'idDepartement' => 1,  // Informatique
                 'idEntreprise' => 1,
                 'idTuteur' => 1
             ],
@@ -32,141 +32,9 @@ class EtudiantSeeder extends Seeder
                 'prenom' => 'Lucas',
                 'adresseMail' => 'lcrussiere@iutbayonne.univ-pau.fr',
                 'idDepartement' => 1,
-                'idEntreprise' => 7,
-                'idTuteur' => 7
-            ],
-            [
-                'idUPPA' => '610124',
-                'login' => 'elavergne001',
-                'nom' => 'LAVERGNE',
-                'prenom' => 'Elsa',
-                'adresseMail' => 'elavergne@iutbayonne.univ-pau.fr',
-                'idDepartement' => 1,
-                'idEntreprise' => 2,
-                'idTuteur' => 2
-            ],
-            [
-                'idUPPA' => '610001',
-                'login' => 'nconguisti',
-                'nom' => 'CONGUISTI',
-                'prenom' => 'Nicolas',
-                'adresseMail' => 'nconguisti@iutbayonne.univ-pau.fr',
-                'idDepartement' => 1,
-                'idEntreprise' => 2,
-                'idTuteur' => 2
-            ],
-            [
-                'idUPPA' => '611000',
-                'login' => 'fconstans',
-                'nom' => 'CONSTANS',
-                'prenom' => 'Fanny',
-                'adresseMail' => 'fconstant@iutbayonne.univ-pau.fr',
-                'idDepartement' => 1,
-                'idEntreprise' => 3,
-                'idTuteur' => 3
-            ],
-            [
-                'idUPPA' => '611082',
-                'login' => 'smartin016',
-                'nom' => 'MARTIN',
-                'prenom' => 'Solène',
-                'adresseMail' => 'smartin@iutbayonne.univ-pau.fr',
-                'idDepartement' => 1,
-                'idEntreprise' => 4,
-                'idTuteur' => 4
-            ],
-            [
-                'idUPPA' => '610459',
-                'login' => 'gvernis',
-                'nom' => 'VERNIS',
-                'prenom' => 'Gabriel',
-                'adresseMail' => 'gvernis@iutbayonne.univ-pau.fr',
-                'idDepartement' => 1,
-                'idEntreprise' => 5,
-                'idTuteur' => 5
-            ],
-            [
-                'idUPPA' => '613453',
-                'login' => 'jloridant',
-                'nom' => 'LORIDANT',
-                'prenom' => 'Julien',
-                'adresseMail' => 'jloridant@iutbayonne.univ-pau.fr',
-                'idDepartement' => 1,
-                'idEntreprise' => 6,
-                'idTuteur' => 6
-            ],
-            [
-                'idUPPA' => '610580',
-                'login' => 'mlohier001',
-                'nom' => 'LOHIER',
-                'prenom' => 'Marylou',
-                'adresseMail' => 'mlohier001@iutbayonne.univ-pau.fr',
-                'idDepartement' => 1,
-                'idEntreprise' => 5,
-                'idTuteur' => 5
-            ],
-            [
-                'idUPPA' => '641110',
-                'login' => 'ehamid',
-                'nom' => 'HAMID',
-                'prenom' => 'Enzo',
-                'adresseMail' => 'ehamid@iutbayonne.univ-pau.fr',
-                'idDepartement' => 1,
-                'idEntreprise' => 6,
-                'idTuteur' => 6
-            ],
-            [
-                'idUPPA' => '641387',
-                'login' => 'cdutourni001',
-                'nom' => 'DUTOURNIER',
-                'prenom' => 'Candice',
-                'adresseMail' => 'cdutourni001@iutbayonne.univ-pau.fr',
-                'idDepartement' => 1,
-                'idEntreprise' => 7,
-                'idTuteur' => 7
-            ],
-            [
-                'idUPPA' => '641353',
-                'login' => 'zdavaud',
-                'nom' => 'DAVAUD',
-                'prenom' => 'Zelie',
-                'adresseMail' => 'zdavaud@iutbayonne.univ-pau.fr',
-                'idDepartement' => 1,
-                'idEntreprise' => 2,
-                'idTuteur' => 2
-            ],
-            [
-                'idUPPA' => '583303',
-                'login' => 'ggoumeaux001',
-                'nom' => 'GOUMEAUX',
-                'prenom' => 'Gauthier',
-                'adresseMail' => 'ggoumeaux001@iutbayonne.univ-pau.fr',
-                'idDepartement' => 1,
-                'idEntreprise' => 3,
-                'idTuteur' => 4
-            ],
-            [
-                'idUPPA' => '611107',
-                'login' => 'aherrmann001',
-                'nom' => 'HERRMANN',
-                'prenom' => 'Anthony',
-                'adresseMail' => 'aherrmann001@iutbayonne.univ-pau.fr',
-                'idDepartement' => 1,
-                'idEntreprise' => 3,
-                'idTuteur' => 4
-            ],
-            ...array_map(function ($i) {
-                return [
-                    'idUPPA' => 700000 + $i,
-                    'login' => 'etudiant' . $i,
-                    'nom' => 'NOM' . $i,
-                    'prenom' => 'Prenom' . $i,
-                    'adresseMail' => 'etudiant' . $i . '@example.com',
-                    'idDepartement' => 1,
-                    'idEntreprise' => random_int(1, 7),
-                    'idTuteur' => random_int(1, 7),
-                ];
-            }, range(1, 50)),
+                'idEntreprise' => 1,
+                'idTuteur' => 1
+            ]
         ]);
     }
 }

@@ -17,15 +17,6 @@ class DepartementIUTSeeder extends Seeder
         DB::table('departement_i_u_t_s')->insert([
             [
                 'libelle' => 'Informatique'
-            ],
-            [
-                'libelle' => 'Génie Industriel et Maintenance'
-            ],
-            [
-                'libelle' => 'Techniques de Commercialisation'
-            ],
-            [
-                'libelle' => 'Gestion des Entreprises et des Administrations'
             ]
         ]);
     }

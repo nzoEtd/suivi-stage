@@ -17,31 +17,8 @@ class SalleSeeder extends Seeder
         DB::table('salles')->insert([
             [
                 'nomSalle' => 110,
-                'estDisponible' => false
-            ],
-            [
-                'nomSalle' => 124,
                 'estDisponible' => true
             ],
-            [
-                'nomSalle' => 125,
-                'estDisponible' => true
-            ],
-            [
-                'nomSalle' => 126,
-                'estDisponible' => true
-            ],            [
-                'nomSalle' => 127,
-                'estDisponible' => true
-            ],            [
-                'nomSalle' => 129,
-                'estDisponible' => true
-            ],
-            [
-                'nomSalle' => 131,
-                'estDisponible' => true
-            ],
-
         ]);
     }
 }

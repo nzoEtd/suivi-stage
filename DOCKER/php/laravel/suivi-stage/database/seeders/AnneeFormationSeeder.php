@@ -16,12 +16,6 @@ class AnneeFormationSeeder extends Seeder
     {
         DB::table('annee_formations')->insert([
             [
-                'libelle' => 'BUT 1'
-            ],
-            [
-                'libelle' => 'BUT 2'
-            ],
-            [
                 'libelle' => 'BUT 3'
             ]
         ]);
